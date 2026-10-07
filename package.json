@@ -1,0 +1,26 @@
+{
+  "name": "tripcraft",
+  "version": "1.0.0",
+  "description": "TripCraft · 旅艺 —— 智能旅行路书静态网页生成系统 / Universal Travel Harness",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "validate": "node tools/validate-schemas.js",
+    "check": "npm run validate"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^2.1.1"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "comments": {
+    "runtime-dependencies": "ZERO. 本 package.json 仅承载开发期校验工具，编译产物与运行时不含任何 npm 依赖。见 docs/00-overview-and-glossary.md 铁律 1「零构建交付」。"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JohnMaxwell0123/TripCraft.git"
+  }
+}

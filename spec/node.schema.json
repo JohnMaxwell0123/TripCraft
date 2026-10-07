@@ -1,0 +1,404 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tripcraft.dev/schema/v1.0.0/node.schema.json",
+  "title": "TripCraft DSL Node",
+  "description": "行程节点 —— TripCraft DSL 的原子单元。每个节点必须携带跨版本稳定的 id（原则 P3），否则无法被增量补丁定位。",
+  "type": "object",
+  "required": ["id", "type", "seq", "time"],
+  "additionalProperties": false,
+
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^n_d[0-9]{1,2}_[0-9]{2,3}$",
+      "description": "格式 n_d<dayIndex>_<seq>。全局唯一（BR-002），且一经发布不得复用。"
+    },
+    "type": { "$ref": "#/$defs/nodeType" },
+    "seq": { "type": "integer", "minimum": 1 },
+
+    "time": { "$ref": "#/$defs/nodeTime" },
+    "route": { "$ref": "#/$defs/route" },
+
+    "place": { "$ref": "#/$defs/place" },
+    "altitudeM": { "type": "integer", "minimum": -500, "maximum": 9000 },
+
+    "access": { "$ref": "trip.schema.json#/$defs/vehicleAccess" },
+    "accessibility": { "$ref": "#/$defs/accessibility" },
+    "partyFit": { "$ref": "#/$defs/partyFit" },
+
+    "fact": { "$ref": "#/$defs/fact" },
+    "advice": { "$ref": "#/$defs/advice" },
+
+    "media": { "$ref": "#/$defs/media" },
+    "booking": { "$ref": "#/$defs/booking" },
+    "operator": { "$ref": "#/$defs/operator" },
+
+    "tentative": { "type": "boolean", "default": false },
+    "tentativeReason": { "type": "string",
+      "enum": ["user_undecided", "booking_pending", "awaiting_quote", "weather_dependent", "other"] },
+    "injectedDefault": {
+      "type": "object",
+      "description": "系统为 tentative 节点注入的默认值。rule 文本必须对用户可见 —— 透明性是信任的基础。",
+      "additionalProperties": false,
+      "properties": {
+        "source": { "type": "string" },
+        "rule": { "type": "string", "maxLength": 300 }
+      }
+    },
+    "alternatives": { "type": "array", "items": { "$ref": "#/$defs/alternative" } },
+
+    "fuseRef": { "type": "string" },
+    "privilegeRef": { "type": "string" },
+    "anchorRef": { "type": "integer", "description": "关联的 nightIndex / anchor 序号" },
+
+    "notes": { "type": "array", "items": { "$ref": "trip.schema.json#/$defs/note" } },
+    "source": { "type": "string", "description": "节点数据来源标识，供 provenance 追溯" }
+  },
+
+  "$defs": {
+
+    "nodeType": {
+      "type": "string",
+      "enum": ["poi", "transit", "meal", "stay", "activity", "rest", "service", "customs", "note"]
+    },
+
+    "nodeTime": {
+      "type": "object",
+      "required": ["planned", "durationMin"],
+      "additionalProperties": false,
+      "properties": {
+        "planned": { "type": "string", "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$" },
+        "window": {
+          "type": "array", "minItems": 2, "maxItems": 2,
+          "items": { "type": "string", "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$" },
+          "description": "弹性窗口 [最早, 最晚]"
+        },
+        "durationMin": { "type": "integer", "minimum": 0, "maximum": 2880 },
+        "rigidity": { "$ref": "#/$defs/rigidity" },
+        "bufferMin": { "type": "integer", "minimum": 0, "maximum": 480,
+          "description": "本节点预留的弹性缓冲，是应力吸收的基本单位" },
+        "earliestDeparture": { "type": "string", "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+          "description": "受营业时间/日照约束的最早可行时刻" }
+      }
+    },
+
+    "rigidity": {
+      "type": "string",
+      "enum": ["rigid", "soft", "flexible"],
+      "description": "rigid=不可动（已锁票/航班）；soft=可前后浮动；flexible=可压缩可跳过"
+    },
+
+    "route": {
+      "type": "object",
+      "description": "transit 节点的路径数据。polylineSource 为法务必需字段（合规审计可追溯）。",
+      "required": ["from", "to"],
+      "additionalProperties": false,
+      "properties": {
+        "from": { "$ref": "#/$defs/endpoint" },
+        "to": { "$ref": "#/$defs/endpoint" },
+        "roadCodes": { "type": "array", "items": { "type": "string" } },
+        "distanceM": { "type": "number", "minimum": 0 },
+        "polyline": { "type": "string", "description": "简化后的坐标串，格式 lng,lat;lng,lat;..." },
+        "polylinePrecision": { "type": "integer", "minimum": 4, "maximum": 7, "default": 5 },
+        "polylineSource": {
+          "type": "string",
+          "enum": ["amap_driving_v5", "amap_driving_v3", "baidu_driving", "manual_polyline", "none"],
+          "description": "法务必需：声明算路数据来源与版本，用于合规审计"
+        },
+        "polylineFetchedAt": { "type": "string" },
+        "elevationProfile": {
+          "type": "array",
+          "items": {
+            "type": "object", "required": ["atM", "altitudeM"], "additionalProperties": false,
+            "properties": {
+              "atM": { "type": "number", "minimum": 0, "description": "距起点的里程" },
+              "altitudeM": { "type": "integer", "minimum": -500, "maximum": 9000 }
+            }
+          }
+        },
+        "tollsCents": { "type": "integer", "minimum": 0 },
+        "servicesAlongRoute": { "type": "array", "items": { "$ref": "#/$defs/routeService" } },
+        "avoidSegments": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "endpoint": {
+      "type": "object",
+      "required": ["name", "coords"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "maxLength": 120 },
+        "coords": { "$ref": "trip.schema.json#/$defs/coords" },
+        "address": { "type": "string", "maxLength": 200 },
+        "poiIds": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "amap": { "type": "string" }, "baidu": { "type": "string" },
+            "dianping": { "type": "string" }, "ctrip": { "type": "string" }
+          }
+        }
+      }
+    },
+
+    "routeService": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "maxLength": 80 },
+        "atM": { "type": "number", "minimum": 0 },
+        "coords": { "$ref": "trip.schema.json#/$defs/coords" },
+        "fuel": { "type": "array", "items": { "type": "string" } },
+        "charging": {
+          "type": "array",
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "properties": {
+              "operator": { "type": "string" },
+              "powerKw": { "type": "number", "minimum": 0 },
+              "connectors": { "type": "integer", "minimum": 0 },
+              "available": { "type": "integer", "minimum": 0 }
+            }
+          }
+        },
+        "restroom": { "type": "boolean" },
+        "food": { "type": "boolean" },
+        "open24h": { "type": "boolean" }
+      }
+    },
+
+    "place": {
+      "type": "object",
+      "required": ["name", "coords"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "coords": { "$ref": "trip.schema.json#/$defs/coords" },
+        "address": { "type": "string", "maxLength": 200 },
+        "poiIds": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "amap": { "type": "string" }, "baidu": { "type": "string" },
+            "dianping": { "type": "string" }, "ctrip": { "type": "string" }
+          }
+        },
+        "elevationM": { "type": "integer", "minimum": -500, "maximum": 9000 },
+        "geofenceM": { "type": "integer", "minimum": 0, "maximum": 10000,
+          "description": "到达判定半径，用于自动打卡" }
+      }
+    },
+
+    "accessibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "stepFree": { "type": "boolean" },
+        "wheelchairRamp": { "type": "boolean" },
+        "restroom": { "type": "boolean" },
+        "restroomIntervalMin": { "type": "integer", "minimum": 0 },
+        "seating": { "type": "boolean" },
+        "shade": { "type": "boolean" },
+        "elevator": { "type": "boolean" },
+        "walkMeters": { "type": "number", "minimum": 0 },
+        "notes": { "type": "string", "maxLength": 300 }
+      }
+    },
+
+    "partyFit": {
+      "type": "object",
+      "description": "该节点对各人群的适配度。驱动第 1 章人群裁决引擎的满意度函数。",
+      "additionalProperties": false,
+      "properties": {
+        "senior": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "score": { "type": "number", "minimum": 0, "maximum": 1 },
+            "walkMeters": { "type": "number", "minimum": 0 },
+            "shade": { "type": "boolean" },
+            "seating": { "type": "boolean" },
+            "hotFood": { "type": "boolean" }
+          }
+        },
+        "child": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "score": { "type": "number", "minimum": 0, "maximum": 1 },
+            "safety": { "type": "number", "minimum": 0, "maximum": 1 },
+            "interactive": { "type": "number", "minimum": 0, "maximum": 1 },
+            "napFriendly": { "type": "boolean" }
+          }
+        },
+        "adult": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "score": { "type": "number", "minimum": 0, "maximum": 1 },
+            "photo": { "type": "number", "minimum": 0, "maximum": 1 },
+            "adventure": { "type": "number", "minimum": 0, "maximum": 1 },
+            "physicalDemand": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        },
+        "driver": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "score": { "type": "number", "minimum": 0, "maximum": 1 },
+            "parkingDifficulty": { "type": "number", "minimum": 0, "maximum": 1 },
+            "restQuality": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        }
+      }
+    },
+
+    "fact": {
+      "type": "object",
+      "description": "【事实层】客观、可验证、有来源的数据。与 advice 严格分离 —— 这是铁律 7 与免责体系的技术基础。",
+      "additionalProperties": false,
+      "properties": {
+        "openHours": {
+          "type": "array", "minItems": 2, "maxItems": 2,
+          "items": { "type": "string", "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$" }
+        },
+        "closedDays": { "type": "array",
+          "items": { "type": "string", "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] } },
+        "seasonal": { "type": "string", "maxLength": 200 },
+        "ticketCents": { "type": "integer", "minimum": 0 },
+        "ticketNote": { "type": "string", "maxLength": 300 },
+        "phone": { "type": "string", "maxLength": 40 },
+        "officialUrl": { "type": "string" },
+        "requiredDocs": { "type": "array", "items": { "type": "string" } },
+        "dataAsOf": { "type": "string",
+          "description": "事实数据的采集时间。展示时超期（默认 180 天）须标注「信息可能已变更」" }
+      }
+    },
+
+    "advice": {
+      "type": "object",
+      "description": "【建议层】主观推荐。与 fact 严格分离。low 置信度时 UI 必须显式标注「待核实」。",
+      "additionalProperties": false,
+      "properties": {
+        "summary": { "type": "string", "maxLength": 500 },
+        "bestTime": { "type": "string", "maxLength": 200 },
+        "tips": { "type": "array", "items": { "type": "string", "maxLength": 300 } },
+        "avoid": { "type": "array", "items": { "type": "string", "maxLength": 300 } },
+        "confidence": { "type": "string", "enum": ["high", "medium", "low"], "default": "medium" },
+        "generatedBy": { "type": "string", "enum": ["llm", "human", "hybrid", "crowdsourced"] }
+      }
+    },
+
+    "media": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "heroAssetId": { "type": "string" },
+        "gallery": { "type": "array", "items": { "type": "string" } },
+        "source": { "type": "string",
+          "enum": ["ai_generated", "user_upload", "licensed_library", "ota_authorized", "agency_supplied"] },
+        "license": { "$ref": "trip.schema.json#/$defs/license" },
+        "commerceCard": { "$ref": "#/$defs/commerceCard" }
+      }
+    },
+
+    "commerceCard": {
+      "type": "object",
+      "description": "OTA 联盟授权卡片。authorized !== true 时编译器必须拒绝渲染 deepLink（BR-011）—— 这是第 7 章合规红线在数据层的强制。",
+      "required": ["provider", "authorized"],
+      "additionalProperties": false,
+      "properties": {
+        "provider": { "type": "string",
+          "enum": ["dianping", "meituan", "fliggy", "ctrip", "qunar", "amap", "other"] },
+        "authorized": { "type": "boolean" },
+        "authorizationRef": { "type": "string",
+          "description": "联盟授权凭证引用，合规审计用" },
+        "rating": { "type": "number", "minimum": 0, "maximum": 5 },
+        "reviewCount": { "type": "integer", "minimum": 0 },
+        "avgPriceCents": { "type": "integer", "minimum": 0 },
+        "badges": { "type": "array", "items": { "type": "string" } },
+        "deepLink": { "type": "string" },
+        "universalLink": { "type": "string" },
+        "cpsSubId": { "type": "string",
+          "pattern": "^tripcraft_[A-Za-z0-9_-]+$",
+          "description": "归因参数，用于 CPS 分佣结算" },
+        "priceUpdatedAt": { "type": "string",
+          "description": "价格必带时间戳。展示无时效标注的价格可能构成误导（《价格法》《电子商务法》）" },
+        "coupons": {
+          "type": "array",
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "properties": {
+              "title": { "type": "string" }, "expiresAt": { "type": "string" },
+              "claimUrl": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+
+    "booking": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "required": { "type": "boolean", "default": false },
+        "channel": { "type": "string", "enum": ["self", "agency", "ota", "on_site", "none"] },
+        "status": {
+          "type": "string",
+          "enum": ["not_needed", "suggested", "pending", "submitted", "confirmed", "rejected", "cancelled"]
+        },
+        "deadline": { "type": "string" },
+        "quotaType": { "type": "string", "enum": ["public", "team_quota", "privilege_locked"] },
+        "privilegeRef": { "type": "string" },
+        "refs": {
+          "type": "array",
+          "items": {
+            "type": "object", "required": ["type", "value"], "additionalProperties": false,
+            "properties": {
+              "type": { "type": "string", "enum": ["voucher", "confirmation", "qr", "ticket_no"] },
+              "value": { "type": "string", "pattern": "^(enc:|asset:)",
+                "description": "预订凭证属敏感信息，必须加密引用" }
+            }
+          }
+        },
+        "statusHistory": {
+          "type": "array",
+          "description": "地接社报备进度条的数据基础，可逐条渲染为时间轴",
+          "items": {
+            "type": "object", "required": ["at", "status"], "additionalProperties": false,
+            "properties": {
+              "at": { "type": "string" },
+              "status": { "type": "string" },
+              "by": { "type": "string" },
+              "note": { "type": "string", "maxLength": 300 }
+            }
+          }
+        }
+      }
+    },
+
+    "operator": {
+      "type": "object",
+      "description": "activity 节点的服务提供方（越野车队、马队、漂流公司等）",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "maxLength": 120 },
+        "phone": { "type": "string", "maxLength": 40 },
+        "license": { "type": "string", "maxLength": 80 },
+        "insuranceRequired": { "type": "boolean" },
+        "safetyLevel": { "type": "string", "enum": ["low", "medium", "high", "extreme"] },
+        "physicalDemand": { "type": "number", "minimum": 0, "maximum": 1 },
+        "minAge": { "type": "integer", "minimum": 0 },
+        "maxAge": { "type": "integer", "minimum": 0 }
+      }
+    },
+
+    "alternative": {
+      "type": "object",
+      "required": ["name", "coords"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "maxLength": 120 },
+        "coords": { "$ref": "trip.schema.json#/$defs/coords" },
+        "why": { "type": "string", "maxLength": 200 },
+        "partyFit": { "$ref": "#/$defs/partyFit" },
+        "deltaMin": { "type": "integer" }
+      }
+    }
+  }
+}

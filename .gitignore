@@ -1,0 +1,12 @@
+# dev-only tooling (runtime is zero-dependency — see docs/00 §铁律 1)
+node_modules/
+package-lock.json
+
+# local validation scratch
+.validator/
+*.local.json
+
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,937 @@
+{
+  "$schema": "https://tripcraft.dev/schema/v1.0.0/trip.schema.json",
+  "dslVersion": "1.0.0",
+  "id": "trip_20260924_silkroad-gansu-qinghai-9d",
+
+  "meta": {
+    "title": "西行计划 · 丝路自驾路书",
+    "subtitle": "9天甘青大环线 · 考斯特深度定制",
+    "tier": "vip",
+    "designSystem": "apple-glass",
+    "language": "zh-CN",
+    "timezone": "Asia/Shanghai",
+    "cover": {
+      "assetId": "hero_dunhuang_banner",
+      "focalPoint": [0.5, 0.42]
+    },
+    "authors": [
+      { "role": "planner", "name": "JYX" },
+      { "role": "agency", "ref": "brand:zhangye-jinma" }
+    ],
+    "createdAt": "2026-08-01T10:00:00+08:00",
+    "revision": 1,
+    "accessibilityDefault": {
+      "seniorMode": false,
+      "contrastTarget": "AAA",
+      "minTouchTargetPx": 48
+    }
+  },
+
+  "party": {
+    "size": 10,
+    "groups": [
+      {
+        "key": "senior",
+        "label": "长辈",
+        "count": 2,
+        "weights": { "comfort": 0.9, "photo": 0.2, "adventure": 0.05, "pace": 0.2 },
+        "hardNeeds": {
+          "maxWalkMeters": 500,
+          "restroomIntervalMin": 90,
+          "hotFoodRequired": true,
+          "maxAltitudeM": 3600,
+          "shadeRequired": true
+        }
+      },
+      {
+        "key": "child",
+        "label": "儿童",
+        "count": 2,
+        "weights": { "comfort": 0.6, "photo": 0.3, "adventure": 0.6, "pace": 0.4 },
+        "hardNeeds": {
+          "napWindow": ["13:00", "14:30"],
+          "maxAltitudeM": 3200,
+          "safetyRadiusM": 200
+        }
+      },
+      {
+        "key": "adult",
+        "label": "青壮年",
+        "count": 4,
+        "weights": { "comfort": 0.4, "photo": 0.9, "adventure": 0.8, "pace": 0.7 }
+      },
+      {
+        "key": "driver",
+        "label": "驾驶员",
+        "count": 2,
+        "weights": { "comfort": 0.8, "photo": 0.3, "adventure": 0.3, "pace": 0.1 },
+        "hardNeeds": {
+          "maxDailyDriveKm": 350,
+          "maxContinuousDriveMin": 180,
+          "noNightDriving": true,
+          "backupDriverAvailable": true
+        }
+      }
+    ],
+    "mobility": {
+      "wheelchair": false,
+      "reducedMobility": true,
+      "note": "长辈膝盖术后恢复期，长下坡与台阶需扶手"
+    },
+    "animals": { "pets": false }
+  },
+
+  "vehicle": {
+    "primary": {
+      "type": "coaster",
+      "label": "丰田考斯特 23 座",
+      "dimensions": { "heightM": 2.8, "widthM": 2.03, "lengthM": 6.99, "weightT": 5.5 },
+      "plateType": "yellow",
+      "fuel": "diesel",
+      "rangeKm": 700
+    },
+    "energy": { "applicable": false, "batteryKwh": 0 }
+  },
+
+  "theme": {
+    "themeId": "dunhuang-gold",
+    "designSystem": "apple-glass",
+    "detection": {
+      "mode": "auto",
+      "signals": ["敦煌", "莫高窟", "戈壁", "丝路"],
+      "confidence": 0.94
+    },
+    "accessibility": {
+      "seniorMode": false,
+      "seniorModeDefault": false,
+      "contrastTarget": "AAA",
+      "minTouchTargetPx": 48
+    },
+    "motion": { "level": "full", "parallax": true }
+  },
+
+  "constraints": {
+    "hard": [
+      {
+        "id": "hc_altitude",
+        "type": "maxAltitudeM",
+        "value": 3600,
+        "scope": "group:senior",
+        "reason": "高血压 + 高原反应史，垭口段需备便携氧气",
+        "override": "medical_clearance"
+      },
+      {
+        "id": "hc_night_drive",
+        "type": "noNightDriving",
+        "value": true,
+        "scope": "group:driver",
+        "reason": "夜间戈壁路段野生动物横穿风险高",
+        "override": "none"
+      },
+      {
+        "id": "hc_daily_km",
+        "type": "maxDailyDriveKm",
+        "value": 350,
+        "scope": "group:driver",
+        "reason": "随团有长辈与儿童，单日车程上限",
+        "override": "leader_acknowledgement"
+      },
+      {
+        "id": "hc_coaster_height",
+        "type": "vehicleMaxHeightM",
+        "value": 3.2,
+        "scope": "vehicle:coaster",
+        "reason": "部分景区北门限高 3.2m",
+        "override": "none"
+      }
+    ],
+    "soft": [
+      { "id": "sc_budget", "type": "budgetPerPersonCents", "value": 800000, "weight": 0.6 },
+      { "id": "sc_pace", "type": "paceScore", "value": 0.4, "weight": 0.8 }
+    ],
+    "violationPolicy": { "hard": "block", "soft": "score_penalty" }
+  },
+
+  "days": [
+    {
+      "dayIndex": 0,
+      "tag": "D0",
+      "date": "2026-09-24",
+      "dateLabel": "09月24日 · 周三",
+      "title": "济南 ✈ 兰州 · 丝路集结夜",
+      "dayType": "transit_arrival",
+      "bufferCapacity": 3,
+      "anchor": {
+        "start": {
+          "time": "2026-09-24T14:30",
+          "type": "flight_arrival",
+          "ref": { "flightNo": "MU2456", "from": "TNA", "to": "LHG" },
+          "rigidity": "rigid",
+          "lateToleranceMin": 180,
+          "fallback": {
+            "ifDelayedBeyond": 180,
+            "action": "compress_after",
+            "compressibleNodeIds": ["n_d0_02"]
+          }
+        },
+        "stays": [
+          {
+            "nightIndex": 0,
+            "city": "兰州",
+            "status": "confirmed",
+            "name": "水岸云上酒店（兰州中山桥店）",
+            "address": "兰州市城关区南滨河东路873号",
+            "coords": [103.8178, 36.0668],
+            "checkIn": "14:00",
+            "checkOut": "12:00",
+            "roomType": "3 间大床 + 2 间双床",
+            "bookingRef": "enc:hotel-ref-lanzhou-d0",
+            "contact": "+86-931-0000000"
+          }
+        ]
+      },
+      "nodes": [
+        {
+          "id": "n_d0_01",
+          "type": "transit",
+          "seq": 1,
+          "time": { "planned": "15:30", "durationMin": 70, "rigidity": "soft", "bufferMin": 15 },
+          "route": {
+            "from": { "name": "兰州中川机场", "coords": [103.6205, 36.5153] },
+            "to": { "name": "水岸云上酒店", "coords": [103.8178, 36.0668] },
+            "roadCodes": ["G30 连霍高速"],
+            "distanceM": 70000,
+            "polylineSource": "amap_driving_v5",
+            "polylinePrecision": 5,
+            "elevationProfile": [
+              { "atM": 0, "altitudeM": 1947 },
+              { "atM": 35000, "altitudeM": 1700 },
+              { "atM": 70000, "altitudeM": 1520 }
+            ],
+            "tollsCents": 2500
+          },
+          "notes": [
+            { "tone": "info", "text": "机场出口 3 号门集合，考斯特停靠大巴专用位" }
+          ]
+        },
+        {
+          "id": "n_d0_02",
+          "type": "meal",
+          "seq": 2,
+          "time": { "planned": "18:30", "durationMin": 90, "rigidity": "flexible" },
+          "place": {
+            "name": "正宁路夜市（推荐）",
+            "coords": [103.8265, 36.0543],
+            "address": "兰州市城关区正宁路"
+          },
+          "tentative": true,
+          "tentativeReason": "user_undecided",
+          "injectedDefault": {
+            "source": "tripcraft_heuristic_v1",
+            "rule": "抵达日首选酒店 3km 内、可步行抵达、有固定座位的本地夜市，避免长辈长途折返"
+          },
+          "alternatives": [
+            {
+              "name": "南关民族风味一条街",
+              "coords": [103.8188, 36.0501],
+              "why": "座位更多、出餐快，适合带长辈",
+              "deltaMin": 5
+            },
+            {
+              "name": "酒店中餐厅",
+              "coords": [103.8178, 36.0668],
+              "why": "零车程、有包间，抵达日最省力",
+              "deltaMin": -15
+            }
+          ],
+          "advice": {
+            "summary": "推荐牛奶鸡蛋醪糟、灰豆子、酿皮；长辈可选粥品摊位",
+            "bestTime": "18:30 前到，19:30 后排队明显变长",
+            "confidence": "medium",
+            "generatedBy": "llm"
+          },
+          "partyFit": {
+            "senior": { "score": 0.6, "walkMeters": 400, "seating": true, "hotFood": true },
+            "child": { "score": 0.7, "safety": 0.5, "interactive": 0.6 },
+            "adult": { "score": 0.9, "photo": 0.7, "adventure": 0.2 }
+          }
+        }
+      ],
+      "folding": [
+        {
+          "id": "fold_d0",
+          "label": "下午 · 机场接驳 70min",
+          "nodeIds": ["n_d0_01"],
+          "collapsed": true,
+          "defaultExpanded": false,
+          "summary": {
+            "distanceM": 70000,
+            "durationMin": 70,
+            "maxAltitudeM": 1947,
+            "roadCodes": ["G30 连霍高速"]
+          },
+          "spans": [{ "type": "elevation", "dataRef": "elevationProfile:n_d0_01" }]
+        }
+      ],
+      "fuses": [],
+      "logistics": {
+        "summary": {
+          "totalDistanceM": 70000,
+          "totalDriveMin": 70,
+          "maxAltitudeM": 1947,
+          "minAltitudeM": 1520
+        },
+        "sunTimes": { "sunrise": "06:58", "sunset": "19:42", "source": "computed" },
+        "safetyNotes": [
+          { "tone": "info", "text": "抵达日不安排体力活动，让长辈与儿童充分适应海拔与作息" }
+        ]
+      }
+    },
+
+    {
+      "dayIndex": 1,
+      "tag": "D1",
+      "date": "2026-09-25",
+      "dateLabel": "09月25日 · 周四",
+      "title": "兰州 → 张掖 · 穿越祁连",
+      "dayType": "long_haul",
+      "bufferCapacity": 2,
+      "anchor": {
+        "stays": [
+          {
+            "nightIndex": 1,
+            "city": "张掖",
+            "status": "tentative",
+            "name": "张掖甘州区商务酒店（待定）",
+            "address": "张掖市甘州区",
+            "coords": [100.4521, 38.9312],
+            "checkIn": "14:00"
+          }
+        ]
+      },
+      "nodes": [
+        {
+          "id": "n_d1_01",
+          "type": "transit",
+          "seq": 1,
+          "time": { "planned": "08:00", "durationMin": 300, "rigidity": "soft", "bufferMin": 30 },
+          "route": {
+            "from": { "name": "兰州", "coords": [103.8178, 36.0668] },
+            "to": { "name": "张掖", "coords": [100.4521, 38.9312] },
+            "roadCodes": ["G30 连霍高速", "G227"],
+            "distanceM": 505000,
+            "polylineSource": "amap_driving_v5",
+            "elevationProfile": [
+              { "atM": 0, "altitudeM": 1520 },
+              { "atM": 180000, "altitudeM": 2980 },
+              { "atM": 320000, "altitudeM": 2300 },
+              { "atM": 505000, "altitudeM": 1480 }
+            ],
+            "tollsCents": 18500,
+            "servicesAlongRoute": [
+              {
+                "name": "永登服务区",
+                "atM": 110000,
+                "fuel": ["gasoline", "diesel"],
+                "restroom": true,
+                "food": true,
+                "open24h": true
+              },
+              {
+                "name": "山丹服务区",
+                "atM": 380000,
+                "fuel": ["gasoline", "diesel"],
+                "restroom": true,
+                "food": true
+              }
+            ]
+          },
+          "notes": [
+            {
+              "tone": "warning",
+              "text": "乌鞘岭段长下坡约 12km，务必低挡位发动机制动，避免长时间踩刹车导致热衰减"
+            },
+            { "tone": "info", "text": "最高点约 2980m，短暂经过，长辈无需特别担心" }
+          ],
+          "altitudeM": 2980
+        },
+        {
+          "id": "n_d1_02",
+          "type": "rest",
+          "seq": 2,
+          "time": { "planned": "10:20", "durationMin": 25, "rigidity": "flexible", "bufferMin": 10 },
+          "place": { "name": "永登服务区", "coords": [103.2601, 36.7503] },
+          "partyFit": {
+            "senior": { "score": 0.9, "walkMeters": 80, "seating": true, "hotFood": true },
+            "child": { "score": 0.6, "safety": 0.7 }
+          },
+          "notes": [{ "tone": "info", "text": "如厕 + 补给热水，长辈固定休整点" }]
+        },
+        {
+          "id": "n_d1_03",
+          "type": "meal",
+          "seq": 3,
+          "time": { "planned": "13:30", "durationMin": 70, "rigidity": "soft", "window": ["13:00", "14:30"] },
+          "place": {
+            "name": "张掖甘州名吃（大佛寺文化街总店）",
+            "coords": [100.4521, 38.9312],
+            "address": "张掖市甘州区民主西街"
+          },
+          "fact": { "openHours": ["10:30", "21:30"], "phone": "0936-0000000" },
+          "advice": {
+            "summary": "本地老字号，有二楼大包间，适合 10 人团",
+            "bestTime": "13:30 后过午峰，包间空出",
+            "confidence": "medium",
+            "generatedBy": "hybrid"
+          },
+          "partyFit": {
+            "senior": { "score": 0.9, "walkMeters": 120, "seating": true, "hotFood": true },
+            "child": { "score": 0.6, "safety": 0.8, "napFriendly": true },
+            "adult": { "score": 0.85, "photo": 0.5 }
+          },
+          "booking": {
+            "required": true,
+            "channel": "agency",
+            "status": "pending",
+            "deadline": "2026-09-23T18:00",
+            "quotaType": "team_quota"
+          }
+        }
+      ],
+      "folding": [
+        {
+          "id": "fold_d1",
+          "label": "上午 · 兰州→张掖长途 5h",
+          "nodeIds": ["n_d1_01", "n_d1_02"],
+          "collapsed": true,
+          "defaultExpanded": false,
+          "summary": {
+            "distanceM": 505000,
+            "durationMin": 300,
+            "maxAltitudeM": 2980,
+            "roadCodes": ["G30 连霍高速", "G227"]
+          },
+          "spans": [
+            { "type": "elevation", "dataRef": "elevationProfile:n_d1_01" },
+            { "type": "serviceList", "dataRef": "servicesAlongRoute:n_d1_01" }
+          ],
+          "autoExpandRule": {
+            "trigger": "elapsedOver",
+            "valueMin": 150,
+            "action": "expand_and_suggest_rest"
+          }
+        }
+      ],
+      "fuses": [
+        {
+          "id": "fz_d1_road",
+          "label": "G227 / 乌鞘岭段封闭",
+          "appliesTo": ["n_d1_01"],
+          "trigger": {
+            "any": [
+              { "type": "road_closure", "segment": "G227|乌鞘岭段", "source": "amap_traffic" },
+              { "type": "manual_report", "reportTag": "road_closed", "source": "manual_report" },
+              { "type": "weather", "condition": "snowstorm", "region": "乌鞘岭", "source": "weather_api" }
+            ],
+            "evaluationWindowMin": 30
+          },
+          "levels": [
+            {
+              "id": "A",
+              "label": "计划 A · 原路线 G30 经乌鞘岭",
+              "isDefault": true,
+              "condition": "always",
+              "nodeIds": ["n_d1_01"]
+            },
+            {
+              "id": "B",
+              "label": "弹性缓冲 · 绕行 G6 京藏线经白银",
+              "condition": "closureWithoutFullBlock",
+              "reroute": {
+                "mode": "amap_driving_avoid",
+                "avoidSegments": ["G227|乌鞘岭段"],
+                "waypoints": [[104.13, 36.55]]
+              },
+              "deltaEstimate": { "extraMin": 75, "extraM": 92000 },
+              "cascade": [
+                { "nodeId": "n_d1_02", "action": "skip", "reason": "绕行后不再经过永登服务区" },
+                { "nodeId": "n_d1_03", "action": "compress", "byMin": 30, "reason": "午餐顺延至 14:00" }
+              ]
+            },
+            {
+              "id": "C",
+              "label": "降级预案 · 改宿武威，次日提前出发",
+              "condition": "fullBlock",
+              "restructure": {
+                "type": "shift_stay",
+                "newStay": {
+                  "city": "武威",
+                  "name": "武威凉州区商务酒店（待定）",
+                  "coords": [102.6380, 37.9283],
+                  "status": "tentative"
+                },
+                "nextDayAdjust": { "startEarlierMin": 90 }
+              },
+              "requiresConfirmation": true,
+              "notify": ["leader", "agency:zhangye-jinma"]
+            }
+          ],
+          "rollback": { "allowed": true, "windowMin": 120 }
+        }
+      ],
+      "logistics": {
+        "summary": {
+          "totalDistanceM": 505000,
+          "totalDriveMin": 300,
+          "totalWalkM": 300,
+          "maxAltitudeM": 2980,
+          "minAltitudeM": 1480
+        },
+        "fuelPlan": [
+          {
+            "atNodeId": "n_d1_02",
+            "type": "refuel",
+            "estimatedCostCents": 62000,
+            "station": "永登服务区加油站"
+          }
+        ],
+        "weatherExpectation": {
+          "source": "amap_weather",
+          "fetchedAt": "2026-09-20T08:00:00+08:00",
+          "segments": [
+            { "atNodeId": "n_d1_01", "condition": "sunny", "tempC": [7, 19], "windLevel": 4 },
+            { "atNodeId": "n_d1_03", "condition": "cloudy", "tempC": [10, 24], "windLevel": 3 }
+          ]
+        },
+        "sunTimes": { "sunrise": "07:06", "sunset": "19:34", "source": "computed" },
+        "safetyNotes": [
+          { "tone": "warning", "text": "乌鞘岭段海拔近 3000m，若长辈出现头晕、胸闷，立即在服务区休整并吸氧" },
+          { "tone": "info", "text": "本日总车程 5h，中途固定休整 25min，符合驾驶疲劳管理规定" }
+        ]
+      }
+    },
+
+    {
+      "dayIndex": 2,
+      "tag": "D2",
+      "date": "2026-09-26",
+      "dateLabel": "09月26日 · 周五",
+      "title": "张掖 → 嘉峪关 · 丹霞与雄关",
+      "dayType": "core_sight",
+      "bufferCapacity": 1,
+      "anchor": {
+        "stays": [
+          {
+            "nightIndex": 2,
+            "city": "嘉峪关",
+            "status": "tentative",
+            "name": "嘉峪关市区酒店（待定）",
+            "coords": [98.2891, 39.7729],
+            "checkIn": "15:00"
+          }
+        ]
+      },
+      "nodes": [
+        {
+          "id": "n_d2_01",
+          "type": "poi",
+          "seq": 1,
+          "time": { "planned": "09:00", "durationMin": 150, "rigidity": "soft", "bufferMin": 25 },
+          "place": {
+            "name": "张掖七彩丹霞旅游景区",
+            "coords": [100.1231, 38.9606],
+            "address": "张掖市临泽县倪家营镇",
+            "elevationM": 1580,
+            "geofenceM": 400,
+            "poiIds": { "amap": "B0FFFDEMO01" }
+          },
+          "altitudeM": 1580,
+          "access": {
+            "coaster": {
+              "allowed": true,
+              "recommended": true,
+              "maxHeightM": 3.2,
+              "restriction": "北门限高 3.2m，考斯特须走南门（限高 4.5m，大巴专用落客位）",
+              "dropoffPoint": { "name": "丹霞景区南门大巴落客区", "coords": [100.1188, 38.9542] },
+              "parkingFee": 3000,
+              "advanceBooking": false
+            },
+            "bus": { "allowed": true, "maxHeightM": 4.5 },
+            "rv": { "allowed": false, "reason": "内部道路限宽 2.5m，房车无法进入观景环线" },
+            "confidence": 0.85,
+            "verifiedAt": "2026-07-15",
+            "verifiedBy": "zhangye-jinma"
+          },
+          "partyFit": {
+            "senior": { "score": 0.75, "walkMeters": 900, "shade": false, "seating": true },
+            "child": { "score": 0.6, "safety": 0.7, "interactive": 0.4 },
+            "adult": { "score": 0.95, "photo": 0.98, "adventure": 0.3, "physicalDemand": 0.3 },
+            "driver": { "score": 0.7, "parkingDifficulty": 0.5, "restQuality": 0.6 }
+          },
+          "fact": {
+            "openHours": ["06:30", "18:00"],
+            "ticketCents": 7400,
+            "ticketNote": "含观光车；60 岁以上凭证件免门票，观光车照常收费",
+            "phone": "0936-0000000",
+            "dataAsOf": "2026-08-20"
+          },
+          "advice": {
+            "summary": "观光车为循环线路，建议在 4 号观景台（七彩虹霞台）多停留，色彩最饱和；1 号台适合拍全景",
+            "bestTime": "16:00 之后顺光，丹霞色彩最艳；正午顶光偏灰",
+            "tips": [
+              "景区内无遮挡，紫外线极强，务必防晒与补水",
+              "观光车换乘点台阶较多，长辈建议在 2 号台休息等候"
+            ],
+            "avoid": ["雨雪后地面湿滑，观景台边缘勿靠近"],
+            "confidence": "high",
+            "generatedBy": "hybrid"
+          },
+          "media": {
+            "heroAssetId": "poi_zhangye_danxia_01",
+            "gallery": ["poi_zhangye_danxia_02", "poi_zhangye_danxia_03"],
+            "source": "ai_generated",
+            "license": { "type": "ai_generated", "by": "tripcraft-image-engine" }
+          },
+          "booking": {
+            "required": true,
+            "channel": "ota",
+            "status": "suggested",
+            "deadline": "2026-09-24T12:00",
+            "quotaType": "public"
+          },
+          "notes": [
+            { "tone": "info", "text": "景区海拔约 1580m，无高反风险" },
+            { "tone": "warning", "text": "无人机需在景区管理处登记，禁飞区以现场标识为准" }
+          ]
+        },
+        {
+          "id": "n_d2_02",
+          "type": "transit",
+          "seq": 2,
+          "time": { "planned": "14:30", "durationMin": 130, "rigidity": "flexible", "bufferMin": 20 },
+          "route": {
+            "from": { "name": "张掖七彩丹霞", "coords": [100.1231, 38.9606] },
+            "to": { "name": "嘉峪关市区", "coords": [98.2891, 39.7729] },
+            "roadCodes": ["G30 连霍高速"],
+            "distanceM": 225000,
+            "polylineSource": "amap_driving_v5",
+            "elevationProfile": [
+              { "atM": 0, "altitudeM": 1580 },
+              { "atM": 225000, "altitudeM": 1620 }
+            ],
+            "tollsCents": 9500
+          }
+        },
+        {
+          "id": "n_d2_03",
+          "type": "poi",
+          "seq": 3,
+          "time": { "planned": "17:00", "durationMin": 90, "rigidity": "soft" },
+          "place": {
+            "name": "嘉峪关关城",
+            "coords": [98.2216, 39.8009],
+            "address": "嘉峪关市雄关路",
+            "elevationM": 1620
+          },
+          "altitudeM": 1620,
+          "partyFit": {
+            "senior": { "score": 0.7, "walkMeters": 1100, "seating": true, "shade": false },
+            "adult": { "score": 0.9, "photo": 0.9, "adventure": 0.2 }
+          },
+          "fact": {
+            "openHours": ["08:30", "18:00"],
+            "ticketCents": 11000,
+            "ticketNote": "60 岁以上免票（凭证件）",
+            "dataAsOf": "2026-08-20"
+          },
+          "advice": {
+            "summary": "建议从东门进，顺时针绕城一圈约 90 分钟；城墙上风大",
+            "bestTime": "17:00 后侧逆光，城墙轮廓与夯土质感最出片",
+            "tips": ["关城内洗手间在西门，东门无", "城墙台阶陡且无扶手，长辈建议在城内平地游览"],
+            "confidence": "high",
+            "generatedBy": "human"
+          },
+          "notes": [
+            { "tone": "warning", "text": "城墙马道台阶高差大且无扶手，行动不便者建议不上城墙" }
+          ]
+        }
+      ],
+      "folding": [
+        {
+          "id": "fold_d2",
+          "label": "下午 · 丹霞→嘉峪关 2h10m",
+          "nodeIds": ["n_d2_02"],
+          "collapsed": true,
+          "defaultExpanded": false,
+          "summary": {
+            "distanceM": 225000,
+            "durationMin": 130,
+            "maxAltitudeM": 1620,
+            "roadCodes": ["G30 连霍高速"]
+          },
+          "spans": [{ "type": "elevation", "dataRef": "elevationProfile:n_d2_02" }]
+        }
+      ],
+      "fuses": [],
+      "logistics": {
+        "summary": {
+          "totalDistanceM": 225000,
+          "totalDriveMin": 130,
+          "totalWalkM": 2000,
+          "maxAltitudeM": 1620,
+          "minAltitudeM": 1580
+        },
+        "sunTimes": { "sunrise": "07:14", "sunset": "19:26", "source": "computed" },
+        "safetyNotes": [
+          { "tone": "info", "text": "本日步行累计约 2km，已超长辈单段上限，安排 2 号观景台与关城东门两处集中休息" }
+        ]
+      }
+    }
+  ],
+
+  "privileges": [
+    {
+      "id": "pv_mogao_a",
+      "type": "reservation_quota",
+      "name": "莫高窟 A 类票团队配额（含 8 个特窟）",
+      "provider": "brand:zhangye-jinma",
+      "status": "submitted",
+      "quota": { "total": 10, "used": 10, "unit": "人" },
+      "lockStatus": "locked",
+      "lockRef": "enc:mogao-lock-ref-demo",
+      "requirements": [
+        {
+          "key": "real_name_list",
+          "label": "全体成员实名信息（预约制）",
+          "type": "pii_form",
+          "fields": ["name", "idNumber", "phone"],
+          "sensitive": true,
+          "storage": "local_encrypted",
+          "retentionDays": 30,
+          "legalBasis": "contract"
+        }
+      ],
+      "workflow": [
+        { "step": 1, "name": "收集实名信息", "owner": "traveler", "deadline": "T-15D" },
+        { "step": 2, "name": "官网提交预约", "owner": "agency", "deadline": "T-14D" },
+        { "step": 3, "name": "获取预约码", "owner": "agency", "output": "reservationCode" },
+        { "step": 4, "name": "现场换票入园", "owner": "on_site", "requires": ["reservationCode", "idCard"] }
+      ],
+      "display": {
+        "badge": "🎫 团队配额已锁",
+        "progressVisible": true,
+        "publicHint": "本团已预约，请携带身份证原件"
+      }
+    },
+    {
+      "id": "pv_danxia_dropoff",
+      "type": "lane_permit",
+      "name": "七彩丹霞南门大巴专用落客位",
+      "provider": "brand:zhangye-jinma",
+      "vehicleTypes": ["coaster", "bus"],
+      "status": "approved",
+      "display": { "badge": "🚌 大巴落客位", "progressVisible": false }
+    }
+  ],
+
+  "cockpit": {
+    "enabled": true,
+    "preferredChannels": ["amap-uri", "qr-relay", "clipboard"],
+    "routeHandoff": {
+      "mode": "full_day",
+      "includeWaypoints": true,
+      "maxWaypoints": 16,
+      "waypointPolicy": {
+        "minStayMin": 25,
+        "excludeTypes": ["rest", "note"],
+        "maxPerDay": 12
+      }
+    },
+    "multiScreen": {
+      "arbitration": {
+        "drivingStateSource": "mobile_sensors",
+        "deferWhenDriving": true,
+        "pushQuotaPer5Min": 2,
+        "quietMode": { "enabled": true, "trigger": "driver_long_press" }
+      },
+      "roles": {
+        "center": { "view": "hud", "interactive": false, "canPush": false },
+        "copilot": { "view": "full", "interactive": true, "canPush": true, "requiresConfirm": false },
+        "rear": { "view": "senior_large", "interactive": true, "canPush": true, "requiresConfirm": true }
+      }
+    },
+    "energyRadar": { "enabled": false, "reserveSocPct": 15 }
+  },
+
+  "brand": {
+    "ref": "brand:zhangye-jinma",
+    "brandId": "zhangye-jinma",
+    "displayName": "金马国际旅行社 · 张掖地接中心",
+    "revision": 1,
+    "visual": {
+      "primaryColor": "#0d9488",
+      "themeAffinity": ["dunhuang-gold", "plateau-cyan"]
+    },
+    "contacts": [
+      {
+        "role": "24h调度",
+        "name": "马经理",
+        "phone": "+86-138-0000-0000",
+        "wechat": "jinma_ops",
+        "availableHours": "24h",
+        "publicVisible": true
+      }
+    ],
+    "guides": [
+      {
+        "name": "王导",
+        "specialties": ["敦煌学", "丝路史", "河西走廊地理"],
+        "guideLicenseNo": "D-XXXX-XXXXXX",
+        "voicePack": {
+          "enabled": true,
+          "mode": "recorded",
+          "assets": [
+            {
+              "assetId": "vo_d2_danxia_intro",
+              "nodeRef": "n_d2_01",
+              "title": "七彩丹霞地质成因讲解",
+              "durationSec": 95,
+              "transcript": "丹霞地貌的红色来自白垩纪砂岩中的氧化铁……"
+            }
+          ],
+          "license": { "scope": "internal_use", "attribution": "讲解：王导" }
+        }
+      }
+    ],
+    "emergency": {
+      "medical": [
+        {
+          "name": "嘉峪关市第一人民医院",
+          "phone": "0937-0000000",
+          "level": "二甲",
+          "city": "嘉峪关",
+          "coords": [98.2891, 39.7729],
+          "capabilities": ["急诊 24h", "骨科", "高压氧舱"],
+          "hyperbaricChamber": true
+        }
+      ],
+      "roadside": [
+        {
+          "name": "金马自驾救援",
+          "phone": "+86-138-0000-0000",
+          "etaMin": 60,
+          "coverage": ["张掖", "嘉峪关", "酒泉"],
+          "vehicleTypes": ["coaster", "suv", "sedan"]
+        }
+      ],
+      "police": "110",
+      "ambulance": "120",
+      "insurance": {
+        "provider": "示例保险公司",
+        "hotline": "95500",
+        "coverageNote": "含自驾意外与高原病医疗，保额与免责条款以保单为准"
+      }
+    },
+    "footer": {
+      "license": "L-GS-DEMO000",
+      "copyright": "© 2026 金马国际旅行社"
+    },
+    "watermark": { "enabled": true, "text": "仅供本团使用 · 请勿外传" }
+  },
+
+  "access": {
+    "mode": "password",
+    "password": {
+      "algorithm": "PBKDF2-SHA256",
+      "iterations": 310000,
+      "saltRef": "embedded_salt_b64",
+      "verifierRef": "embedded_verifier_b64",
+      "hint": "本团出发日（6 位数字）"
+    },
+    "protectedFields": [
+      { "path": "days[*].anchor.stays[*].bookingRef", "level": "secret" },
+      { "path": "days[*].anchor.stays[*].roomType", "level": "secret" },
+      { "path": "party.medicals", "level": "secret" },
+      { "path": "privileges[*].evidence", "level": "restricted" },
+      { "path": "days[*].nodes[*].place.address", "level": "masked" }
+    ],
+    "shareMode": {
+      "enabled": true,
+      "stripLevels": ["secret", "restricted"],
+      "generateShareVersion": true
+    }
+  },
+
+  "assets": {
+    "basePath": "./assets/",
+    "items": [
+      {
+        "id": "hero_dunhuang_banner",
+        "type": "image",
+        "path": "images/dunhuang_hero_banner.jpg",
+        "bytes": 182000,
+        "inline": false,
+        "loading": "eager",
+        "alt": "敦煌鸣沙山日落，驼队行进于沙脊之上",
+        "focalPoint": [0.5, 0.42],
+        "license": { "type": "ai_generated", "by": "tripcraft-image-engine" }
+      },
+      {
+        "id": "poi_zhangye_danxia_01",
+        "type": "image",
+        "path": "images/zhangye_danxia_01.webp",
+        "bytes": 41200,
+        "inline": true,
+        "loading": "lazy",
+        "alt": "张掖七彩丹霞四号观景台，层理分明的红黄砂岩丘陵",
+        "license": { "type": "ai_generated", "by": "tripcraft-image-engine" }
+      },
+      {
+        "id": "vo_d2_danxia_intro",
+        "type": "audio",
+        "path": "audio/d2_danxia_intro.mp3",
+        "bytes": 640000,
+        "inline": false,
+        "durationSec": 95,
+        "alt": "导游王导讲解七彩丹霞地质成因的语音",
+        "license": { "type": "licensed", "by": "guide:王导", "attribution": "讲解：王导" }
+      }
+    ],
+    "inlineBudget": { "maxItemBytes": 32768, "maxTotalBytes": 512000 }
+  },
+
+  "provenance": {
+    "generatedBy": { "tool": "TripCraft", "version": "1.0.0", "compiler": "1.0.0" },
+    "generatedAt": "2026-09-20T12:00:00+08:00",
+    "inputMode": "free_dump",
+    "llmAssisted": true,
+    "llmModel": "claude-sonnet-5-5",
+    "humanReviewed": true,
+    "reviewedBy": "JYX",
+    "dataSources": [
+      {
+        "provider": "amap",
+        "apis": ["geocode", "driving_v5", "poi_search", "weather"],
+        "termsVersion": "2026-03",
+        "cachePolicy": "runtime_only"
+      },
+      { "provider": "user_input", "consentRef": "consent:geo-clipboard" },
+      { "provider": "agency:zhangye-jinma", "agreementRef": "contract:B2B-DEMO-0001" }
+    ],
+    "disclosures": [
+      "本示例文档为 TripCraft DSL v1.0.0 的格式标杆（Schema Fixture），用于校验数据契约，其中坐标、价格、营业时间、机构名称与联系方式均为演示数据，不可用于实际出行。",
+      "本路书由 AI 辅助生成，关键信息已经人工复核，但仍可能存在误差。",
+      "价格与营业时间可能变动，请以商家实际公示为准。",
+      "本路书为行程规划参考，实际行车请以车辆导航系统与现场交通标识为准。",
+      "地图数据版权归高德软件有限公司所有。"
+    ]
+  },
+
+  "telemetry": {
+    "enabled": false,
+    "endpoint": null,
+    "events": [],
+    "localOnly": true,
+    "piiScrub": true
+  }
+}

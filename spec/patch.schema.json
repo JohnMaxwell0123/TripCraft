@@ -1,0 +1,233 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tripcraft.dev/schema/v1.0.0/patch.schema.json",
+  "title": "TripCraft Trip Patch",
+  "description": "增量补丁 —— 对已分发路书的最小化修改指令集。核心用途：在无网络环境下（戈壁、垭口、无人区）通过二维码或 URL fragment 在车队之间点对点分发路况变更，完全不依赖任何服务器。设计灵感来自 RFC 6902 JSON Patch，但针对行程领域做了语义化扩展。",
+  "type": "object",
+  "required": ["patchVersion", "tripId", "baseRevision", "ops", "issuedAt"],
+  "additionalProperties": false,
+
+  "properties": {
+    "patchVersion": {
+      "type": "string",
+      "const": "1.0.0",
+      "description": "补丁格式版本，与 DSL 版本独立演进"
+    },
+
+    "tripId": {
+      "type": "string",
+      "pattern": "^trip_[0-9]{8}_[a-z0-9][a-z0-9-]{1,63}$",
+      "description": "目标行程 ID。不匹配则拒绝应用 —— 防止跨团误投毒"
+    },
+
+    "baseRevision": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "本补丁所基于的行程修订号。若本地 revision < baseRevision 则拒绝（存在信息缺口）；若 > baseRevision 则可尝试应用但需提示冲突"
+    },
+
+    "targetRevision": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "应用后的修订号"
+    },
+
+    "issuedAt": { "type": "string" },
+
+    "issuedBy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "role": { "type": "string",
+          "enum": ["leader", "driver", "agency", "guide", "member", "system"] },
+        "name": { "type": "string", "maxLength": 40 },
+        "callSign": { "type": "string", "maxLength": 20, "description": "车队呼号，如「头车」" },
+        "verified": { "type": "boolean", "default": false,
+          "description": "是否来自已认证来源（地接社/系统）。false 时接收端必须显式确认" }
+      }
+    },
+
+    "scope": {
+      "type": "string",
+      "enum": ["day", "node", "trip", "privilege", "logistics"],
+      "description": "影响范围。day 作用于当日内节点调整；trip 作用于全局"
+    },
+
+    "dayIndex": { "type": "integer", "minimum": 0 },
+
+    "severity": {
+      "type": "string",
+      "enum": ["info", "warning", "critical"],
+      "default": "warning",
+      "description": "critical 时接收端必须强提示（震动 + 模态确认），不可静默应用"
+    },
+
+    "summary": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "人类可读的一句话摘要，直接显示在接收端确认弹窗中。生成 QR 时应尽量简短以节省容量"
+    },
+
+    "expiresAt": {
+      "type": "string",
+      "description": "补丁失效时刻。路况类补丁必须设置 —— 三天前的塌方信息不该继续影响今天的路线"
+    },
+
+    "ops": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "description": "操作序列。按数组顺序依次应用，任一步失败则整体回滚（原子性）",
+      "items": { "$ref": "#/$defs/op" }
+    },
+
+    "attachments": {
+      "type": "array",
+      "description": "可选的内联附件（如现场照片的极低分辨率缩略图）。受 QR 容量约束，应慎用",
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["mime", "dataB64"],
+        "additionalProperties": false,
+        "properties": {
+          "mime": { "type": "string", "enum": ["image/webp", "image/jpeg"] },
+          "dataB64": { "type": "string", "maxLength": 8192 },
+          "maxBytes": { "type": "integer", "maximum": 6144 }
+        }
+      }
+    },
+
+    "signature": {
+      "type": "object",
+      "description": "可选签名。地接社下发的补丁应签名，防止伪造的「封路」通知导致车队被恶意引导",
+      "additionalProperties": false,
+      "properties": {
+        "alg": { "type": "string", "enum": ["Ed25519", "ES256"] },
+        "keyId": { "type": "string" },
+        "value": { "type": "string" }
+      }
+    },
+
+    "compression": {
+      "type": "string",
+      "enum": ["none", "deflate-raw", "gzip"],
+      "default": "deflate-raw",
+      "description": "ops 数组的压缩方式。URL fragment 分发时默认 deflate-raw（配合 pako/CompressionStream），约可压缩 60~75%"
+    }
+  },
+
+  "$defs": {
+
+    "op": {
+      "type": "object",
+      "required": ["op", "path"],
+      "additionalProperties": false,
+
+      "properties": {
+        "op": {
+          "type": "string",
+          "enum": [
+            "replace", "add", "remove",
+            "set_time", "shift", "skip", "insert_after", "substitute",
+            "close_road", "reopen_road", "report_condition",
+            "update_status", "set_flag", "notify"
+          ],
+          "description": "标准操作（RFC 6902 子集）与行程语义化操作的联合。语义化操作能让编译器和渲染器理解「这一改动的含义是什么」，从而联动 UI（如同一改动可自动触发熔断预案 B）"
+        },
+
+        "path": {
+          "type": "string",
+          "description": "JSONPath 风格的目标定位。必须使用稳定 ID（node.id / privilege.id）而非数组下标，否则中途插入节点会导致补丁错位",
+          "examples": [
+            "days[dayIndex=3].nodes[id=n_d3_04]",
+            "days[dayIndex=3].fuses[id=fz_d3_road].levels[id=B]",
+            "privileges[id=pv_mogao_a].status",
+            "days[dayIndex=3].logistics.safetyNotes"
+          ]
+        },
+
+        "value": { "description": "replace / add / set_time / set_flag 的新值" },
+
+        "from": { "type": "string", "description": "remove 前的备份路径（用于回滚）" },
+
+        "reason": { "type": "string", "maxLength": 300 },
+
+        "deltaMin": {
+          "type": "integer",
+          "description": "shift 操作的位移量（分钟）。正数延后，负数提前"
+        },
+
+        "targetNodeId": { "type": "string" },
+
+        "reroute": { "$ref": "#/$defs/reroutePayload" },
+
+        "condition": {
+          "type": "object",
+          "description": "条件操作。用于「如果 X 则应用，否则跳过」的自适应补丁 —— 让一份补丁能适配不同进度的车队",
+          "additionalProperties": false,
+          "properties": {
+            "localTimeAfter": { "type": "string" },
+            "localTimeBefore": { "type": "string" },
+            "nodeNotVisited": { "type": "string" },
+            "nodeVisited": { "type": "string" },
+            "dayIndexEq": { "type": "integer" }
+          }
+        },
+
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "情报置信度。低于 0.5 的操作在接收端以「传闻」样式呈现（灰色斜体），高于 0.8 以「已确认」样式呈现（实心徽章）"
+        },
+
+        "source": {
+          "type": "string",
+          "enum": ["firsthand", "radio", "other_convoy", "local", "agency", "official", "unknown"],
+          "description": "情报来源。firsthand=本级车队亲眼所见；official=交警/路政官方发布"
+        }
+      },
+
+      "allOf": [
+        {
+          "if": { "properties": { "op": { "const": "shift" } }, "required": ["op"] },
+          "then": { "required": ["deltaMin"] }
+        },
+        {
+          "if": { "properties": { "op": { "enum": ["set_time", "substitute", "set_flag"] } }, "required": ["op"] },
+          "then": { "required": ["value"] }
+        },
+        {
+          "if": { "properties": { "op": { "const": "close_road" } }, "required": ["op"] },
+          "then": { "required": ["reroute"] }
+        }
+      ]
+    },
+
+    "reroutePayload": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "blockedSegment": { "type": "string", "maxLength": 120,
+          "description": "被阻断的路段描述，如「G215 当金山垭口段」" },
+        "blockedCoords": { "$ref": "trip.schema.json#/$defs/coords" },
+        "avoidSegments": { "type": "array", "items": { "type": "string" } },
+        "waypoints": {
+          "type": "array", "maxItems": 8,
+          "items": { "$ref": "trip.schema.json#/$defs/coords" },
+          "description": "建议绕行途经点。受 QR 容量限制，应尽量精简（建议 ≤4 个）"
+        },
+        "polyline": { "type": "string",
+          "description": "预计算的绕行路线。若在无网络时生成补丁，本地通常无法算路，故此项常为空，由接收端在有网时补算" },
+        "deltaEstimate": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "extraMin": { "type": "integer", "minimum": 0 },
+            "extraM": { "type": "number", "minimum": 0 }
+          }
+        },
+        "alternativeNote": { "type": "string", "maxLength": 300 }
+      }
+    }
+  }
+}

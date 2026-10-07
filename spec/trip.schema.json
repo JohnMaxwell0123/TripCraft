@@ -1,0 +1,1086 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tripcraft.dev/schema/v1.0.0/trip.schema.json",
+  "title": "TripCraft DSL Trip Document",
+  "description": "TripCraft 行程数据契约 v1.0.0 —— 描述一次完整旅行的唯一真相源。坐标系统一为 GCJ-02，坐标顺序为 [经度, 纬度]，金额单位为整数分，时长单位为整数分钟。",
+  "type": "object",
+  "required": ["dslVersion", "id", "meta", "party", "days"],
+  "additionalProperties": false,
+
+  "properties": {
+    "$schema": { "type": "string", "format": "uri-reference" },
+
+    "dslVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+      "description": "语义化版本。MAJOR 变更需迁移脚本，MINOR 变更必须向后兼容。"
+    },
+
+    "id": {
+      "type": "string",
+      "pattern": "^trip_[0-9]{8}_[a-z0-9][a-z0-9-]{1,63}$",
+      "description": "行程全局唯一 ID，格式 trip_<yyyymmdd>_<slug>"
+    },
+
+    "meta": { "$ref": "#/$defs/meta" },
+    "party": { "$ref": "#/$defs/party" },
+    "vehicle": { "$ref": "#/$defs/vehicle" },
+    "theme": { "$ref": "#/$defs/theme" },
+    "constraints": { "$ref": "#/$defs/constraints" },
+
+    "days": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 60,
+      "items": { "$ref": "#/$defs/day" },
+      "description": "分天行程。dayIndex 必须从 0 连续递增（BR-001）"
+    },
+
+    "privileges": { "type": "array", "items": { "$ref": "#/$defs/privilege" } },
+    "cockpit": { "$ref": "#/$defs/cockpit" },
+    "brand": { "$ref": "#/$defs/brand" },
+    "access": { "$ref": "#/$defs/access" },
+    "assets": { "$ref": "#/$defs/assets" },
+    "provenance": { "$ref": "#/$defs/provenance" },
+    "telemetry": { "$ref": "#/$defs/telemetry" }
+  },
+
+  "$defs": {
+
+    "coords": {
+      "type": "array",
+      "description": "GCJ-02 坐标 [经度, 纬度]",
+      "minItems": 2,
+      "maxItems": 2,
+      "prefixItems": [
+        { "type": "number", "minimum": -180, "maximum": 180, "description": "经度 lng" },
+        { "type": "number", "minimum": -90, "maximum": 90, "description": "纬度 lat" }
+      ],
+      "items": false
+    },
+
+    "moneyCents": { "type": "integer", "minimum": 0, "description": "金额，单位为分" },
+    "durationMin": { "type": "integer", "minimum": 0, "description": "时长，单位为分钟" },
+    "timestamp": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}(:\\d{2})?([+-]\\d{2}:\\d{2}|Z)?)?$" },
+    "clockTime": { "type": "string", "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$", "description": "本地时刻 HH:mm" },
+
+    "encryptedRef": {
+      "type": "string",
+      "pattern": "^(enc:|asset:)",
+      "description": "加密引用或资产引用。明文敏感数据禁止直接内联（铁律 4）。"
+    },
+
+    "rigidity": { "type": "string", "enum": ["rigid", "soft", "flexible"] },
+
+    "tone": { "type": "string", "enum": ["info", "warning", "danger", "success"] },
+
+    "note": {
+      "type": "object",
+      "required": ["tone", "text"],
+      "additionalProperties": false,
+      "properties": {
+        "tone": { "$ref": "#/$defs/tone" },
+        "text": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "visibleTo": { "type": "array", "items": { "type": "string",
+          "enum": ["public", "leader", "agency", "driver"] } }
+      }
+    },
+
+    "meta": {
+      "type": "object",
+      "required": ["title", "language", "timezone"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "subtitle": { "type": "string", "maxLength": 200 },
+        "tier": { "type": "string", "enum": ["standard", "vip", "b2b"], "default": "standard" },
+        "designSystem": { "$ref": "#/$defs/designSystem" },
+        "language": { "type": "string", "pattern": "^[a-z]{2}(-[A-Z]{2})?$" },
+        "timezone": { "type": "string" },
+        "timeBasis": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "真实作息时区。新疆/藏西名义 UTC+8 但实际作息偏移，必须声明否则会排出荒谬时间。",
+          "properties": {
+            "declared": { "type": "string" },
+            "practicalOffsetMin": { "type": "integer", "minimum": -720, "maximum": 720 },
+            "note": { "type": "string", "maxLength": 300 }
+          }
+        },
+        "cover": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "assetId": { "type": "string" },
+            "focalPoint": { "type": "array", "minItems": 2, "maxItems": 2,
+              "items": { "type": "number", "minimum": 0, "maximum": 1 } }
+          }
+        },
+        "authors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["role"],
+            "additionalProperties": false,
+            "properties": {
+              "role": { "type": "string", "enum": ["planner", "agency", "guide", "driver", "editor"] },
+              "name": { "type": "string" },
+              "ref": { "type": "string" }
+            }
+          }
+        },
+        "createdAt": { "$ref": "#/$defs/timestamp" },
+        "revision": { "type": "integer", "minimum": 1 },
+        "accessibilityDefault": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "seniorMode": { "type": "boolean", "default": false },
+            "contrastTarget": { "type": "string", "enum": ["AA", "AAA"], "default": "AAA" },
+            "minTouchTargetPx": { "type": "integer", "minimum": 44, "default": 48 }
+          }
+        }
+      }
+    },
+
+    "designSystem": {
+      "type": "string",
+      "enum": ["apple-glass", "google-material", "vintage-retro", "swiss-minimal", "cyber-hud"]
+    },
+
+    "party": {
+      "type": "object",
+      "required": ["size", "groups"],
+      "additionalProperties": false,
+      "properties": {
+        "size": { "type": "integer", "minimum": 1, "maximum": 200 },
+        "groups": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/partyGroup" }
+        },
+        "mobility": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "wheelchair": { "type": "boolean", "default": false },
+            "reducedMobility": { "type": "boolean", "default": false },
+            "note": { "type": "string", "maxLength": 300 }
+          }
+        },
+        "animals": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "pets": { "type": "boolean", "default": false },
+            "note": { "type": "string", "maxLength": 300 }
+          }
+        },
+        "medicals": {
+          "type": "array",
+          "description": "医学禁忌。必须加密存储（铁律 4 / 个保法敏感个人信息）",
+          "items": {
+            "type": "object",
+            "required": ["groupId", "encrypted"],
+            "additionalProperties": false,
+            "properties": {
+              "groupId": { "type": "string" },
+              "flags": { "type": "array", "items": {
+                "type": "string",
+                "enum": ["hypertension", "heart_disease", "altitude_sickness_history",
+                         "diabetes", "asthma", "pregnancy", "recent_surgery", "other"] } },
+              "encrypted": { "type": "boolean", "const": true },
+              "cipherRef": { "$ref": "#/$defs/encryptedRef" }
+            }
+          }
+        }
+      }
+    },
+
+    "partyGroup": {
+      "type": "object",
+      "required": ["key", "count", "weights"],
+      "additionalProperties": false,
+      "properties": {
+        "key": { "type": "string",
+          "enum": ["senior", "adult", "child", "infant", "driver", "mobility", "other"] },
+        "label": { "type": "string", "maxLength": 40 },
+        "count": { "type": "integer", "minimum": 1 },
+        "weights": {
+          "type": "object",
+          "description": "价值取向数值化，来自「价值锚定问题」的答案。驱动第 1 章人群裁决引擎。",
+          "required": ["comfort"],
+          "additionalProperties": false,
+          "properties": {
+            "comfort":   { "type": "number", "minimum": 0, "maximum": 1 },
+            "photo":     { "type": "number", "minimum": 0, "maximum": 1 },
+            "adventure": { "type": "number", "minimum": 0, "maximum": 1 },
+            "pace":      { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        },
+        "hardNeeds": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "maxWalkMeters": { "type": "integer", "minimum": 0 },
+            "restroomIntervalMin": { "$ref": "#/$defs/durationMin" },
+            "hotFoodRequired": { "type": "boolean" },
+            "maxAltitudeM": { "type": "integer", "minimum": 0, "maximum": 6000,
+              "description": "医学海拔上限。违反时触发 BR-005（Error）" },
+            "shadeRequired": { "type": "boolean" },
+            "napWindow": { "type": "array", "minItems": 2, "maxItems": 2,
+              "items": { "$ref": "#/$defs/clockTime" } },
+            "safetyRadiusM": { "type": "integer", "minimum": 0 },
+            "maxDailyDriveKm": { "type": "integer", "minimum": 0 },
+            "maxContinuousDriveMin": { "$ref": "#/$defs/durationMin" },
+            "noNightDriving": { "type": "boolean" },
+            "backupDriverAvailable": { "type": "boolean" }
+          }
+        }
+      }
+    },
+
+    "vehicle": {
+      "type": "object",
+      "required": ["primary"],
+      "additionalProperties": false,
+      "properties": {
+        "primary": { "$ref": "#/$defs/vehicleSpec" },
+        "convoy": {
+          "type": "array",
+          "items": {
+            "allOf": [{ "$ref": "#/$defs/vehicleSpec" },
+              { "type": "object", "required": ["callSign"],
+                "properties": { "callSign": { "type": "string", "maxLength": 20 } } }]
+          }
+        },
+        "energy": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "applicable": { "type": "boolean", "default": false },
+            "batteryKwh": { "type": "number", "minimum": 0 }
+          }
+        }
+      }
+    },
+
+    "vehicleSpec": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string",
+          "enum": ["sedan", "suv", "offroad", "mpv", "coaster", "bus", "rv", "motorcycle", "other"] },
+        "label": { "type": "string", "maxLength": 60 },
+        "dimensions": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "heightM": { "type": "number", "minimum": 0, "maximum": 6 },
+            "widthM":  { "type": "number", "minimum": 0, "maximum": 4 },
+            "lengthM": { "type": "number", "minimum": 0, "maximum": 20 },
+            "weightT": { "type": "number", "minimum": 0, "maximum": 60 }
+          }
+        },
+        "plateType": { "type": "string", "enum": ["blue", "yellow", "green", "newEnergy", "other"] },
+        "fuel": { "type": "string", "enum": ["gasoline", "diesel", "electric", "hybrid", "phev"] },
+        "rangeKm": { "type": "number", "minimum": 0 }
+      }
+    },
+
+    "vehicleAccess": {
+      "type": "object",
+      "description": "车辆通达性矩阵。是线下稀缺知识的结构化载体，含置信度以应对数据腐化。",
+      "additionalProperties": false,
+      "properties": {
+        "sedan":   { "$ref": "#/$defs/accessEntry" },
+        "suv":     { "$ref": "#/$defs/accessEntry" },
+        "offroad": { "$ref": "#/$defs/accessEntry" },
+        "coaster": { "$ref": "#/$defs/accessEntry" },
+        "bus":     { "$ref": "#/$defs/accessEntry" },
+        "rv":      { "$ref": "#/$defs/accessEntry" },
+        "motorcycle": { "$ref": "#/$defs/accessEntry" },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1,
+          "description": "数据置信度。低于 0.6 时编译产物必须显式标注「待现场确认」" },
+        "verifiedAt": { "$ref": "#/$defs/timestamp" },
+        "verifiedBy": { "type": "string" }
+      }
+    },
+
+    "accessEntry": {
+      "type": "object",
+      "required": ["allowed"],
+      "additionalProperties": false,
+      "properties": {
+        "allowed": { "type": "boolean" },
+        "recommended": { "type": "boolean" },
+        "reason": { "type": "string", "maxLength": 300 },
+        "restriction": { "type": "string", "maxLength": 300 },
+        "maxHeightM": { "type": "number", "minimum": 0, "maximum": 6 },
+        "maxWidthM":  { "type": "number", "minimum": 0, "maximum": 6 },
+        "maxLengthM": { "type": "number", "minimum": 0, "maximum": 20 },
+        "dropoffPoint": {
+          "type": "object", "additionalProperties": false,
+          "properties": { "name": { "type": "string" }, "coords": { "$ref": "#/$defs/coords" } }
+        },
+        "parkingFee": { "$ref": "#/$defs/moneyCents" },
+        "advanceBooking": { "type": "boolean" }
+      }
+    },
+
+    "theme": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "themeId": { "type": "string",
+          "enum": ["dunhuang-gold", "cyber-blue", "plateau-cyan", "jiangnan-emerald", "glacier-silver",
+                   "custom"] },
+        "designSystem": { "$ref": "#/$defs/designSystem" },
+        "detection": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "mode": { "type": "string", "enum": ["auto", "manual"] },
+            "signals": { "type": "array", "items": { "type": "string" } },
+            "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+          }
+        },
+        "overrides": {
+          "type": "object",
+          "description": "只允许覆盖语义 Token。禁止裸 CSS 注入（会绕过主题系统与无障碍保证）。",
+          "additionalProperties": false,
+          "patternProperties": {
+            "^(accent|bg|text|border|radius|shadow|blur|space)[A-Za-z0-9]*$": {
+              "type": "string", "maxLength": 64 }
+          }
+        },
+        "accessibility": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "seniorMode": { "type": "boolean", "default": false },
+            "seniorModeDefault": { "type": "boolean", "default": false },
+            "contrastTarget": { "type": "string", "enum": ["AA", "AAA"], "default": "AAA" },
+            "minTouchTargetPx": { "type": "integer", "minimum": 44, "default": 48 }
+          }
+        },
+        "motion": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "level": { "type": "string", "enum": ["full", "reduced", "none"], "default": "full" },
+            "parallax": { "type": "boolean", "default": true }
+          }
+        }
+      }
+    },
+
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "hard": { "type": "array", "items": { "$ref": "#/$defs/hardConstraint" } },
+        "soft": { "type": "array", "items": { "$ref": "#/$defs/softConstraint" } },
+        "violationPolicy": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "hard": { "type": "string", "enum": ["block", "warn", "degrade"], "default": "block" },
+            "soft": { "type": "string", "enum": ["score_penalty", "ignore"], "default": "score_penalty" }
+          }
+        }
+      }
+    },
+
+    "hardConstraint": {
+      "type": "object",
+      "required": ["id", "type", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string",
+          "enum": ["maxAltitudeM", "noNightDriving", "maxDailyDriveKm", "maxContinuousDriveMin",
+                   "vehicleMaxHeightM", "vehicleMaxWidthM", "maxWalkMeters", "noGoZone", "other"] },
+        "value": { "type": ["number", "integer", "boolean", "string"] },
+        "scope": { "type": "string",
+          "pattern": "^(group|vehicle|node):.+$",
+          "description": "约束作用域。带 scope 的约束允许生成分队方案而非砍掉整个节点。" },
+        "reason": { "type": "string", "maxLength": 300 },
+        "override": { "type": "string",
+          "enum": ["none", "medical_clearance", "leader_acknowledgement"],
+          "default": "none" }
+      }
+    },
+
+    "softConstraint": {
+      "type": "object",
+      "required": ["id", "type", "value", "weight"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["budgetPerPersonCents", "paceScore", "comfortScore", "other"] },
+        "value": { "type": "number" },
+        "weight": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+
+    "day": {
+      "type": "object",
+      "required": ["dayIndex", "date", "title", "nodes"],
+      "additionalProperties": false,
+      "properties": {
+        "dayIndex": { "type": "integer", "minimum": 0 },
+        "tag": { "type": "string", "maxLength": 12 },
+        "date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "dateLabel": { "type": "string", "maxLength": 40 },
+        "title": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "dayType": { "type": "string",
+          "enum": ["transit_arrival", "transit_departure", "core_sight", "buffer",
+                   "long_haul", "leisure", "event_locked"],
+          "default": "core_sight" },
+        "bufferCapacity": { "type": "number", "minimum": 0, "maximum": 24,
+          "description": "应力吸收容量（小时）。所有天之和 = 行程抗扰动总预算。低于天数×15% 时告警（BR-009）" },
+        "anchor": { "$ref": "#/$defs/anchor" },
+        "nodes": { "type": "array", "minItems": 1, "items": { "$ref": "node.schema.json" } },
+        "folding": { "type": "array", "items": { "$ref": "#/$defs/folding" } },
+        "fuses": { "type": "array", "items": { "$ref": "#/$defs/fuse" } },
+        "logistics": { "$ref": "#/$defs/logistics" }
+      }
+    },
+
+    "anchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "硬锚点：不可移动的时间/空间约束。行程骨架，断裂即触发结构重排。",
+      "properties": {
+        "start": { "$ref": "#/$defs/anchorPoint" },
+        "end": { "$ref": "#/$defs/anchorPoint" },
+        "stays": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["nightIndex", "city", "status", "coords"],
+            "additionalProperties": false,
+            "properties": {
+              "nightIndex": { "type": "integer", "minimum": 0 },
+              "city": { "type": "string" },
+              "status": { "type": "string",
+                "enum": ["confirmed", "tentative", "suggested", "cancelled"] },
+              "name": { "type": "string", "maxLength": 120 },
+              "address": { "type": "string", "maxLength": 200 },
+              "coords": { "$ref": "#/$defs/coords" },
+              "checkIn": { "$ref": "#/$defs/clockTime" },
+              "checkOut": { "$ref": "#/$defs/clockTime" },
+              "roomType": { "type": "string", "maxLength": 120,
+                "description": "房型属敏感信息，password 模式下应列入 protectedFields" },
+              "bookingRef": { "$ref": "#/$defs/encryptedRef" },
+              "contact": { "type": "string", "maxLength": 40 }
+            }
+          }
+        }
+      }
+    },
+
+    "anchorPoint": {
+      "type": "object",
+      "required": ["type", "rigidity"],
+      "additionalProperties": false,
+      "properties": {
+        "time": { "$ref": "#/$defs/timestamp" },
+        "type": { "type": "string",
+          "enum": ["flight_arrival", "flight_departure", "rail_arrival", "rail_departure",
+                   "self_drive", "hotel_checkin", "hotel_checkout", "event_start", "other"] },
+        "ref": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "flightNo": { "type": "string" }, "trainNo": { "type": "string" },
+            "from": { "type": "string" }, "to": { "type": "string" }
+          }
+        },
+        "rigidity": { "$ref": "#/$defs/rigidity" },
+        "lateToleranceMin": { "$ref": "#/$defs/durationMin" },
+        "fallback": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "ifDelayedBeyond": { "$ref": "#/$defs/durationMin" },
+            "action": { "type": "string",
+              "enum": ["compress_after", "skip_after", "shift_all", "restructure", "escalate"] },
+            "compressibleNodeIds": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      }
+    },
+
+    "folding": {
+      "type": "object",
+      "required": ["id", "label", "nodeIds"],
+      "additionalProperties": false,
+      "description": "时空折叠：把连续的低信息密度节点合并为可展开摘要块。",
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string", "maxLength": 80 },
+        "nodeIds": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "collapsed": { "type": "boolean", "default": true },
+        "defaultExpanded": { "type": "boolean", "default": false },
+        "summary": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "distanceM": { "type": "number", "minimum": 0 },
+            "durationMin": { "$ref": "#/$defs/durationMin" },
+            "maxAltitudeM": { "type": "integer" },
+            "roadCodes": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "spans": {
+          "type": "array",
+          "items": {
+            "type": "object", "required": ["type"],
+            "additionalProperties": false,
+            "properties": {
+              "type": { "type": "string",
+                "enum": ["elevation", "serviceList", "mediaStrip", "text", "chargingList"] },
+              "dataRef": { "type": "string" },
+              "assetIds": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "autoExpandRule": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "trigger": { "type": "string", "enum": ["elapsedOver", "distanceOver", "altitudeOver"] },
+            "valueMin": { "$ref": "#/$defs/durationMin" },
+            "valueM": { "type": "number" },
+            "action": { "type": "string",
+              "enum": ["expand", "expand_and_suggest_rest", "notify_only"] }
+          }
+        }
+      }
+    },
+
+    "fuse": {
+      "type": "object",
+      "required": ["id", "label", "trigger", "levels"],
+      "additionalProperties": false,
+      "description": "熔断预案：局部重算的预授权。在平静时把混乱时的决策做完。",
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string", "maxLength": 80 },
+        "appliesTo": { "type": "array", "items": { "type": "string" } },
+        "trigger": {
+          "type": "object",
+          "required": ["any"],
+          "additionalProperties": false,
+          "properties": {
+            "any": {
+              "type": "array", "minItems": 1,
+              "items": {
+                "type": "object", "required": ["type"],
+                "additionalProperties": false,
+                "properties": {
+                  "type": { "type": "string",
+                    "enum": ["road_closure", "manual_report", "weather", "health", "delay", "vehicle_issue"] },
+                  "segment": { "type": "string" },
+                  "region": { "type": "string" },
+                  "condition": { "type": "string" },
+                  "source": { "type": "string",
+                    "enum": ["amap_traffic", "manual_report", "weather_api", "sensor", "leader"] },
+                  "reportTag": { "type": "string" },
+                  "thresholdMin": { "$ref": "#/$defs/durationMin" }
+                }
+              }
+            },
+            "evaluationWindowMin": { "$ref": "#/$defs/durationMin",
+              "description": "窗口内持续为真才激活，防止抖动误触发" }
+          }
+        },
+        "levels": {
+          "type": "array", "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "label", "condition"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string" },
+              "label": { "type": "string", "maxLength": 80 },
+              "isDefault": { "type": "boolean" },
+              "condition": { "type": "string" },
+              "nodeIds": { "type": "array", "items": { "type": "string" } },
+              "reroute": {
+                "type": "object", "additionalProperties": false,
+                "properties": {
+                  "mode": { "type": "string",
+                    "enum": ["amap_driving_avoid", "amap_driving_waypoint", "manual_polyline"] },
+                  "avoidSegments": { "type": "array", "items": { "type": "string" } },
+                  "waypoints": { "type": "array", "items": { "$ref": "#/$defs/coords" } },
+                  "polyline": { "type": "string" }
+                }
+              },
+              "deltaEstimate": {
+                "type": "object", "additionalProperties": false,
+                "properties": {
+                  "extraMin": { "$ref": "#/$defs/durationMin" },
+                  "extraM": { "type": "number", "minimum": 0 }
+                }
+              },
+              "cascade": {
+                "type": "array",
+                "description": "级联影响声明。缺此声明会产出「看似可行、实则导致晚餐泡汤」的伪解。",
+                "items": {
+                  "type": "object", "required": ["nodeId", "action"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "nodeId": { "type": "string" },
+                    "action": { "type": "string",
+                      "enum": ["compress", "skip", "reorder", "substitute", "split_queue"] },
+                    "byMin": { "$ref": "#/$defs/durationMin" },
+                    "reason": { "type": "string", "maxLength": 300 },
+                    "substituteNodeId": { "type": "string" }
+                  }
+                }
+              },
+              "restructure": {
+                "type": "object", "additionalProperties": false,
+                "properties": {
+                  "type": { "type": "string", "enum": ["shift_stay", "shift_day", "drop_day", "add_day"] },
+                  "newStay": {
+                    "type": "object", "additionalProperties": false,
+                    "properties": {
+                      "city": { "type": "string" }, "name": { "type": "string" },
+                      "coords": { "$ref": "#/$defs/coords" }, "status": { "type": "string" }
+                    }
+                  },
+                  "nextDayAdjust": {
+                    "type": "object", "additionalProperties": false,
+                    "properties": {
+                      "startEarlierMin": { "$ref": "#/$defs/durationMin" },
+                      "skipNodeIds": { "type": "array", "items": { "type": "string" } }
+                    }
+                  }
+                }
+              },
+              "requiresConfirmation": { "type": "boolean", "default": false },
+              "notify": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "rollback": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "allowed": { "type": "boolean", "default": true },
+            "windowMin": { "$ref": "#/$defs/durationMin" }
+          }
+        }
+      }
+    },
+
+    "logistics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "summary": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "totalDistanceM": { "type": "number", "minimum": 0 },
+            "totalDriveMin": { "$ref": "#/$defs/durationMin" },
+            "totalWalkM": { "type": "number", "minimum": 0 },
+            "maxAltitudeM": { "type": "integer" },
+            "minAltitudeM": { "type": "integer" }
+          }
+        },
+        "fuelPlan": {
+          "type": "array",
+          "items": {
+            "type": "object", "required": ["type"], "additionalProperties": false,
+            "properties": {
+              "atNodeId": { "type": "string" },
+              "type": { "type": "string", "enum": ["refuel", "charge", "swap"] },
+              "estimatedCostCents": { "$ref": "#/$defs/moneyCents" },
+              "station": { "type": "string" }
+            }
+          }
+        },
+        "chargingPlan": { "type": "array", "items": { "type": "object" } },
+        "weatherExpectation": {
+          "type": "object",
+          "description": "预报 = 期望值，非承诺。必须带 fetchedAt 供 UI 显示时效。",
+          "additionalProperties": false,
+          "properties": {
+            "source": { "type": "string" },
+            "fetchedAt": { "$ref": "#/$defs/timestamp" },
+            "segments": {
+              "type": "array",
+              "items": {
+                "type": "object", "additionalProperties": false,
+                "properties": {
+                  "atNodeId": { "type": "string" },
+                  "condition": { "type": "string" },
+                  "tempC": { "type": "array", "minItems": 2, "maxItems": 2,
+                    "items": { "type": "number" } },
+                  "windLevel": { "type": "integer", "minimum": 0, "maximum": 17 }
+                }
+              }
+            }
+          }
+        },
+        "sunTimes": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "sunrise": { "$ref": "#/$defs/clockTime" },
+            "sunset": { "$ref": "#/$defs/clockTime" },
+            "source": { "type": "string", "enum": ["computed", "api"] }
+          }
+        },
+        "safetyNotes": { "type": "array", "items": { "$ref": "#/$defs/note" } }
+      }
+    },
+
+    "privilege": {
+      "type": "object",
+      "required": ["id", "type", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string",
+          "enum": ["restricted_access", "reservation_quota", "physical_hold", "lane_permit"] },
+        "name": { "type": "string", "maxLength": 120 },
+        "provider": { "type": "string" },
+        "requirements": {
+          "type": "array",
+          "items": {
+            "type": "object", "required": ["key", "label", "type"],
+            "additionalProperties": false,
+            "properties": {
+              "key": { "type": "string" },
+              "label": { "type": "string" },
+              "type": { "type": "string",
+                "enum": ["pii_form", "duration", "text", "document", "payment"] },
+              "fields": { "type": "array", "items": { "type": "string" } },
+              "value": { "type": "string" },
+              "sensitive": { "type": "boolean", "default": false },
+              "storage": { "type": "string", "enum": ["local_encrypted", "local_plain", "server"] },
+              "retentionDays": { "type": "integer", "minimum": 0 },
+              "legalBasis": { "type": "string",
+                "enum": ["consent", "contract", "legal_obligation", "vital_interest"],
+                "description": "《个人信息保护法》第 13 条合规锚点。回答不了「凭什么收集」就不该有该字段。" }
+            }
+          }
+        },
+        "workflow": {
+          "type": "array",
+          "items": {
+            "type": "object", "required": ["step", "name", "owner"],
+            "additionalProperties": false,
+            "properties": {
+              "step": { "type": "integer", "minimum": 1 },
+              "name": { "type": "string" },
+              "owner": { "type": "string", "enum": ["traveler", "agency", "on_site", "system"] },
+              "deadline": { "type": "string" },
+              "output": { "type": "string" },
+              "requires": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "status": { "type": "string",
+          "enum": ["not_started", "pending", "submitted", "approved", "rejected", "expired"] },
+        "quota": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "total": { "type": "integer", "minimum": 0 },
+            "used": { "type": "integer", "minimum": 0 },
+            "unit": { "type": "string" }
+          }
+        },
+        "lockStatus": { "type": "string", "enum": ["unlocked", "locked", "released"] },
+        "lockRef": { "$ref": "#/$defs/encryptedRef" },
+        "holdUntil": { "$ref": "#/$defs/timestamp" },
+        "capacity": { "type": "integer", "minimum": 0 },
+        "vehicleTypes": { "type": "array", "items": { "type": "string" } },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object", "required": ["type"], "additionalProperties": false,
+            "properties": {
+              "type": { "type": "string", "enum": ["approval_doc", "voucher", "photo", "receipt"] },
+              "assetId": { "type": "string" },
+              "uploadedAt": { "$ref": "#/$defs/timestamp" },
+              "visibleTo": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "display": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "badge": { "type": "string", "maxLength": 40 },
+            "progressVisible": { "type": "boolean", "default": true },
+            "publicHint": { "type": "string", "maxLength": 200 }
+          }
+        }
+      }
+    },
+
+    "cockpit": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean", "default": false },
+        "preferredChannels": {
+          "type": "array",
+          "items": { "type": "string",
+            "enum": ["amap-uri", "baidu-uri", "harmony-atomic", "xiaomi-flow",
+                     "ble-gatt", "lan-webrtc", "qr-relay", "clipboard"] }
+        },
+        "routeHandoff": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "mode": { "type": "string", "enum": ["single_node", "full_day", "next_leg"] },
+            "includeWaypoints": { "type": "boolean", "default": true },
+            "maxWaypoints": { "type": "integer", "minimum": 0, "maximum": 64 },
+            "waypointPolicy": {
+              "type": "object", "additionalProperties": false,
+              "properties": {
+                "minStayMin": { "$ref": "#/$defs/durationMin" },
+                "excludeTypes": { "type": "array", "items": { "type": "string" } },
+                "maxPerDay": { "type": "integer", "minimum": 0 }
+              }
+            }
+          }
+        },
+        "multiScreen": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "arbitration": {
+              "type": "object", "additionalProperties": false,
+              "properties": {
+                "drivingStateSource": { "type": "string",
+                  "enum": ["vehicle_api", "mobile_sensors", "manual"] },
+                "deferWhenDriving": { "type": "boolean", "default": true },
+                "pushQuotaPer5Min": { "type": "integer", "minimum": 0, "default": 2 },
+                "quietMode": {
+                  "type": "object", "additionalProperties": false,
+                  "properties": {
+                    "enabled": { "type": "boolean", "default": true },
+                    "trigger": { "type": "string" }
+                  }
+                }
+              }
+            },
+            "roles": {
+              "type": "object", "additionalProperties": false,
+              "properties": {
+                "center":  { "$ref": "#/$defs/screenRole" },
+                "copilot": { "$ref": "#/$defs/screenRole" },
+                "rear":    { "$ref": "#/$defs/screenRole" }
+              }
+            }
+          }
+        },
+        "energyRadar": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "enabled": { "type": "boolean", "default": false },
+            "batteryKwh": { "type": "number", "minimum": 0 },
+            "consumptionModel": {
+              "type": "object", "additionalProperties": false,
+              "properties": {
+                "baseKwhPer100km": { "type": "number", "minimum": 0 },
+                "altitudeGainKwhPer1000m": { "type": "number", "minimum": 0 },
+                "temperatureDerate": {
+                  "type": "array",
+                  "items": {
+                    "type": "object", "additionalProperties": false,
+                    "properties": {
+                      "belowTempC": { "type": "number" },
+                      "factor": { "type": "number", "minimum": 0, "maximum": 2 }
+                    }
+                  }
+                }
+              }
+            },
+            "reserveSocPct": { "type": "number", "minimum": 0, "maximum": 100, "default": 15 },
+            "preferredNetworks": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      }
+    },
+
+    "screenRole": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "view": { "type": "string", "enum": ["hud", "full", "senior_large", "summary"] },
+        "interactive": { "type": "boolean", "default": true },
+        "canPush": { "type": "boolean", "default": false },
+        "requiresConfirm": { "type": "boolean", "default": false }
+      }
+    },
+
+    "brand": {
+      "type": "object",
+      "description": "内联品牌覆盖。所有子结构一律 $ref 到 brand.schema.json 的规范定义，本文件不得重复定义同名结构（原则 P5：冗余即债务）。完整品牌包见 spec/brand.schema.json。",
+      "additionalProperties": false,
+      "properties": {
+        "ref": { "type": "string",
+          "description": "外链品牌包标识，格式 brand:<brandId>。加载后与下列内联字段做浅合并，内联优先。" },
+        "brandId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,63}$" },
+        "displayName": { "type": "string", "maxLength": 120 },
+        "shortName": { "type": "string", "maxLength": 20 },
+        "revision": { "type": "integer", "minimum": 1 },
+        "org": { "$ref": "brand.schema.json#/$defs/org" },
+        "visual": { "$ref": "brand.schema.json#/$defs/visual" },
+        "contacts": { "type": "array", "items": { "$ref": "brand.schema.json#/$defs/contact" } },
+        "guides": { "type": "array", "items": { "$ref": "brand.schema.json#/$defs/guide" } },
+        "emergency": { "$ref": "brand.schema.json#/$defs/emergency" },
+        "defaults": { "$ref": "brand.schema.json#/$defs/defaults" },
+        "footer": { "$ref": "brand.schema.json#/$defs/footer" },
+        "watermark": { "$ref": "brand.schema.json#/$defs/watermark" }
+      }
+    },
+
+    "access": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": { "type": "string",
+          "enum": ["public", "password", "link_token", "unlisted"], "default": "public" },
+        "password": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "algorithm": { "type": "string", "enum": ["PBKDF2-SHA256", "scrypt", "argon2id"] },
+            "iterations": { "type": "integer", "minimum": 100000 },
+            "saltRef": { "type": "string" },
+            "verifierRef": { "type": "string" },
+            "hint": { "type": "string", "maxLength": 120 }
+          }
+        },
+        "protectedFields": {
+          "type": "array",
+          "items": {
+            "type": "object", "required": ["path", "level"], "additionalProperties": false,
+            "properties": {
+              "path": { "type": "string", "description": "JSONPath 风格，如 days[*].anchor.stays[*].roomType" },
+              "level": { "type": "string",
+                "enum": ["public", "masked", "restricted", "secret"] }
+            }
+          }
+        },
+        "shareMode": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "enabled": { "type": "boolean", "default": true },
+            "stripLevels": { "type": "array", "items": { "type": "string" } },
+            "generateShareVersion": { "type": "boolean", "default": true,
+              "description": "必须生成物理上不含密文的独立产物，而非 CSS 隐藏" }
+          }
+        }
+      }
+    },
+
+    "assets": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "basePath": { "type": "string" },
+        "items": { "type": "array", "items": { "$ref": "#/$defs/assetItem" } },
+        "inlineBudget": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "maxItemBytes": { "type": "integer", "minimum": 0, "default": 32768 },
+            "maxTotalBytes": { "type": "integer", "minimum": 0, "default": 512000 }
+          }
+        }
+      }
+    },
+
+    "assetItem": {
+      "type": "object",
+      "required": ["id", "type", "license"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["image", "audio", "video", "document", "font"] },
+        "path": { "type": "string" },
+        "bytes": { "type": "integer", "minimum": 0 },
+        "inline": { "type": "boolean", "default": false },
+        "loading": { "type": "string", "enum": ["eager", "lazy"], "default": "lazy" },
+        "durationSec": { "type": "number", "minimum": 0 },
+        "alt": { "type": "string", "maxLength": 200,
+          "description": "无障碍描述。离线降级时是用户唯一的上下文，必填。" },
+        "focalPoint": { "type": "array", "minItems": 2, "maxItems": 2,
+          "items": { "type": "number", "minimum": 0, "maximum": 1 } },
+        "license": { "$ref": "#/$defs/license" }
+      }
+    },
+
+    "license": {
+      "type": "object",
+      "required": ["type"],
+      "additionalProperties": false,
+      "properties": {
+        "type": { "type": "string",
+          "enum": ["ai_generated", "user_upload", "licensed_library", "ota_authorized",
+                   "cc0", "cc_by", "public_domain", "licensed", "unknown"] },
+        "by": { "type": "string" },
+        "attribution": { "type": "string", "maxLength": 300 },
+        "sourceUrl": { "type": "string" }
+      }
+    },
+
+    "provenance": {
+      "type": "object",
+      "required": ["generatedBy", "generatedAt", "dataSources", "disclosures"],
+      "additionalProperties": false,
+      "description": "来源与授权声明。法务必需：AI 生成内容披露义务 + 第三方数据可追溯 + 白标防伪。",
+      "properties": {
+        "generatedBy": {
+          "type": "object", "required": ["tool", "version"], "additionalProperties": false,
+          "properties": {
+            "tool": { "type": "string" }, "version": { "type": "string" },
+            "compiler": { "type": "string" }
+          }
+        },
+        "generatedAt": { "$ref": "#/$defs/timestamp" },
+        "inputMode": { "type": "string",
+          "enum": ["free_dump", "guided_wizard", "agency_import", "manual"] },
+        "llmAssisted": { "type": "boolean" },
+        "llmModel": { "type": "string" },
+        "humanReviewed": { "type": "boolean" },
+        "reviewedBy": { "type": "string" },
+        "dataSources": {
+          "type": "array",
+          "items": {
+            "type": "object", "required": ["provider"], "additionalProperties": false,
+            "properties": {
+              "provider": { "type": "string" },
+              "apis": { "type": "array", "items": { "type": "string" } },
+              "termsVersion": { "type": "string" },
+              "cachePolicy": { "type": "string",
+                "enum": ["runtime_only", "session_cached", "persisted_licensed", "none"] },
+              "consentRef": { "type": "string" },
+              "agreementRef": { "type": "string" }
+            }
+          }
+        },
+        "disclosures": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "contentHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "signature": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "alg": { "type": "string", "enum": ["Ed25519", "ES256", "RS256"] },
+            "keyId": { "type": "string" },
+            "value": { "type": "string" }
+          }
+        }
+      }
+    },
+
+    "telemetry": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "埋点默认全关。装满全家身份证与房号的页面，默认上报任何数据都是对信任的背叛。",
+      "properties": {
+        "enabled": { "type": "boolean", "default": false },
+        "endpoint": { "type": ["string", "null"] },
+        "events": { "type": "array", "items": { "type": "string" } },
+        "localOnly": { "type": "boolean", "default": true },
+        "piiScrub": { "type": "boolean", "default": true }
+      }
+    }
+  }
+}

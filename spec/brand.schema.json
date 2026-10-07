@@ -1,0 +1,300 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tripcraft.dev/schema/v1.0.0/brand.schema.json",
+  "title": "TripCraft Brand Package",
+  "description": "白标品牌包 —— 地接社/车队一次配置、多份路书复用。托管于 brand.tripcraft.dev/{slug}，编译时按 ?brand=slug 注入。设计目标：让不会用 SaaS 后台的调度员也能在 5 分钟内完成品牌配置。",
+  "type": "object",
+  "required": ["brandId", "displayName", "revision"],
+  "additionalProperties": false,
+
+  "properties": {
+    "brandId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,63}$",
+      "description": "品牌唯一标识，用作 URL slug。一经分配不建议变更（会破坏已分发路书的引用）"
+    },
+    "displayName": { "type": "string", "minLength": 1, "maxLength": 120 },
+    "shortName": { "type": "string", "maxLength": 20 },
+
+    "revision": { "type": "integer", "minimum": 1, "description": "每次变更递增，用于缓存失效" },
+    "updatedAt": { "type": "string" },
+
+    "org": { "$ref": "#/$defs/org" },
+    "visual": { "$ref": "#/$defs/visual" },
+    "contacts": { "type": "array", "items": { "$ref": "#/$defs/contact" } },
+    "guides": { "type": "array", "items": { "$ref": "#/$defs/guide" } },
+    "emergency": { "$ref": "#/$defs/emergency" },
+    "privilegesTemplate": { "type": "array", "items": { "type": "object" },
+      "description": "该社常备的特许资源模板，新建路书时自动注入" },
+    "defaults": { "$ref": "#/$defs/defaults" },
+    "footer": { "$ref": "#/$defs/footer" },
+    "watermark": { "$ref": "#/$defs/watermark" },
+    "billing": { "$ref": "#/$defs/billing" }
+  },
+
+  "$defs": {
+
+    "org": {
+      "type": "object",
+      "description": "经营主体资质。涉及《旅游法》《旅行社条例》，是硬性合规字段。",
+      "additionalProperties": false,
+      "properties": {
+        "legalName": { "type": "string", "maxLength": 160,
+          "description": "营业执照上的完整企业名称" },
+        "licenseType": {
+          "type": "string",
+          "enum": ["travel_agency", "transport_operator", "guide_service", "platform", "individual", "none"],
+          "description": "travel_agency 必须提供 travelLicenseNo"
+        },
+        "travelLicenseNo": { "type": "string", "maxLength": 60,
+          "description": "《旅行社业务经营许可证》编号，格式如 L-GS-XXXXXX" },
+        "businessLicenseNo": { "type": "string", "maxLength": 60 },
+        "roadTransportLicenseNo": { "type": "string", "maxLength": 60,
+          "description": "《道路运输经营许可证》编号，车队必备" },
+        "taxNo": { "type": "string", "maxLength": 60 },
+        "registeredAddress": { "type": "string", "maxLength": 200 },
+        "foundedYear": { "type": "integer", "minimum": 1900, "maximum": 2100 },
+        "verified": { "type": "boolean", "default": false,
+          "description": "平台核验状态。未核验的品牌不得展示资质徽章" },
+        "verifiedAt": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "licenseType": { "const": "travel_agency" } }, "required": ["licenseType"] },
+          "then": { "required": ["travelLicenseNo"] }
+        }
+      ]
+    },
+
+    "visual": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "primaryColor": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+        "secondaryColor": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+        "logo": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "onDark": { "type": "string", "description": "深色背景下使用的 Logo 资产 ID/URL" },
+            "onLight": { "type": "string" },
+            "mark": { "type": "string", "description": "纯图形标记（正方形）" },
+            "wordmark": { "type": "string", "description": "纯文字标" }
+          }
+        },
+        "fleetPhotos": { "type": "array", "items": { "type": "string" } },
+        "themeAffinity": {
+          "type": "array",
+          "description": "该社偏好的主题，编译时优先匹配目的地主题；无匹配则回退到首个",
+          "items": { "type": "string",
+            "enum": ["dunhuang-gold", "cyber-blue", "plateau-cyan", "jiangnan-emerald", "glacier-silver"] }
+        }
+      }
+    },
+
+    "contact": {
+      "type": "object",
+      "required": ["role", "phone"],
+      "additionalProperties": false,
+      "properties": {
+        "role": { "type": "string", "maxLength": 40,
+          "description": "如「24h调度」「客服」「投诉建议」" },
+        "name": { "type": "string", "maxLength": 40 },
+        "phone": { "type": "string", "maxLength": 40 },
+        "wechat": { "type": "string", "maxLength": 60 },
+        "availableHours": { "type": "string", "maxLength": 60,
+          "description": "如「08:00-22:00」或「24h」" },
+        "publicVisible": { "type": "boolean", "default": true,
+          "description": "是否在分享版（无口令）中显示" }
+      }
+    },
+
+    "guide": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "guideId": { "type": "string" },
+        "name": { "type": "string", "maxLength": 40 },
+        "avatar": { "type": "string" },
+        "bio": { "type": "string", "maxLength": 500 },
+        "yearsExperience": { "type": "integer", "minimum": 0 },
+        "languages": { "type": "array", "items": { "type": "string" } },
+        "specialties": { "type": "array", "items": { "type": "string" } },
+        "guideLicenseNo": { "type": "string", "maxLength": 60,
+          "description": "导游证号。《旅游法》第 40 条要求导游持证上岗" },
+        "voicePack": { "$ref": "#/$defs/voicePack" },
+        "rating": { "type": "number", "minimum": 0, "maximum": 5 },
+        "certifications": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "voicePack": {
+      "type": "object",
+      "description": "导游专属语音包。合规红线：声音属于《民法典》第 1023 条保护的「声音权益」，必须有本人书面授权。",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean", "default": false },
+        "mode": {
+          "type": "string",
+          "enum": ["recorded", "tts_cloned", "tts_standard"],
+          "description": "recorded=真人录音；tts_cloned=声音克隆（必须持书面授权）；tts_standard=标准合成音"
+        },
+        "consentRef": { "type": "string",
+          "description": "声音使用授权凭证。mode 为 tts_cloned 时必填" },
+        "assets": {
+          "type": "array",
+          "items": {
+            "type": "object", "required": ["assetId"], "additionalProperties": false,
+            "properties": {
+              "assetId": { "type": "string" },
+              "nodeRef": { "type": "string", "description": "关联的节点 ID 或 themeId" },
+              "title": { "type": "string", "maxLength": 120 },
+              "durationSec": { "type": "number", "minimum": 0 },
+              "transcript": { "type": "string", "description": "文字稿，供无障碍与离线场景使用" }
+            }
+          }
+        },
+        "license": { "$ref": "#/$defs/voiceLicense" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "mode": { "const": "tts_cloned" } }, "required": ["mode"] },
+          "then": { "required": ["consentRef"] }
+        }
+      ]
+    },
+
+    "voiceLicense": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scope": { "type": "string", "enum": ["internal_use", "public_distribution", "commercial"] },
+        "validUntil": { "type": "string" },
+        "attribution": { "type": "string", "maxLength": 300 }
+      }
+    },
+
+    "emergency": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "medical": {
+          "type": "array",
+          "items": {
+            "type": "object", "required": ["name", "phone"], "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string", "maxLength": 120 },
+              "phone": { "type": "string", "maxLength": 40 },
+              "level": { "type": "string", "maxLength": 40, "description": "三甲/二甲/卫生院" },
+              "city": { "type": "string", "maxLength": 40 },
+              "coords": { "$ref": "trip.schema.json#/$defs/coords" },
+              "capabilities": { "type": "array", "items": { "type": "string" },
+                "description": "如「高压氧舱」「急诊 24h」「骨科」" },
+              "hyperbaricChamber": { "type": "boolean",
+                "description": "是否具备高压氧舱 —— 高原线路的关键筛选条件" }
+            }
+          }
+        },
+        "roadside": {
+          "type": "array",
+          "items": {
+            "type": "object", "required": ["name", "phone"], "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string", "maxLength": 120 },
+              "phone": { "type": "string", "maxLength": 40 },
+              "etaMin": { "type": "integer", "minimum": 0 },
+              "coverage": { "type": "array", "items": { "type": "string" } },
+              "vehicleTypes": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "police": { "type": "string", "maxLength": 40, "default": "110" },
+        "ambulance": { "type": "string", "maxLength": 40, "default": "120" },
+        "fire": { "type": "string", "maxLength": 40, "default": "119" },
+        "trafficAccident": { "type": "string", "maxLength": 40, "default": "122" },
+        "tourismComplaint": { "type": "string", "maxLength": 40, "default": "12345",
+          "description": "全国旅游服务热线 12301 / 政务服务 12345" },
+        "insurance": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "provider": { "type": "string", "maxLength": 120 },
+            "policyNo": { "type": "string", "maxLength": 60 },
+            "hotline": { "type": "string", "maxLength": 40 },
+            "coverageNote": { "type": "string", "maxLength": 300 }
+          }
+        }
+      }
+    },
+
+    "defaults": {
+      "type": "object",
+      "description": "新建路书时的默认值，降低调度员的重复劳动",
+      "additionalProperties": false,
+      "properties": {
+        "themeId": { "type": "string" },
+        "designSystem": { "type": "string",
+          "enum": ["apple-glass", "google-material", "vintage-retro", "swiss-minimal", "cyber-hud"] },
+        "accessMode": { "type": "string", "enum": ["public", "password", "link_token", "unlisted"] },
+        "seniorModeDefault": { "type": "boolean", "default": false },
+        "tier": { "type": "string", "enum": ["standard", "vip", "b2b"] },
+        "language": { "type": "string", "default": "zh-CN" }
+      }
+    },
+
+    "footer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "license": { "type": "string", "maxLength": 60 },
+        "icp": { "type": "string", "maxLength": 60,
+          "description": "ICP 备案号。使用自有域名时必须悬挂" },
+        "police": { "type": "string", "maxLength": 80, "description": "公安备案号" },
+        "copyright": { "type": "string", "maxLength": 120 },
+        "extraLines": { "type": "array", "items": { "type": "string", "maxLength": 200 } }
+      }
+    },
+
+    "watermark": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": { "type": "boolean", "default": false },
+        "text": { "type": "string", "maxLength": 120 },
+        "opacity": { "type": "number", "minimum": 0, "maximum": 1, "default": 0.08 },
+        "position": { "type": "string", "enum": ["tile", "corner", "footer"], "default": "tile" },
+        "includeShareAssets": { "type": "boolean", "default": true,
+          "description": "是否在水印中嵌入隐写溯源 ID（用于分享素材溯源）" }
+      }
+    },
+
+    "billing": {
+      "type": "object",
+      "description": "⚠️ 此模块是 TripCraft 唯一需要服务端的部分。C 端路书运行时不读取它（铁律 5）。",
+      "additionalProperties": false,
+      "properties": {
+        "plan": { "type": "string", "enum": ["trial", "starter", "pro", "enterprise"] },
+        "quotaPerMonth": { "type": "integer", "minimum": 0 },
+        "quotaUsed": { "type": "integer", "minimum": 0 },
+        "overageCentsPerTrip": { "type": "integer", "minimum": 0 },
+        "cpsRevShare": {
+          "type": "object",
+          "description": "CPS 分佣比例。默认 70% 归地接社 —— 激励其主动推荐，而非消极抵触",
+          "additionalProperties": false,
+          "properties": {
+            "agencySharePct": { "type": "number", "minimum": 0, "maximum": 100, "default": 70 },
+            "platformSharePct": { "type": "number", "minimum": 0, "maximum": 100, "default": 30 }
+          }
+        },
+        "settlement": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "cycle": { "type": "string", "enum": ["weekly", "biweekly", "monthly"], "default": "monthly" },
+            "method": { "type": "string", "enum": ["wechat_pay", "alipay", "bank_transfer"] },
+            "minPayoutCents": { "type": "integer", "minimum": 0, "default": 10000 },
+            "invoiceRequired": { "type": "boolean", "default": true }
+          }
+        }
+      }
+    }
+  }
+}
