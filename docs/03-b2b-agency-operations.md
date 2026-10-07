@@ -1,7 +1,7 @@
 # 第 3 章 · B2B 线下旅行社与车队运营赋能
 
 > **状态**：`Stable Draft` ｜ **对应维度**：深度维度 ③ B2B 线下旅行社/车队运营
-> **铁律依据**：[铁律 10 代码不是护城河，资产才是](00-overview-and-glossary.md#铁律-10--代码不是护城河资产才是-code-is-not-the-moat-assets-are)、[铁律 4 数据主权本地化](00-overview-and-glossary.md#铁律-4--数据主权本地化-data-sovereignty-stays-local)、[铁律 5 无后端可运行](00-overview-and-glossary.md#铁律-5--无后端可运行-runs-without-a-backend)
+> **铁律依据**：[铁律 10 代码不是护城河，资产才是](00-overview-and-glossary.md#铁律-10--代码不是护城河资产才是-code-is-not-the-moat)、[铁律 4 数据主权本地化](00-overview-and-glossary.md#铁律-4--数据主权本地化-local-data-sovereignty)、[铁律 5 无后端可运行](00-overview-and-glossary.md#铁律-5--无后端可运行-backendless-by-default)
 > **本章要回答**：一个不懂技术的定制师，怎么在 20 分钟内产出一份带本社品牌、能扫码上车的路书？他凭什么留在 TripCraft？
 
 ---
@@ -383,7 +383,7 @@ flowchart LR
 | **AI 不得生成通行数据** | 编译器的 `ENRICH` 阶段**禁止**为 `vehicleAccess` 写入任何值。该字段只能来自用户输入或众包库。（**已升级为 BR-016，见 §3.10**） |
 | **冲突时以最新 `verified` 为准** | 同目标多条数据时排序规则：`verified` 最新 > `reported` 最新 > 其余 |
 | **异常检测** | 单个用户短时间内提交大量"通过"报告（且无凭证）→ 自动降权并进入人工审核 |
-| **不可删除** | 用户可修正自己的报告，但历史记录保留（[铁律 9](00-overview-and-glossary.md#铁律-9--一切可存证-everything-auditable)） |
+| **不可删除** | 用户可修正自己的报告，但历史记录保留（[铁律 9](00-overview-and-glossary.md#铁律-9--一切可存证-everything-attestable)） |
 
 ---
 
@@ -440,7 +440,7 @@ function emitVariants(trip, html) {
 
 ### 3.7.1 ★ 首要合规约束：平台不经手游客资金
 
-**这一条是[责任边界线 2 和 3](00-overview-and-glossary.md#03-三条责任边界线)的直接推论。**
+**这一条是[责任边界线 2 和 3](00-overview-and-glossary.md#03-三条责任边界线tripcraft-不是清单)的直接推论。**
 
 | ❌ 绝不做 | ✅ 可以做 |
 | :--- | :--- |
@@ -471,7 +471,7 @@ flowchart LR
 | **定制服务费** | 按路书份数 或 按定制师席位 | 旅行社 | 月结 | — |
 | **CPS 联盟佣金** | 按成交额百分比（由联盟方定） | 携程/美团等 | 联盟方周期（通常 T+1 月） | 跳转与转化 |
 
-**CPS 的诚实说明**（★ 必须写进产品文案，也是[铁律 7 事实与建议分离](00-overview-and-glossary.md#铁律-7--事实与建议分离-facts-and-advice-are-separate)的要求）：
+**CPS 的诚实说明**（★ 必须写进产品文案，也是[铁律 7 事实与建议分离](00-overview-and-glossary.md#铁律-7--事实与建议分离-fact-vs-advice)的要求）：
 
 > **「部分链接为推广链接。您通过该链接完成的预订，我们可能获得佣金。这不影响您支付的价格，也不影响路书中的事实信息。」**
 
@@ -489,7 +489,7 @@ flowchart LR
 
 ## 3.8 后端边界声明
 
-[铁律 5](00-overview-and-glossary.md#铁律-5--无后端可运行-runs-without-a-backend) 声明"无后端可运行"，并允许**三项明确例外**。本章是这三项例外的完整定义：
+[铁律 5](00-overview-and-glossary.md#铁律-5--无后端可运行-backendless-by-default) 声明"无后端可运行"，并允许**三项明确例外**。本章是这三项例外的完整定义：
 
 ```mermaid
 flowchart TB
@@ -551,7 +551,7 @@ flowchart TB
 
 ## 3.10 本章新增业务规则
 
-本章推导出两条[§4.16](04-dsl-specification-v1.md#416-业务规则-br-001br-015) 未覆盖的规则，**需回填至第 4 章**：
+本章推导出两条[§4.16](04-dsl-specification-v1.md#416-业务规则校验清单-business-rules) 未覆盖的规则，**需回填至第 4 章**：
 
 | ID | 规则 | 级别 | 实现位置 |
 | :--- | :--- | :--- | :--- |

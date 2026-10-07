@@ -6,7 +6,8 @@
   "type": "commonjs",
   "scripts": {
     "validate": "node tools/validate-schemas.js",
-    "check": "npm run validate"
+    "check-links": "node tools/check-links.mjs \"{README.md,docs/*.md}\"",
+    "check": "npm run validate && npm run check-links"
   },
   "devDependencies": {
     "ajv": "^8.17.1",

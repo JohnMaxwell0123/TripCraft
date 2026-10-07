@@ -1,6 +1,6 @@
 # 第 5 章 · 单文件编译器流水线
 
-> **状态**：`Stable Draft` ｜ **入口**：[`src/compiler.js`](../src/compiler.js)（纯函数） + [`src/cli.js`](../src/cli.js)（Node I/O）
+> **状态**：`Stable Draft` ｜ **入口**：`src/compiler.js`（纯函数） + `src/cli.js`（Node I/O）⏳ 待实现（见 [§5.10 交付物清单](#511-本章交付物清单)）
 > **铁律依据**：[铁律 1 零构建](00-overview-and-glossary.md#铁律-1--零构建交付-zero-build-delivery)、[铁律 2 单文件优先](00-overview-and-glossary.md#铁律-2--单文件优先渐进增强-single-file-first-progressive-enhancement)、[铁律 3 降级不可耻](00-overview-and-glossary.md#铁律-3--降级不可耻白屏才是罪-degrade-never-blank)
 > **本章目标**：把 `trip.json` 变成一份**能扔到任何静态托管上、断网也能用**的 HTML。
 
@@ -83,7 +83,7 @@ flowchart TB
     style OUT fill:#064e3b,stroke:#10b981,color:#d1fae5
 ```
 
-> ★ **第 ⑪ 阶段 SELF-CHECK 是本设计相对普通静态生成器的核心差异。** 普通生成器"产出即结束"；TripCraft 必须在产出前**证明这份产物在断网时不会白屏**。见 [§5.7](#57-自检阶段-离线可用性静态断言)。
+> ★ **第 ⑪ 阶段 SELF-CHECK 是本设计相对普通静态生成器的核心差异。** 普通生成器"产出即结束"；TripCraft 必须在产出前**证明这份产物在断网时不会白屏**。见 [§5.7](#57-自检阶段离线可用性静态断言)。
 
 ---
 

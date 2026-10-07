@@ -1,7 +1,7 @@
 # 第 1 章 · 极端场景与容错容灾
 
 > **状态**：`Stable Draft` ｜ **对应维度**：深度维度 ① 极端边界情况与故障恢复
-> **铁律依据**：[铁律 3 降级不可耻，白屏才是罪](00-overview-and-glossary.md#铁律-3--降级不可耻白屏才是罪-degrade-never-blank)、[铁律 8 拒绝静默失败](00-overview-and-glossary.md#铁律-8--拒绝静默失败-no-silent-failure)
+> **铁律依据**：[铁律 3 降级不可耻，白屏才是罪](00-overview-and-glossary.md#铁律-3--降级不可耻白屏才是罪-degrade-never-blank)、[铁律 8 拒绝静默失败](00-overview-and-glossary.md#铁律-8--拒绝静默失败-never-fail-silently)
 > **本章要回答**：当车队在当金山垭口没信号、一位长辈开始头痛呕吐、前方道路封闭时，这份路书还能做什么？
 
 ---
@@ -513,7 +513,7 @@ function propagate(trip, H, frozen) {
 }
 ```
 
-> ⚠️ **`blockedAt` 是升级信号。** 当累积延迟撞上硬锚点且吸收不掉时，**不得**自动"压缩"行程来假装解决。必须升级为 `substitute`（换景点）或 `restructure`（重构当日/数日），并**要求用户确认**（[§4.5 `requiresConfirmation`](04-dsl-specification-v1.md#45-days--日程)）。
+> ⚠️ **`blockedAt` 是升级信号。** 当累积延迟撞上硬锚点且吸收不掉时，**不得**自动"压缩"行程来假装解决。必须升级为 `substitute`（换景点）或 `restructure`（重构当日/数日），并**要求用户确认**（[§4.5 `requiresConfirmation`](04-dsl-specification-v1.md#45-days--分天行程全书核心)）。
 >
 > **"压缩行程"是最常见的伪解**：把 90 分钟游览压成 40 分钟，数字上"解决了"，现实中把一次愉快的旅行变成了赶场。参见 [§1.7.3 级联声明的意义](#173-级联声明为什么必须存在)。
 
@@ -547,7 +547,7 @@ function propagate(trip, H, frozen) {
 | 理由 | 说明 |
 | :--- | :--- |
 | **体积** | 一份完整路书 38 KB，一个补丁 ~600 B。只有补丁才可能塞进二维码（[§1.9](#19-离线-p2p-补丁分发)）。 |
-| **可审阅** | 队友看到的是"把 D3 的第 4 站压缩 30 分钟、第 7 站换成阿克塞风情园"，而不是一份全新的文档要重新读一遍。**变更必须可见**（[铁律 8](00-overview-and-glossary.md#铁律-8--拒绝静默失败-no-silent-failure)）。 |
+| **可审阅** | 队友看到的是"把 D3 的第 4 站压缩 30 分钟、第 7 站换成阿克塞风情园"，而不是一份全新的文档要重新读一遍。**变更必须可见**（[铁律 8](00-overview-and-glossary.md#铁律-8--拒绝静默失败-never-fail-silently)）。 |
 | **可回滚** | `baseRevision: 7` 让"撤销这次调整"成为可能。原地改写路书则无法撤销。 |
 
 ---
@@ -586,7 +586,7 @@ D8 返程日   bufferCapacity: 120
 
 ### 1.7.3 级联声明：为什么必须存在
 
-回到 [§4.5](04-dsl-specification-v1.md#45-days--日程) 的结构：
+回到 [§4.5](04-dsl-specification-v1.md#45-days--分天行程全书核心) 的结构：
 
 ```jsonc
 "cascade": [
@@ -764,7 +764,7 @@ async function encodePatchQR(patch) {
 | 单日改宿 + 换 2 站 | 1.8 KB | 890 B | ~1.2 KB | ✅ |
 | 整日重构（3 天） | 6.2 KB | 2.4 KB | ~3.2 KB | ❌ 超限 → 文件传输 |
 
-> 📌 **URL fragment 而非 query string —— 这是隐私要求。** `?patch=xxx` 会随请求发送到服务器并进入访问日志；`#v1.xxx` 不会。行程补丁里可能含有改宿酒店名称、人员调整等信息，不应进入任何服务端日志。（[铁律 4 数据主权本地化](00-overview-and-glossary.md#铁律-4--数据主权本地化-data-sovereignty-stays-local)）
+> 📌 **URL fragment 而非 query string —— 这是隐私要求。** `?patch=xxx` 会随请求发送到服务器并进入访问日志；`#v1.xxx` 不会。行程补丁里可能含有改宿酒店名称、人员调整等信息，不应进入任何服务端日志。（[铁律 4 数据主权本地化](00-overview-and-glossary.md#铁律-4--数据主权本地化-local-data-sovereignty)）
 
 ### 1.9.3 口令码（最后手段）
 
@@ -884,7 +884,7 @@ function roundRobinScore(trip, groupKey) {
 }
 ```
 
-> ⚠️ **`opt3` 必须存在，但必须带 ★ 标记。** 系统不能替用户拒绝"我愿意自己带保温杯"这个选择——那是**用户的自主权**。但系统必须把"这是一条硬约束被主动放弃"这件事**说清楚**，并留下确认记录（[铁律 9 一切可存证](00-overview-and-glossary.md#铁律-9--一切可存证-everything-auditable)）。
+> ⚠️ **`opt3` 必须存在，但必须带 ★ 标记。** 系统不能替用户拒绝"我愿意自己带保温杯"这个选择——那是**用户的自主权**。但系统必须把"这是一条硬约束被主动放弃"这件事**说清楚**，并留下确认记录（[铁律 9 一切可存证](00-overview-and-glossary.md#铁律-9--一切可存证-everything-attestable)）。
 >
 > **系统的职责是把代价说清楚，而不是替用户做决定。**
 

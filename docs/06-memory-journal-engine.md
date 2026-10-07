@@ -1,7 +1,7 @@
 # 第 6 章 · 旅程后记忆日志引擎
 
 > **状态**：`Stable Draft` ｜ **对应维度**：深度维度 ⑤ 行程后记忆日志引擎
-> **铁律依据**：[铁律 4 数据主权本地化](00-overview-and-glossary.md#铁律-4--数据主权本地化-data-sovereignty-stays-local)、[铁律 7 事实与建议分离](00-overview-and-glossary.md#铁律-7--事实与建议分离-facts-and-advice-are-separate)
+> **铁律依据**：[铁律 4 数据主权本地化](00-overview-and-glossary.md#铁律-4--数据主权本地化-local-data-sovereignty)、[铁律 7 事实与建议分离](00-overview-and-glossary.md#铁律-7--事实与建议分离-fact-vs-advice)
 > **本章要回答**：一趟旅行结束，两千张照片散在六个人的手机里。怎么在**不把任何一张照片上传到服务器**的前提下，把它变成一段 30 秒、能发朋友圈、能带地点的视频？
 
 ---
@@ -169,7 +169,7 @@ async function readExifHeader(file) {
 
 > 🔴 **这个失败模式是最危险的一类：静默失败。** 用户选了 200 张 iPhone 照片，程序"处理成功"了，但**一张都没有位置信息**，而且没有任何错误提示。用户会以为是自己的手机没开定位。
 >
-> **这直接违反[铁律 8 拒绝静默失败](00-overview-and-glossary.md#铁律-8--拒绝静默失败-no-silent-failure)。**
+> **这直接违反[铁律 8 拒绝静默失败](00-overview-and-glossary.md#铁律-8--拒绝静默失败-never-fail-silently)。**
 
 #### 裁决
 
@@ -437,7 +437,7 @@ function inferLocation(cluster, trip) {
 }
 ```
 
-> ⚠️ **`confidence: 'inferred'` 必须在 UI 上可见**（[§3.5.3](03-b2b-agency-operations.md#353-置信度四级语义) 的同一套语义）。推定位置的照片在时间轴上用**虚线边框 + 「推定位置」角标**区分于实测位置。**把猜测显示得和事实一样，就是在制造虚假信息**（[铁律 7](00-overview-and-glossary.md#铁律-7--事实与建议分离-facts-and-advice-are-separate)）。
+> ⚠️ **`confidence: 'inferred'` 必须在 UI 上可见**（[§3.5.3](03-b2b-agency-operations.md#353-置信度四级语义) 的同一套语义）。推定位置的照片在时间轴上用**虚线边框 + 「推定位置」角标**区分于实测位置。**把猜测显示得和事实一样，就是在制造虚假信息**（[铁律 7](00-overview-and-glossary.md#铁律-7--事实与建议分离-fact-vs-advice)）。
 
 ### 6.5.3 用户修正的传播
 
@@ -791,7 +791,7 @@ async function synthesizeBGM(mood, durationSec) {
 }
 ```
 
-> ⚠️ **产品文案必须诚实**（[铁律 7](00-overview-and-glossary.md#铁律-7--事实与建议分离-facts-and-advice-are-separate)）：
+> ⚠️ **产品文案必须诚实**（[铁律 7](00-overview-and-glossary.md#铁律-7--事实与建议分离-fact-vs-advice)）：
 >
 > - 合成音乐：**「背景音乐由 TripCraft 实时合成，无版权限制。」**
 > - 用户自选音乐：**「您选择的音乐版权由您自行负责。公开发布前请确认已获得授权。」**
@@ -961,7 +961,7 @@ async function verifyNoGpsAtoms(blob) {
 
 ## 6.14 待验证项（TODO(P0)）
 
-依据[§0.1](00-overview-and-glossary.md#01-本书定位与写作规则) 的写作规则，以下内容**目前无法给出确定结论**，不得作为已定事实使用，需真机实测后回填：
+依据[§0.1](00-overview-and-glossary.md#01-本书的定位从愿景到可施工图纸) 的写作规则，以下内容**目前无法给出确定结论**，不得作为已定事实使用，需真机实测后回填：
 
 | ID | 待验证 | 影响章节 | 验证方法 | 状态 |
 | :--- | :--- | :--- | :--- | :--- |
