@@ -1134,8 +1134,14 @@ JSON Schema 只能校验**结构**，以下规则必须由编译器的语义校�
 | BR-013 | 任一 `asset.inline === true` 且 `bytes > inlineBudget.maxItemBytes` | 产物体积失控 | Warn |
 | BR-014 | `fuse.levels` 中无 `isDefault: true` 的级别 | 熔断无基准可回退 | Error |
 | BR-015 | 文案中出现「导航/保证/承诺/绝对安全」等禁用词 | 跨越[责任边界线](00-overview-and-glossary.md#03-三条责任边界线tripcraft-不是清单) | Error |
+| BR-016 | `vehicleAccess.confidence` 由 AI 或 ENRICH 阶段自动填充（非用户输入/众包库来源） | **伪造通行数据 → 车辆被拦/被卡** | Error |
+| BR-017 | 含 `masked` 及以上敏感级别的产物使用 < 8 位口令保护 | PII 泄漏 | Error |
+| BR-018 | 品牌主题覆盖导致正文对比度 < WCAG AA (4.5:1) 或基准字号 < 16px | 对长辈用户等同白屏 | Error |
+| BR-019 | 连续 3 天以上 `bufferCapacity < 45` | 行程对任何扰动无吸收能力 | Warn |
 
 > 📌 **BR-005 / BR-006 / BR-007 是三条人命相关的规则，必须是 Error 而非 Warn，且不可被配置关闭。** 一个把 68 岁高血压老人送上 4000m 垭口、把考斯特开进 3.2m 限高栏、让司机连续开 5 小时的产品，无论 UI 多漂亮都是失败的产品。
+
+> 📌 **BR-016 的来历值得特别说明**：它来自 [第 3 章 §3.5.6](03-b2b-agency-operations.md#356--反作弊与-ai-禁用条款) 的推导。`vehicleAccess` 是唯一一个**大模型最容易"编"、编错了后果最严重、且编出来的东西看起来最合理**的字段——「7 座以下可入」这句话，AI 根据"一般景区规则"生成和司机实测得出，在文本上一模一样。**因此这个字段必须是数据源驱动的，而不是生成式的。** 这是「[事实与建议分离](00-overview-and-glossary.md#铁律-7--事实与建议分离-facts-and-advice-are-separate)」原则在 B2B 场景下最尖锐的一次应用。
 
 ---
 
