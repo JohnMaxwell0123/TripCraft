@@ -14,8 +14,9 @@
 | 轨 | 章节 | 回答 | 检验标准 |
 | :--- | :--- | :--- | :--- |
 | **🎨 设计轨** | [8](08-socratic-interaction-design.md) · [9](09-visual-design-system.md) · [10](10-roadbook-reading-design.md) · [11](11-audience-adaptive-rendering.md) | **它是什么样，以及为什么是这样** | 见下方硬规则 B |
+| **💼 商业轨** | [3](03-b2b-agency-operations.md) · [12](12-oem-partnership-design.md) · [13](13-agency-partnership-design.md) | **谁为此付钱，凭什么** | 见下方硬规则 B |
 | **⚙️ 工程轨** | [1](01-resilience-and-failover.md) · [2](02-cockpit-protocol.md) · [4](04-dsl-specification-v1.md) · [5](05-compiler-pipeline.md) | **怎么把它造出来** | 见下方硬规则 A |
-| **⚖️ 支撑轨** | [0](00-overview-and-glossary.md) · [3](03-b2b-agency-operations.md) · [6](06-memory-journal-engine.md) · [7](07-legal-and-compliance.md) | 总纲、运营、合规 | 视章节性质适用 A 或 B |
+| **⚖️ 支撑轨** | [0](00-overview-and-glossary.md) · [6](06-memory-journal-engine.md) · [7](07-legal-and-compliance.md) | 总纲、引擎、合规 | 视章节性质适用 A 或 B |
 
 ### 两条硬规则
 
@@ -71,6 +72,12 @@ flowchart TB
         CH11["第 11 章 · 人群画像驱动呈现<br/>一车人各读各的"]
     end
 
+    subgraph BIZ["💼 商业轨 · 谁为此付钱"]
+        CH13["第 13 章 · 线下旅行社合作<br/>价值主张与资源数字化"]
+        CH3["第 3 章 · B2B 运营赋能<br/>定制师与地接社"]
+        CH12["第 12 章 · 车厂合作<br/>五级阶梯与舱内体验"]
+    end
+
     subgraph ENGINE["⚙️ 工程轨 · 怎么造出来"]
         CH4["第 4 章 · DSL 规范 v1.0.0<br/>数据契约：唯一真相源"]
         CH5["第 5 章 · 编译器流水线<br/>契约 → HTML 的机器"]
@@ -78,7 +85,6 @@ flowchart TB
         CH2["第 2 章 · 智能座舱协议<br/>把路线送进车里"]
     end
 
-    CH3["第 3 章 · B2B 运营赋能<br/>定制师与地接社"]
     CH6["第 6 章 · 记忆日志引擎<br/>旅程后把它留下来"]
     CH7["第 7 章 · 法律与合规护栏<br/>这么做合法吗"]
 
@@ -89,7 +95,11 @@ flowchart TB
     CH11 -. 设计定义数据需求 .-> CH4
     CH9 -. 视觉约束 .-> CH5
     CH4 --> CH5 --> CH1
-    CH1 --> CH2 & CH3 & CH6
+    CH1 --> CH2 & CH6
+    CH13 --> CH3
+    CH13 -. ★ B 端规模是谈判弹药 .-> CH12
+    CH12 --> CH2
+    CH13 --> CH6
     CH2 & CH3 & CH6 --> CH7
 
     style CH0 fill:#0c4a6e,stroke:#06b6d4,color:#e0f2fe
@@ -100,12 +110,15 @@ flowchart TB
     style CH9 fill:#134e4a,stroke:#2dd4bf,color:#ccfbf1
     style CH10 fill:#134e4a,stroke:#2dd4bf,color:#ccfbf1
     style CH11 fill:#134e4a,stroke:#2dd4bf,color:#ccfbf1
+    style CH12 fill:#4a044e,stroke:#e879f9,color:#fae8ff
+    style CH13 fill:#4a044e,stroke:#e879f9,color:#fae8ff
 ```
 
-> 📌 **图中两条虚线是这本书最重要的一层关系：设计定义工程，而不是反过来。**
+> 📌 **图中三条虚线是这本书最重要的结构关系。**
 >
 > **`§11 人群画像 → §4 DSL`** 意味着：因为产物要能对五种人呈现五种样子，**数据契约里必须携带"这个点对长辈意味着什么"**——而不是等编译器去猜。
 > **`§9 视觉系统 → §5 编译器`** 意味着：因为玻璃效果在阳光下必须降级（[§9.4.3](09-visual-design-system.md#943-玻璃的参数不是固定的)），**编译器必须知道"什么条件下该退化"**。
+> **`§13 旅行社 → §12 车厂`** 意味着：**B 端规模是车厂谈判桌上唯一的硬牌**（[§12.7.2](12-oem-partnership-design.md#1272-筹码清单)）——所以两条 B 端线不是并列的，**它们的先后顺序是有理由的**。
 >
 > **先有设计，再推导出数据要装什么、机器要做什么。** 反过来（先定 schema 再想怎么显示）是这本书记录过的失败路径。
 
@@ -116,11 +129,13 @@ flowchart TB
 | 🎨 | **9** | [视觉设计系统](09-visual-design-system.md) | 长什么样？为什么？ | 大 |
 | 🎨 | **10** | [路书产物形态与阅读设计](10-roadbook-reading-design.md) | 最终那份东西怎么读？ | 大 |
 | 🎨 | **11** | [人群画像驱动的差异化呈现](11-audience-adaptive-rendering.md) | 一车人怎么各读各的？ | 中 |
+| 💼 | **12** | [车厂合作的产品形态与舱内体验设计](12-oem-partnership-design.md) | 凭什么和车厂谈得成？ | 大 |
+| 💼 | **13** | [线下旅行社合作的价值主张与资源数字化设计](13-agency-partnership-design.md) | 旅行社凭什么用？资源怎么进来？ | 大 |
 | ⚙️ | **4** | [TripCraft DSL v1.0.0 规范](04-dsl-specification-v1.md) | 数据长什么样？ | ★ 最大 |
 | ⚙️ | **5** | [单文件编译器流水线](05-compiler-pipeline.md) | 怎么变成 HTML？ | 大 |
 | ⚙️ | **1** | [极端场景与容错容灾](01-resilience-and-failover.md) | 断网了怎么办？ | 大 |
 | ⚙️ | **2** | [EV 智能座舱端到端协议](02-cockpit-protocol.md) | 怎么送进车里？ | 中 |
-| ⚖️ | **3** | [B2B 线下旅行社与车队运营赋能](03-b2b-agency-operations.md) | 定制师怎么用？ | 中 |
+| 💼 | **3** | [B2B 线下旅行社与车队运营赋能](03-b2b-agency-operations.md) | 定制师怎么用？ | 中 |
 | ⚖️ | **6** | [旅程后记忆日志引擎](06-memory-journal-engine.md) | 怎么留下记忆？ | 中 |
 | ⚖️ | **7** | [法律、安全与合规护栏](07-legal-and-compliance.md) | 合法吗？ | 中 |
 
@@ -138,7 +153,9 @@ flowchart TB
 | **前端工程师** | 0 → **9 §9.4/§9.5** → 4 → 5 → 1 | DSL 结构、编译器、降级状态机、**景深与排版 token** |
 | **数据 / 后端工程师** | 0 → 4 → 3 → 7 | 契约、租户模型、数据合规 |
 | **产品经理** | 0 → **8 → 11** → 3 → 1 → 6 | 边界线、B2B 价值、降级体验 |
-| **商务 / 运营** | 0 §0.3 → 3 → 7 | 责任边界、人效论证、合规红线 |
+| **💼 商务拓展 / BD** | **0 §0.3 → 13 → 12 → 3 §3.9 → 7** | **两条 B 端线的价值主张、冷启动路径、异议处理、筹码清单** |
+| **💼 车厂合作负责人** | **12 → 2 → 7 §7.4** | 五级阶梯、车厂价值主张、舱内体验、数据合规 |
+| **💼 旅行社合作负责人** | **13 → 3 → 11** | 三类社的差异、三条不越线、资源数字化工作流 |
 | **法务** | 0 §0.3 → 7 | 责任边界线、引注核验表 |
 | **想学习实现的地接社技术方** | 0 → 5 → 1 | 编译器架构与离线策略 |
 
@@ -180,13 +197,13 @@ npm run check      # = validate + check-links
   ✓ examples/dunhuang-silkroad-9d/trip.json
 ✓ 契约校验全部通过（4 份 Schema，1 份实例）
 
-跨文件链接: 332  |  失效: 0
+跨文件链接: 412  |  失效: 0
 ```
 
 | 工具 | 作用 |
 | :--- | :--- |
 | `tools/validate-schemas.js` | 校验 4 份 JSON Schema 自身合法 + 示例实例符合契约 |
-| [`tools/check-links.mjs`](../tools/check-links.mjs) | 校验全书 **332 条跨文件内链**（含跨文件锚点）。**它按 GitHub 的真实锚点算法实现**，而不是估算 |
+| [`tools/check-links.mjs`](../tools/check-links.mjs) | 校验全书 **412 条跨文件内链**（含跨文件锚点）。**它按 GitHub 的真实锚点算法实现**，而不是估算 |
 | [`tools/check-br025.mjs`](../tools/check-br025.mjs) | **[BR-025](07-legal-and-compliance.md#781--br-025地图数据不得落库oi-003-收敛后的新增规则) 的可执行形态** —— 扫描产物中是否内联了算路 API 返回的路线几何。含注入测试与阈值边界测试 |
 
 > 📌 **为什么需要链接校验器？** 因为这本书的**引用密度很高**——每个设计决策都要回指依据。**引用越多，断链越多**，而断链在 GitHub 上是**静默的**：读者点过去只会看到页面顶部，不会看到任何错误。
@@ -318,6 +335,17 @@ npm run check      # = validate + check-links
 - …长辈模式除了放大字还该做什么？ → [§9.7.2](09-visual-design-system.md#972-长辈模式的真实设计目标)
 - …路书最终长什么样？ → [§10.2 一天的性格标签](10-roadbook-reading-design.md#102--一天的性格标签) + [§10.3 五层信息深度](10-roadbook-reading-design.md#103--五层信息深度)
 - …为什么不给每个人生成一份路书？ → [§11.1.2](11-audience-adaptive-rendering.md#1112-但也不能做成几份文档)
+
+**💼 商业问题**
+
+- …为什么不能直接触发 NOA，却又说这是机会？ → [§12.1](12-oem-partnership-design.md#121-先把一个误读掰正做不到才是这门生意的起点)
+- …车厂凭什么跟我们合作？ → [§12.3](12-oem-partnership-design.md#123--车厂凭什么跟你合作)
+- …舱内体验到底该怎么做？ → [§12.4](12-oem-partnership-design.md#124--舱内体验设计)
+- …B 端和车厂先做哪个？ → [§12.7.3 推荐推进顺序](12-oem-partnership-design.md#1273--推荐的推进顺序)
+- …旅行社老板问"你会不会抢我客户"怎么答？ → [§13.5.3 异议处理清单](13-agency-partnership-design.md#1353--异议处理清单)
+- …他们的资源怎么录进来？ → [§13.4 资源数字化的获取工作流](13-agency-partnership-design.md#134--资源数字化的获取工作流)
+- …哪些数据能共享，哪些必须私有？ → [§13.6 网络效应](13-agency-partnership-design.md#136--网络效应什么该共享什么该私有)
+- …第一批该签谁？ → [§13.2.2](13-agency-partnership-design.md#1322--该从哪里开始地接社)
 
 **⚙️ 工程问题**
 
