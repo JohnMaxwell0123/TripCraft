@@ -13,7 +13,7 @@
 
 | 轨 | 章节 | 回答 | 检验标准 |
 | :--- | :--- | :--- | :--- |
-| **🎨 设计轨** | [8](08-socratic-interaction-design.md) · [9](09-visual-design-system.md) · [10](10-roadbook-reading-design.md) · [11](11-audience-adaptive-rendering.md) | **它是什么样，以及为什么是这样** | 见下方硬规则 B |
+| **🎨 设计轨** | [8](08-socratic-interaction-design.md) · [9](09-visual-design-system.md) · [10](10-roadbook-reading-design.md) · [11](11-audience-adaptive-rendering.md) · [15](15-multi-device-and-collaboration.md) | **它是什么样，以及为什么是这样** | 见下方硬规则 B |
 | **💼 商业轨** | [3](03-b2b-agency-operations.md) · [12](12-oem-partnership-design.md) · [13](13-agency-partnership-design.md) · [14](14-generic-engine-and-vertical-expansion.md) | **谁为此付钱，凭什么** | 见下方硬规则 B |
 | **⚙️ 工程轨** | [1](01-resilience-and-failover.md) · [2](02-cockpit-protocol.md) · [4](04-dsl-specification-v1.md) · [5](05-compiler-pipeline.md) | **怎么把它造出来** | 见下方硬规则 A |
 | **⚖️ 支撑轨** | [0](00-overview-and-glossary.md) · [6](06-memory-journal-engine.md) · [7](07-legal-and-compliance.md) | 总纲、引擎、合规 | 视章节性质适用 A 或 B |
@@ -70,6 +70,7 @@ flowchart TB
         CH9["第 9 章 · 视觉设计系统<br/>长什么样，为什么"]
         CH10["第 10 章 · 路书产物与阅读设计<br/>最终拿到的那份东西"]
         CH11["第 11 章 · 人群画像驱动呈现<br/>一车人各读各的"]
+        CH15["第 15 章 · 多端形态与协作层<br/>★ 产品形态三层拆分"]
     end
 
     subgraph BIZ["💼 商业轨 · 谁为此付钱"]
@@ -103,6 +104,9 @@ flowchart TB
     CH13 --> CH6
     CH14 -.->|"★ 第 1 条判据依赖数据飞轮"| CH13
     CH14 -.->|"★ 引擎通用，设计系统不通用"| CH4
+    CH15 -.->|"★ 三层共享同一份 DSL"| CH4
+    CH15 -.->|"★ 收集在协作层，裁决在 §8.8"| CH8
+    CH15 -.->|"★ 交付层零安装 —— 白标不能被取消"| CH13
     CH2 & CH3 & CH6 --> CH7
 
     style CH0 fill:#0c4a6e,stroke:#06b6d4,color:#e0f2fe
@@ -116,14 +120,16 @@ flowchart TB
     style CH12 fill:#4a044e,stroke:#e879f9,color:#fae8ff
     style CH13 fill:#4a044e,stroke:#e879f9,color:#fae8ff
     style CH14 fill:#4a044e,stroke:#e879f9,color:#fae8ff
+    style CH15 fill:#134e4a,stroke:#2dd4bf,color:#ccfbf1
 ```
 
-> 📌 **图中五条虚线是这本书最重要的结构关系。**
+> 📌 **图中八条虚线是这本书最重要的结构关系。**
 >
 > **`§11 人群画像 → §4 DSL`** 意味着：因为产物要能对五种人呈现五种样子，**数据契约里必须携带"这个点对长辈意味着什么"**——而不是等编译器去猜。
 > **`§9 视觉系统 → §5 编译器`** 意味着：因为玻璃效果在阳光下必须降级（[§9.4.3](09-visual-design-system.md#943-玻璃的参数不是固定的)），**编译器必须知道"什么条件下该退化"**。
 > **`§13 旅行社 → §12 车厂`** 意味着：**B 端规模是车厂谈判桌上唯一的硬牌**（[§12.7.2](12-oem-partnership-design.md#1272-筹码清单)）——所以两条 B 端线不是并列的，**它们的先后顺序是有理由的**。
 > **`§14 垂直扩展 → §13 数据飞轮 / §4 DSL`** 意味着：**开第二个行业的判据不是"能不能"，是"数据池是否还在变厚"**；而**迁移成本的真正位置在 DSL 之外**——引擎通用，设计系统不通用。
+> **`§15 形态协作 → §4 DSL / §8 交互 / §13 旅行社`** 意味着：★ **产品形态拆成三层（协作 / 交付 / 分享）之所以成立，是因为三层之间只通过 DSL 通信**；**"收齐意见"在协作层，"裁决分歧"在 §8.8**，两者不能合并；而**交付层必须保持零安装，否则白标价值会被产品形态本身取消**。
 >
 > **先有设计，再推导出数据要装什么、机器要做什么。** 反过来（先定 schema 再想怎么显示）是这本书记录过的失败路径。
 
@@ -134,6 +140,7 @@ flowchart TB
 | 🎨 | **9** | [视觉设计系统](09-visual-design-system.md) | 长什么样？为什么？ | 大 |
 | 🎨 | **10** | [路书产物形态与阅读设计](10-roadbook-reading-design.md) | 最终那份东西怎么读？ | 大 |
 | 🎨 | **11** | [人群画像驱动的差异化呈现](11-audience-adaptive-rendering.md) | 一车人怎么各读各的？ | 中 |
+| 🎨 | **15** | [多端形态与协作层设计](15-multi-device-and-collaboration.md) | ★**最终交付的到底是什么？一群人的意见怎么收进来？** | 大 |
 | 💼 | **12** | [车厂合作的产品形态与舱内体验设计](12-oem-partnership-design.md) | 凭什么和车厂谈得成？ | 大 |
 | 💼 | **13** | [线下旅行社合作的价值主张与资源数字化设计](13-agency-partnership-design.md) | 旅行社凭什么用？资源怎么进来？ | 大 |
 | 💼 | **14** | [通用引擎与垂直扩展的判据](14-generic-engine-and-vertical-expansion.md) | 能做别的行业吗？什么时候该做？ | 中 |
@@ -204,13 +211,13 @@ npm run check      # = validate + check-links
   ✓ examples/dunhuang-silkroad-9d/trip.json
 ✓ 契约校验全部通过（4 份 Schema，1 份实例）
 
-跨文件链接: 491  |  失效: 0
+跨文件链接: 607  |  失效: 0
 ```
 
 | 工具 | 作用 |
 | :--- | :--- |
 | `tools/validate-schemas.js` | 校验 4 份 JSON Schema 自身合法 + 示例实例符合契约 |
-| [`tools/check-links.mjs`](../tools/check-links.mjs) | 校验全书 **491 条跨文件内链**（含跨文件锚点）。**它按 GitHub 的真实锚点算法实现**，而不是估算 |
+| [`tools/check-links.mjs`](../tools/check-links.mjs) | 校验全书 **607 条跨文件内链**（含跨文件锚点）。**它按 GitHub 的真实锚点算法实现**，而不是估算 |
 | [`tools/check-br025.mjs`](../tools/check-br025.mjs) | **[BR-025](07-legal-and-compliance.md#781--br-025地图数据不得落库oi-003-收敛后的新增规则) 的可执行形态** —— 扫描产物中是否内联了算路 API 返回的路线几何。含注入测试与阈值边界测试 |
 
 > 📌 **为什么需要链接校验器？** 因为这本书的**引用密度很高**——每个设计决策都要回指依据。**引用越多，断链越多**，而断链在 GitHub 上是**静默的**：读者点过去只会看到页面顶部，不会看到任何错误。
@@ -360,6 +367,80 @@ npm run check      # = validate + check-links
 >
 > **对本书的意义：商业章节的数字必须标注口径，不能只标注出处。**
 
+### 2026-10-08 形态勘正：最终产物不是一个静态网页
+
+**起因**：业主指出「**最终呈现结果一定不是一个静态网页，而是多端同步的 app**，这样才能保证用户体验以及**去中心化的多人合作**提出旅游需求 idea 和景点，以及分享功能」。
+
+**这个勘正指向的是本书的**宪法层**——因为它与 [铁律 1](00-overview-and-glossary.md#铁律-1--零构建交付-zero-build-delivery)、[铁律 2](00-overview-and-glossary.md#铁律-2--单文件优先渐进增强-single-file-first-progressive-enhancement)、[铁律 5](00-overview-and-glossary.md#铁律-5--无后端可运行-backendless-by-default) 直接相关，而这三条又来自母本的实战验证。**所以这一轮不是"改不改"，是"改哪一半"。**
+
+#### 采纳的：这个勘正对的那一半
+
+| 被指出的问题 | 为什么它成立 |
+| :--- | :--- |
+| ★ **静态文件做不到"一群人各自提想法"** | 产物意味着"已经决定了"，而提想法发生在"还没决定"的时候 |
+| ★ **静态文件做不到"改完全车都知道"** | 它在生成那一刻就冻结了——领队在路上改了明天，另外三台手机上不会自己变 |
+| ★ **静态文件做不到"分享带着共同记忆"** | 发出去的链接里，看不到"这是姑姑坚持要加的" |
+
+→ 产出 **[第 15 章](15-multi-device-and-collaboration.md)**（协作层 / 交付层 / 分享层三层拆分）与 [§8.8 的上游补全](08-socratic-interaction-design.md#88--多人意见冲突的对话设计)。
+
+#### ⚠️ 但"改成 app"这半句，会否定掉这个产品的核心价值
+
+> 🔴 **业主自己在 [§13](13-agency-partnership-design.md) 里确认过："最大的价值在于结合线下旅行社的 2B"。**
+>
+> **而"最终产物是一个 app"，在逻辑上直接取消了白标的可能性——你没法让徐师傅的车队拥有一个自己的 iOS 应用。**
+>
+> **一个会取消自己核心价值的产品形态，无论体验多好，都是错的。**
+
+所以这一轮的结论不是"把静态网页改成 app"，而是：**形态拆成三层，[铁律 1/2/5 收窄到它们本来就该管的交付层](00-overview-and-glossary.md#02-十条设计铁律-the-ten-ironclad-rules)——红线一字未改。**
+
+#### 一处意外收获：去中心化同步的原语已经存在
+
+**回查 [`spec/patch.schema.json`](../spec/patch.schema.json) 时发现**，它的设计说明原文写着：
+
+> 「核心用途：在无网络环境下通过二维码或 URL fragment 在车队之间**点对点分发**路况变更，**完全不依赖任何服务器**。」
+
+> 📌 **这就是一个已经设计好的、无服务器的、去中心化的同步原语。**
+>
+> **它当初只被用在"路况变更"一个场景上。而"路况变了"和"姑姑加了个点"在数据上完全一样——都是"一份已分发 DSL 的最小化修改"。**
+>
+> **所以这一轮不需要新造任何架构，只需要把已有的原语扩展到一个新场景。**
+
+#### 一处必须记录的方法论教训（第三课）
+
+前两课的教训分别是「**不要把外部事实硬编码**」和「**不要把两个不同口径的数字相加**」。
+
+**这一课的教训不同：当一个新需求看起来与既有铁律冲突时，先去看那条铁律约束的到底是什么对象。**
+
+[铁律 5](00-overview-and-glossary.md#铁律-5--无后端可运行-backendless-by-default) 的红线原文是：
+
+> 「绝不允许 **C 端核心路书体验** 依赖服务端存活。」
+
+**注意它的宾语——是"路书体验"，不是"所有体验"。** 协作层从来不在它的管辖范围内，**只是以前产品形态没定，所以才被含糊地一起读成了"不能有后端"。**
+
+> ⚠️ **一句被过度泛化的约束，会以"守规矩"的名义挡掉正确的事。** 而拆穿它的成本很低——**只要回去读一遍原文的宾语。**
+>
+> **对本书的意义：铁律必须写清适用对象。** 这一轮给十条铁律补的[适用边界表](00-overview-and-glossary.md#02-十条设计铁律-the-ten-ironclad-rules)，就是为了让下一轮不再需要做这件事。
+
+#### 新增的 P0 与它为什么必须立刻登记
+
+| 新增 | 内容 | 为什么是 P0 |
+| :--- | :--- | :--- |
+| 🔴 **[OI-017](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register)** | 协作层的 **UGC 责任边界**——群成员提交的景点，平台负什么责任？尤其是**"野景点"被结构化排进路书** | [第 7 章](07-legal-and-compliance.md)的整套免责体系**全部假设"内容是 AI 生成的或地接社提供的"**，而协作层引入了第三类内容 |
+| ⚠️ **[OI-016](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register) 风险升级** | 从 **B 端风险**升级为 **C 端风险** | 产品里第一次出现了「一群人聚在一起、有人牵头、可以互相收钱」的完整闭环 |
+| ⚠️ **[OI-018](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register)** | **「同行者提议」在契约里没有家** | [R4](15-multi-device-and-collaboration.md#1583--必须先立住的四条红线) 要求它与事实/建议**三方可区分**，而 [`node.schema.json`](../spec/node.schema.json) 里只有 `fact` 与 `advice` 两个对象 |
+
+**OI-016 与 OI-017 是同一个法律问题的两面，应当同一次律师咨询解决。** 在意见出具前，[§15.8.3 的 R1–R4 四条红线按最高标准执行](15-multi-device-and-collaboration.md#1583--必须先立住的四条红线)，不得放宽。
+
+#### 一处顺带发现的契约陷阱
+
+`advice.generatedBy` 的枚举里**已经有一个 `crowdsourced`**，看起来正好能装下「同行者提议」。
+
+> 🔴 **但它的语义是相反的。**「众包」传达的是**由数量背书的伪权威**（"大家都推荐"），而「姑姑一个人提的点」**权威度为零**。
+>
+> **用错枚举值比新增一个值危险得多——因为它会把一个未核验的单人提名，渲染成看起来像共识的东西。** 而 [§15.8.1](15-multi-device-and-collaboration.md#1581--为什么野景点是新的而且是重的) 已经论证过：**产品的主张责任，正是从这个"看起来像共识"里长出来的。**
+
+→ **OI-018 与 [OI-010](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register) 同性质，都打在 `trip.schema.json` 上，必须在 v1.0.0 冻结前一起解决。**
+
 ---
 
 ## 写作与维护规则
@@ -389,6 +470,11 @@ npm run check      # = validate + check-links
 - …长辈模式除了放大字还该做什么？ → [§9.7.2](09-visual-design-system.md#972-长辈模式的真实设计目标)
 - …路书最终长什么样？ → [§10.2 一天的性格标签](10-roadbook-reading-design.md#102--一天的性格标签) + [§10.3 五层信息深度](10-roadbook-reading-design.md#103--五层信息深度)
 - …为什么不给每个人生成一份路书？ → [§11.1.2](11-audience-adaptive-rendering.md#1112-但也不能做成几份文档)
+- …★ 最终产物到底是不是一个静态网页？ → [§15.1 误区勘正](15-multi-device-and-collaboration.md#151-先把一个误区完整地勘正)
+- …★ 那为什么不直接做成 app？ → [§15.2 四堵墙](15-multi-device-and-collaboration.md#152--但那就做成-app会撞上四堵墙) + [§15.4 PWA](15-multi-device-and-collaboration.md#154--pwa同时拿到是-app和零安装的那个解)
+- …★ 一群人提景点，要不要做投票？ → [§15.5 只收齐，不裁决](15-multi-device-and-collaboration.md#155--协作层的设计原则只负责收齐不负责裁决)
+- …★ 说"去中心化"的时候到底在说什么？ → [§15.6](15-multi-device-and-collaboration.md#156--去中心化不是网络拓扑是决策权分布)
+- …★ 群里有人推荐野景点，出事谁负责？ → 🔴 [§15.8 UGC 责任](15-multi-device-and-collaboration.md#158--这给法律面增加了三样东西) → [OI-017](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register)
 
 **💼 商业问题**
 
@@ -407,7 +493,8 @@ npm run check      # = validate + check-links
 
 **⚙️ 工程问题**
 
-- …这套系统的架构分几层？ → [§0.4 五层架构](00-overview-and-glossary.md#04-系统分层总览)
+- …这套系统的架构分几层？ → [§0.4 五层架构](00-overview-and-glossary.md#04-系统分层总览) + ★ [§0.4.1 图外的那一层](00-overview-and-glossary.md#041--2026-10-08-增补图外的那一层)
+- …★ 「无后端」这条铁律还成立吗？ → [§0.2 十条铁律的适用边界](00-overview-and-glossary.md#02-十条设计铁律-the-ten-ironclad-rules)（**铁律 5 被收窄到交付层，红线一字未改**）
 - …哪些话在路书里不能说？ → [§0.3 责任边界线](00-overview-and-glossary.md#03-三条责任边界线tripcraft-不是清单) + [BR-015 词表](07-legal-and-compliance.md#712-措辞白名单--黑名单编译器强制)
 - …一个节点的数据长什么样？ → [§4.5 days](04-dsl-specification-v1.md#45-days--分天行程全书核心)
 - …断网时会发生什么？ → [§1.2 降级阶梯](01-resilience-and-failover.md#12-降级阶梯-dl0dl4) + [§1.3 能力矩阵](01-resilience-and-failover.md#13-诚实的能力矩阵)
