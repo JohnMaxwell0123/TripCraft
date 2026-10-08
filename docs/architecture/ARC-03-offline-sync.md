@@ -12,7 +12,7 @@ sources: [docs/01-resilience-and-failover.md, docs/15-multi-device-and-collabora
 ## 1. 架构目标与关键场景覆盖
 
 TripCraft 的同步设计立足于川西、大西北无人区等真实自驾场景，必须承载以下核心用例：
-- **[S-C04 断网/无人区使用](../product/PRD-03-scenarios.md#s-c04-断网--无人区离线使用)**：在完全缺失移动通信基站的物理环境下，客户端保持 100% 离线交互能力。
+- **[S-C04 断网/无人区使用](../product/PRD-03-scenarios.md#s-c04-断网--无人区离线使用)**：在完全缺失移动通信基站的物理环境下，客户端保持完备的离线交互能力。
 - **[S-C05 行中突发变更与全员同步](../product/PRD-03-scenarios.md#s-c05-行中突发变更与全员同步-plan-b-熔断)**：在部分断网或局域自组网条件下，领队决策的绕行补丁秒级同步全车设备。
 
 ---
