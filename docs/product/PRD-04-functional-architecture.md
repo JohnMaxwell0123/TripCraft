@@ -137,7 +137,7 @@ mindmap
 | **F-M02-01** | 创建与初始化行程 | C/B 共用 | P0 | 阶段 1 | 草案 / 无 | [spec/trip.schema.json](../../spec/trip.schema.json) |
 | **F-M02-02** | 行程日与节点管理 | C/B 共用 | P0 | 阶段 1 | 草案 / 无 | [spec/node.schema.json](../../spec/node.schema.json) |
 | **F-M02-03** | 行程草案版本保存与回溯 | C/B 共用 | P0 | 阶段 1 | 草案 / 无 | [docs/04 §4.1](../04-dsl-specification-v1.md) |
-| **F-M02-04** | 待定项 (tentative) 标记与管理 | C/B 共用 | P0 | 阶段 1 | 草案 / 无 | [docs/08 §8.7](../08-socratic-interaction-design.md#87-待定项处理设计) |
+| **F-M02-04** | 待定项 (tentative) 标记与管理 | C/B 共用 | P0 | 阶段 1 | 草案 / 无 | [docs/08 §8.7](../08-socratic-interaction-design.md#87--模糊输入的处理设计) |
 | **F-M02-05** | 多方案对比与沙盘推演 | C/B 共用 | P1 | 阶段 2 | 草案 / 无 | [docs/15 §15.4](../15-multi-device-and-collaboration.md#154-多端协同设备矩阵手机--车机--ipad--桌面) |
 
 #### F-M02-01 创建与初始化行程
@@ -249,7 +249,7 @@ mindmap
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **F-M05-01** | POI 检索与经纬度合规对齐 | C/B 共用 | P0 | 阶段 1 | 草案 / 无 | [ADR-005](../architecture/adr/ADR-005-map-navigation-abstraction.md) |
 | **F-M05-02** | 路线规划与耗时测算 | C/B 共用 | P0 | 阶段 1 | 草案 / 无 | [docs/01 §1.3](../01-resilience-and-failover.md) |
-| **F-M05-03** | 沿途补给与服务区推荐 | C/B 共用 | P1 | 阶段 2 | 草案 / 无 | [docs/02 §2.7](../02-cockpit-protocol.md#27-自驾全要素适配新能源能耗海拔与极端气候) |
+| **F-M05-03** | 沿途补给与服务区推荐 | C/B 共用 | P1 | 阶段 2 | 草案 / 无 | [docs/02 §2.6](../02-cockpit-protocol.md#26-关于读取车辆状态必须明确说不) |
 | **F-M05-04** | 离线路网与简易底图包支持 | C 端 | P2 | 阶段 4 | 草案 / 无 | [docs/01 §1.1](../01-resilience-and-failover.md) |
 
 #### F-M05-01 POI 检索与经纬度合规对齐
@@ -278,8 +278,8 @@ mindmap
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **F-M06-01** | 本地优先存储与离线读写 | C/B 共用 | P0 | 阶段 1 | 草案 / 无 | [ADR-002](../architecture/adr/ADR-002-sync-conflict-model.md) |
 | **F-M06-02** | 服务端增量操作日志同步 | C/B 共用 | P1 | 阶段 2 | 草案 / 无 | [spec/patch.schema.json](../../spec/patch.schema.json) |
-| **F-M06-03** | 二维码/短链点对点 Patch 分发 | C 端 | P1 | 阶段 2 | 草案 / 无 | [docs/15 §15.6.1](../15-multi-device-and-collaboration.md#1561-而点对点同步这块拼图书里已经有一块现成的) |
-| **F-M06-04** | 实时成员信标与位置脱敏共享 | C 端 | P2 | 阶段 4 | 草案 / 无 | [docs/02 §2.4](../02-cockpit-protocol.md#24-车队组网弱网通信与近场广播) |
+| **F-M06-03** | 二维码/短链点对点 Patch 分发 | C 端 | P1 | 阶段 2 | 草案 / 无 | [docs/15 §15.6.1](../15-multi-device-and-collaboration.md#1561--而点对点同步这块拼图书里已经有一块现成的) |
+| **F-M06-04** | 实时成员信标与位置脱敏共享 | C 端 | P2 | 阶段 4 | 草案 / 无 | [docs/02 §2.4](../02-cockpit-protocol.md#24-cockpitbridge-适配器架构) |
 
 #### F-M06-01 本地优先存储与离线读写
 - **优先级/阶段**：P0 / 阶段 1 ｜ **端**：C-MOBILE, C-SNAPSHOT ｜ **模块**：M06

@@ -3,7 +3,7 @@
 - **status**: Proposed
 - **date**: 2026-10-08
 - **背景与约束**：
-  B 端机构（地接社、车队）对私有客户名单、内部特许资源（特窟配额）以及商业报价敏感度极高（关联 [ARC-06 多租户架构](../ARC-06-multitenancy-whitelabel.md)、[docs/03 §3.2](../03-b2b-agency-operations.md#32-角色模型与权限矩阵)）。系统必须保证租户间数据绝不穿透，同时兼顾运维低成本。
+  B 端机构（地接社、车队）对私有客户名单、内部特许资源（特窟配额）以及商业报价敏感度极高（关联 [ARC-06 多租户架构](../ARC-06-multitenancy-whitelabel.md)、[docs/03 §3.2](../../03-b2b-agency-operations.md#32-角色模型与权限矩阵)）。系统必须保证租户间数据绝不穿透，同时兼顾运维低成本。
 
 - **选项对比**：
   - **选项 A：共享数据库 + 行级安全策略 (Shared Database with Row-Level Security, RLS)**

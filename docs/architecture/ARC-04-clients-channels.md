@@ -96,7 +96,7 @@ C-SNAPSHOT (Single Page App)
 
 ## 4. C-CABIN 座舱交付渠道与三级路径
 
-系统坚守 [docs/ERRATA 勘误 1](../ERRATA.md#勘误-1-彻底纠正车厂技术栈夸大叙事与不实声称)，不研发原生车机 APK，通过三级务实路径交付座舱：
+系统坚守 [docs/ERRATA 勘误](../ERRATA.md#24-智能座舱交付能力边界更正)，不研发原生车机 APK，通过三级务实路径交付座舱：
 
 ```mermaid
 flowchart LR
