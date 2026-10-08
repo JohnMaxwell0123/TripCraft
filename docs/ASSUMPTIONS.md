@@ -20,3 +20,8 @@
 | A-05 | 手车互联可把手机端高德路线同步到车机 | [白皮书 §5.7](WHITEPAPER.md#57-维度-6智能座舱交付与全天路线批量下发-ev-smart-cockpit) | 座舱投递的"零开发路径"失效 | 实车验证（对应 `docs/02` 的 TV-09） | | 未验证 | [docs/02 TV-09](02-cockpit-protocol.md#210-待验证项todop0) |
 | A-06 | 深链可一次投递多个途经点到车机导航 | [docs/02 §2.3](02-cockpit-protocol.md#23-tier-0-详解真正的交付主力) | 全天批量投递能力失效 | 按 `docs/02` 的实测档案复核 | | 部分收敛（格式已定，上限未测） | [docs/02 TV-07b/TV-07d](02-cockpit-protocol.md#210-待验证项todop0) |
 | A-07 | 用户愿为 VIP 分层付费 | [白皮书 §5](WHITEPAPER.md#五商业化价值分层普通版-vs-vip-尊享版体系-standard-vs-vip-tiering) | 变现分层失效 | 最小付费测试 | | 未验证 | |
+| A-08 | 所选同步模型在弱网场景下可满足协作体验 | [ARC-03](architecture/ARC-03-offline-sync.md) | 行中协同体验受挫 | 弱网丢包模拟与无人区实车拉偏测试 | | 未验证 | |
+| A-09 | 地图 / 路线服务商的商用条款与成本可承受 | [ADR-005](architecture/adr/ADR-005-map-navigation-abstraction.md) | 运营成本超出预算 | 商用授权谈判与计费模型核算 | | 未验证 | |
+| A-10 | 机构愿意提供资质与资源并接受平台审核 | [ARC-06](architecture/ARC-06-multitenancy-whitelabel.md) | B 端入驻阻力大 | 3~5 家地接社意向访谈与试点签约 | | 未验证 | |
+| A-11 | AI 生成行程的 POI 准确度达到可用标准 | [ADR-008](architecture/adr/ADR-008-ai-generation-guardrails.md) | 行程草案不可用率高 | 典型大西北/川西线路抽检与真伪核查 | | 未验证 | |
+| A-12 | 用户愿意为账号与云同步迁移，而不是只用快照 | [PRD-01](product/PRD-01-vision-positioning.md) | 多端 App 活跃度不及预期 | 种子用户对比测试与行为漏斗留存分析 | | 未验证 | |
