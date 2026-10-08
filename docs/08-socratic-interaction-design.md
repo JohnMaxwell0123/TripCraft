@@ -842,4 +842,4 @@ P3 说 AI 要有专业意见。**但"有意见"和"惹人烦"之间只有一线�
 ---
 
 > **相关章节**：[§9 视觉设计系统](09-visual-design-system.md) —— 这个引擎最终长什么样。
-> **上游依据**：[README §3](../README.md#三核心交互机制渐进式反问与认知对齐引擎-socratic-clarification-engine) ｜ [§0.2 十条铁律](00-overview-and-glossary.md#02-十条设计铁律-the-ten-ironclad-rules)
+> **上游依据**：[白皮书 §3](WHITEPAPER.md#三核心交互机制渐进式反问与认知对齐引擎-socratic-clarification-engine) ｜ [§0.2 十条铁律](00-overview-and-glossary.md#02-十条设计铁律-the-ten-ironclad-rules)
