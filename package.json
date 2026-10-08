@@ -1,7 +1,7 @@
 {
   "name": "tripcraft",
   "version": "1.0.0",
-  "description": "TripCraft · 旅艺 —— 智能旅行路书静态网页生成系统 / Universal Travel Harness",
+  "description": "TripCraft · 旅艺 —— 统一账号·多端协同智能旅行路书 App (手机/车机/iPad) & Universal Travel Harness",
   "private": true,
   "type": "commonjs",
   "scripts": {
