@@ -17,27 +17,39 @@
 
 ---
 
-> ### 🚀 产品形态与终极定位核心声明（2026-10-08 勘正定调）—— 先读这一条
+> ### 🚀 产品形态与定位核心声明（2026-10-08 调整）—— 先读这一条
 >
-> 🔴 **郑重勘正：TripCraft 的最终形态绝非一个单纯的“静态网页生成引擎”，而是一个支持统一账号登录、多端设备（手机、车机、iPad、Web等）实时无缝同步的智能旅行路书 App！**
+> 🔴 **产品目标形态：统一账号体系 + 多端设备协同（手机、平板、桌面），兼顾单文件离线容灾交付。**
 >
-> 过去白皮书初稿曾将重点放在单文件离线编译流水线上，造成了“这只是一个静态网页生成器/静态网站生成工具”的严重认知偏差。**现正式确立产品的终极形态与架构蓝图：**
->
-> 1. **统一账号体系与多端云同步（产品的核心本体）**：
->    - **账号与资产沉淀**：一个账号无缝打通全端，行程数据、团队偏好、足迹大片与财务记账云端实时漫游；
+> 1. **统一账号体系与多端云同步（目标形态，分阶段推进）**：
+>    - **账号与资产沉淀**：一个账号无缝打通多端，行程数据、团队偏好、足迹大片与财务记账云端漫游（Roadmap，未设计）；
 >    - 📱 **手机端 (Mobile App)**：随身携带、行前多人去中心化提 idea/推荐景点、行中即时打卡与路线微调；
->    - 🚗 **车机端 (In-Cabin Cockpit App)**：自驾深水区核心体验，全天路线与途径点自动下发、车道级巡航与沿途打卡播报、副驾屏协同交互；
+>    - 🚗 **车机端**：**通过深链投递与手机镜像实现**；原生车机 App 依赖车厂平台接入（路径 C），不在当前范围；
 >    - 📱 **平板端 (iPad / Tablet)**：大屏全景规划、地理沙盘互动、沉浸式路书画册阅览与复杂图文编辑；
 >    - 💻 **Web / 桌面端**：深度路线编排、专业定制师与地接社高产出工作台。
-> 2. **去中心化多人团队协同（行前与行中全生命周期）**：
+> 2. **多人团队协同（规划中）**：
 >    - 告别“一人操碎心做攻略、其他人甩手不管”的传统痛点，同行成员共同加入旅行空间，去中心化提出旅游偏好与灵感景点；
->    - 领队或定制师在路上避堵、改道或增减点位时，**全车人手机与车机大屏秒级同步更新**。
-> 3. **「零安装免构建单文件 / 静态快照」的真实定位（杀手级离线交付能力）**：
->    - 静态单文件不是产品的形态限制，而是 App 内置的**终极离线保障与轻量外发特性**；
->    - 当自驾穿越无人区断网时，App 具备原生自包含的离线抗灾力；
->    - 针对不想装 App 的长辈、微信群外临时查看的好友、以及旅行社向终端客户低门槛履约，App 支持**一键导出零依赖单文件离线路书（Offline Snapshot / PWA）**，点开即用。
+>    - 领队或定制师在路上避堵、改道或增减点位时，团队成员多端实时同步（Roadmap，未设计）。
+> 3. **「零安装免构建单文件 / 静态快照」的真实定位（核心离线交付能力）**：
+>    - 静态单文件不是产品的形态限制，而是内置的核心**离线保障与轻量外发特性**；
+>    - 当自驾穿越无人区断网时，具备原生自包含的离线抗灾力；
+>    - 针对不想装 App 的长辈、微信群外临时查看的好友、以及旅行社向终端客户低门槛履约，支持**一键导出零依赖单文件离线路书（Offline Snapshot / PWA）**，点开即用。
 >
-> 🔑 **一句话定调：本体是多端实时同步的 App，交付是随时随地可导出秒开的单文件快照。二者并非对立，而是现代旅行中枢最强的组合拳。完整形态拆解见 [第 15 章](docs/15-multi-device-and-collaboration.md)。**
+> 🔑 **一句话定调：多端实时同步为长期演进目标，单文件离线快照为当前核心交付基础。二者并非对立，而是现代旅行中枢的分层演进策略。完整形态拆解见 [第 15 章](docs/15-multi-device-and-collaboration.md)。**
+
+### 📊 项目当前能力与研发状态
+
+> 依据仓库实际代码、Schema 契约与文档规范核对（2026-10-08 审计）：
+
+| 能力 | 状态 | 依据（文件路径或章节） |
+|---|---|---|
+| DSL 规范与 JSON Schema | 已实现 | [`spec/`](spec/)、[`docs/04-dsl-specification-v1.md`](docs/04-dsl-specification-v1.md) |
+| DSL → 单文件 HTML 编译器 | 仅规格（规划中） | [`docs/05-compiler-pipeline.md`](docs/05-compiler-pipeline.md)（无运行入口） |
+| 示例路书（敦煌 9 天） | 已实现（仅 DSL 数据） | [`examples/dunhuang-silkroad-9d/trip.json`](examples/dunhuang-silkroad-9d/trip.json) |
+| 苏格拉底交互引擎 / Skill | 仅规格 | [`docs/08-socratic-interaction-design.md`](docs/08-socratic-interaction-design.md) |
+| 座舱投递（深链 / 镜像） | 仅规格 / 部分待验证 | [`docs/02-cockpit-protocol.md`](docs/02-cockpit-protocol.md)（协议已定，途经点上限与镜像真机待验） |
+| 账号与多端同步 | 规划中 / 未设计 | [`docs/15-multi-device-and-collaboration.md`](docs/15-multi-device-and-collaboration.md) |
+| B2B 白标 | 仅规格 | [`docs/03-b2b-agency-operations.md`](docs/03-b2b-agency-operations.md)、[`docs/13-agency-partnership-design.md`](docs/13-agency-partnership-design.md) |
 
 ---
 
@@ -72,7 +84,7 @@
    - [5.8 维度 7：线下旅行社 B2B 白标定制与地面特许资源库 (Travel Agency B2B Whitelabel)](#58-维度-7线下旅行社-b2b-白标定制与地面特许资源库-travel-agency-b2b-whitelabel)
 6. [六、TripCraft 系统架构与技术规范 (Technical Architecture & DSL)](#六tripcraft-系统架构与技术规范-technical-architecture--dsl)
    - [6.0 系统分层全景架构 (System Architecture)](#60-系统分层全景架构-system-architecture)
-   - [6.1 技能包工程目录结构 (Monorepo Blueprint)](#61-技能包工程目录结构-monorepo-blueprint)
+   - [6.1 仓库实际目录结构 (Repo Layout)](#61-仓库实际目录结构-repo-layout)
    - [6.2 核心数据契约：`TripCraft DSL` 规范 (JSON / YAML)](#62-核心数据契约tripcraft-dsl-规范-json--yaml)
 7. [七、落地行动路线图 (Execution Roadmap)](#七落地行动路线图-execution-roadmap)
 8. [八、个人独立开发者知识产权保护、先验技术存证（Prior Art）与防抄袭全指南 (IP Protection & Defensive Publication Guide)](#八个人独立开发者知识产权保护先验技术存证prior-art与防抄袭全指南-ip-protection--defensive-publication-guide)
@@ -261,8 +273,8 @@
 ### 2.7 商业壁垒与核心护城河总结 (Competitive Moats Summary)
 在整体商业定位上，TripCraft 确立了区别于普通浅层工具的三重坚固壁垒：
 > 1. **认清现实，拒绝虚浮**：直面旅游“低频、重线下、非标品、极其依赖本地履约”的客观现实。单纯做一个让散客一年用一次的 C 端手机展示工具，商业天花板极其有限；
-> 2. **两大核心差异化支柱（车厂生态 + 线下地接）**：**一是深度拥抱新能源智能座舱，做车机原生路书，实现全天多节点一键下发 NOA 领航辅助驾驶与补能规划；二是做线下地接社与车队的‘数字化外骨骼’，通过 B2B 白标定制打通独家特许资源，赋能线下小 B 提升溢价与高定交付感**；
-> 3. **中立中枢的生态网络效应**：通过 Universal Travel Harness 打通全网割裂的 OTA 订单数据，不仅为车厂打造自驾座舱杀手级应用，更为平台穿透线下履约黑盒，构筑纯线上轻软件永远无法跨越的线上线下双驱护城河。
+> 2. **两大核心差异化支柱（车厂生态 + 线下地接）**：**一是面向新能源智能座舱，把全天多个途经点批量投递到车机上的导航应用，由车机导航自行引导；补能规划按车型模型加用户输入做估算，不读取车辆状态；二是做线下地接社与车队的‘数字化外骨骼’，通过 B2B 白标定制打通独家特许资源，赋能线下小 B 提升溢价与高定交付感**；
+> 3. **中立中枢的生态网络效应**：通过 Universal Travel Harness 探索跨平台数据汇聚与分销，不仅为车厂提供自驾座舱场景路书能力，更为平台穿透线下履约黑盒，构筑纯线上轻软件无法轻易替代的线上线下双驱护城河。
 
 <div align="center">
 
@@ -592,36 +604,37 @@ TripCraft 采用严格的五层全景分层设计（L1 数据源层 ➔ L2 契�
 
 ---
 
-### 6.1 技能包工程目录结构 (Monorepo Blueprint)
+### 6.1 仓库实际目录结构 (Repo Layout)
 
 ```text
 TripCraft/
-├── README.md                   ← 【开源门面】中英文介绍、Live Demo 截图、一键使用指南
-├── package.json                ← 极简依赖（zero runtime dependencies，仅 dev 调试工具）
-├── skills/                     ← 【标准 Agent Skills 目录】
-│   └── tripcraft/
-│       ├── SKILL.md            ← Skill 定义（含 Socratic 渐进反问 Prompt 与流程控制）
-│       └── references/         ← 提示词模版与知识库
-├── src/                        ← 【核心编译器与工具集】
-│   ├── compiler.js             ← 单文件 HTML 编译器（将 DSL 组装注入模板）
-│   ├── geo.js                  ← 高德 Web API 经纬度查询与 Driving 轨迹算路适配器
-│   ├── theme.js                ← 目的地语义嗅探与 CSS 变量 Token 注入器
-│   └── mobbin-parser.js        ← Mobbin 设计风格映射与 Token 转换器
-├── templates/                  ← 【组件切片库】
-│   ├── index.template.html     ← 网页主骨架
-│   ├── themes/                 ← 5 套设计风格规范 (LiquidGlass / Material / Retro / Swiss / Cyber)
-│   │   ├── apple-glass.css
-│   │   ├── google-material.css
-│   │   ├── vintage-retro.css
-│   │   ├── swiss-minimal.css
-│   │   └── cyber-hud.css
-│   ├── styles/                 ← 核心排版、长辈大字模式与无重排手风琴动画
-│   └── scripts/                ← 高德 2.0 引擎、防闪退保护阀、防 NaN 异常隔离
-└── examples/                   ← 【标杆开箱即用案例库】
-    ├── dunhuang-silkroad-9d/   ← 本项目的西行丝路 9 天标杆 (trip-cts.pages.dev)
-    ├── chuanxi-ring-5d/        ← 川西松石青大环线案例
-    └── jiangnan-watertown-3d/  ← 江南烟雨水乡案例
+├── .gitignore
+├── LICENSE                     ← 开源许可证 (MIT)
+├── README.md                   ← 开源门面与快速指南
+├── package.json                ← 校验脚本配置（开发期工具，零运行时依赖）
+├── docs/                       ← 【执行全书】16 章架构规范、协议与商业设计
+│   ├── 00-overview-and-glossary.md ~ 15-multi-device-and-collaboration.md
+│   ├── README.md               ← 章节导航与外部核查记录
+│   └── assets/                 ← 系统架构与视觉流图
+├── examples/                   ← 【标杆案例库】
+│   └── dunhuang-silkroad-9d/   ← 敦煌丝路 9 天标杆数据契约样例 (trip.json, README.md)
+├── spec/                       ← 【数据契约】JSON Schema (Draft 2020-12)
+│   ├── brand.schema.json       ← 品牌与地接服务规范
+│   ├── node.schema.json        ← 行程节点规范
+│   ├── patch.schema.json       ← 增量补丁更新规范
+│   └── trip.schema.json        ← 完整行程真相源规范
+└── tools/                      ← 【合规与质量门禁】
+    ├── check-br025.mjs         ← BR-025 算路几何落库合规门禁
+    ├── check-links.mjs         ← 全文档断链与锚点扫描器
+    └── validate-schemas.js     ← JSON Schema 契约元校验与实例校验器
 ```
+
+#### 规划中（尚未创建）
+
+- `src/`：单文件 HTML 编译器与 Node CLI 入口（见 [`docs/05-compiler-pipeline.md`](docs/05-compiler-pipeline.md) 规格）；
+- `skills/`：苏格拉底反问引擎 Agent Skill 定义（见 [`docs/08-socratic-interaction-design.md`](docs/08-socratic-interaction-design.md)）；
+- `templates/`：主题 CSS Token 切片与 HTML 骨架模板（见 [`docs/09-visual-design-system.md`](docs/09-visual-design-system.md)）；
+- `examples/chuanxi-ring-5d/`、`examples/jiangnan-watertown-3d/`：后续扩充线路样例。
 
 ### 6.2 核心数据契约：`TripCraft DSL` 规范 (JSON / YAML)
 
@@ -670,25 +683,30 @@ TripCraft/
 ## 七、落地行动路线图 (Execution Roadmap)
 
 ```
-   Week 1: 规范与模板解耦                 Week 2: 编译引擎与技能构建             Week 3: 开源存证与知识产权确权
+   阶段 1: 契约规范与样例固化            阶段 2: 编译引擎与交互原型             阶段 3: 开源存证与案例拓展
 ┌─────────────────────────┐           ┌─────────────────────────┐         ┌─────────────────────────┐
-│ • 从西行路书提取 templates│           │ • 编写 compiler.js 生成器│         │ • 录制高颜值演示动图 GIF │
-│ • 梳理 5 大主题 Token CSS │ ────────► │ • 封装 Socratic 澄清提示词│ ──────► │ • GitHub 开源上架并撰写 │
-│ • 固化 TripCraft DSL 规范 │           │ • 接入高德 Driving 算路脚本 │         │   震撼的专业 README.md │
-│                         │           │ • 跑通川西 5 天测试用例   │         │ • 完成可信时间戳与先验确权│
+│ • 固化 TripCraft DSL 契约│           │ • 编写单文件 HTML 编译器 │         │ • 制作规范演示动图/截图 │
+│ • 梳理 5 大主题 Token CSS │ ────────► │ • 封装 Socratic 澄清提示词│ ──────► │ • GitHub 开源交付与文档 │
+│ • 建立 JSON Schema 校验  │           │ • 接入高德 Driving 算路脚本 │         │ • 完善工程校验与门禁脚本│
+│                         │           │ • 验证离线骨架图降级状态机 │         │ • 完成可信时间戳先验确权│
 └─────────────────────────┘           └─────────────────────────┘         └─────────────────────────┘
 ```
 
-1. **第一阶段：组件切片与模板工程化**：
-   * 将当前打磨成熟的 `trip-map/index.html` 模块化抽离至 `templates/` 目录；
-   * 提炼出 5 套可一键切换的主题 CSS 变量系统；
-2. **第二阶段：Prompt 调优与编译器实现**：
-   * 在 `SKILL.md` 中固化四层渐进式澄清反问机制；
-   * 编写多端协同逻辑与单文件内联器（HTML Inliner），实现多端实时同步与本地 `node src/compiler.js` 毫秒级导出完整离线 HTML 快照；
+1. **第一阶段：契约规范与样例固化（当前已完成）**：
+   * 固化 `spec/` 下 4 份核心 JSON Schema 契约（`trip`/`brand`/`node`/`patch`）；
+   * 建立 `examples/dunhuang-silkroad-9d/` 标杆数据样例与数据脱敏规范；
+   * 配置 `tools/` 合规与质量门禁（`check-br025`、`check-links`、`validate-schemas`）。
+2. **第二阶段：Prompt 调优与编译器实现（进行中）**：
+   * 固化四层渐进式澄清反问机制；
+   * 实现轻量级单文件 HTML 编译器（见附录 B 编译器 MVP 规格），支持本地离线快照生成；
+   * 提炼 5 套可一键切换的主题 CSS 变量系统。
 3. **第三阶段：案例扩充与开源确权存证**：
-   * 使用现有西北丝路作为标杆演示案例；
-   * 自动生成一组川西高原或江南水乡的第二案例，验证多主题自适应能力；
-   * 完善中英文 README，将体验链接与动图放上 GitHub，打上 GPG 签名与 Release 时间戳完成先验确权。
+   * 拓展川西高原或江南水乡的多主题样例；
+   * 完善项目快速上手体验与演示例图；
+   * 打上 GPG 签名与 Release 快照完成先验确权。
+4. **后续阶段 / 未验证（Roadmap）**：
+   * **多端实时同步**：需先补充账号体系、同步协议、冲突处理、隐私与成本设计（见 [`docs/15-multi-device-and-collaboration.md`](docs/15-multi-device-and-collaboration.md)）；
+   * **智能座舱深度互联**：真机验证手车镜像与途经点批量投递通道（见 [`docs/02-cockpit-protocol.md`](docs/02-cockpit-protocol.md)）。
 
 ---
 
