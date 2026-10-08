@@ -78,10 +78,14 @@ for (const fid of definedFeatures) {
   }
 }
 
-// 规则 2: 每个 S- 至少关联 1 个 F- (检查 DLV-03 中每个 S- 所在行或块是否有关联的 F-)
+// 规则 2: 每个 S- 至少关联 1 个 F- (检查 DLV-03 中每个 S- 所在表格行是否有关联的 F-)
 for (const sid of definedScenarios) {
-  if (!dlv03Content.includes(sid)) {
+  const rowMatch = dlv03Content.split(/\r?\n/).find(line => line.includes(sid));
+  if (!rowMatch) {
     console.error(`❌ [规则 2 违背] 场景 ${sid} 未在追溯矩阵 DLV-03 中覆盖`);
+    errors++;
+  } else if (!/(F-M\d{2}-\d{2})/.test(rowMatch)) {
+    console.error(`❌ [规则 2 违背] 场景 ${sid} 在追溯矩阵 DLV-03 中未关联任何有效功能 (F-)`);
     errors++;
   }
 }
@@ -94,7 +98,7 @@ for (const p0 of p0Features) {
   }
 }
 
-// 规则 4: 扫描 docs/product, docs/architecture, docs/delivery 下引用的所有 ID，确保均已定义
+// 规则 4: 扫描 README.md 以及 docs/product, docs/architecture, docs/delivery 下引用的所有 ID，确保均已定义
 function walkDir(dir, fileList = []) {
   for (const name of readdirSync(dir)) {
     const full = join(dir, name);
@@ -108,6 +112,7 @@ function walkDir(dir, fileList = []) {
 }
 
 const docsToCheck = [
+  join(ROOT, 'README.md'),
   ...walkDir(join(ROOT, 'docs/product')),
   ...walkDir(join(ROOT, 'docs/architecture')),
   ...walkDir(join(ROOT, 'docs/delivery')),

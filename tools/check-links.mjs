@@ -31,7 +31,15 @@ for (const f of files) {
       const [, target, frag] = m;
       if (/^(https?:|mailto:|tel:)/.test(target)) continue;
       if (!frag && !target) continue;
-      if (target.endsWith('/')) continue;
+      if (target.endsWith('/')) {
+        total++;
+        const dirPath = resolve(dir, target);
+        if (!existsSync(dirPath) || !statSync(dirPath).isDirectory()) {
+          console.log(`❌ ${f}\n   目录不存在: ${target}`);
+          bad++;
+        }
+        continue;
+      }
       total++;
       const path = target ? resolve(dir, target) : resolve(f);
       const a = anchors(path);
@@ -49,3 +57,6 @@ for (const f of files) {
   }
 }
 console.log(`\n跨文件链接: ${total}  |  失效: ${bad}`);
+if (bad > 0) {
+  process.exit(1);
+}
