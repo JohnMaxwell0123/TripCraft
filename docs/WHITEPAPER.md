@@ -602,6 +602,8 @@ TripCraft 采用严格的五层全景分层设计（L1 数据源层 ➔ L2 契�
 *图：TripCraft 五层全景系统架构（L1 数据源层 ➔ L2 契约层 ➔ L3 编译器层 ➔ L4 运行时层 ➔ L5 多端接入层）*
 </div>
 
+> 📌 **架构细化说明**：本节提出的 L1–L5 宏观概念分层已在 [系统架构总览 (ARC-01)](architecture/ARC-01-overview.md#3-白皮书-l1l5-模型与本架构映射关系) 中细化为清晰的模块化单体组件与服务映射；各组件职责与落地边界以 [ARC-01 系统架构总览](architecture/ARC-01-overview.md) 为准。
+
 ---
 
 ### 6.1 仓库实际目录结构 (Repo Layout)
@@ -626,15 +628,13 @@ TripCraft/
 └── tools/                      ← 【合规与质量门禁】
     ├── check-br025.mjs         ← BR-025 算路几何落库合规门禁
     ├── check-links.mjs         ← 全文档断链与锚点扫描器
+    ├── check-trace.mjs         ← 场景与功能追溯一致性检查器
     └── validate-schemas.js     ← JSON Schema 契约元校验与实例校验器
 ```
 
-#### 规划中（尚未创建）
+#### 规划中的工程代码仓库组织 (Proposed Monorepo Layout)
 
-- `src/`：单文件 HTML 编译器与 Node CLI 入口（见 [`docs/05-compiler-pipeline.md`](05-compiler-pipeline.md) 规格）；
-- `skills/`：苏格拉底反问引擎 Agent Skill 定义（见 [`docs/08-socratic-interaction-design.md`](08-socratic-interaction-design.md)）；
-- `templates/`：主题 CSS Token 切片与 HTML 骨架模板（见 [`docs/09-visual-design-system.md`](09-visual-design-system.md)）；
-- `examples/chuanxi-ring-5d/`、`examples/jiangnan-watertown-3d/`：后续扩充线路样例。
+面向多端协同 App、离线编译器与模块化单体后端的完整 Monorepo 代码结构规划（包含 `apps/`、`packages/` 与 `services/`）已在 [ARC-01 §6 规划中代码仓库组织](architecture/ARC-01-overview.md#6-规划中代码仓库组织-proposed-monorepo-layout) 中系统化定义。
 
 ### 6.2 核心数据契约：`TripCraft DSL` 规范 (JSON / YAML)
 
