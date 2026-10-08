@@ -9,20 +9,26 @@
 | 能力 | 状态 | 依据（文件路径或章节） |
 | :--- | :--- | :--- |
 | **DSL 规范与 JSON Schema** | 已实现 (v1.0.0) | [`spec/`](spec/)、[`docs/04-dsl-specification-v1.md`](docs/04-dsl-specification-v1.md) |
-| **DSL → 单文件 HTML 编译器** | 仅规格（规划中） | [`docs/05-compiler-pipeline.md`](docs/05-compiler-pipeline.md)（无运行入口，规格见白皮书附录 B） |
+| **DSL → 单文件 HTML 编译器** | 仅规格（计划中） | [`docs/05-compiler-pipeline.md`](docs/05-compiler-pipeline.md)（无运行入口，完整管线设计详见该文档） |
 | **示例路书（敦煌 9 天）** | 已实现（仅 DSL 数据） | [`examples/dunhuang-silkroad-9d/trip.json`](examples/dunhuang-silkroad-9d/trip.json) |
 | **苏格拉底交互引擎 / Skill** | 仅规格 | [`docs/08-socratic-interaction-design.md`](docs/08-socratic-interaction-design.md) |
 | **座舱投递（深链 / 镜像）** | 仅规格 / 部分待验证 | [`docs/02-cockpit-protocol.md`](docs/02-cockpit-protocol.md)（协议已定，途经点上限与镜像真机待验） |
 | **账号与多端同步** | 规划中 / 未设计 | 无（见下文 Roadmap） |
 | **B2B 白标** | 仅规格 | [`docs/03-b2b-agency-operations.md`](docs/03-b2b-agency-operations.md)、[`docs/13-agency-partnership-design.md`](docs/13-agency-partnership-design.md) |
 
+### 能力边界
+
+- 不触发车厂的领航辅助（NOA），也不读取车辆电量（SOC）；座舱交付止于把途经点投递到车机导航，之后由车机自行引导。
+- 目前没有公开的第三方车机应用 SDK，车机端只能走深链投递或手机镜像；原生车机 App 依赖车厂平台接入，不在当前范围。
+- 补能规划是按车型模型和用户输入做的估算，不是实时数据。详见 [`docs/ERRATA.md`](docs/ERRATA.md)。
+
 ---
 
 ## 为什么做
 
 1. **解决旅行交付的割裂**：自驾与深度游的出行数据分散在机酒、门票、攻略与导航多个孤岛中，C 端缺乏高容灾的统一交付物，B 端从业者（地接社、车队）仍依赖凌乱文本交付。
-2. **离线韧性与座舱交付**：面向西北大环线、川西高原等弱网场景，提供零依赖离线可用、多端自适应以及全天路线一键批量投递到车机导航的端到端能力。
-3. **DSL 驱动与白标扩展**：以严谨的 JSON Schema 数据契约（TripCraft DSL）驱动路书渲染，支持机构白标定制与多主题动态切换。
+2. **离线韧性与座舱交付（设计目标）**：面向西北大环线、川西高原等弱网场景，目标是零依赖离线可用、多端自适应，并把全天路线批量投递到车机导航（投递上限待实车验证）。
+3. **DSL 驱动与白标扩展（设计目标）**：以 JSON Schema 数据契约驱动路书渲染，规划支持机构白标与多主题切换；目前仅有规格与样例，尚无编译器。
 
 ---
 
@@ -42,7 +48,7 @@ npm run check
 
 ## 示例
 
-- **在线实战基准**：[trip-cts.pages.dev](https://trip-cts.pages.dev) —— 西行计划·丝路自驾路书（RELEASE v3.6.3）
+- **在线实战基准**：[trip-cts.pages.dev](https://trip-cts.pages.dev) —— 西行计划·丝路自驾路书（RELEASE v3.6.3，手工构建，非编译器产物）
 - **基准 DSL 数据**：[`examples/dunhuang-silkroad-9d/trip.json`](examples/dunhuang-silkroad-9d/trip.json)
 - **界面演示**：
   <!-- TODO(owner): add demo GIF -->
@@ -65,7 +71,7 @@ TripCraft/
 
 #### 规划中（尚未创建）
 
-- `src/`：单文件 HTML 编译器与 Node CLI 入口（见 [`docs/05-compiler-pipeline.md`](docs/05-compiler-pipeline.md)）；
+- `tools/compile.mjs`：零依赖单文件 HTML 编译器 MVP（设计详见 [`docs/05-compiler-pipeline.md`](docs/05-compiler-pipeline.md)）；
 - `skills/`：苏格拉底反问引擎 Agent Skill 定义（见 [`docs/08-socratic-interaction-design.md`](docs/08-socratic-interaction-design.md)）；
 - `templates/`：主题 CSS Token 切片与 HTML 骨架模板（见 [`docs/09-visual-design-system.md`](docs/09-visual-design-system.md)）；
 - `examples/chuanxi-ring-5d/`、`examples/jiangnan-watertown-3d/`：后续扩充线路样例。
@@ -91,8 +97,8 @@ TripCraft/
   - 固化 `spec/` 下 4 份核心 JSON Schema 契约（`trip` / `brand` / `node` / `patch`）；
   - 建立基准数据样例与数据脱敏规范；
   - 建立自动化门禁检查（Schema 校验、文档链接检查、BR-025 扫描）。
-- **阶段 2：编译引擎与交互原型（进行中）**
-  - 实现单文件 HTML 编译器（`tools/compile.mjs`，见白皮书附录 B 规格）；
+- **阶段 2：编译引擎与交互原型（计划中 / 下一步）**
+  - 实现单文件 HTML 编译器（`tools/compile.mjs` 零依赖 MVP，设计详见 [`docs/05-compiler-pipeline.md`](docs/05-compiler-pipeline.md)）；
   - 固化四层渐进式澄清反问机制；
   - 提取多套主题 CSS 变量系统。
 - **阶段 3：多端同步与平台探索（远期规划，待验证）**

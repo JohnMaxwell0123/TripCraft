@@ -696,10 +696,10 @@ TripCraft/
    * 固化 `spec/` 下 4 份核心 JSON Schema 契约（`trip`/`brand`/`node`/`patch`）；
    * 建立 `examples/dunhuang-silkroad-9d/` 标杆数据样例与数据脱敏规范；
    * 配置 `tools/` 合规与质量门禁（`check-br025`、`check-links`、`validate-schemas`）。
-2. **第二阶段：Prompt 调优与编译器实现（进行中）**：
-   * 固化四层渐进式澄清反问机制；
-   * 实现轻量级单文件 HTML 编译器（见附录 B 编译器 MVP 规格），支持本地离线快照生成；
-   * 提炼 5 套可一键切换的主题 CSS 变量系统。
+2. **第二阶段：Prompt 调优与编译器实现（计划中 / 下一步）**：
+   * 固化四层渐进式澄清反问机制原型（见 [`docs/08-socratic-interaction-design.md`](08-socratic-interaction-design.md)）；
+   * 实现轻量级单文件 HTML 编译器（`tools/compile.mjs` 零依赖 MVP，设计详见 [`docs/05-compiler-pipeline.md`](05-compiler-pipeline.md)），支持本地离线快照生成；
+   * 提炼 5 套可一键切换的主题 CSS 变量系统（见 [`docs/09-visual-design-system.md`](09-visual-design-system.md)）。
 3. **第三阶段：案例扩充与开源确权存证**：
    * 拓展川西高原或江南水乡的多主题样例；
    * 完善项目快速上手体验与演示例图；
