@@ -15,7 +15,7 @@
       "focalPoint": [0.5, 0.42]
     },
     "authors": [
-      { "role": "planner", "name": "JYX" },
+      { "role": "planner", "name": "示例规划师" },
       { "role": "agency", "ref": "brand:zhangye-jinma" }
     ],
     "createdAt": "2026-08-01T10:00:00+08:00",
@@ -907,7 +907,7 @@
     "llmAssisted": true,
     "llmModel": "claude-sonnet-5-5",
     "humanReviewed": true,
-    "reviewedBy": "JYX",
+    "reviewedBy": "示例审核员",
     "dataSources": [
       {
         "provider": "amap",
@@ -919,7 +919,7 @@
       { "provider": "agency:zhangye-jinma", "agreementRef": "contract:B2B-DEMO-0001" }
     ],
     "disclosures": [
-      "本示例文档为 TripCraft DSL v1.0.0 的格式标杆（Schema Fixture），用于校验数据契约，其中坐标、价格、营业时间、机构名称与联系方式均为演示数据，不可用于实际出行。",
+      "示例数据，已脱敏。本示例文档为 TripCraft DSL v1.0.0 的格式标杆（Schema Fixture），用于校验数据契约，其中坐标、价格、营业时间、机构名称与联系方式均为演示数据，不可用于实际出行。",
       "本路书由 AI 辅助生成，关键信息已经人工复核，但仍可能存在误差。",
       "价格与营业时间可能变动，请以商家实际公示为准。",
       "本路书为行程规划参考，实际行车请以车辆导航系统与现场交通标识为准。",
