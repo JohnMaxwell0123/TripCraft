@@ -6,15 +6,15 @@
 
 ## 状态
 
-| 模块 / 交付物 | 状态 | 验证依据 / 对应文件 |
+| 能力 | 状态 | 依据（文件路径或章节） |
 | :--- | :--- | :--- |
-| **DSL 规范 (JSON Schema)** | 已冻结 (v1.0.0) | [`spec/`](spec/)（`trip` / `brand` / `node` / `patch`） |
-| **执行全书与设计系统** | 已完备 (16章) | [`docs/`](docs/)（设计轨、商业轨、工程轨双轨全书） |
-| **工程门禁与合规工具** | 已就绪 | [`tools/`](tools/)（契约校验、锚点检查、BR-025 扫描） |
-| **基准样例数据** | 已提供 | [`examples/dunhuang-silkroad-9d/trip.json`](examples/dunhuang-silkroad-9d/trip.json) |
-| **在线演示路书** | 已上线 | [trip-cts.pages.dev](https://trip-cts.pages.dev) (v3.6.3) |
-| **单文件 HTML 编译器** | 规划中（规范已冻结） | [`docs/05-compiler-pipeline.md`](docs/05-compiler-pipeline.md)（MVP 规格见白皮书附录 B） |
-| **多端协同 App (Native/Flutter)** | 规划中（愿景探索） | 见下文 Roadmap |
+| **DSL 规范与 JSON Schema** | 已实现 (v1.0.0) | [`spec/`](spec/)、[`docs/04-dsl-specification-v1.md`](docs/04-dsl-specification-v1.md) |
+| **DSL → 单文件 HTML 编译器** | 仅规格（规划中） | [`docs/05-compiler-pipeline.md`](docs/05-compiler-pipeline.md)（无运行入口，规格见白皮书附录 B） |
+| **示例路书（敦煌 9 天）** | 已实现（仅 DSL 数据） | [`examples/dunhuang-silkroad-9d/trip.json`](examples/dunhuang-silkroad-9d/trip.json) |
+| **苏格拉底交互引擎 / Skill** | 仅规格 | [`docs/08-socratic-interaction-design.md`](docs/08-socratic-interaction-design.md) |
+| **座舱投递（深链 / 镜像）** | 仅规格 / 部分待验证 | [`docs/02-cockpit-protocol.md`](docs/02-cockpit-protocol.md)（协议已定，途经点上限与镜像真机待验） |
+| **账号与多端同步** | 规划中 / 未设计 | 无（见下文 Roadmap） |
+| **B2B 白标** | 仅规格 | [`docs/03-b2b-agency-operations.md`](docs/03-b2b-agency-operations.md)、[`docs/13-agency-partnership-design.md`](docs/13-agency-partnership-design.md) |
 
 ---
 
@@ -62,6 +62,13 @@ TripCraft/
 ├── package.json       # 项目元数据与脚本入口
 └── README.md          # 仓库首页
 ```
+
+#### 规划中（尚未创建）
+
+- `src/`：单文件 HTML 编译器与 Node CLI 入口（见 [`docs/05-compiler-pipeline.md`](docs/05-compiler-pipeline.md)）；
+- `skills/`：苏格拉底反问引擎 Agent Skill 定义（见 [`docs/08-socratic-interaction-design.md`](docs/08-socratic-interaction-design.md)）；
+- `templates/`：主题 CSS Token 切片与 HTML 骨架模板（见 [`docs/09-visual-design-system.md`](docs/09-visual-design-system.md)）；
+- `examples/chuanxi-ring-5d/`、`examples/jiangnan-watertown-3d/`：后续扩充线路样例。
 
 ---
 

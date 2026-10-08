@@ -13,7 +13,7 @@
 
 ## 这本书是什么
 
-[根目录 README](../README.md) 回答的是**「为什么做」**：产品定位、商业模式、竞争分析、IP 主张。
+[架构白皮书](WHITEPAPER.md)（原根目录 README 迁移至此）回答的是**「为什么做」**：产品定位、商业模式、竞争分析、IP 主张。
 
 **这本书回答的是「怎么做」**，分为两轨：
 
@@ -566,5 +566,5 @@ npm run check      # = validate + check-links + check-br025
 
 ---
 
-> **根目录**：[README.md](../README.md) —— 产品与商业白皮书
+> **架构白皮书**：[WHITEPAPER.md](WHITEPAPER.md) —— 产品与商业白皮书 ｜ **仓库首页**：[README.md](../README.md)
 > **契约**：[spec/](../spec/) ｜ **示例**：[examples/](../examples/) ｜ **工具**：[tools/](../tools/)
