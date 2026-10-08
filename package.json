@@ -6,9 +6,10 @@
   "type": "commonjs",
   "scripts": {
     "validate": "node tools/validate-schemas.js",
-    "check-links": "node tools/check-links.mjs \"{README.md,docs/*.md}\"",
+    "check-links": "node tools/check-links.mjs \"{README.md,docs/**/*.md,docs/*.md}\"",
     "check-br025": "node tools/check-br025.mjs --self-test",
-    "check": "npm run validate && npm run check-links && npm run check-br025"
+    "check-trace": "node tools/check-trace.mjs",
+    "check": "npm run validate && npm run check-links && npm run check-br025 && npm run check-trace"
   },
   "devDependencies": {
     "ajv": "^8.17.1",

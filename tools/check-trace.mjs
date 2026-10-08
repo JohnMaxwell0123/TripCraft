@@ -160,7 +160,7 @@ for (const file of docsToCheck) {
 }
 
 if (errors === 0) {
-  console.log('✓ 追溯校验全部通过：所有场景、功能、ADR、假设 100% 闭环且无未定义引用\n');
+  console.log('✓ 追溯校验全部通过：所有场景、功能、ADR、假设全部闭环且无未定义引用\n');
   process.exit(0);
 } else {
   console.error(`\n✗ 追溯校验失败：发现 ${errors} 处不一致\n`);
