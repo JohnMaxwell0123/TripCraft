@@ -3,6 +3,12 @@
 > **Universal Travel Harness · 智能旅行路书生成系统**
 > 从愿景到施工蓝图 —— 一份**设计 + 工程**双轨全书。
 
+<div align="center">
+
+![TripCraft 终极执行全书](assets/tripcraft-hero-banner.jpg)
+
+</div>
+
 ---
 
 ## 这本书是什么
@@ -211,13 +217,13 @@ npm run check      # = validate + check-links
   ✓ examples/dunhuang-silkroad-9d/trip.json
 ✓ 契约校验全部通过（4 份 Schema，1 份实例）
 
-跨文件链接: 607  |  失效: 0
+跨文件链接: 615  |  失效: 0
 ```
 
 | 工具 | 作用 |
 | :--- | :--- |
 | `tools/validate-schemas.js` | 校验 4 份 JSON Schema 自身合法 + 示例实例符合契约 |
-| [`tools/check-links.mjs`](../tools/check-links.mjs) | 校验全书 **607 条跨文件内链**（含跨文件锚点）。**它按 GitHub 的真实锚点算法实现**，而不是估算 |
+| [`tools/check-links.mjs`](../tools/check-links.mjs) | 校验全书 **615 条跨文件内链**（含跨文件锚点）。**它按 GitHub 的真实锚点算法实现**，而不是估算 |
 | [`tools/check-br025.mjs`](../tools/check-br025.mjs) | **[BR-025](07-legal-and-compliance.md#781--br-025地图数据不得落库oi-003-收敛后的新增规则) 的可执行形态** —— 扫描产物中是否内联了算路 API 返回的路线几何。含注入测试与阈值边界测试 |
 
 > 📌 **为什么需要链接校验器？** 因为这本书的**引用密度很高**——每个设计决策都要回指依据。**引用越多，断链越多**，而断链在 GitHub 上是**静默的**：读者点过去只会看到页面顶部，不会看到任何错误。

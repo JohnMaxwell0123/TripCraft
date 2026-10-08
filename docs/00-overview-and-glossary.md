@@ -183,6 +183,12 @@ flowchart TB
     style L5 fill:#1a2233,stroke:#f59e0b,color:#e2e8f0
 ```
 
+<div align="center">
+
+![TripCraft 系统全景分层架构图](assets/tripcraft-system-arch.jpg)
+
+</div>
+
 **分层不变量（Invariants）**：
 1. **依赖单向向下**：L4 不得反向依赖 L3，L3 不得依赖 L4。编译器不感知运行时。
 2. **L2 是唯一跨层语言**：任何跨层传递都必须先序列化为 DSL / Patch / Brand 三者之一。

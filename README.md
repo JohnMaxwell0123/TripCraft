@@ -9,6 +9,12 @@
 > **本文档修订**：2026-10-08（产品形态勘正 —— 见下方范围说明）；2026-10-07（外部事实核查 —— 见 [§8.6](#86-待决本文档与仓库许可证之间存在冲突oi-008--p0) 与 [核查记录](docs/README.md#外部事实核查记录)）  
 > **配套执行全书**：[docs/ · 执行全书](docs/README.md)（16 章 = 设计轨 5 章 + 商业轨 4 章 + 工程轨/支撑轨 7 章 + 4 份 JSON Schema）
 
+<div align="center">
+
+![TripCraft 智能旅行路书静态生成系统与中立超级中枢](docs/assets/tripcraft-hero-banner.jpg)
+
+</div>
+
 ---
 
 > ### ⚠️ 范围说明（2026-10-08 增补）—— 先读这一条
@@ -59,6 +65,7 @@
    - [5.7 维度 6：智能座舱交付与全天路线批量下发 (EV Smart Cockpit)](#57-维度-6智能座舱交付与全天路线批量下发-ev-smart-cockpit)
    - [5.8 维度 7：线下旅行社 B2B 白标定制与地面特许资源库 (Travel Agency B2B Whitelabel)](#58-维度-7线下旅行社-b2b-白标定制与地面特许资源库-travel-agency-b2b-whitelabel)
 6. [六、TripCraft 系统架构与技术规范 (Technical Architecture & DSL)](#六tripcraft-系统架构与技术规范-technical-architecture--dsl)
+   - [6.0 系统分层全景架构 (System Architecture)](#60-系统分层全景架构-system-architecture)
    - [6.1 技能包工程目录结构 (Monorepo Blueprint)](#61-技能包工程目录结构-monorepo-blueprint)
    - [6.2 核心数据契约：`TripCraft DSL` 规范 (JSON / YAML)](#62-核心数据契约tripcraft-dsl-规范-json--yaml)
 7. [七、落地行动路线图 (Execution Roadmap)](#七落地行动路线图-execution-roadmap)
@@ -251,6 +258,13 @@
 > 2. **两大核心差异化支柱（车厂生态 + 线下地接）**：**一是深度拥抱新能源智能座舱，做车机原生路书，实现全天多节点一键下发 NOA 领航辅助驾驶与补能规划；二是做线下地接社与车队的‘数字化外骨骼’，通过 B2B 白标定制打通独家特许资源，赋能线下小 B 提升溢价与高定交付感**；
 > 3. **中立中枢的生态网络效应**：通过 Universal Travel Harness 打通全网割裂的 OTA 订单数据，不仅为车厂打造自驾座舱杀手级应用，更为平台穿透线下履约黑盒，构筑纯线上轻软件永远无法跨越的线上线下双驱护城河。
 
+<div align="center">
+
+![TripCraft 双轨驱动与超级中枢商业飞轮](docs/assets/tripcraft-dual-flywheel.jpg)
+
+*图：TripCraft 智能座舱交付与 B2B 线下地接社数字化外骨骼双轮驱动生态飞轮*
+</div>
+
 ---
 
 ## 三、核心交互机制：渐进式反问与认知对齐引擎 (Socratic Clarification Engine)
@@ -325,6 +339,13 @@ flowchart TD
     Layer4 --> Output["秒级编译输出专属 TripCraft 单文件静态路书"]
 ```
 
+<div align="center">
+
+![TripCraft 苏格拉底交互对齐与胶囊点选流](docs/assets/tripcraft-socratic-flow.jpg)
+
+*图：双模唤醒、全流程胶囊药丸点选（Zero-Typing Pills）与四层渐进式收敛漏斗*
+</div>
+
 - **核心原则**：凡是用户回复“还没定”、“看着办”、“随便”的项目，系统**绝不反复追问**，而是自动注入行业最佳实践并打上语义标记：
   - 酒店：`建议住宿标准（待定）：星级标准/特色民宿`（自动挂载高德一键导航与周边指南）；
   - 交通：`参考航班/车次（建议上午 10:00 前抵达）`；
@@ -371,6 +392,13 @@ flowchart TD
 3. **CSS Grid 0fr-1fr 硬件加速手风琴折叠**：
    - 彻底避免 JS `scrollHeight` 重排（Reflow）计算，动画平滑无顿挫；
    - 180° CSS 硬件加速平滑旋转箭头。
+
+<div align="center">
+
+![TripCraft 苹果液态玻璃五大主题与多端适配展示](docs/assets/tripcraft-glass-themes.jpg)
+
+*图：目的地感知五大液态玻璃主题色系与车载宽屏/手机/长辈大字多端适配展示*
+</div>
 
 ### 4.3 AI 文生图动态意境背景与 16:9 电影画幅 Banner 自动生成引擎
 * **痛点反思**：纯色背景单调呆板，缺乏自驾大片感与向往感；西行路书的成功就在于**深色大漠渐变与飞天暗纹在高斯模糊（Liquid Glass）折射下的深邃质感**；
@@ -544,6 +572,19 @@ flowchart TD
 ---
 
 ## 六、TripCraft 系统架构与技术规范 (Technical Architecture & DSL)
+
+### 6.0 系统分层全景架构 (System Architecture)
+
+TripCraft 采用严格的五层全景分层设计（L1 数据源层 ➔ L2 契约层 ➔ L3 纯静态编译器层 ➔ L4 零依赖容灾运行时层 ➔ L5 多端接入层），满足**「零构建交付、单文件优先、降级不可耻、白屏才是罪」**的工程铁律。
+
+<div align="center">
+
+![TripCraft 系统全景分层架构图](docs/assets/tripcraft-system-arch.jpg)
+
+*图：TripCraft 五层全景系统架构（L1 数据源层 ➔ L2 契约层 ➔ L3 编译器层 ➔ L4 运行时层 ➔ L5 多端接入层）*
+</div>
+
+---
 
 ### 6.1 技能包工程目录结构 (Monorepo Blueprint)
 
