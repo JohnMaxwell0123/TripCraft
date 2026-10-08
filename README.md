@@ -668,7 +668,7 @@ TripCraft/
     {
       "dayIndex": 0,
       "tag": "Day 0",
-      "date": "09月24日 · 周三",
+      "date": "09月24日 · 周四",
       "title": "济南 ✈ 兰州 · 丝路集结夜",
       "km": "直飞 1400km + 接机 70km",
       "driveTime": "约 3.5 h",

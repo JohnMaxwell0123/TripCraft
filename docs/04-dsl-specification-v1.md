@@ -291,7 +291,7 @@ flowchart TB
       "dayIndex": 0,
       "tag": "D0",
       "date": "2026-09-24",
-      "dateLabel": "09月24日 · 周三",
+      "dateLabel": "09月24日 · 周四",
       "title": "济南 ✈ 兰州 · 丝路集结夜",
       "dayType": "transit_arrival",        // ★ 见下表
       "bufferCapacity": 0,                 // ★ 应力吸收容量（小时），0 = 刚性日
@@ -1194,7 +1194,7 @@ JSON Schema 只能校验**结构**，以下规则必须由编译器的语义校�
   },
   "days": [
     {
-      "dayIndex": 0, "tag": "D0", "date": "2026-09-24", "dateLabel": "09月24日 · 周三",
+      "dayIndex": 0, "tag": "D0", "date": "2026-09-24", "dateLabel": "09月24日 · 周四",
       "title": "济南 ✈ 兰州 · 丝路集结夜",
       "dayType": "transit_arrival", "bufferCapacity": 3,
       "anchor": {
@@ -1234,7 +1234,7 @@ JSON Schema 只能校验**结构**，以下规则必须由编译器的语义校�
       }
     },
     {
-      "dayIndex": 1, "tag": "D1", "date": "2026-09-25", "dateLabel": "09月25日 · 周四",
+      "dayIndex": 1, "tag": "D1", "date": "2026-09-25", "dateLabel": "09月25日 · 周五",
       "title": "兰州 → 张掖 · 穿越祁连",
       "dayType": "long_haul", "bufferCapacity": 2,
       "anchor": {
