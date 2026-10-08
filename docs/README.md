@@ -34,7 +34,7 @@
 
 | 架构分包 | 目录与索引 | 核心内容 |
 | :--- | :--- | :--- |
-| **产品设计包 (PRD)** | [产品包总览](product/README.md) | 愿景定位 ([PRD-01](product/PRD-01-vision-positioning.md)) · 用户角色 ([PRD-02](product/PRD-02-personas-segments.md)) · 14 场景流程 ([PRD-03](product/PRD-03-scenarios.md)) · 44 功能与验收卡片 ([PRD-04](product/PRD-04-functional-architecture.md)) · 商业模式 ([PRD-05](product/PRD-05-business-model.md)) |
+| **产品设计包 (PRD)** | [产品包总览](product/README.md) | 愿景定位 ([PRD-01](product/PRD-01-vision-positioning.md)) · 用户角色 ([PRD-02](product/PRD-02-personas-segments.md)) · 14 场景流程 ([PRD-03](product/PRD-03-scenarios.md)) · 51 功能与 29 项 P0 验收卡片 ([PRD-04](product/PRD-04-functional-architecture.md)) · 商业模式 ([PRD-05](product/PRD-05-business-model.md)) |
 | **系统架构包 (ARC)** | [架构包总览](architecture/README.md) | 架构概览与Monorepo ([ARC-01](architecture/ARC-01-overview.md)) · 领域模型 ([ARC-02](architecture/ARC-02-domain-data-model.md)) · 离线优先与同步 ([ARC-03](architecture/ARC-03-offline-sync.md)) · 客户端矩阵 ([ARC-04](architecture/ARC-04-clients-channels.md)) · 后端集成 ([ARC-05](architecture/ARC-05-backend-integrations.md)) · 多租户白标 ([ARC-06](architecture/ARC-06-multitenancy-whitelabel.md)) · 安全与合规 ([ARC-07](architecture/ARC-07-security-privacy-compliance.md)) · 部署与成本 ([ARC-08](architecture/ARC-08-nfr-deployment-cost.md)) · 8 项技术决策 ([ARC-09](architecture/ARC-09-adr-index.md)) |
 | **交付规划包 (DLV)** | [交付包总览](delivery/README.md) | 5 阶段路线图与 MVP ([DLV-01](delivery/DLV-01-roadmap-mvp.md)) · 风险登记册 ([DLV-02](delivery/DLV-02-risk-register.md)) · 全链路追溯矩阵 ([DLV-03](delivery/DLV-03-traceability-matrix.md)) |
 
