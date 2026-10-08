@@ -135,7 +135,7 @@ flowchart TB
 > **`§9 视觉系统 → §5 编译器`** 意味着：因为玻璃效果在阳光下必须降级（[§9.4.3](09-visual-design-system.md#943-玻璃的参数不是固定的)），**编译器必须知道"什么条件下该退化"**。
 > **`§13 旅行社 → §12 车厂`** 意味着：**B 端规模是车厂谈判桌上唯一的硬牌**（[§12.7.2](12-oem-partnership-design.md#1272-筹码清单)）——所以两条 B 端线不是并列的，**它们的先后顺序是有理由的**。
 > **`§14 垂直扩展 → §13 数据飞轮 / §4 DSL`** 意味着：**开第二个行业的判据不是"能不能"，是"数据池是否还在变厚"**；而**迁移成本的真正位置在 DSL 之外**——引擎通用，设计系统不通用。
-> **`§15 形态协作 → §4 DSL / §8 交互 / §13 旅行社`** 意味着：★ **产品形态拆成三层（协作 / 交付 / 分享）之所以成立，是因为三层之间只通过 DSL 通信**；**"收齐意见"在协作层，"裁决分歧"在 §8.8**，两者不能合并；而**交付层必须保持零安装，否则白标价值会被产品形态本身取消**。
+> **`§15 形态协作 → §4 DSL / §8 交互 / §13 旅行社`** 意味着：★ **产品形态拆成三层（协作 / 交付 / 分享）之所以成立，是因为三层之间只通过 DSL 通信**；**"收齐意见"在协作层，"裁决分歧"在 §8.8**，两者不能合并；而**交付层必须保持零安装，否则白标价值会被产品形态本身取消**。★ **另有一条同样硬：分享层是单向的、且不依赖协作层存活**——一条发出去的海报不能长出"加入"按钮（那会让产品长出第二个入口），也不能因为行程空间按期销毁而变成 404（[§15.10](15-multi-device-and-collaboration.md#1510--分享层四种对象三条不变量)）。
 >
 > **先有设计，再推导出数据要装什么、机器要做什么。** 反过来（先定 schema 再想怎么显示）是这本书记录过的失败路径。
 
@@ -146,7 +146,7 @@ flowchart TB
 | 🎨 | **9** | [视觉设计系统](09-visual-design-system.md) | 长什么样？为什么？ | 大 |
 | 🎨 | **10** | [路书产物形态与阅读设计](10-roadbook-reading-design.md) | 最终那份东西怎么读？ | 大 |
 | 🎨 | **11** | [人群画像驱动的差异化呈现](11-audience-adaptive-rendering.md) | 一车人怎么各读各的？ | 中 |
-| 🎨 | **15** | [多端形态与协作层设计](15-multi-device-and-collaboration.md) | ★**最终交付的到底是什么？一群人的意见怎么收进来？** | 大 |
+| 🎨 | **15** | [多端形态与协作层设计](15-multi-device-and-collaboration.md) | ★**最终交付的到底是什么？一群人的意见怎么收进来？发出去之后还是不是原来那份？** | 大 |
 | 💼 | **12** | [车厂合作的产品形态与舱内体验设计](12-oem-partnership-design.md) | 凭什么和车厂谈得成？ | 大 |
 | 💼 | **13** | [线下旅行社合作的价值主张与资源数字化设计](13-agency-partnership-design.md) | 旅行社凭什么用？资源怎么进来？ | 大 |
 | 💼 | **14** | [通用引擎与垂直扩展的判据](14-generic-engine-and-vertical-expansion.md) | 能做别的行业吗？什么时候该做？ | 中 |
@@ -204,7 +204,7 @@ flowchart TB
 
 ```bash
 npm install        # 仅开发期依赖（ajv + ajv-formats），运行时零依赖
-npm run check      # = validate + check-links
+npm run check      # = validate + check-links + check-br025
 ```
 
 ```
@@ -217,13 +217,13 @@ npm run check      # = validate + check-links
   ✓ examples/dunhuang-silkroad-9d/trip.json
 ✓ 契约校验全部通过（4 份 Schema，1 份实例）
 
-跨文件链接: 615  |  失效: 0
+跨文件链接: 759  |  失效: 0
 ```
 
 | 工具 | 作用 |
 | :--- | :--- |
 | `tools/validate-schemas.js` | 校验 4 份 JSON Schema 自身合法 + 示例实例符合契约 |
-| [`tools/check-links.mjs`](../tools/check-links.mjs) | 校验全书 **615 条跨文件内链**（含跨文件锚点）。**它按 GitHub 的真实锚点算法实现**，而不是估算 |
+| [`tools/check-links.mjs`](../tools/check-links.mjs) | 校验全书 **759 条跨文件内链**（含跨文件锚点）。**它按 GitHub 的真实锚点算法实现**，而不是估算 |
 | [`tools/check-br025.mjs`](../tools/check-br025.mjs) | **[BR-025](07-legal-and-compliance.md#781--br-025地图数据不得落库oi-003-收敛后的新增规则) 的可执行形态** —— 扫描产物中是否内联了算路 API 返回的路线几何。含注入测试与阈值边界测试 |
 
 > 📌 **为什么需要链接校验器？** 因为这本书的**引用密度很高**——每个设计决策都要回指依据。**引用越多，断链越多**，而断链在 GitHub 上是**静默的**：读者点过去只会看到页面顶部，不会看到任何错误。
@@ -248,7 +248,7 @@ npm run check      # = validate + check-links
 
 ### 未决问题（OI）
 
-见 [§0.7 未决问题登记册](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register)（OI-001 ~ OI-015）。
+见 [§0.7 未决问题登记册](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register)（OI-001 ~ OI-020）。
 
 其中 **P0 级**：
 
@@ -447,6 +447,55 @@ npm run check      # = validate + check-links
 
 → **OI-018 与 [OI-010](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register) 同性质，都打在 `trip.schema.json` 上，必须在 v1.0.0 冻结前一起解决。**
 
+### 2026-10-08 第二轮：协作轨与分享层补全，四处契约缺口
+
+**这一轮没有推翻任何外部事实。** 它记录的是两样东西：**四处"已经想清楚、但发现写不进契约"**，以及**一处用 ajv 实测发现的既有错误**。
+
+#### 一、实测发现：§1.10.1 的约束示例通不过契约
+
+把 [§1.10.1](01-resilience-and-failover.md#1101-硬约束优先可能的话直接物理解决) 的 `constraints` 代码块直接交给 [`trip.schema.json`](../spec/trip.schema.json) 校验，报错分三类：
+
+| 类别 | 具体 |
+| :--- | :--- |
+| **缺必填** | `hard` 与 `soft` 的每一项都缺 `value` |
+| **`additionalProperties` 违规** | `hard` 上的 `maxGapMin`；`soft` 上的 `scope` / `target` / `minDurationMin` |
+| **枚举不含** | `hotWaterAccess` / `goldenHourAt` / `playgroundAccess` |
+
+> ⚠️ **它不是笔误，这才是值得单独记一笔的原因：**
+>
+> §1.10.1 要表达的是「**分头行动**」——而分头行动是 [§8.8](08-socratic-interaction-design.md#88--多人意见冲突的对话设计) 处理多人冲突的**核心解法**。这段示例**是全书唯一一处用数据表达它的地方**。
+>
+> **示例通不过校验，意味着这个解法今天只能写在文档里，写不进产物。**
+
+→ 登记为 **[OI-020](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register)**。
+
+#### 二、四处缺口是同一件事的四个面
+
+| OI | 缺什么 | 谁要用它 |
+| :--- | :--- | :--- |
+| [OI-010](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register) | 「为你」卡片的内容 | [§11.3.2](11-audience-adaptive-rendering.md#1132-每天的为你卡片) |
+| [OI-018](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register) | 「同行者提议」的来源类别 | [§15.8.3 R4](15-multi-device-and-collaboration.md#1583--必须先立住的四条红线) |
+| **[OI-019](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register)** | 理由 / 人群归属 / 未被采纳的提名 / 顾虑 / 「群内成员」这一档可见性 | [§15.5.5 落点表](15-multi-device-and-collaboration.md#1555--从清单到-tripjson每一步的落点) |
+| **[OI-020](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register)** | 分队约束（`softConstraint.scope` 等） | [§1.10.1](01-resilience-and-failover.md#1101-硬约束优先可能的话直接物理解决) / [§8.8](08-socratic-interaction-design.md#88--多人意见冲突的对话设计) |
+
+> 🔴 **四条都打在 [`spec/trip.schema.json`](../spec/trip.schema.json) 上，都必须在 v1.0.0 冻结前解决。**
+>
+> 而 [§0.4.1](00-overview-and-glossary.md#041--2026-10-08-增补图外的那一层) 的不变量已经立了：**三层之间只通过 L2 通信，而 L2 就是 DSL。**
+>
+> ### **契约装不下的东西，三层之间就传不过去。**
+
+#### 三、一处必须记录的方法论教训（第四课）
+
+**这一轮里最不该发生的一个问题，是靠"把示例真的跑一遍"发现的。**
+
+§1.10.1 那段示例写在书里很久了，读起来完全合理——**因为文档里的 JSON 不需要通过任何东西。**
+
+> 📌 **契约时代的不同之处在于：每一段示例都是一个可证伪的断言。**
+
+**当前 `npm run validate` 只校验 `examples/` 下的实例文件，不校验文档里的代码块。** 由此得出一条待办规则：**给文档里的 `jsonc` 代码块加一个可识别标记，把带标记的块纳入 `validate`**——凡标了的，就必须真的过一遍对应契约。
+
+> ⚠️ **这条规则的价值不在"多一个检查"，而在改掉一个习惯：把示例当散文写。**
+
 ---
 
 ## 写作与维护规则
@@ -481,6 +530,8 @@ npm run check      # = validate + check-links
 - …★ 一群人提景点，要不要做投票？ → [§15.5 只收齐，不裁决](15-multi-device-and-collaboration.md#155--协作层的设计原则只负责收齐不负责裁决)
 - …★ 说"去中心化"的时候到底在说什么？ → [§15.6](15-multi-device-and-collaboration.md#156--去中心化不是网络拓扑是决策权分布)
 - …★ 群里有人推荐野景点，出事谁负责？ → 🔴 [§15.8 UGC 责任](15-multi-device-and-collaboration.md#158--这给法律面增加了三样东西) → [OI-017](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register)
+- …★ 姑姑提的那个点，怎么收上来又不变成投票？ → [§15.5 只收齐不裁决](15-multi-device-and-collaboration.md#155--协作层的设计原则只负责收齐不负责裁决) + ★ [§15.5.5 意见怎么变成 `trip.json`](15-multi-device-and-collaboration.md#1555--从清单到-tripjson每一步的落点)
+- …★ 发出去之后（给爸妈 / 发朋友圈 / 三个月后回看），它还是原来那份吗？ → [§15.10 分享层四种对象](15-multi-device-and-collaboration.md#1510--分享层四种对象三条不变量)
 
 **💼 商业问题**
 
@@ -504,6 +555,7 @@ npm run check      # = validate + check-links
 - …哪些话在路书里不能说？ → [§0.3 责任边界线](00-overview-and-glossary.md#03-三条责任边界线tripcraft-不是清单) + [BR-015 词表](07-legal-and-compliance.md#712-措辞白名单--黑名单编译器强制)
 - …一个节点的数据长什么样？ → [§4.5 days](04-dsl-specification-v1.md#45-days--分天行程全书核心)
 - …断网时会发生什么？ → [§1.2 降级阶梯](01-resilience-and-failover.md#12-降级阶梯-dl0dl4) + [§1.3 能力矩阵](01-resilience-and-failover.md#13-诚实的能力矩阵)
+- …★ 两台设备上的路书不一样了怎么办？ → ★ [§1.9.4 第四类失效：同步失败](01-resilience-and-failover.md#194--第四类失效同步失败2026-10-08-增补) + [§1.2.3 同步与阶梯是两维](01-resilience-and-failover.md#123--这一阶梯量不到的一维同步2026-10-08-增补)
 - …行程中途要改计划怎么办？ → [§1.6 爆炸半径与局部重算](01-resilience-and-failover.md#16-中断处理爆炸半径与局部重算)
 - …怎么保证产物断网不白屏？ → [§5.7 自检阶段](05-compiler-pipeline.md#57-自检阶段离线可用性静态断言)
 - …怎么把路线送进车机？ → [§2.3 Tier 0 详解](02-cockpit-protocol.md#23-tier-0-详解真正的交付主力)
