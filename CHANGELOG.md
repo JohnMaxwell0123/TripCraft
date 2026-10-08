@@ -15,8 +15,9 @@
   - 新增 `tools/check-trace.mjs` 零依赖追溯校验脚本，实现场景 (S-)、功能 (F-)、架构决策 (ADR-) 与商业假设 (A-) 的自动化闭环校验（深度校验场景表格行关联）。
   - 扩展 `tools/check-links.mjs` 递归扫描全量文档，修复原脚本失效链接未触发非 0 退出代码的静默放行隐患，增加目录相对链接合法性校验。
   - 将 `check-trace` 纳入 `package.json` 的 `npm run check` 统一门禁。
-- **全局首页与文档索引重构**：
-  - 根目录 `README.md` 首句调整为多端协同 App 定位，全面更新组件设计/实现状态表、B2B2C 价值流与架构分层图。
+- **全局首页与文档索引重构 (README & Metadata)**：
+  - 重做 GitHub 仓库首页 `README.md`，确立面向自驾与深度游的智能旅行路书系统全案定位（About），新增行业四大痛点与破局矩阵、B2B2C 价值流动飞轮与五大核心架构亮点。
+  - 同步更新 `package.json` 的 `description` 元数据为系统架构全案定位，纠正历史过时的单点规范描述，并提供 GitHub About 仓库配置建议。
   - 同步更新 `docs/README.md`、`docs/WHITEPAPER.md` 与 `docs/ASSUMPTIONS.md`（追加 A-08 至 A-12）。
 
 ## [2026-10-08] - 定位调整、假设台账与知识产权规范化
