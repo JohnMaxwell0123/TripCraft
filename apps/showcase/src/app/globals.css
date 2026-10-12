@@ -1,0 +1,209 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+ * TripCraft 设计令牌 · 敦煌金 (dunhuang-gold)
+ * 来源：docs/09-visual-design-system.md §9.2.2 / docs/SHOWCASE-web-design.md §2.1
+ * 「沉，不是亮」——氧化金箔、青金石、沙色暖白、赭石红、暖褐黑（不用纯黑）
+ * ======================================================================== */
+:root {
+  --tc-sand: 242 232 213;       /* #F2E8D5 沙 */
+  --tc-paper: 250 245 235;      /* #FAF5EB 亚麻纸 */
+  --tc-ink: 58 46 31;           /* #3A2E1F 暖褐黑 */
+  --tc-ink-soft: 107 93 74;     /* #6B5D4A 次级文字（对沙底 ≥ 4.5:1） */
+  --tc-gold: 184 134 59;        /* #B8863B 氧化金箔（装饰 / 大字） */
+  --tc-gold-ink: 122 85 32;     /* #7A5520 金色文字（对沙底 ≥ 4.5:1） */
+  --tc-lapis: 31 78 121;        /* #1F4E79 青金石蓝 */
+  --tc-lapis-deep: 14 26 44;    /* #0E1A2C 戈壁夜空 */
+  --tc-ochre: 140 58 43;        /* #8C3A2B 赭石红 */
+  --tc-jade: 14 134 116;        /* #0E8674 青甘碧（通行 / 成功） */
+  --tc-amber: 176 112 16;       /* #B07010 琥珀（提醒） */
+  --tc-dusk: 201 138 90;        /* #C98A5A 鸣沙山落日 */
+  --tc-accent: var(--tc-gold);  /* 白标换肤可覆盖 */
+
+  --tc-glass-bg: 255 252 246;
+  --tc-ease-dust: cubic-bezier(0.22, 0.8, 0.24, 1);
+
+  color-scheme: light;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: auto;
+}
+
+body {
+  background: rgb(var(--tc-sand));
+  color: rgb(var(--tc-ink));
+  font-feature-settings: 'palt' 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgb(var(--tc-gold) / 0.3);
+}
+
+:focus-visible {
+  outline: 2px solid rgb(var(--tc-lapis));
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+@layer components {
+  /* 苹果液态玻璃：背景模糊 + 轻量透明底 + 1px 高光反射边 */
+  .glass {
+    background: rgb(var(--tc-glass-bg) / 0.62);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgb(255 255 255 / 0.65);
+    box-shadow: 0 20px 50px rgb(58 46 31 / 0.12), inset 0 1px 0 rgb(255 255 255 / 0.7);
+  }
+  .glass-strong {
+    background: rgb(var(--tc-glass-bg) / 0.8);
+    -webkit-backdrop-filter: blur(28px) saturate(190%);
+    backdrop-filter: blur(28px) saturate(190%);
+    border: 1px solid rgb(255 255 255 / 0.75);
+    box-shadow: 0 40px 100px rgb(31 34 48 / 0.24), inset 0 1px 0 rgb(255 255 255 / 0.8);
+  }
+  .glass-dark {
+    background: rgb(var(--tc-lapis-deep) / 0.55);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgb(255 255 255 / 0.12);
+    box-shadow: 0 20px 50px rgb(0 0 0 / 0.3), inset 0 1px 0 rgb(255 255 255 / 0.12);
+  }
+  /* 次级嵌套玻璃（用于 StageWindow 内部子面板，避免多重 backdrop-filter 嵌套导致 GPU 复合光栅化过载） */
+  .glass-sub {
+    background: rgb(var(--tc-paper) / 0.72);
+    border: 1px solid rgb(255 255 255 / 0.65);
+    box-shadow: 0 10px 24px rgb(58 46 31 / 0.08), inset 0 1px 0 rgb(255 255 255 / 0.75);
+  }
+  /* macOS 软件模拟窗口边框体系：高精度细边框 + 顶部内高光 + 弥散深阴影 */
+  .macos-window {
+    border: 1px solid rgb(var(--tc-ink) / 0.12);
+    box-shadow:
+      0 32px 80px -12px rgb(31 34 48 / 0.28),
+      0 12px 32px -4px rgb(58 46 31 / 0.12),
+      0 2px 8px -1px rgb(31 34 48 / 0.06),
+      inset 0 1px 0 0 rgb(255 255 255 / 0.85);
+  }
+  /* 顶部微高光反光线 */
+  .glass-sheen {
+    position: relative;
+    isolation: isolate;
+  }
+  .glass-sheen::before {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.9), transparent);
+    z-index: 40;
+  }
+
+  .paper-texture {
+    background-image:
+      radial-gradient(rgb(var(--tc-ink) / 0.035) 1px, transparent 1px),
+      radial-gradient(rgb(var(--tc-ink) / 0.025) 1px, transparent 1px);
+    background-size: 7px 7px, 13px 13px;
+    background-position: 0 0, 3px 5px;
+  }
+
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.28em];
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium;
+  }
+
+  .btn-primary {
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold transition;
+    background: linear-gradient(180deg, rgb(var(--tc-gold)), rgb(var(--tc-gold-ink)));
+    color: rgb(var(--tc-paper));
+    box-shadow: 0 10px 30px rgb(var(--tc-gold) / 0.35), inset 0 1px 0 rgb(255 255 255 / 0.35);
+  }
+  .btn-primary:hover {
+    filter: brightness(1.06);
+  }
+  .btn-ghost {
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full border px-6 text-sm font-semibold transition;
+  }
+
+  .mask-fade-b {
+    -webkit-mask-image: linear-gradient(180deg, #000 82%, transparent);
+    mask-image: linear-gradient(180deg, #000 82%, transparent);
+  }
+}
+
+@layer utilities {
+  .gpu-layer {
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+}
+
+/* 弱 GPU / 不支持 backdrop-filter：回退高对比半透明实色（SHOWCASE §6.3-3） */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass { background: rgb(var(--tc-glass-bg) / 0.94); }
+  .glass-strong { background: rgb(var(--tc-glass-bg) / 0.97); }
+  .glass-dark { background: rgb(var(--tc-lapis-deep) / 0.92); }
+}
+html[data-lowfx='true'] .glass,
+html[data-lowfx='true'] .glass-strong,
+html[data-lowfx='true'] .glass-dark {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+html[data-lowfx='true'] .glass { background: rgb(var(--tc-glass-bg) / 0.94); }
+html[data-lowfx='true'] .glass-strong { background: rgb(var(--tc-glass-bg) / 0.97); }
+html[data-lowfx='true'] .glass-dark { background: rgb(var(--tc-lapis-deep) / 0.92); }
+html[data-lowfx='true'] .glass-sub { background: rgb(var(--tc-paper) / 0.94); }
+
+/* ==========================================================================
+ * 滚动期间 GPU 轻量化降级策略（Apple Scrollytelling 60fps/120fps 极速渲染）
+ * 在高速吸顶滚动期间暂停全屏实时模糊复合计算，
+ * 采用固化半透明底色，滚动停顿（idle 120ms）后瞬间恢复液态玻璃质感。
+ * ======================================================================== */
+html[data-scrolling='true'] .glass,
+html[data-scrolling='true'] .glass-strong,
+html[data-scrolling='true'] .glass-dark,
+html[data-scrolling='true'] .modal-backdrop,
+html[data-scrolling='true'] [class*='backdrop-blur'] {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+html[data-scrolling='true'] .stage-glow {
+  filter: none !important;
+}
+html[data-scrolling='true'] .glass {
+  background: rgb(var(--tc-glass-bg) / 0.88) !important;
+}
+html[data-scrolling='true'] .glass-strong {
+  background: rgb(var(--tc-glass-bg) / 0.95) !important;
+}
+html[data-scrolling='true'] .glass-dark {
+  background: rgb(var(--tc-lapis-deep) / 0.92) !important;
+}
+html[data-scrolling='true'] .glass-sub {
+  background: rgb(var(--tc-paper) / 0.88) !important;
+}
+html[data-scrolling='true'] .modal-backdrop {
+  background: rgb(var(--tc-lapis-deep) / 0.35) !important;
+}
+
+/* 减弱动态效果：关闭装饰性循环动画（滚动联动的平移/缩放在 JS 层降级为纯淡入） */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

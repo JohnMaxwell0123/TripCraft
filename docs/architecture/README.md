@@ -17,6 +17,7 @@
 | **ARC-07** | 安全、隐私与合规 | [`ARC-07-security-privacy-compliance.md`](ARC-07-security-privacy-compliance.md) | 六级数据资产分类、威胁与滥用矩阵、隐私设计原则、合规审查清单与应急响应。 |
 | **ARC-08** | 非功能需求与拓扑 | [`ARC-08-nfr-deployment-cost.md`](ARC-08-nfr-deployment-cost.md) | 8 大 NFR 指标（Proposed）、云原生部署拓扑、节假日流量特征与成本驱动分析。 |
 | **ARC-09** | 架构决策记录索引 | [`ARC-09-adr-index.md`](ARC-09-adr-index.md) | 汇总 ADR-001 ~ ADR-008 技术选型取舍与重新评估触发条件。 |
+| **ARC-10** | Web 全功能系统开发设计 | [`ARC-10-web-system-design.md`](ARC-10-web-system-design.md) | 面向全栈施工的 Web 端技术架构、信息架构路由、M01~M14 实施规格、API 与里程碑。 |
 
 ---
 

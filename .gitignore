@@ -10,3 +10,8 @@ package-lock.json
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Next.js & TypeScript build outputs
+.next/
+out/
+*.tsbuildinfo

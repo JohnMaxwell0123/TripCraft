@@ -9,7 +9,11 @@
     "check-links": "node tools/check-links.mjs \"{README.md,docs/**/*.md,docs/*.md}\"",
     "check-br025": "node tools/check-br025.mjs --self-test",
     "check-trace": "node tools/check-trace.mjs",
-    "check": "npm run validate && npm run check-links && npm run check-br025 && npm run check-trace"
+    "check": "npm run validate && npm run check-links && npm run check-br025 && npm run check-trace",
+    "showcase:dev": "npm --prefix apps/showcase run dev",
+    "showcase:build": "npm --prefix apps/showcase run build",
+    "showcase:serve": "node apps/showcase/server.mjs",
+    "showcase:typecheck": "npm --prefix apps/showcase run typecheck"
   },
   "devDependencies": {
     "ajv": "^8.17.1",
