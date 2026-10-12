@@ -37,7 +37,7 @@ export function Navbar() {
           href="#"
           className="group flex items-center gap-3 no-underline transition-opacity hover:opacity-90"
         >
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 font-serif text-lg font-bold text-white shadow-md ring-1 ring-white/20 transition-transform duration-300 group-hover:scale-105">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 font-sans text-base font-bold text-white shadow-md ring-1 ring-white/20 transition-transform duration-300 group-hover:scale-105">
             旅
           </span>
           <div className="flex flex-col">

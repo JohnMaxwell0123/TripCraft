@@ -13,6 +13,7 @@ interface Pillar {
   summary: string;
   highlights: { label: string; desc: string }[];
   contractBadge: string;
+  shortTitle: string;
   codeSnippet: {
     filename: string;
     language: string;
@@ -27,6 +28,7 @@ const PILLARS: Pillar[] = [
     tag: '数据主权 · 极端弹性',
     number: '01',
     title: 'Local-First 本地优先与极端网络弹性',
+    shortTitle: 'Local-First 架构',
     enTitle: 'Extreme Network Resilience & Local Sovereignty',
     quote: '“断网绝非异常，而是荒野自驾探索中的物理常态。”',
     summary:
@@ -71,6 +73,7 @@ export async function resolveMapLayer(ctx: RenderContext): Promise<MapRenderer> 
     tag: '形式契约 · 语法中枢',
     number: '02',
     title: '可执行 DSL 作为唯一真相源',
+    shortTitle: '可执行 DSL 契约',
     enTitle: 'Executable DSL as the Single Source of Truth',
     quote: '“路书不是凌乱的图文备忘，而是一份结构严谨、机器可执行的自驾程序。”',
     summary:
@@ -125,6 +128,7 @@ export async function resolveMapLayer(ctx: RenderContext): Promise<MapRenderer> 
     tag: '客观刚性 · 拒绝幻觉',
     number: '03',
     title: '双轨防幻觉与物理安全断言',
+    shortTitle: '双轨物理防御引擎',
     enTitle: 'Dual-Track Guardrails & Physical Rule Assertions',
     quote: '“客观物理规律是刚性红线，AI 是懂人性与美学的同路副驾。”',
     summary:
@@ -169,6 +173,7 @@ export function assertVehicleClearance(vehicle: VehicleMeta, poi: PoiNode): Asse
     tag: '单文件秒开 · 座舱协议',
     number: '04',
     title: '零构建自包含编译器与座舱互联',
+    shortTitle: '零构建单文件编译',
     enTitle: 'Zero-Build Compiler & Tier 0 Cockpit Protocol',
     quote: '“随处可开，零依赖安装，做一件真正能带走的数字化艺术品。”',
     summary:
@@ -244,7 +249,7 @@ export function TechFoundation() {
       <div className="relative mx-auto max-w-[1240px] px-4 sm:px-8">
         {/* Section Header */}
         <div className="text-center">
-          <p className="eyebrow text-gold-ink">ENGINEERING FOUNDATION & PHILOSOPHY · 技术底座与工程哲学</p>
+          <p className="eyebrow text-blue-600 font-semibold">ENGINEERING FOUNDATION & PHILOSOPHY · 技术底座与工程哲学</p>
           <h2 className="mt-3 font-sans text-3xl font-bold tracking-tight text-ink sm:text-5xl">
             支撑旅艺的硬核技术底座
           </h2>
@@ -255,23 +260,23 @@ export function TechFoundation() {
 
         {/* Engineering Hard Benchmarks Bar */}
         <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-          <div className="glass rounded-2xl p-4 sm:p-5 text-center transition-all duration-300 hover:border-gold/40">
-            <p className="font-serif text-2xl font-bold text-gold-ink sm:text-3xl">≤ 1.8 MB</p>
+          <div className="glass rounded-2xl p-4 sm:p-5 text-center transition-all duration-300 hover:border-slate-300">
+            <p className="font-mono text-2xl font-bold text-slate-900 sm:text-3xl">≤ 1.8 MB</p>
             <p className="mt-1 text-xs font-semibold text-ink">单文件自包含体积</p>
             <p className="text-[11px] text-ink-soft">含全量矢量图与子集字体</p>
           </div>
-          <div className="glass rounded-2xl p-4 sm:p-5 text-center transition-all duration-300 hover:border-gold/40">
-            <p className="font-serif text-2xl font-bold text-jade sm:text-3xl">&lt; 300 ms</p>
+          <div className="glass rounded-2xl p-4 sm:p-5 text-center transition-all duration-300 hover:border-slate-300">
+            <p className="font-mono text-2xl font-bold text-emerald-600 sm:text-3xl">&lt; 300 ms</p>
             <p className="mt-1 text-xs font-semibold text-ink">离线双击秒开耗时</p>
             <p className="text-[11px] text-ink-soft">零网络冷启动首屏</p>
           </div>
-          <div className="glass rounded-2xl p-4 sm:p-5 text-center transition-all duration-300 hover:border-gold/40">
-            <p className="font-serif text-2xl font-bold text-ochre sm:text-3xl">25 道</p>
+          <div className="glass rounded-2xl p-4 sm:p-5 text-center transition-all duration-300 hover:border-slate-300">
+            <p className="font-mono text-2xl font-bold text-rose-600 sm:text-3xl">25 道</p>
             <p className="mt-1 text-xs font-semibold text-ink">物理规则刚性防御墙</p>
             <p className="text-[11px] text-ink-soft">BR-001~025 彻底杜绝幻觉</p>
           </div>
-          <div className="glass rounded-2xl p-4 sm:p-5 text-center transition-all duration-300 hover:border-gold/40">
-            <p className="font-serif text-2xl font-bold text-lapis sm:text-3xl">Tier 0</p>
+          <div className="glass rounded-2xl p-4 sm:p-5 text-center transition-all duration-300 hover:border-slate-300">
+            <p className="font-mono text-2xl font-bold text-blue-600 sm:text-3xl">Tier 0</p>
             <p className="mt-1 text-xs font-semibold text-ink">极简座舱互联协议</p>
             <p className="text-[11px] text-ink-soft">零前装准入深度唤醒</p>
           </div>
@@ -291,15 +296,15 @@ export function TechFoundation() {
                 }}
                 className={`relative rounded-2xl p-4 text-left transition-all duration-300 flex flex-col justify-between ${
                   isSelected
-                    ? 'glass-strong ring-2 ring-gold/60 shadow-lg -translate-y-1'
+                    ? 'glass-strong ring-2 ring-blue-600/70 shadow-lg -translate-y-1'
                     : 'bg-paper/70 hover:bg-paper/95 border border-ink/[0.06] hover:border-ink/20'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between">
                     <span
-                      className={`font-serif text-lg font-bold ${
-                        isSelected ? 'text-gold-ink' : 'text-ink-soft'
+                      className={`font-mono text-lg font-bold ${
+                        isSelected ? 'text-blue-600' : 'text-slate-500'
                       }`}
                     >
                       {pillar.number}
@@ -308,8 +313,8 @@ export function TechFoundation() {
                       {pillar.tag.split('·')[0].trim()}
                     </span>
                   </div>
-                  <h3 className="mt-2 font-serif text-sm font-bold text-ink sm:text-base leading-snug">
-                    {pillar.title.split(' ')[0]}
+                  <h3 className="mt-2 font-sans text-sm font-bold text-ink sm:text-base leading-snug">
+                    {pillar.shortTitle}
                   </h3>
                 </div>
                 <p className="mt-3 text-[11px] text-ink-soft line-clamp-1">
@@ -334,23 +339,23 @@ export function TechFoundation() {
                 className="glass-strong rounded-3xl p-6 sm:p-8 shadow-xl"
               >
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-ink/[0.08] pb-4">
-                  <span className="font-serif text-3xl font-bold text-gold-ink">
+                  <span className="font-mono text-2xl font-bold text-slate-900">
                     PILLAR {activePillar.number}
                   </span>
-                  <span className="chip bg-gold/15 text-gold-ink font-semibold text-xs ring-1 ring-gold/30">
+                  <span className="chip bg-blue-50 text-blue-600 font-semibold text-xs ring-1 ring-blue-200">
                     {activePillar.contractBadge}
                   </span>
                 </div>
 
-                <h3 className="mt-5 font-serif text-2xl font-bold text-ink sm:text-3xl leading-snug">
+                <h3 className="mt-5 font-sans text-2xl font-bold text-ink sm:text-3xl leading-snug">
                   {activePillar.title}
                 </h3>
                 <p className="mt-1 text-xs font-mono uppercase tracking-wider text-ink-soft">
                   {activePillar.enTitle}
                 </p>
 
-                {/* Golden philosophical quote */}
-                <blockquote className="mt-5 rounded-2xl bg-gold/10 border-l-4 border-gold p-4 text-xs font-serif italic text-ink sm:text-sm leading-relaxed">
+                {/* Engineering philosophical quote */}
+                <blockquote className="mt-5 rounded-2xl bg-slate-100/90 border-l-4 border-blue-600 p-4 text-xs font-sans italic text-ink sm:text-sm leading-relaxed">
                   {activePillar.quote}
                 </blockquote>
 
@@ -491,7 +496,7 @@ export function TechFoundation() {
                   {activePillar.interactiveDemoType === 'compiler' && (
                     <div className="mt-3 rounded-xl bg-paper p-3 text-xs border border-ink/10 space-y-2">
                       <div className="flex items-center justify-between font-mono text-[11px]">
-                        <span className="text-ink font-semibold">打包目标: 西行计划.v1.1.html</span>
+                        <span className="text-ink font-semibold">打包目标: expedition-pro.v1.1.html</span>
                         <span className="text-jade font-bold">1.8 MB (已压缩)</span>
                       </div>
                       <div className="flex items-center gap-2 text-[11px] text-ink-soft">

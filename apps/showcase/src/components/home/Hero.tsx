@@ -20,7 +20,7 @@ export function Hero() {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>西行计划 · 自驾离线路书 (TripCraft 单文件自包含样例)</title>
+  <title>TripCraft · 数字化自驾离线路书 (单文件自包含交付样例)</title>
   <style>
     :root { --sand: #F8FAFC; --ink: #0F172A; --gold: #D97706; --paper: #FFFFFF; --jade: #10B981; }
     body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--sand); color: var(--ink); padding: 32px 20px; }
@@ -35,14 +35,14 @@ export function Hero() {
   <div class="card">
     <div class="badge">✓ TripCraft 单文件离线自包含交付 · 双击秒开 · 零网络依赖</div>
     <h1>全地形自驾路书 · 离线交互快照</h1>
-    <p style="color: #64748B; font-size: 14px;">9 天 1,980 km · 物理规则刚性防御引擎 · AST 状态已封存</p>
+    <p style="color: #64748B; font-size: 14px;">9 天 1,280 km · 物理规则刚性防御引擎 · AST 状态已封存</p>
     <div class="day">
-      <strong>D1 · 枢纽出征 & 车辆空间校验</strong><br>
-      <small style="color: #64748B;">全车整备 ➔ 地面专用车位就绪 ➔ 道路拓扑自动计算</small>
+      <strong>D1 · 枢纽启程 & 车辆姿态智能自检</strong><br>
+      <small style="color: #64748B;">全车整备 ➔ 地面专用宽位就绪 ➔ 道路拓扑自动计算</small>
     </div>
     <div class="day">
-      <strong>D2 · 连续弯道高程巡航</strong><br>
-      <small style="color: #64748B;">海拔爬升 2,980m ➔ 制动热衰减防御 ➔ 黄金采光窗口打卡</small>
+      <strong>D2 · 高地山海巡航 & 动力自适应配额</strong><br>
+      <small style="color: #64748B;">连续弯道高程巡航 ➔ 制动热衰减防御 ➔ 黄金采光窗口打卡</small>
     </div>
     <div class="tip">
       <strong>🛡️ BR-025 物理规则刚性防护：</strong>已完成车型外廓与老城地库限高通达断言，确保全地形探索安全无忧。
@@ -55,7 +55,7 @@ export function Hero() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'TripCraft_自驾离线路书_单文件样例.html';
+    a.download = 'TripCraft_数字化自驾路书_单文件离线样例.html';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -100,11 +100,11 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="mt-6 font-sans text-3xl font-extrabold tracking-tight text-ink sm:text-5xl lg:text-6xl lg:leading-[1.12]"
+              className="mt-6 font-sans text-3xl font-extrabold tracking-tight text-ink sm:text-5xl lg:text-[2.75rem] xl:text-[3.5rem] lg:leading-[1.16]"
             >
               让每一次自驾出行，
               <br />
-              <span className="bg-gradient-to-r from-slate-900 via-amber-600 to-blue-600 bg-clip-text text-transparent">
+              <span className="inline-block whitespace-nowrap bg-gradient-to-r from-slate-900 via-amber-600 to-blue-600 bg-clip-text text-transparent">
                 都成为有温度的活路书。
               </span>
             </motion.h1>
@@ -213,35 +213,49 @@ export function Hero() {
                   <button
                     type="button"
                     onClick={() => setActiveTab('canvas')}
-                    className={`flex-1 rounded-lg py-1.5 text-xs font-semibold transition-all ${
+                    className={`flex-1 flex items-center justify-center gap-1.5 rounded-lg py-1.5 text-xs font-semibold transition-all ${
                       activeTab === 'canvas'
                         ? 'bg-white text-slate-900 shadow-sm'
                         : 'text-slate-500 hover:text-slate-900'
                     }`}
                   >
-                    🗺️ 路线画布
+                    <svg className="h-3.5 w-3.5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
+                      <line x1="8" y1="2" x2="8" y2="18" />
+                      <line x1="16" y1="6" x2="16" y2="22" />
+                    </svg>
+                    <span>路线画布</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setActiveTab('schedule')}
-                    className={`flex-1 rounded-lg py-1.5 text-xs font-semibold transition-all ${
+                    className={`flex-1 flex items-center justify-center gap-1.5 rounded-lg py-1.5 text-xs font-semibold transition-all ${
                       activeTab === 'schedule'
                         ? 'bg-white text-slate-900 shadow-sm'
                         : 'text-slate-500 hover:text-slate-900'
                     }`}
                   >
-                    ⏱️ 智能排期
+                    <svg className="h-3.5 w-3.5 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10" />
+                      <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                    <span>智能排期</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setActiveTab('export')}
-                    className={`flex-1 rounded-lg py-1.5 text-xs font-semibold transition-all ${
+                    className={`flex-1 flex items-center justify-center gap-1.5 rounded-lg py-1.5 text-xs font-semibold transition-all ${
                       activeTab === 'export'
                         ? 'bg-white text-slate-900 shadow-sm'
                         : 'text-slate-500 hover:text-slate-900'
                     }`}
                   >
-                    📦 交付中枢
+                    <svg className="h-3.5 w-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                      <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                      <line x1="12" y1="22.08" x2="12" y2="12" />
+                    </svg>
+                    <span>交付中枢</span>
                   </button>
                 </div>
 
@@ -261,10 +275,10 @@ export function Hero() {
                         <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-slate-50/90 p-3 border border-slate-200/70">
                           <div>
                             <h4 className="text-xs font-bold text-slate-900">
-                              Expedition Pro · 全地形自驾方案
+                              Grand Tour Pro · 全地形自驾方案
                             </h4>
                             <p className="text-[10px] text-slate-500">
-                              工业级时序拓扑 · 实时动态约束
+                              工业级时序拓扑 · 动态物理安全约束
                             </p>
                           </div>
                           <div className="flex gap-1.5">
@@ -287,9 +301,9 @@ export function Hero() {
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center justify-between">
                                 <span className="text-xs font-semibold text-slate-900">
-                                  城市枢纽出征 · 车辆自检
+                                  城市枢纽启程 · 车辆自检
                                 </span>
-                                <span className="text-[10px] text-emerald-600 font-medium">✓ 已完成</span>
+                                <span className="text-[10px] text-emerald-600 font-medium">✓ 已就绪</span>
                               </div>
                               <p className="text-[10px] text-slate-500 truncate">
                                 能源充沛 100% · 地面专用车位就绪 · 避开老城限高
@@ -307,12 +321,12 @@ export function Hero() {
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center justify-between">
                                 <span className="text-xs font-semibold text-slate-900">
-                                  高程山隘爬升 · 巡航编排
+                                  高程山隘巡航 · 动力编排
                                 </span>
                                 <span className="text-[10px] text-blue-600 font-medium">● 编排中</span>
                               </div>
                               <p className="text-[10px] text-slate-500 truncate">
-                                连续坡道监控 · 制动降温窗口建议 · 海拔 2,980m
+                                连续坡道监控 · 制动降温窗口建议 · 动态高程补偿
                               </p>
                             </div>
                           </div>
@@ -327,12 +341,12 @@ export function Hero() {
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center justify-between">
                                 <span className="text-xs font-semibold text-slate-900">
-                                  荒野峡谷停泊 · 离线切片
+                                  山海营地停泊 · 离线切片
                                 </span>
                                 <span className="text-[10px] text-slate-400 font-medium">待触发</span>
                               </div>
                               <p className="text-[10px] text-slate-500 truncate">
-                                离线矢量 SVG 缓存预载 · 卫星坐标信标对齐
+                                离线矢量 SVG 缓存预载 · 卫星坐标信标对齐 · 本地 AST 封存
                               </p>
                             </div>
                           </div>
@@ -353,7 +367,7 @@ export function Hero() {
                               </span>
                             </div>
                             <span className="text-[11px] text-slate-600">
-                              Sarah 正在拖拽微调节点 #2
+                              Alex 正在拖拽微调节点 #2 · 14ms 本地重算
                             </span>
                           </div>
                           <span className="font-mono text-[10px] font-semibold text-slate-400">
@@ -386,7 +400,7 @@ export function Hero() {
                               </span>
                               <div>
                                 <p className="font-semibold text-slate-800">启程预检与全车胎压核准</p>
-                                <p className="text-[10px] text-slate-500">避开早高峰，规划最优出城高架路线</p>
+                                <p className="text-[10px] text-slate-500">避开早高峰，规划最优出城环线</p>
                               </div>
                             </div>
                             <div className="flex items-start gap-2.5">
@@ -394,7 +408,7 @@ export function Hero() {
                                 12:15
                               </span>
                               <div>
-                                <p className="font-semibold text-slate-800">观景驿站就餐与驾驶员轮换</p>
+                                <p className="font-semibold text-slate-800">高景驿站补给与驾驶员轮换</p>
                                 <p className="text-[10px] text-slate-500">地面宽敞停车位，避免高车顶箱倒车死角</p>
                               </div>
                             </div>
@@ -403,8 +417,8 @@ export function Hero() {
                                 16:45
                               </span>
                               <div>
-                                <p className="font-semibold text-slate-800">峡谷黄金光照摄影窗口</p>
-                                <p className="text-[10px] text-slate-500">落日黄金期打卡，提前预载离线矢量图</p>
+                                <p className="font-semibold text-slate-800">黄金采光摄影窗口与营地停泊</p>
+                                <p className="text-[10px] text-slate-500">落日黄金光照窗口打卡，提前预载离线矢量图</p>
                               </div>
                             </div>
                           </div>
@@ -459,7 +473,7 @@ export function Hero() {
                         </button>
 
                         <p className="text-center text-[10px] text-slate-500">
-                          双击秒开 · 0 外部请求 · 断网也能带走旅行的全部记忆
+                          双击秒开 · 0 外部网络请求 · 断网也能带走旅行的全部记忆
                         </p>
                       </motion.div>
                     )}
@@ -477,12 +491,12 @@ export function Hero() {
               </div>
 
               {/* Floating Ambient Badges (Linear style) */}
-              <div className="absolute -top-3 -right-3 rounded-2xl border border-slate-200/80 bg-white/95 px-3 py-1.5 shadow-lg backdrop-blur-md">
+              <div className="absolute -top-3.5 -right-3 sm:-top-4 sm:-right-4 rounded-full border border-slate-200/90 bg-white/95 px-3 py-1 shadow-md backdrop-blur-md ring-1 ring-slate-900/[0.04] z-20">
                 <span className="font-mono text-xs font-bold text-emerald-600">⚡ 14ms</span>
                 <span className="ml-1 text-[11px] font-medium text-slate-700">纯前端秒级重算</span>
               </div>
 
-              <div className="absolute -bottom-3 -left-3 rounded-2xl border border-slate-200/80 bg-white/95 px-3 py-1.5 shadow-lg backdrop-blur-md">
+              <div className="absolute -bottom-3.5 -left-3 sm:-bottom-4 sm:-left-4 rounded-full border border-slate-200/90 bg-white/95 px-3 py-1 shadow-md backdrop-blur-md ring-1 ring-slate-900/[0.04] z-20">
                 <span className="text-xs">🛡️</span>
                 <span className="ml-1 text-[11px] font-medium text-slate-700">
                   100% 本地隐私 · 离线全穿透

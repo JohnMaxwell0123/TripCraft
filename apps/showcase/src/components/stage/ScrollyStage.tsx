@@ -513,11 +513,11 @@ function StageBackdrop() {
   return (
     <div aria-hidden className="paper-texture absolute inset-0">
       <motion.div
-        className="stage-glow absolute -top-1/3 left-0 h-[90vh] w-[90vh] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgb(var(--tc-dusk)/0.35),transparent_65%)] blur-2xl will-change-transform gpu-layer"
+        className="stage-glow absolute -top-1/3 left-0 h-[90vh] w-[90vh] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.08),transparent_65%)] blur-2xl will-change-transform gpu-layer"
         style={{ x: glowTransform }}
       />
       <motion.div
-        className="stage-glow absolute -bottom-1/3 right-0 h-[80vh] w-[80vh] rounded-full bg-[radial-gradient(circle,rgb(var(--tc-lapis)/0.16),transparent_65%)] blur-2xl will-change-transform gpu-layer"
+        className="stage-glow absolute -bottom-1/3 right-0 h-[80vh] w-[80vh] rounded-full bg-[radial-gradient(circle,rgb(var(--tc-lapis)/0.12),transparent_65%)] blur-2xl will-change-transform gpu-layer"
         style={{ opacity: glowHue }}
       />
     </div>
@@ -556,7 +556,7 @@ function Caption({ chapter, first, last }: { chapter: Chapter; first: boolean; l
       style={{ opacity, y, visibility }}
       aria-hidden={false}
     >
-      <p className="eyebrow text-gold-ink">{chapter.eyebrow}</p>
+      <p className="eyebrow text-blue-600 font-semibold">{chapter.eyebrow}</p>
       <h2 className="mt-2 text-balance font-sans text-[1.45rem] font-bold leading-tight text-ink md:text-[2.4rem]">{chapter.title}</h2>
       <p className="mt-2 max-w-2xl text-pretty text-[13px] leading-relaxed text-ink-soft md:text-[15px]">{chapter.desc}</p>
     </motion.div>

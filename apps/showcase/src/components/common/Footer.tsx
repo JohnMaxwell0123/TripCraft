@@ -59,7 +59,7 @@ export function Footer() {
           {/* Column 1: Brand & Philosophy */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 font-serif text-sm font-bold text-white shadow-sm ring-1 ring-white/20">
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 font-sans text-sm font-bold text-white shadow-sm ring-1 ring-white/20">
                 旅
               </span>
               <span className="font-sans text-base font-bold text-ink">TripCraft · 旅艺</span>
@@ -72,7 +72,7 @@ export function Footer() {
 
           {/* Column 2: Data Contracts & Specifications */}
           <div>
-            <p className="font-serif text-xs font-bold uppercase tracking-wider text-ink">
+            <p className="font-sans text-xs font-bold uppercase tracking-wider text-ink">
               数据契约规范
             </p>
             <ul className="mt-3 space-y-2 text-xs text-ink-soft">
@@ -93,28 +93,28 @@ export function Footer() {
 
           {/* Column 3: Design Tokens & Systems */}
           <div>
-            <p className="font-serif text-xs font-bold uppercase tracking-wider text-ink">
+            <p className="font-sans text-xs font-bold uppercase tracking-wider text-ink">
               视觉系统与主题
             </p>
             <ul className="mt-3 space-y-2 text-xs text-ink-soft">
               <li>
                 <span className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-gold" /> 敦煌金 (Dunhuang Gold)
+                  <span className="h-2.5 w-2.5 rounded-full bg-blue-600" /> 远峰蓝 (Summit Blue)
                 </span>
               </li>
               <li>
                 <span className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-jade" /> 青甘碧 (Qinggan Emerald)
+                  <span className="h-2.5 w-2.5 rounded-full bg-gold" /> 琥珀金 (Amber Gold)
                 </span>
               </li>
               <li>
                 <span className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-lapis" /> 青金蓝 (Lapis Blue)
+                  <span className="h-2.5 w-2.5 rounded-full bg-jade" /> 青甘碧 (Alpine Emerald)
                 </span>
               </li>
               <li>
                 <span className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-ochre" /> 丹霞红 (Danxia Red)
+                  <span className="h-2.5 w-2.5 rounded-full bg-purple-600" /> 赛博紫 (Cyber Violet)
                 </span>
               </li>
             </ul>
@@ -122,7 +122,7 @@ export function Footer() {
 
           {/* Column 4: Compliance & Attestation */}
           <div>
-            <p className="font-serif text-xs font-bold uppercase tracking-wider text-ink">
+            <p className="font-sans text-xs font-bold uppercase tracking-wider text-ink">
               无障碍与数据主权
             </p>
             <ul className="mt-3 space-y-2 text-xs text-ink-soft">
@@ -139,7 +139,7 @@ export function Footer() {
           <p>© 2026 TripCraft (旅艺) 项目团队. 基于开源与专业自驾工程经验构建.</p>
           <button
             onClick={scrollToTop}
-            className="flex items-center gap-1 text-gold-ink hover:text-ink transition-colors font-medium"
+            className="flex items-center gap-1 text-blue-600 hover:text-blue-700 transition-colors font-medium"
           >
             <span>返回页面顶部</span>
             <span>↑</span>

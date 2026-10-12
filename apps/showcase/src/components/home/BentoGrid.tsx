@@ -9,17 +9,17 @@ export function BentoGrid() {
 
   // Card 4 State: B2B whitelabel brand customizer
   const [selectedBrand, setSelectedBrand] = useState({
-    name: '金马国旅定制中心',
-    primary: '#B8863B',
-    accent: '#7A5520',
-    themeName: '敦煌金 (Dunhuang Gold)',
+    name: 'Horizon Expeditions · 高山探索社',
+    primary: '#2563EB',
+    accent: '#1D4ED8',
+    themeName: '远峰蓝',
   });
 
   const BRANDS = [
-    { name: '金马国旅定制中心', primary: '#B8863B', accent: '#7A5520', themeName: '敦煌金' },
-    { name: '大漠星途探险俱乐部', primary: '#1F4E79', accent: '#0E1A2C', themeName: '青金蓝' },
-    { name: '青甘高原生态科考', primary: '#0E8674', accent: '#0A5D51', themeName: '青甘碧' },
-    { name: '丝路极光奢享之旅', primary: '#7C3AED', accent: '#5B21B6', themeName: '赛博紫' },
+    { name: 'Horizon Expeditions · 高山探索社', primary: '#2563EB', accent: '#1D4ED8', themeName: '远峰蓝' },
+    { name: 'Silk Road Prestige · 丝路定制行', primary: '#D97706', accent: '#B45309', themeName: '琥珀金' },
+    { name: 'Verdant Eco-Drive · 青翠生态巡航', primary: '#10B981', accent: '#059669', themeName: '翡翠绿' },
+    { name: 'Aurora Grand Tour · 极光纵横自驾', primary: '#7C3AED', accent: '#6D28D9', themeName: '赛博紫' },
   ];
 
   // Card 5 State: Vehicle Clearance Simulator (7-seat MPV + Roof Box)
@@ -30,7 +30,7 @@ export function BentoGrid() {
       <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
         {/* Section Header */}
         <div className="text-center">
-          <p className="eyebrow text-gold-ink">CAPABILITY MATRIX · 全能力矩阵画廊</p>
+          <p className="eyebrow text-blue-600 font-semibold">CAPABILITY MATRIX · 工业级能力矩阵</p>
           <h2 className="mt-2 font-sans text-3xl font-bold tracking-tight text-ink sm:text-4xl">
             不只是好看，更是坚韧的工业级系统
           </h2>
@@ -49,7 +49,7 @@ export function BentoGrid() {
               </span>
               <span className="font-mono text-xs text-ink-soft">1.8 MB · 零外部请求</span>
             </div>
-            <h3 className="mt-4 font-serif text-lg font-bold text-ink">
+            <h3 className="mt-4 font-sans text-lg font-bold tracking-tight text-ink">
               零构建单文件 HTML 秒开
             </h3>
             <p className="mt-1 text-xs text-ink-soft leading-relaxed">
@@ -99,11 +99,11 @@ export function BentoGrid() {
                 <span>{isOffline ? '✈ 正在断网演练' : '● 网络正常'}</span>
               </button>
             </div>
-            <h3 className="mt-4 font-serif text-lg font-bold text-ink">
+            <h3 className="mt-4 font-sans text-lg font-bold tracking-tight text-ink">
               无人区离线与增量补丁
             </h3>
             <p className="mt-1 text-xs text-ink-soft leading-relaxed">
-              自驾途经敦煌西线雅丹等无信号区域，自动切入 IndexedDB 离线模式，绝不发生白屏崩溃。
+              自驾途经荒野峡谷、高海拔隧道或远郊无信号区域，自动切入 IndexedDB 离线模式，绝不发生白屏崩溃。
             </p>
 
             <div className="mt-5 rounded-2xl bg-paper/90 p-4 ring-1 ring-ink/10">
@@ -142,7 +142,7 @@ export function BentoGrid() {
               </span>
               <span className="font-mono text-xs text-ink-soft">Tier 0 免签约</span>
             </div>
-            <h3 className="mt-4 font-serif text-lg font-bold text-ink">
+            <h3 className="mt-4 font-sans text-lg font-bold tracking-tight text-ink">
               车机投屏与途经点协议
             </h3>
             <p className="mt-1 text-xs text-ink-soft leading-relaxed">
@@ -151,12 +151,12 @@ export function BentoGrid() {
 
             <div className="mt-5 rounded-2xl bg-[#14171c] p-3.5 text-paper shadow-md">
               <div className="flex items-center justify-between text-[11px] text-white/60">
-                <span>考斯特车载大屏实时镜像</span>
-                <span className="text-gold">HUD 导航中</span>
+                <span>车载大屏实时镜像</span>
+                <span className="text-amber-400">HUD 导航中</span>
               </div>
               <div className="mt-2 flex items-center gap-2 text-sm font-semibold text-white">
                 <span className="text-lg">🛣</span>
-                <span>当前路段：G30 连霍高速 ➔ 武威服务区</span>
+                <span>当前路段：跨区域自驾主干道 ➔ 高原观景服务区</span>
               </div>
               <div className="mt-2.5 flex items-center justify-between text-[10px] text-white/50 border-t border-white/10 pt-2">
                 <span>车辆尺寸: 6.99m × 2.03m × 2.8m</span>
@@ -173,7 +173,7 @@ export function BentoGrid() {
               </span>
               <span className="font-mono text-xs text-ink-soft">机构独家专属</span>
             </div>
-            <h3 className="mt-4 font-serif text-lg font-bold text-ink">
+            <h3 className="mt-4 font-sans text-lg font-bold tracking-tight text-ink">
               旅行社白标与品牌换肤
             </h3>
             <p className="mt-1 text-xs text-ink-soft leading-relaxed">
@@ -211,7 +211,7 @@ export function BentoGrid() {
             >
               <div className="flex items-center justify-between">
                 <span
-                  className="font-serif text-xs font-bold"
+                  className="font-sans text-xs font-bold"
                   style={{ color: selectedBrand.primary }}
                 >
                   {selectedBrand.name}
@@ -219,7 +219,7 @@ export function BentoGrid() {
                 <span className="text-[10px] text-ink-soft">官方认证路书</span>
               </div>
               <p className="mt-1.5 text-xs font-semibold text-ink">
-                甘青大环线 · 尊享 9 日私人订制行
+                全地形全景漫游 · 尊享 9 日私人订制行
               </p>
               <p className="mt-1 text-[10px] text-ink-soft">
                 已根据 spec/brand.schema.json 完成资产签名验真
@@ -235,7 +235,7 @@ export function BentoGrid() {
               </span>
               <span className="font-mono text-xs text-ink-soft">自驾车型工程建模</span>
             </div>
-            <h3 className="mt-4 font-serif text-lg font-bold text-ink">
+            <h3 className="mt-4 font-sans text-lg font-bold tracking-tight text-ink">
               7座 MPV 车顶箱限高通达校验
             </h3>
             <p className="mt-1 text-xs text-ink-soft leading-relaxed">
@@ -246,7 +246,7 @@ export function BentoGrid() {
             <div className="mt-4 rounded-2xl bg-paper/90 p-4 ring-1 ring-ink/10">
               <div className="flex items-center justify-between text-xs">
                 <span className="text-ink-soft">当前模拟车辆总高：</span>
-                <span className="font-serif font-bold text-ink text-sm">
+                <span className="font-mono font-bold text-ink text-sm">
                   {vehicleHeight.toFixed(2)} 米
                 </span>
               </div>
@@ -257,7 +257,7 @@ export function BentoGrid() {
                 step="0.05"
                 value={vehicleHeight}
                 onChange={(e) => setVehicleHeight(parseFloat(e.target.value))}
-                className="mt-2 w-full accent-gold cursor-pointer"
+                className="mt-2 w-full accent-blue-600 cursor-pointer"
               />
 
               <div className="mt-3 flex items-center justify-between text-xs">
@@ -286,7 +286,7 @@ export function BentoGrid() {
               </span>
               <span className="font-mono text-xs text-ink-soft">纯前端 Web Worker</span>
             </div>
-            <h3 className="mt-4 font-serif text-lg font-bold text-ink">
+            <h3 className="mt-4 font-sans text-lg font-bold tracking-tight text-ink">
               本地 EXIF 隐私足迹生成
             </h3>
             <p className="mt-1 text-xs text-ink-soft leading-relaxed">
@@ -299,9 +299,9 @@ export function BentoGrid() {
                 <span className="text-jade font-bold">100% 本地运算</span>
               </div>
               <div className="mt-2.5 flex items-center gap-2">
-                <span className="rounded-md bg-gold/15 p-1.5 text-base">📸</span>
+                <span className="rounded-md bg-blue-50 p-1.5 text-base">📸</span>
                 <div className="min-w-0 flex-1 text-[11px] text-ink-soft">
-                  <p className="font-medium text-ink truncate">莫高窟九层楼 · 19:42 鸣沙山落日</p>
+                  <p className="font-medium text-ink truncate">国家地质公园 · 19:42 湖畔落日</p>
                   <p className="text-[10px]">根据 GPS 经纬度与时间戳自动对齐到路书 D4 节点</p>
                 </div>
               </div>
