@@ -230,22 +230,22 @@ export function TechFoundation() {
   };
 
   return (
-    <section id="foundation" className="relative py-24 bg-sand/70 border-t border-ink/[0.08]">
+    <section id="foundation" className="relative py-24 bg-slate-50/60 border-t border-slate-200/80">
       {/* Decorative ambient background glows */}
       <div
         aria-hidden
-        className="pointer-events-none absolute top-12 left-1/4 h-96 w-96 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgb(var(--tc-gold)/0.12),transparent_70%)] blur-3xl"
+        className="pointer-events-none absolute top-12 left-1/4 h-96 w-96 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.06),transparent_70%)] blur-3xl"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute bottom-12 right-1/4 h-96 w-96 translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgb(var(--tc-lapis)/0.08),transparent_70%)] blur-3xl"
+        className="pointer-events-none absolute bottom-12 right-1/4 h-96 w-96 translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(217,119,6,0.05),transparent_70%)] blur-3xl"
       />
 
       <div className="relative mx-auto max-w-[1240px] px-4 sm:px-8">
         {/* Section Header */}
         <div className="text-center">
           <p className="eyebrow text-gold-ink">ENGINEERING FOUNDATION & PHILOSOPHY · 技术底座与工程哲学</p>
-          <h2 className="mt-3 font-serif text-3xl font-bold tracking-tight text-ink sm:text-5xl">
+          <h2 className="mt-3 font-sans text-3xl font-bold tracking-tight text-ink sm:text-5xl">
             支撑旅艺的硬核技术底座
           </h2>
           <p className="mt-4 max-w-2xl mx-auto text-sm text-ink-soft leading-relaxed sm:text-base">

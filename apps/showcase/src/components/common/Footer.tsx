@@ -6,23 +6,23 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative bg-sand border-t border-ink/[0.1] pt-16 pb-12 paper-texture">
+    <footer className="relative bg-slate-50/70 border-t border-slate-200/80 pt-16 pb-12 paper-texture">
       <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
         {/* Top Call-to-action Banner */}
         <div className="glass-strong glass-sheen relative overflow-hidden rounded-3xl p-8 sm:p-12 text-center shadow-xl">
           <div
             aria-hidden
-            className="pointer-events-none absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgb(var(--tc-gold)/0.3),transparent_70%)] blur-2xl"
+            className="pointer-events-none absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.08),transparent_70%)] blur-2xl"
           />
 
-          <span className="chip bg-gold/15 text-gold-ink font-semibold text-xs ring-1 ring-gold/30">
+          <span className="chip bg-blue-50 text-blue-600 font-semibold text-xs ring-1 ring-blue-200/60">
             开放体验 · 零门槛
           </span>
-          <h2 className="mt-4 font-serif text-2xl font-bold tracking-tight text-ink sm:text-4xl">
+          <h2 className="mt-4 font-sans text-2xl font-bold tracking-tight text-ink sm:text-4xl">
             把下一次自驾，交给懂路也懂你的 TripCraft
           </h2>
           <p className="mt-3 max-w-xl mx-auto text-sm text-ink-soft leading-relaxed sm:text-base">
-            让长辈安心、让孩子尽兴、让车机与离线无忧。每一本路书，都是一份独一无二的自驾艺术品。
+            让同行安心、让探索尽兴、让车机与离线无忧。每一本路书，都是一份独一无二的自驾艺术品。
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
@@ -40,7 +40,7 @@ export function Footer() {
               href="https://github.com/JohnMaxwell0123/TripCraft"
               target="_blank"
               rel="noreferrer"
-              className="glass btn-ghost min-h-[46px] border-ink/20 px-6 text-sm text-ink hover:bg-paper/80"
+              className="btn-ghost min-h-[46px] px-6 text-sm text-ink"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <path
@@ -58,11 +58,11 @@ export function Footer() {
         <div className="mt-14 grid grid-cols-2 gap-8 md:grid-cols-4 lg:gap-12">
           {/* Column 1: Brand & Philosophy */}
           <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-gold to-ochre font-serif text-sm font-bold text-paper">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 font-serif text-sm font-bold text-white shadow-sm ring-1 ring-white/20">
                 旅
               </span>
-              <span className="font-serif text-lg font-bold text-ink">TripCraft · 旅艺</span>
+              <span className="font-sans text-base font-bold text-ink">TripCraft · 旅艺</span>
             </div>
             <p className="mt-3 text-xs leading-relaxed text-ink-soft">
               面向自驾与深度游的智能旅行路书协同系统与数字化交付中枢。

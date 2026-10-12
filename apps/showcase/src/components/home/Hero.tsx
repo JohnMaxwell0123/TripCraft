@@ -1,8 +1,11 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function Hero() {
+  const [activeTab, setActiveTab] = useState<'canvas' | 'schedule' | 'export'>('canvas');
+
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
@@ -17,32 +20,32 @@ export function Hero() {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>西行计划 · 丝路自驾离线路书 (TripCraft 单文件样例)</title>
+  <title>西行计划 · 自驾离线路书 (TripCraft 单文件自包含样例)</title>
   <style>
-    :root { --sand: #F2E8D5; --ink: #3A2E1F; --gold: #B8863B; --paper: #FAF5EB; --jade: #0E8674; }
-    body { margin: 0; font-family: -apple-system, system-ui, sans-serif; background: var(--sand); color: var(--ink); padding: 24px; }
-    .card { background: var(--paper); border: 1px solid rgba(58,46,31,0.15); border-radius: 16px; padding: 24px; max-width: 640px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
-    h1 { font-family: serif; color: var(--ink); margin-top: 0; }
-    .badge { display: inline-block; background: rgba(14,134,116,0.12); color: var(--jade); padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; margin-bottom: 16px; }
-    .day { border-left: 3px solid var(--gold); padding-left: 12px; margin-bottom: 16px; }
-    .tip { background: #fff4e5; border-radius: 8px; padding: 12px; font-size: 13px; margin-top: 16px; }
+    :root { --sand: #F8FAFC; --ink: #0F172A; --gold: #D97706; --paper: #FFFFFF; --jade: #10B981; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--sand); color: var(--ink); padding: 32px 20px; }
+    .card { background: var(--paper); border: 1px solid rgba(15,23,42,0.1); border-radius: 20px; padding: 28px; max-width: 640px; margin: 0 auto; box-shadow: 0 20px 40px -15px rgba(0,0,0,0.08); }
+    h1 { font-size: 22px; font-weight: 700; color: var(--ink); margin-top: 0; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(16,185,129,0.1); color: var(--jade); padding: 5px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; margin-bottom: 18px; }
+    .day { border-left: 3px solid var(--gold); padding-left: 14px; margin-bottom: 18px; }
+    .tip { background: #f8fafc; border: 1px solid rgba(15,23,42,0.08); border-radius: 12px; padding: 14px; font-size: 13px; line-height: 1.6; margin-top: 20px; }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="badge">✓ TripCraft 单文件离线自包含交付 · 双击秒开 · 零构建</div>
-    <h1>西行计划 · 丝路自驾路书</h1>
-    <p style="color: #6B5D4A; font-size: 14px;">9 天甘青大环线 · 7 座豪华 MPV (车顶行李箱) · 离线快照 v1.1</p>
+    <div class="badge">✓ TripCraft 单文件离线自包含交付 · 双击秒开 · 零网络依赖</div>
+    <h1>全地形自驾路书 · 离线交互快照</h1>
+    <p style="color: #64748B; font-size: 14px;">9 天 1,980 km · 物理规则刚性防御引擎 · AST 状态已封存</p>
     <div class="day">
-      <strong>D0 · 兰州集结夜</strong><br>
-      <small>15:30 落地中川 ➔ 19:15 入住水岸云上酒店 ➔ 20:00 漫步正宁路夜市（打卡牛奶鸡蛋醪糟）</small>
+      <strong>D1 · 枢纽出征 & 车辆空间校验</strong><br>
+      <small style="color: #64748B;">全车整备 ➔ 地面专用车位就绪 ➔ 道路拓扑自动计算</small>
     </div>
     <div class="day">
-      <strong>D1 · 兰州 ➔ 张掖 (505km)</strong><br>
-      <small>翻越乌鞘岭 2980m ➔ 双司机轮换 ➔ 傍晚七彩丹霞</small>
+      <strong>D2 · 连续弯道高程巡航</strong><br>
+      <small style="color: #64748B;">海拔爬升 2,980m ➔ 制动热衰减防御 ➔ 黄金采光窗口打卡</small>
     </div>
     <div class="tip">
-      <strong>🚙 7座 MPV 车顶箱安全备忘：</strong>加装行李箱后车高 2.15m，夜市老城地库限高 2.0m，车停酒店地面车位，全家慢行 950m 前往正宁路。
+      <strong>🛡️ BR-025 物理规则刚性防护：</strong>已完成车型外廓与老城地库限高通达断言，确保全地形探索安全无忧。
     </div>
   </div>
 </body>
@@ -52,7 +55,7 @@ export function Hero() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'TripCraft_西行计划_单文件离线路书样例.html';
+    a.download = 'TripCraft_自驾离线路书_单文件样例.html';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -64,27 +67,31 @@ export function Hero() {
       {/* Decorative ambient lights */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-24 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgb(var(--tc-gold)/0.28),transparent_70%)] blur-3xl"
+        className="pointer-events-none absolute -top-32 left-1/2 h-[640px] w-[640px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.07),transparent_70%)] blur-3xl"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute top-40 right-10 h-[380px] w-[380px] rounded-full bg-[radial-gradient(circle,rgb(var(--tc-lapis)/0.15),transparent_70%)] blur-3xl"
+        className="pointer-events-none absolute top-40 right-10 h-[460px] w-[460px] rounded-full bg-[radial-gradient(circle,rgba(217,119,6,0.06),transparent_70%)] blur-3xl"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute top-60 -left-10 h-[460px] w-[460px] rounded-full bg-[radial-gradient(circle,rgba(16,185,129,0.05),transparent_70%)] blur-3xl"
       />
 
       <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
-        <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-8">
+        <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-8">
           {/* Left Column: Vision & Headlines */}
-          <div className="text-center lg:col-span-7 lg:text-left">
+          <div className="text-center lg:col-span-6 lg:text-left">
             {/* Pill Tag */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-paper/90 px-3.5 py-1.5 shadow-sm"
+              className="inline-flex items-center gap-2 rounded-full border border-slate-200/90 bg-white/80 px-3.5 py-1.5 shadow-sm backdrop-blur-md"
             >
-              <span className="flex h-2 w-2 rounded-full bg-jade animate-pulse" />
-              <span className="text-xs font-semibold tracking-wide text-gold-ink">
-                东方风物与现代工程美学 · 智能旅行数字化交付中枢
+              <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-xs font-semibold tracking-wide text-slate-700">
+                次世代智能自驾协同中枢 · Local-First 数字化交付引擎
               </span>
             </motion.div>
 
@@ -93,11 +100,11 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="mt-6 font-serif text-3xl font-bold tracking-tight text-ink sm:text-5xl lg:text-6xl lg:leading-[1.15]"
+              className="mt-6 font-sans text-3xl font-extrabold tracking-tight text-ink sm:text-5xl lg:text-6xl lg:leading-[1.12]"
             >
               让每一次自驾出行，
               <br />
-              <span className="bg-gradient-to-r from-gold-ink via-ochre to-lapis bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-slate-900 via-amber-600 to-blue-600 bg-clip-text text-transparent">
                 都成为有温度的活路书。
               </span>
             </motion.h1>
@@ -109,8 +116,8 @@ export function Hero() {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="mt-6 max-w-2xl text-pretty text-base leading-relaxed text-ink-soft sm:text-lg"
             >
-              从一段大白话的诉求倾诉，到 AI 老定制师苏格拉底式反问；
-              从好友微信免登协同添加美食，到浏览器纯前端毫秒级重算编排。
+              从大白话旅行诉求，到 AI 老定制师启发式多维推演；
+              从好友微信免登协同共创，到浏览器纯本地毫秒级重算编排。
               零第三方强依赖，单文件自包含秒开，断网亦可在无人区穿行。
             </motion.p>
 
@@ -131,9 +138,9 @@ export function Hero() {
 
               <button
                 onClick={handleDownloadSample}
-                className="glass btn-ghost min-h-[48px] border-ink/20 px-6 text-sm text-ink hover:border-gold hover:bg-paper/80"
+                className="btn-ghost min-h-[48px] px-6 text-sm"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-gold-ink">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-slate-700">
                   <path
                     d="M12 3v13m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"
                     stroke="currentColor"
@@ -151,89 +158,335 @@ export function Hero() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-ink-soft lg:justify-start"
+              className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-medium text-ink-soft lg:justify-start"
             >
               <span className="flex items-center gap-1.5">
-                <span className="text-jade font-bold">✓</span> 免登体验
+                <span className="text-emerald-600 font-bold">✓</span> 免登极速协同
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="text-jade font-bold">✓</span> 甘青 9 天真实工程数据
+                <span className="text-emerald-600 font-bold">✓</span> 工业级拓扑重算
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="text-jade font-bold">✓</span> 7座 MPV 车顶箱限高通达规则
+                <span className="text-emerald-600 font-bold">✓</span> 车辆空间物理刚性断言
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="text-jade font-bold">✓</span> 纯本地数据隐私安全
+                <span className="text-emerald-600 font-bold">✓</span> 纯本地数据隐私安全
               </span>
             </motion.div>
           </div>
 
-          {/* Right Column: Liquid Glass Compass & 3D Sand Dune Hero Card */}
-          <div className="flex justify-center lg:col-span-5">
+          {/* Right Column: Modern Universal SaaS Roadbook Studio Canvas Preview */}
+          <div className="flex justify-center lg:col-span-6">
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              initial={{ opacity: 0, scale: 0.95, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="glass-strong glass-sheen relative w-full max-w-[440px] overflow-hidden rounded-3xl p-6 shadow-2xl"
+              className="relative w-full max-w-[500px]"
             >
-              {/* Card Header */}
-              <div className="flex items-center justify-between border-b border-ink/[0.08] pb-4">
-                <div className="flex items-center gap-2.5">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gold/20 font-serif text-sm font-bold text-gold-ink">
-                    甘
-                  </span>
-                  <div>
-                    <h3 className="font-serif text-sm font-bold text-ink">河西走廊 · 丝路探秘</h3>
-                    <p className="text-[10px] text-ink-soft">9 天 8 晚 · 1,980 km 自驾大环线</p>
+              {/* Outer macOS Window Chrome */}
+              <div className="glass-strong glass-sheen macos-window relative overflow-hidden rounded-3xl p-5 sm:p-6 shadow-2xl">
+                {/* Window Title Bar */}
+                <div className="flex items-center justify-between border-b border-slate-200/80 pb-3.5">
+                  <div className="flex items-center gap-2">
+                    <div className="flex gap-1.5">
+                      <span className="h-2.5 w-2.5 rounded-full bg-[#FF5F56]" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-[#FFBD2E]" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-[#27C93F]" />
+                    </div>
+                    <span className="ml-2 font-mono text-xs font-semibold text-slate-800">
+                      TripCraft Studio
+                    </span>
+                    <span className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[10px] text-slate-500">
+                      v2.4
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-[11px] font-medium text-emerald-600">
+                      Local Engine 0ms
+                    </span>
                   </div>
                 </div>
-                <span className="chip bg-jade/15 text-[11px] font-semibold text-jade ring-1 ring-jade/30">
-                  7座 MPV 畅行
+
+                {/* Interactive Mode Tabs */}
+                <div className="mt-3.5 flex items-center gap-1.5 rounded-xl bg-slate-100/90 p-1">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('canvas')}
+                    className={`flex-1 rounded-lg py-1.5 text-xs font-semibold transition-all ${
+                      activeTab === 'canvas'
+                        ? 'bg-white text-slate-900 shadow-sm'
+                        : 'text-slate-500 hover:text-slate-900'
+                    }`}
+                  >
+                    🗺️ 路线画布
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('schedule')}
+                    className={`flex-1 rounded-lg py-1.5 text-xs font-semibold transition-all ${
+                      activeTab === 'schedule'
+                        ? 'bg-white text-slate-900 shadow-sm'
+                        : 'text-slate-500 hover:text-slate-900'
+                    }`}
+                  >
+                    ⏱️ 智能排期
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('export')}
+                    className={`flex-1 rounded-lg py-1.5 text-xs font-semibold transition-all ${
+                      activeTab === 'export'
+                        ? 'bg-white text-slate-900 shadow-sm'
+                        : 'text-slate-500 hover:text-slate-900'
+                    }`}
+                  >
+                    📦 交付中枢
+                  </button>
+                </div>
+
+                {/* Tab Dynamic Content */}
+                <div className="mt-4 min-h-[290px]">
+                  <AnimatePresence mode="wait">
+                    {activeTab === 'canvas' && (
+                      <motion.div
+                        key="canvas"
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.2 }}
+                        className="space-y-3.5"
+                      >
+                        {/* Canvas Header Metrics */}
+                        <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-slate-50/90 p-3 border border-slate-200/70">
+                          <div>
+                            <h4 className="text-xs font-bold text-slate-900">
+                              Expedition Pro · 全地形自驾方案
+                            </h4>
+                            <p className="text-[10px] text-slate-500">
+                              工业级时序拓扑 · 实时动态约束
+                            </p>
+                          </div>
+                          <div className="flex gap-1.5">
+                            <span className="rounded-full bg-blue-50 px-2.5 py-0.5 font-mono text-[11px] font-semibold text-blue-600">
+                              1,280 km
+                            </span>
+                            <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 font-mono text-[11px] font-semibold text-emerald-600">
+                              4 成员在线
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Interactive Route Topology Stages */}
+                        <div className="space-y-2 rounded-2xl bg-white p-3.5 border border-slate-200/80 shadow-sm">
+                          {/* Node 1 */}
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-100 font-mono text-xs font-bold text-emerald-700">
+                              01
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-semibold text-slate-900">
+                                  城市枢纽出征 · 车辆自检
+                                </span>
+                                <span className="text-[10px] text-emerald-600 font-medium">✓ 已完成</span>
+                              </div>
+                              <p className="text-[10px] text-slate-500 truncate">
+                                能源充沛 100% · 地面专用车位就绪 · 避开老城限高
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="ml-3.5 h-3 w-px bg-slate-200" />
+
+                          {/* Node 2 */}
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-100 font-mono text-xs font-bold text-blue-700">
+                              02
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-semibold text-slate-900">
+                                  高程山隘爬升 · 巡航编排
+                                </span>
+                                <span className="text-[10px] text-blue-600 font-medium">● 编排中</span>
+                              </div>
+                              <p className="text-[10px] text-slate-500 truncate">
+                                连续坡道监控 · 制动降温窗口建议 · 海拔 2,980m
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="ml-3.5 h-3 w-px bg-slate-200" />
+
+                          {/* Node 3 */}
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-amber-100 font-mono text-xs font-bold text-amber-700">
+                              03
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-semibold text-slate-900">
+                                  荒野峡谷停泊 · 离线切片
+                                </span>
+                                <span className="text-[10px] text-slate-400 font-medium">待触发</span>
+                              </div>
+                              <p className="text-[10px] text-slate-500 truncate">
+                                离线矢量 SVG 缓存预载 · 卫星坐标信标对齐
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Real-time Collaborators Presence */}
+                        <div className="flex items-center justify-between rounded-xl bg-slate-50/80 px-3 py-2 border border-slate-200/60 text-xs">
+                          <div className="flex items-center gap-2">
+                            <div className="flex -space-x-1.5">
+                              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-[9px] font-bold text-white ring-2 ring-white">
+                                领
+                              </span>
+                              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-[9px] font-bold text-white ring-2 ring-white">
+                                策
+                              </span>
+                              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-[9px] font-bold text-white ring-2 ring-white">
+                                驾
+                              </span>
+                            </div>
+                            <span className="text-[11px] text-slate-600">
+                              Sarah 正在拖拽微调节点 #2
+                            </span>
+                          </div>
+                          <span className="font-mono text-[10px] font-semibold text-slate-400">
+                            RFC 6902
+                          </span>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {activeTab === 'schedule' && (
+                      <motion.div
+                        key="schedule"
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.2 }}
+                        className="space-y-3"
+                      >
+                        <div className="rounded-2xl bg-white p-3.5 border border-slate-200/80 space-y-2.5">
+                          <div className="flex items-center justify-between border-b border-slate-100 pb-2 text-xs">
+                            <span className="font-bold text-slate-900">当日智能时间预算</span>
+                            <span className="font-mono text-[11px] font-semibold text-emerald-600">
+                              舒适度评级: 98%
+                            </span>
+                          </div>
+                          <div className="space-y-2 text-xs">
+                            <div className="flex items-start gap-2.5">
+                              <span className="font-mono text-[11px] font-bold text-slate-500 mt-0.5">
+                                08:30
+                              </span>
+                              <div>
+                                <p className="font-semibold text-slate-800">启程预检与全车胎压核准</p>
+                                <p className="text-[10px] text-slate-500">避开早高峰，规划最优出城高架路线</p>
+                              </div>
+                            </div>
+                            <div className="flex items-start gap-2.5">
+                              <span className="font-mono text-[11px] font-bold text-slate-500 mt-0.5">
+                                12:15
+                              </span>
+                              <div>
+                                <p className="font-semibold text-slate-800">观景驿站就餐与驾驶员轮换</p>
+                                <p className="text-[10px] text-slate-500">地面宽敞停车位，避免高车顶箱倒车死角</p>
+                              </div>
+                            </div>
+                            <div className="flex items-start gap-2.5">
+                              <span className="font-mono text-[11px] font-bold text-slate-500 mt-0.5">
+                                16:45
+                              </span>
+                              <div>
+                                <p className="font-semibold text-slate-800">峡谷黄金光照摄影窗口</p>
+                                <p className="text-[10px] text-slate-500">落日黄金期打卡，提前预载离线矢量图</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="rounded-xl bg-amber-50/70 p-2.5 border border-amber-200/50 text-[11px] text-amber-800 flex items-center justify-between">
+                          <span>⏱️ 今日自驾时长 4.5h · 驾驶疲劳风险指数极低</span>
+                          <span className="font-bold">✓ 节奏适中</span>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {activeTab === 'export' && (
+                      <motion.div
+                        key="export"
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.2 }}
+                        className="space-y-3"
+                      >
+                        <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                          <div className="rounded-2xl bg-white p-3 border border-slate-200/80 shadow-sm">
+                            <div className="text-xl">📄</div>
+                            <div className="mt-1 font-bold text-slate-900">单文件 HTML</div>
+                            <div className="mt-0.5 font-mono text-[10px] text-emerald-600 font-semibold">
+                              1.8 MB 离线
+                            </div>
+                          </div>
+                          <div className="rounded-2xl bg-white p-3 border border-slate-200/80 shadow-sm">
+                            <div className="text-xl">🚗</div>
+                            <div className="mt-1 font-bold text-slate-900">Tier 0 车机</div>
+                            <div className="mt-0.5 font-mono text-[10px] text-blue-600 font-semibold">
+                              HUD 免装深链
+                            </div>
+                          </div>
+                          <div className="rounded-2xl bg-white p-3 border border-slate-200/80 shadow-sm">
+                            <div className="text-xl">📖</div>
+                            <div className="mt-1 font-bold text-slate-900">A5 实体折页</div>
+                            <div className="mt-0.5 font-mono text-[10px] text-amber-600 font-semibold">
+                              CMYK 双模
+                            </div>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={handleDownloadSample}
+                          className="w-full rounded-2xl bg-slate-900 text-white py-3 text-xs font-semibold hover:bg-slate-800 transition-colors shadow-md flex items-center justify-center gap-2"
+                        >
+                          <span>⚡ 立即导出自包含离线路书 (.html)</span>
+                        </button>
+
+                        <p className="text-center text-[10px] text-slate-500">
+                          双击秒开 · 0 外部请求 · 断网也能带走旅行的全部记忆
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Bottom Safety & Integrity Seal */}
+                <div className="mt-3.5 flex items-center justify-between border-t border-slate-200/70 pt-3 text-[11px]">
+                  <span className="flex items-center gap-1.5 text-emerald-600 font-medium">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                    BR-025 车辆物理空间通达校验通过
+                  </span>
+                  <span className="font-mono text-slate-400">spec/trip.schema.json</span>
+                </div>
+              </div>
+
+              {/* Floating Ambient Badges (Linear style) */}
+              <div className="absolute -top-3 -right-3 rounded-2xl border border-slate-200/80 bg-white/95 px-3 py-1.5 shadow-lg backdrop-blur-md">
+                <span className="font-mono text-xs font-bold text-emerald-600">⚡ 14ms</span>
+                <span className="ml-1 text-[11px] font-medium text-slate-700">纯前端秒级重算</span>
+              </div>
+
+              <div className="absolute -bottom-3 -left-3 rounded-2xl border border-slate-200/80 bg-white/95 px-3 py-1.5 shadow-lg backdrop-blur-md">
+                <span className="text-xs">🛡️</span>
+                <span className="ml-1 text-[11px] font-medium text-slate-700">
+                  100% 本地隐私 · 离线全穿透
                 </span>
-              </div>
-
-              {/* Liquid Glass Compass Graphic */}
-              <div className="relative my-6 flex h-48 items-center justify-center">
-                {/* Concentric rings */}
-                <div className="absolute h-44 w-44 rounded-full border border-gold/30" />
-                <div className="absolute h-32 w-32 rounded-full border border-dashed border-gold/50 animate-[spin_60s_linear_infinite]" />
-                <div className="absolute h-20 w-20 rounded-full bg-gradient-to-br from-paper to-sand shadow-inner ring-1 ring-gold/40" />
-
-                {/* Compass Needle */}
-                <div className="relative flex h-28 w-28 items-center justify-center animate-[spin_30s_ease-in-out_infinite_alternate]">
-                  <div className="h-24 w-1.5 bg-gradient-to-t from-ochre via-gold to-lapis shadow-sm rounded-full" />
-                  <div className="absolute -top-1 h-3 w-3 rotate-45 bg-ochre" />
-                  <div className="absolute -bottom-1 h-3 w-3 rotate-45 bg-lapis" />
-                </div>
-
-                {/* Cardinal Directions */}
-                <span className="absolute top-1 font-serif text-[11px] font-bold text-ochre">北 (阳关·玉门关)</span>
-                <span className="absolute bottom-1 font-serif text-[11px] font-bold text-lapis">南 (祁连雪山)</span>
-                <span className="absolute left-2 font-serif text-[11px] font-bold text-gold-ink">西 (莫高窟)</span>
-                <span className="absolute right-2 font-serif text-[11px] font-bold text-gold-ink">东 (兰州)</span>
-
-                {/* Floating Chips */}
-                <div className="absolute -right-2 top-2 rounded-xl bg-paper/90 px-3 py-1.5 shadow-md ring-1 ring-ink/10">
-                  <p className="text-[10px] text-ink-soft">乌鞘岭最高海拔</p>
-                  <p className="font-serif text-xs font-bold text-ochre">2,980 m</p>
-                </div>
-
-                <div className="absolute -left-2 bottom-2 rounded-xl bg-paper/90 px-3 py-1.5 shadow-md ring-1 ring-ink/10">
-                  <p className="text-[10px] text-ink-soft">鸣沙山日落窗口</p>
-                  <p className="font-serif text-xs font-bold text-gold-ink">19:30 - 20:15</p>
-                </div>
-              </div>
-
-              {/* Card Footer status */}
-              <div className="rounded-xl bg-ink/[0.04] p-3 text-xs">
-                <div className="flex items-center justify-between text-ink-soft">
-                  <span>长辈关怀约束状态：</span>
-                  <span className="font-semibold text-jade">✓ 已规避险峻栈道</span>
-                </div>
-                <div className="mt-1 flex items-center justify-between text-ink-soft">
-                  <span>协同人员信标：</span>
-                  <span className="font-medium text-ink">领队 · 阿杰 · 小雨 (3人连线)</span>
-                </div>
               </div>
             </motion.div>
           </div>

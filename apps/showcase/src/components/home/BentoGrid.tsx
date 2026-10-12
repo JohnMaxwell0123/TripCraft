@@ -30,12 +30,12 @@ export function BentoGrid() {
       <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
         {/* Section Header */}
         <div className="text-center">
-          <p className="eyebrow text-gold-ink">全能力全景矩阵画廊</p>
-          <h2 className="mt-2 font-serif text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+          <p className="eyebrow text-gold-ink">CAPABILITY MATRIX · 全能力矩阵画廊</p>
+          <h2 className="mt-2 font-sans text-3xl font-bold tracking-tight text-ink sm:text-4xl">
             不只是好看，更是坚韧的工业级系统
           </h2>
           <p className="mt-3 max-w-2xl mx-auto text-sm text-ink-soft sm:text-base">
-            从戈壁无人区离线穿透，到 7座 MPV 车顶箱物理安全规则；从全家多代同行节奏设计，到地接社一键白标。
+            从极端弱网离线穿透，到车型物理安全规则刚性断言；从全家多代同行节奏设计，到地接社一键白标交付。
           </p>
         </div>
 
@@ -204,9 +204,8 @@ export function BentoGrid() {
 
             {/* Live Preview card */}
             <div
-              className="mt-4 rounded-2xl p-4 transition-colors duration-300 shadow-sm ring-1 ring-black/10"
+              className="mt-4 rounded-2xl p-4 transition-colors duration-300 shadow-sm border border-slate-200/80 bg-white"
               style={{
-                backgroundColor: '#FAF5EB',
                 borderLeft: `5px solid ${selectedBrand.primary}`,
               }}
             >

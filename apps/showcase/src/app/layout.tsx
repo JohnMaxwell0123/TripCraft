@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#F2E8D5',
+  themeColor: '#F8FAFC',
   width: 'device-width',
   initialScale: 1,
 };
@@ -42,7 +42,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="font-sans antialiased selection:bg-gold/30 selection:text-ink">
+      <body className="font-sans antialiased selection:bg-lapis/15 selection:text-ink">
         {children}
       </body>
     </html>

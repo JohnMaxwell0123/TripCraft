@@ -557,7 +557,7 @@ function Caption({ chapter, first, last }: { chapter: Chapter; first: boolean; l
       aria-hidden={false}
     >
       <p className="eyebrow text-gold-ink">{chapter.eyebrow}</p>
-      <h2 className="mt-2 text-balance font-serif text-[1.45rem] font-semibold leading-tight text-ink md:text-[2.4rem]">{chapter.title}</h2>
+      <h2 className="mt-2 text-balance font-sans text-[1.45rem] font-bold leading-tight text-ink md:text-[2.4rem]">{chapter.title}</h2>
       <p className="mt-2 max-w-2xl text-pretty text-[13px] leading-relaxed text-ink-soft md:text-[15px]">{chapter.desc}</p>
     </motion.div>
   );
