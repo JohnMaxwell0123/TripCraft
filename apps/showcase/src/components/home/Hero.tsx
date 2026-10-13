@@ -16,7 +16,6 @@ export function Hero() {
   };
 
   const handleDownloadSample = () => {
-    // Generate a minimal self-contained HTML offline sample roadbook for download
     const sampleHtml = `<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -63,6 +62,7 @@ export function Hero() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
+
 
   return (
     <section className="relative overflow-hidden pt-24 pb-12 sm:pt-28 sm:pb-16 md:pt-36 md:pb-24 paper-texture">
@@ -136,22 +136,6 @@ export function Hero() {
               >
                 <span>体验路书诞生故事流</span>
                 <span className="text-base">↓</span>
-              </button>
-
-              <button
-                onClick={handleDownloadSample}
-                className="btn-ghost min-h-[48px] px-6 text-sm font-semibold"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-ink">
-                  <path
-                    d="M12 3v13m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <span>下载离线单文件样例 (.html)</span>
               </button>
             </motion.div>
 

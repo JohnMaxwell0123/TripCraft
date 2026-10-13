@@ -44,7 +44,7 @@ function Sidebar() {
     <motion.aside className="glass-strong hidden w-[220px] shrink-0 flex-col gap-4 rounded-card border border-ink/[0.08] p-4 shadow-level-static xl:flex gpu-layer" style={{ opacity, x }}>
       <div>
         <p className="eyebrow text-gold-ink font-semibold">对话</p>
-        <div className="mt-2 rounded-control rounded-br-sm bg-ink p-2.5 text-xs leading-relaxed text-paper shadow-level-static">全家 5 口带长辈幼儿，7座 MPV (车顶箱)，爷爷膝盖术后，慢节奏…</div>
+        <div className="mt-2 rounded-control rounded-br-sm border border-blue-400/30 bg-blue-500 p-2.5 text-xs leading-relaxed text-white shadow-level-static">全家 5 口带长辈幼儿，7座 MPV (车顶箱)，爷爷膝盖术后，慢节奏…</div>
         <div className="mt-2 flex items-center gap-1.5 text-xs text-ink-soft">
           <Avatar name="老" tone="gold" size={18} /> 已采纳 · 方案 A 无障碍慢游
         </div>

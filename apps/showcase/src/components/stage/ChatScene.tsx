@@ -103,7 +103,7 @@ function Thread() {
       <motion.div className="flex flex-col gap-3 pt-4" style={{ y: stackY }}>
         {/* 用户气泡 */}
         <motion.div className="ml-auto max-w-[88%] md:max-w-[80%]" style={{ opacity: userOpacity, y: userY }}>
-          <div className="rounded-card rounded-br-md border border-ink/40 bg-ink px-4 py-3 text-xs leading-relaxed text-paper shadow-level-static md:text-sm">
+          <div className="rounded-card rounded-br-md border border-blue-400/40 bg-blue-500 px-4 py-3 text-xs leading-relaxed text-white shadow-level-static md:text-sm">
             {USER_TEXT}
           </div>
         </motion.div>
@@ -213,11 +213,18 @@ function InputBar() {
       </div>
       <motion.span
         aria-hidden
-        className="btn-primary relative flex h-11 w-11 shrink-0 items-center justify-center rounded-control shadow-level-static gpu-layer"
+        className="btn-primary !min-h-0 !p-0 relative flex h-11 w-11 shrink-0 items-center justify-center rounded-control shadow-level-static gpu-layer"
         style={{ scale: press }}
       >
         <motion.span className="absolute inset-0 rounded-control shadow-glow" style={{ opacity: sendGlow }} />
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="relative">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          className="relative h-[18px] w-[18px] shrink-0 text-white"
+        >
           <path d="M4 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </motion.span>
