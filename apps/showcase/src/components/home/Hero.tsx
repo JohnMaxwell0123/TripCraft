@@ -24,7 +24,7 @@ export function Hero() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TripCraft · 数字化自驾离线路书 (单文件自包含交付样例)</title>
   <style>
-    :root { --sand: #F8FAFC; --ink: #0F172A; --gold: #D97706; --paper: #FFFFFF; --jade: #10B981; }
+    :root { --sand: #F8FAFC; --ink: #0F172A; --gold: #B8863B; --paper: #FFFFFF; --jade: #10B981; }
     body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--sand); color: var(--ink); padding: 32px 20px; }
     .card { background: var(--paper); border: 1px solid rgba(15,23,42,0.1); border-radius: 20px; padding: 28px; max-width: 640px; margin: 0 auto; box-shadow: 0 20px 40px -15px rgba(0,0,0,0.08); }
     h1 { font-size: 22px; font-weight: 700; color: var(--ink); margin-top: 0; }
@@ -73,7 +73,7 @@ export function Hero() {
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute top-40 right-10 h-[460px] w-[460px] rounded-full bg-[radial-gradient(circle,rgba(217,119,6,0.06),transparent_70%)] blur-3xl"
+        className="pointer-events-none absolute top-40 right-10 h-[460px] w-[460px] rounded-full bg-[radial-gradient(circle,rgba(184,134,59,0.06),transparent_70%)] blur-3xl"
       />
       <div
         aria-hidden
@@ -89,10 +89,10 @@ export function Hero() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 rounded-pill border border-amber-200/80 bg-amber-50/70 px-4 py-1.5 shadow-level-static backdrop-blur-md"
+              className="inline-flex items-center gap-2 rounded-pill border border-gold/30 bg-gold/10 px-4 py-1.5 shadow-level-static backdrop-blur-md"
             >
-              <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs font-semibold tracking-wide text-amber-900">
+              <span className="flex h-2 w-2 rounded-full bg-jade animate-pulse" />
+              <span className="text-xs font-semibold tracking-wide text-gold-ink">
                 次世代智能自驾协同中枢 · Local-First 数字化交付引擎
               </span>
             </motion.div>
@@ -106,7 +106,7 @@ export function Hero() {
             >
               让每一次自驾出行，
               <br />
-              <span className="inline-block sm:whitespace-nowrap bg-gradient-to-r from-slate-900 via-amber-600 to-amber-700 bg-clip-text text-transparent">
+              <span className="inline-block sm:whitespace-nowrap bg-gradient-to-r from-ink via-gold-ink to-gold bg-clip-text text-transparent">
                 都成为有温度的活路书。
               </span>
             </motion.h1>
@@ -142,7 +142,7 @@ export function Hero() {
                 onClick={handleDownloadSample}
                 className="btn-ghost min-h-[48px] px-6 text-sm font-semibold"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-slate-700">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-ink">
                   <path
                     d="M12 3v13m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"
                     stroke="currentColor"
@@ -163,10 +163,10 @@ export function Hero() {
               className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-medium text-ink-soft lg:justify-start"
             >
               <span className="flex items-center gap-1.5">
-                <span className="text-emerald-600 font-bold">✓</span> 免登极速协同
+                <span className="text-jade font-bold">✓</span> 免登极速协同
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="text-emerald-600 font-bold">✓</span> 工业级拓扑重算
+                <span className="text-jade font-bold">✓</span> 工业级拓扑重算
               </span>
               <span className="flex items-center gap-1.5">
                 <span className="text-emerald-600 font-bold">✓</span> 车辆空间物理刚性断言
@@ -188,17 +188,17 @@ export function Hero() {
               {/* Outer macOS Window Chrome */}
               <div className="glass-strong glass-sheen macos-window relative overflow-hidden rounded-container p-5 sm:p-6 shadow-level-float">
                 {/* Window Title Bar */}
-                <div className="flex items-center justify-between border-b border-slate-200/60 pb-3.5">
+                <div className="flex items-center justify-between border-b border-ink/[0.08] pb-3.5">
                   <div className="flex items-center gap-2">
                     <div className="flex gap-1.5">
                       <span className="h-2.5 w-2.5 rounded-full bg-[#FF5F56]" />
                       <span className="h-2.5 w-2.5 rounded-full bg-[#FFBD2E]" />
                       <span className="h-2.5 w-2.5 rounded-full bg-[#27C93F]" />
                     </div>
-                    <span className="ml-2 font-mono text-xs font-semibold text-slate-800">
+                    <span className="ml-2 font-mono text-xs font-semibold text-ink">
                       TripCraft Studio
                     </span>
-                    <span className="rounded-control bg-amber-50 px-2 py-0.5 font-mono text-xs font-semibold text-amber-700 tabular-nums">
+                    <span className="rounded-control bg-gold/10 px-2 py-0.5 font-mono text-xs font-semibold text-gold-ink tabular-nums">
                       v2.4
                     </span>
                   </div>
@@ -211,19 +211,19 @@ export function Hero() {
                 </div>
 
                 {/* Interactive Mode Tabs */}
-                <div className="mt-3.5 flex items-center gap-1.5 rounded-control bg-slate-100/90 p-1" role="tablist" aria-label="Studio 交互模式切换">
+                <div className="mt-3.5 flex items-center gap-1.5 rounded-control bg-sand/80 p-1" role="tablist" aria-label="Studio 交互模式切换">
                   <button
                     type="button"
                     role="tab"
                     aria-selected={activeTab === 'canvas'}
                     onClick={() => setActiveTab('canvas')}
-                    className={`flex-1 flex min-h-[44px] items-center justify-center gap-1.5 rounded-control px-2 py-2 text-xs font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                    className={`flex-1 flex min-h-[44px] items-center justify-center gap-1.5 rounded-control px-2 py-2 text-xs font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
                       activeTab === 'canvas'
-                        ? 'bg-white text-amber-900 shadow-level-static ring-1 ring-amber-500/25'
-                        : 'text-slate-600 hover:text-slate-900'
+                        ? 'bg-paper text-ink shadow-level-static ring-1 ring-gold/40'
+                        : 'text-ink-soft hover:text-ink'
                     }`}
                   >
-                    <svg className={`h-3.5 w-3.5 ${activeTab === 'canvas' ? 'text-amber-600' : 'text-slate-500'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg className={`h-3.5 w-3.5 ${activeTab === 'canvas' ? 'text-gold-ink' : 'text-ink-soft'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6" />
                       <line x1="8" y1="2" x2="8" y2="18" />
                       <line x1="16" y1="6" x2="16" y2="22" />
@@ -235,13 +235,13 @@ export function Hero() {
                     role="tab"
                     aria-selected={activeTab === 'schedule'}
                     onClick={() => setActiveTab('schedule')}
-                    className={`flex-1 flex min-h-[44px] items-center justify-center gap-1.5 rounded-control px-2 py-2 text-xs font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                    className={`flex-1 flex min-h-[44px] items-center justify-center gap-1.5 rounded-control px-2 py-2 text-xs font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
                       activeTab === 'schedule'
-                        ? 'bg-white text-amber-900 shadow-level-static ring-1 ring-amber-500/25'
-                        : 'text-slate-600 hover:text-slate-900'
+                        ? 'bg-paper text-ink shadow-level-static ring-1 ring-gold/40'
+                        : 'text-ink-soft hover:text-ink'
                     }`}
                   >
-                    <svg className={`h-3.5 w-3.5 ${activeTab === 'schedule' ? 'text-amber-600' : 'text-slate-500'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg className={`h-3.5 w-3.5 ${activeTab === 'schedule' ? 'text-gold-ink' : 'text-ink-soft'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="10" />
                       <polyline points="12 6 12 12 16 14" />
                     </svg>
@@ -252,13 +252,13 @@ export function Hero() {
                     role="tab"
                     aria-selected={activeTab === 'export'}
                     onClick={() => setActiveTab('export')}
-                    className={`flex-1 flex min-h-[44px] items-center justify-center gap-1.5 rounded-control px-2 py-2 text-xs font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                    className={`flex-1 flex min-h-[44px] items-center justify-center gap-1.5 rounded-control px-2 py-2 text-xs font-semibold transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
                       activeTab === 'export'
-                        ? 'bg-white text-amber-900 shadow-level-static ring-1 ring-amber-500/25'
-                        : 'text-slate-600 hover:text-slate-900'
+                        ? 'bg-paper text-ink shadow-level-static ring-1 ring-gold/40'
+                        : 'text-ink-soft hover:text-ink'
                     }`}
                   >
-                    <svg className={`h-3.5 w-3.5 ${activeTab === 'export' ? 'text-amber-600' : 'text-slate-500'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg className={`h-3.5 w-3.5 ${activeTab === 'export' ? 'text-gold-ink' : 'text-ink-soft'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
                       <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
                       <line x1="12" y1="22.08" x2="12" y2="12" />
@@ -280,9 +280,9 @@ export function Hero() {
                         className="space-y-3.5"
                       >
                         {/* Canvas Header Metrics */}
-                        <div className="flex flex-wrap items-center justify-between gap-2 rounded-card bg-slate-50/80 p-3.5 border border-slate-200/60 shadow-level-static">
+                        <div className="flex flex-wrap items-center justify-between gap-2 rounded-card bg-sand/60 p-3.5 border border-ink/[0.08] shadow-level-static">
                           <div>
-                            <p className="text-xs font-bold text-slate-900">
+                            <p className="text-xs font-bold text-ink">
                               Grand Tour Pro · 全地形自驾方案
                             </p>
                             <p className="text-xs text-ink-soft">
@@ -290,7 +290,7 @@ export function Hero() {
                             </p>
                           </div>
                           <div className="flex gap-2">
-                            <span className="rounded-pill bg-amber-50 px-3 py-1 font-mono text-xs font-bold text-amber-700 tabular-nums border border-amber-200/60">
+                            <span className="rounded-pill bg-gold/10 px-3 py-1 font-mono text-xs font-bold text-gold-ink tabular-nums border border-gold/30">
                               1,280 km
                             </span>
                             <span className="rounded-pill bg-emerald-50 px-3 py-1 font-mono text-xs font-bold text-emerald-700 tabular-nums border border-emerald-200/60">
@@ -300,7 +300,7 @@ export function Hero() {
                         </div>
 
                         {/* Interactive Route Topology Stages */}
-                        <div className="space-y-2 rounded-card bg-white p-3.5 border border-slate-200/60 shadow-level-static">
+                        <div className="space-y-2 rounded-card bg-paper p-3.5 border border-ink/[0.08] shadow-level-static">
                           {/* Node 1 */}
                           <div className="flex items-center gap-3">
                             <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-control bg-emerald-50 font-mono text-xs font-bold text-emerald-700 tabular-nums">
@@ -308,7 +308,7 @@ export function Hero() {
                             </div>
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center justify-between">
-                                <span className="text-xs font-semibold text-slate-900">
+                                <span className="text-xs font-semibold text-ink">
                                   城市枢纽启程 · 车辆自检
                                 </span>
                                 <span className="text-xs text-emerald-600 font-medium">✓ 已就绪</span>
@@ -319,19 +319,19 @@ export function Hero() {
                             </div>
                           </div>
 
-                          <div className="ml-3.5 h-3 w-px bg-slate-200/70" />
+                          <div className="ml-3.5 h-3 w-px bg-ink/10" />
 
                           {/* Node 2 */}
                           <div className="flex items-center gap-3">
-                            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-control bg-amber-50 font-mono text-xs font-bold text-amber-700 tabular-nums">
+                            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-control bg-gold/10 font-mono text-xs font-bold text-gold-ink tabular-nums">
                               02
                             </div>
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center justify-between">
-                                <span className="text-xs font-semibold text-slate-900">
+                                <span className="text-xs font-semibold text-ink">
                                   高程山隘巡航 · 动力编排
                                 </span>
-                                <span className="text-xs text-amber-700 font-medium">● 编排中</span>
+                                <span className="text-xs text-gold-ink font-medium">● 编排中</span>
                               </div>
                               <p className="text-xs text-ink-soft truncate">
                                 连续坡道监控 · 制动降温窗口建议 · 动态高程补偿
@@ -339,19 +339,19 @@ export function Hero() {
                             </div>
                           </div>
 
-                          <div className="ml-3.5 h-3 w-px bg-slate-200/70" />
+                          <div className="ml-3.5 h-3 w-px bg-ink/10" />
 
                           {/* Node 3 */}
                           <div className="flex items-center gap-3">
-                            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-control bg-slate-100 font-mono text-xs font-bold text-slate-600 tabular-nums">
+                            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-control bg-sand font-mono text-xs font-bold text-ink-soft tabular-nums">
                               03
                             </div>
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center justify-between">
-                                <span className="text-xs font-semibold text-slate-900">
+                                <span className="text-xs font-semibold text-ink">
                                   山海营地停泊 · 离线切片
                                 </span>
-                                <span className="text-xs text-slate-500 font-medium">待触发</span>
+                                <span className="text-xs text-ink-soft font-medium">待触发</span>
                               </div>
                               <p className="text-xs text-ink-soft truncate">
                                 离线矢量 SVG 缓存预载 · 卫星坐标信标对齐 · 本地 AST 封存
@@ -361,7 +361,7 @@ export function Hero() {
                         </div>
 
                         {/* Real-time Collaborators Presence */}
-                        <div className="flex items-center justify-between rounded-control bg-slate-50/80 px-3.5 py-2.5 border border-slate-200/60 text-xs shadow-level-static">
+                        <div className="flex items-center justify-between rounded-control bg-sand/60 px-3.5 py-2.5 border border-ink/[0.08] text-xs shadow-level-static">
                           <div className="flex items-center gap-2.5">
                             <div className="flex -space-x-1.5">
                               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-xs font-bold text-white ring-2 ring-white">
@@ -370,15 +370,15 @@ export function Hero() {
                               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500 text-xs font-bold text-white ring-2 ring-white">
                                 策
                               </span>
-                              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white ring-2 ring-white">
+                              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gold text-xs font-bold text-white ring-2 ring-white">
                                 驾
                               </span>
                             </div>
-                            <span className="text-xs text-slate-600">
-                              Alex 正在拖拽微调节点 #2 · <span className="font-mono font-bold text-amber-700 tabular-nums">14ms</span> 本地重算
+                            <span className="text-xs text-ink-soft">
+                              Alex 正在拖拽微调节点 #2 · <span className="font-mono font-bold text-gold-ink tabular-nums">14ms</span> 本地重算
                             </span>
                           </div>
-                          <span className="font-mono text-xs font-semibold text-slate-400">
+                          <span className="font-mono text-xs font-semibold text-ink-soft">
                             RFC 6902
                           </span>
                         </div>
@@ -394,47 +394,47 @@ export function Hero() {
                         transition={{ duration: 0.2 }}
                         className="space-y-3"
                       >
-                        <div className="rounded-card bg-white p-3.5 border border-slate-200/60 shadow-level-static space-y-2.5">
-                          <div className="flex items-center justify-between border-b border-slate-100 pb-2 text-xs">
-                            <span className="font-bold text-slate-900">当日智能时间预算</span>
+                        <div className="rounded-card bg-paper p-3.5 border border-ink/[0.08] shadow-level-static space-y-2.5">
+                          <div className="flex items-center justify-between border-b border-ink/[0.06] pb-2 text-xs">
+                            <span className="font-bold text-ink">当日智能时间预算</span>
                             <span className="font-mono text-xs font-bold text-emerald-700 tabular-nums">
                               舒适度评级: 98%
                             </span>
                           </div>
                           <div className="space-y-2.5 text-xs">
                             <div className="flex items-start gap-2.5">
-                              <span className="font-mono text-xs font-bold text-slate-600 mt-0.5 tabular-nums">
+                              <span className="font-mono text-xs font-bold text-ink-soft mt-0.5 tabular-nums">
                                 08:30
                               </span>
                               <div>
-                                <p className="font-semibold text-slate-800">启程预检与全车胎压核准</p>
+                                <p className="font-semibold text-ink">启程预检与全车胎压核准</p>
                                 <p className="text-xs text-ink-soft">避开早高峰，规划最优出城环线</p>
                               </div>
                             </div>
                             <div className="flex items-start gap-2.5">
-                              <span className="font-mono text-xs font-bold text-slate-600 mt-0.5 tabular-nums">
+                              <span className="font-mono text-xs font-bold text-ink-soft mt-0.5 tabular-nums">
                                 12:15
                               </span>
                               <div>
-                                <p className="font-semibold text-slate-800">高景驿站补给与驾驶员轮换</p>
+                                <p className="font-semibold text-ink">高景驿站补给与驾驶员轮换</p>
                                 <p className="text-xs text-ink-soft">地面宽敞停车位，避免高车顶箱倒车死角</p>
                               </div>
                             </div>
                             <div className="flex items-start gap-2.5">
-                              <span className="font-mono text-xs font-bold text-slate-600 mt-0.5 tabular-nums">
+                              <span className="font-mono text-xs font-bold text-ink-soft mt-0.5 tabular-nums">
                                 16:45
                               </span>
                               <div>
-                                <p className="font-semibold text-slate-800">黄金采光摄影窗口与营地停泊</p>
+                                <p className="font-semibold text-ink">黄金采光摄影窗口与营地停泊</p>
                                 <p className="text-xs text-ink-soft">落日黄金光照窗口打卡，提前预载离线矢量图</p>
                               </div>
                             </div>
                           </div>
                         </div>
 
-                        <div className="rounded-control bg-amber-50/80 p-3 border border-amber-200/60 text-xs text-amber-900 flex items-center justify-between shadow-level-static">
+                        <div className="rounded-control bg-gold/10 p-3 border border-gold/30 text-xs text-gold-ink flex items-center justify-between shadow-level-static">
                           <span className="flex items-center gap-1.5">
-                            <ClockIcon className="h-3.5 w-3.5 text-amber-600 shrink-0" />
+                            <ClockIcon className="h-3.5 w-3.5 text-gold shrink-0" />
                             <span>今日自驾时长 <span className="font-mono font-bold tabular-nums">4.5h</span> · 驾驶疲劳风险指数极低</span>
                           </span>
                           <span className="font-bold">✓ 节奏适中</span>
@@ -452,24 +452,24 @@ export function Hero() {
                         className="space-y-3"
                       >
                         <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                          <div className="rounded-card bg-white p-3 sm:p-3.5 border border-slate-200/60 shadow-level-static hover:shadow-level-hover transition-shadow flex flex-col items-center justify-center">
+                          <div className="rounded-card bg-paper p-3 sm:p-3.5 border border-ink/[0.08] shadow-level-static hover:shadow-level-hover transition-shadow flex flex-col items-center justify-center">
                             <FileTextIcon className="h-5 w-5 text-emerald-600" />
-                            <div className="mt-1 font-bold text-slate-900 text-xs">单文件 HTML</div>
+                            <div className="mt-1 font-bold text-ink text-xs">单文件 HTML</div>
                             <div className="mt-0.5 font-mono text-xs text-emerald-700 font-bold tabular-nums">
                               1.8 MB 离线
                             </div>
                           </div>
-                          <div className="rounded-card bg-white p-3 sm:p-3.5 border border-slate-200/60 shadow-level-static hover:shadow-level-hover transition-shadow flex flex-col items-center justify-center">
+                          <div className="rounded-card bg-paper p-3 sm:p-3.5 border border-ink/[0.08] shadow-level-static hover:shadow-level-hover transition-shadow flex flex-col items-center justify-center">
                             <CarIcon className="h-5 w-5 text-blue-600" />
-                            <div className="mt-1 font-bold text-slate-900 text-xs">Tier 0 车机</div>
+                            <div className="mt-1 font-bold text-ink text-xs">Tier 0 车机</div>
                             <div className="mt-0.5 font-mono text-xs text-blue-600 font-bold tabular-nums">
                               HUD 免装深链
                             </div>
                           </div>
-                          <div className="rounded-card bg-white p-3 sm:p-3.5 border border-slate-200/60 shadow-level-static hover:shadow-level-hover transition-shadow flex flex-col items-center justify-center">
-                            <BookOpenIcon className="h-5 w-5 text-amber-600" />
-                            <div className="mt-1 font-bold text-slate-900 text-xs">A5 实体折页</div>
-                            <div className="mt-0.5 font-mono text-xs text-amber-700 font-bold tabular-nums">
+                          <div className="rounded-card bg-paper p-3 sm:p-3.5 border border-ink/[0.08] shadow-level-static hover:shadow-level-hover transition-shadow flex flex-col items-center justify-center">
+                            <BookOpenIcon className="h-5 w-5 text-gold" />
+                            <div className="mt-1 font-bold text-ink text-xs">A5 实体折页</div>
+                            <div className="mt-0.5 font-mono text-xs text-gold-ink font-bold tabular-nums">
                               CMYK 双模
                             </div>
                           </div>
@@ -493,25 +493,25 @@ export function Hero() {
                 </div>
 
                 {/* Bottom Safety & Integrity Seal */}
-                <div className="mt-3.5 flex items-center justify-between border-t border-slate-200/60 pt-3 text-xs">
+                <div className="mt-3.5 flex items-center justify-between border-t border-ink/[0.08] pt-3 text-xs">
                   <span className="flex items-center gap-1.5 text-emerald-700 font-medium">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
                     BR-025 车辆物理空间通达校验通过
                   </span>
-                  <span className="font-mono text-slate-400">spec/trip.schema.json</span>
+                  <span className="font-mono text-ink-soft">spec/trip.schema.json</span>
                 </div>
               </div>
 
               {/* Floating Ambient Badges (Displayed on sm+ desktop screens, hidden on small mobile to prevent occluding window chrome) */}
-              <div className="hidden sm:flex absolute sm:-top-4 sm:-right-4 rounded-pill border border-slate-200/60 bg-white/95 px-3 py-1 sm:px-3.5 sm:py-1.5 shadow-level-float backdrop-blur-md ring-1 ring-slate-900/[0.04] z-20 items-center gap-1">
-                <ZapIcon className="h-3 w-3 text-amber-600" />
-                <span className="font-mono text-xs font-bold text-amber-700 tabular-nums">14ms</span>
-                <span className="text-xs font-medium text-slate-700">纯前端秒级重算</span>
+              <div className="hidden sm:flex absolute sm:-top-4 sm:-right-4 rounded-pill border border-ink/[0.08] bg-paper/95 px-3 py-1 sm:px-3.5 sm:py-1.5 shadow-level-float backdrop-blur-md ring-1 ring-ink/[0.04] z-20 items-center gap-1">
+                <ZapIcon className="h-3 w-3 text-gold" />
+                <span className="font-mono text-xs font-bold text-gold-ink tabular-nums">14ms</span>
+                <span className="text-xs font-medium text-ink">纯前端秒级重算</span>
               </div>
 
-              <div className="hidden sm:flex absolute sm:-bottom-4 sm:-left-4 rounded-pill border border-slate-200/60 bg-white/95 px-3 py-1 sm:px-3.5 sm:py-1.5 shadow-level-float backdrop-blur-md ring-1 ring-slate-900/[0.04] z-20 items-center gap-1">
+              <div className="hidden sm:flex absolute sm:-bottom-4 sm:-left-4 rounded-pill border border-ink/[0.08] bg-paper/95 px-3 py-1 sm:px-3.5 sm:py-1.5 shadow-level-float backdrop-blur-md ring-1 ring-ink/[0.04] z-20 items-center gap-1">
                 <ShieldIcon className="h-3.5 w-3.5 text-emerald-600" />
-                <span className="text-xs font-medium text-slate-700">
+                <span className="text-xs font-medium text-ink">
                   100% 本地隐私 · 离线全穿透
                 </span>
               </div>

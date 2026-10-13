@@ -42,7 +42,7 @@ export function RecommendModal() {
       <motion.div
         role="dialog"
         aria-label="路线优化推荐"
-        className="glass-strong relative w-[min(560px,100%)] overflow-hidden rounded-container border border-slate-200/60 p-4 shadow-level-float md:p-6 gpu-layer [contain:layout_paint]"
+        className="glass-strong relative w-[min(560px,100%)] overflow-hidden rounded-container border border-ink/[0.08] p-4 shadow-level-float md:p-6 gpu-layer [contain:layout_paint]"
         style={{ opacity, scale, x: xs, y: ys, visibility }}
       >
         {/* 45° 微光扫掠 */}
@@ -53,7 +53,7 @@ export function RecommendModal() {
         />
 
         <div className="relative flex items-start gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-control bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 text-white shadow-level-static">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-control bg-gradient-to-br from-gold via-gold-ink to-ink text-paper shadow-level-static ring-1 ring-gold/40">
             <SparklesIcon className="h-5 w-5" />
           </span>
           <div className="min-w-0">
@@ -69,7 +69,7 @@ export function RecommendModal() {
         </Reveal>
 
         <Reveal at={[T.modalRows[1], T.modalRows[1] + 0.006]} y={8} className="relative mt-3 grid gap-2 sm:grid-cols-2">
-          <div className="rounded-control bg-slate-900/5 p-3 border border-slate-200/40">
+          <div className="rounded-control bg-ink/[0.05] p-3 border border-ink/[0.08]">
             <p className="text-xs font-semibold uppercase tracking-wider text-ink-soft">原计划 · D0 晚</p>
             <ul className="mt-1.5 space-y-1 text-xs text-ink-soft">
               <li><b className="tabular-nums font-mono text-ink">19:15</b> 入住酒店</li>
@@ -77,14 +77,14 @@ export function RecommendModal() {
               <li className="line-through decoration-ink/30">—</li>
             </ul>
           </div>
-          <div className="rounded-control bg-amber-500/10 p-3 border border-amber-500/40 shadow-level-static">
-            <p className="text-xs font-semibold uppercase tracking-wider text-amber-700">优化后 · D0 晚</p>
+          <div className="rounded-control bg-gold/10 p-3 border border-gold/40 shadow-level-static">
+            <p className="text-xs font-semibold uppercase tracking-wider text-gold-ink">优化后 · D0 晚</p>
             <ul className="mt-1.5 space-y-1 text-xs text-ink">
               <li><b className="tabular-nums font-mono">19:15</b> 入住酒店</li>
               <li className="flex items-center gap-1">
-                <b className="tabular-nums font-mono text-amber-700">20:00</b>
+                <b className="tabular-nums font-mono text-gold-ink">20:00</b>
                 <span>步行正宁路夜市 · 醪糟</span>
-                <UtensilsIcon className="inline h-3.5 w-3.5 text-amber-600 shrink-0" />
+                <UtensilsIcon className="inline h-3.5 w-3.5 text-gold-ink shrink-0" />
               </li>
               <li><b className="tabular-nums font-mono">21:30</b> 回酒店休息</li>
             </ul>
@@ -92,16 +92,16 @@ export function RecommendModal() {
         </Reveal>
 
         <Reveal at={[T.modalRows[2], T.modalRows[2] + 0.006]} y={8} className="relative mt-3">
-          <p className="flex items-start gap-2 rounded-control bg-amber-500/10 p-3 text-xs leading-relaxed text-ink border border-amber-500/30">
-            <CarIcon className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+          <p className="flex items-start gap-2 rounded-control bg-gold/10 p-3 text-xs leading-relaxed text-ink border border-gold/30">
+            <CarIcon className="h-4 w-4 text-gold shrink-0 mt-0.5" />
             <span>
-              <b className="text-amber-700">7座 MPV 车顶箱限高提醒：</b>车辆加装车顶行李箱后高 2.15m，正宁路夜市老城地库限高 2.0m 无法驶入；建议停放酒店地面车位，全家慢行 950m（约 12 分钟）前往。
+              <b className="text-gold-ink">7座 MPV 车顶箱限高提醒：</b>车辆加装车顶行李箱后高 2.15m，正宁路夜市老城地库限高 2.0m 无法驶入；建议停放酒店地面车位，全家慢行 950m（约 12 分钟）前往。
             </span>
           </p>
         </Reveal>
 
         <Reveal at={[T.modalRows[3], T.modalRows[3] + 0.006]} y={8} className="relative mt-4 flex items-center justify-end gap-2">
-          <span className="btn-ghost rounded-pill min-h-[40px] border border-slate-200/60 px-4 text-xs font-semibold text-ink-soft">保持原计划</span>
+          <span className="btn-ghost rounded-pill min-h-[40px] border border-ink/[0.08] px-4 text-xs font-semibold text-ink-soft">保持原计划</span>
           <RecommendApplyButton />
         </Reveal>
 
@@ -117,8 +117,8 @@ function RecommendApplyButton() {
   const applied = useStep(p, [T.clickApply + 0.001]) === 1;
   return (
     <motion.span
-      className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-pill px-5 text-sm font-semibold text-white transition-colors duration-200 ${
-        applied ? 'bg-jade shadow-level-static' : 'bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 shadow-level-hover'
+      className={`btn-primary inline-flex min-h-[40px] items-center gap-1.5 rounded-pill px-5 text-sm font-semibold shadow-level-hover ${
+        applied ? 'bg-jade text-paper shadow-level-static' : ''
       }`}
       style={{ scale: press }}
     >
@@ -138,9 +138,9 @@ function RecommendApplyButton() {
 }
 
 function Metric({ label, value, sub, tone }: { label: string; value: ReactNode; sub?: string; tone: 'gold' | 'jade' | 'lapis' }) {
-  const color = { gold: 'text-amber-700', jade: 'text-jade', lapis: 'text-lapis' }[tone];
+  const color = { gold: 'text-gold-ink', jade: 'text-jade', lapis: 'text-lapis' }[tone];
   return (
-    <div className="rounded-control bg-paper/85 p-2.5 text-center border border-slate-200/50 shadow-level-static">
+    <div className="rounded-control bg-paper/85 p-2.5 text-center border border-ink/[0.08] shadow-level-static">
       <p className={`font-serif text-xl font-bold tabular-nums font-mono md:text-2xl ${color}`}>
         {value}
         {sub ? <span className="ml-1 text-xs font-medium text-ink-soft">{sub}</span> : null}

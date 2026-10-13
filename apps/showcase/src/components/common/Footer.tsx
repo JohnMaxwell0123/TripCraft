@@ -6,16 +6,16 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative bg-slate-50/70 border-t border-slate-200/80 pt-10 pb-8 sm:pt-16 sm:pb-12 paper-texture">
+    <footer className="relative bg-sand/60 border-t border-ink/[0.08] pt-10 pb-8 sm:pt-16 sm:pb-12 paper-texture">
       <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
         {/* Top Call-to-action Banner */}
-        <div className="glass-strong glass-sheen relative overflow-hidden rounded-container p-6 sm:p-12 text-center shadow-level-float border border-slate-200/60">
+        <div className="glass-strong glass-sheen relative overflow-hidden rounded-container p-6 sm:p-12 text-center shadow-level-float border border-ink/[0.08]">
           <div
             aria-hidden
-            className="pointer-events-none absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(217,119,6,0.1),transparent_70%)] blur-2xl"
+            className="pointer-events-none absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(184,134,59,0.12),transparent_70%)] blur-2xl"
           />
 
-          <span className="chip rounded-pill bg-amber-50 text-amber-700 font-semibold text-xs ring-1 ring-amber-300/60">
+          <span className="chip rounded-pill bg-gold/15 text-gold-ink font-semibold text-xs ring-1 ring-gold/30">
             开放体验 · 零门槛
           </span>
           <h2 className="mt-4 font-sans text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-ink leading-[1.3]">
@@ -65,7 +65,7 @@ export function Footer() {
           {/* Column 1: Brand & Philosophy */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-control bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 font-sans text-sm font-bold text-white shadow-level-static ring-1 ring-amber-300/40">
+              <span className="flex h-8 w-8 items-center justify-center rounded-control bg-gradient-to-br from-gold via-gold-ink to-ink font-serif text-sm font-bold text-paper shadow-level-static ring-1 ring-gold/40">
                 旅
               </span>
               <span className="font-sans text-base font-bold text-ink">TripCraft · 旅艺</span>
@@ -105,22 +105,27 @@ export function Footer() {
             <ul className="mt-3 space-y-2 text-xs text-ink-soft">
               <li>
                 <span className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-blue-600" /> 远峰蓝 (Summit Blue)
+                  <span className="h-2.5 w-2.5 rounded-full bg-gold" /> 敦煌金 (Dunhuang Gold)
                 </span>
               </li>
               <li>
                 <span className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-amber-500" /> 琥珀金 (Amber Gold)
+                  <span className="h-2.5 w-2.5 rounded-full bg-jade" /> 青甘碧 (Qinggan Jade)
                 </span>
               </li>
               <li>
                 <span className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-jade" /> 青甘碧 (Alpine Emerald)
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#8C9DAE]" /> 雪山银 (Snow Mountain)
                 </span>
               </li>
               <li>
                 <span className="flex items-center gap-1.5">
                   <span className="h-2.5 w-2.5 rounded-full bg-purple-600" /> 赛博紫 (Cyber Violet)
+                </span>
+              </li>
+              <li>
+                <span className="flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-full bg-ochre" /> 丹霞红 (Danxia Ochre)
                 </span>
               </li>
             </ul>
@@ -145,7 +150,7 @@ export function Footer() {
           <p>© 2026 TripCraft (旅艺) 项目团队. 基于开源与专业自驾工程经验构建.</p>
           <button
             onClick={scrollToTop}
-            className="min-h-[44px] px-3.5 py-2 flex items-center gap-1.5 text-amber-600 hover:text-amber-700 transition-colors font-semibold rounded-pill focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+            className="min-h-[44px] px-3.5 py-2 flex items-center gap-1.5 text-gold-ink hover:text-gold transition-colors font-semibold rounded-pill focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
           >
             <span>返回页面顶部</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

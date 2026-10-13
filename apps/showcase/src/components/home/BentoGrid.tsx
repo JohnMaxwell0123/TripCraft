@@ -24,8 +24,8 @@ export function BentoGrid() {
 
   const BRANDS = [
     { name: 'Horizon Expeditions · 高山探索社', primary: '#2563EB', accent: '#1D4ED8', themeName: '远峰蓝' },
-    { name: 'Silk Road Prestige · 丝路定制行', primary: '#D97706', accent: '#B45309', themeName: '琥珀金' },
-    { name: 'Verdant Eco-Drive · 青翠生态巡航', primary: '#10B981', accent: '#059669', themeName: '翡翠绿' },
+    { name: 'Silk Road Prestige · 丝路定制行', primary: '#B8863B', accent: '#7A5520', themeName: '敦煌金' },
+    { name: 'Verdant Eco-Drive · 青翠生态巡航', primary: '#0E8674', accent: '#065F52', themeName: '青甘碧' },
     { name: 'Aurora Grand Tour · 极光纵横自驾', primary: '#7C3AED', accent: '#6D28D9', themeName: '赛博紫' },
   ];
 
@@ -37,17 +37,17 @@ export function BentoGrid() {
       {/* Decorative ambient background glows */}
       <div
         aria-hidden
-        className="pointer-events-none absolute top-10 left-1/3 h-80 w-80 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(217,119,6,0.06),transparent_70%)] blur-3xl"
+        className="pointer-events-none absolute top-10 left-1/3 h-80 w-80 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(184,134,59,0.08),transparent_70%)] blur-3xl"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute bottom-10 right-1/4 h-80 w-80 translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(16,185,129,0.05),transparent_70%)] blur-3xl"
+        className="pointer-events-none absolute bottom-10 right-1/4 h-80 w-80 translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(14,134,116,0.06),transparent_70%)] blur-3xl"
       />
 
       <div className="relative mx-auto max-w-[1240px] px-4 sm:px-8">
         {/* Section Header */}
         <div className="text-center">
-          <p className="eyebrow text-amber-600 font-semibold">CAPABILITY MATRIX · 工业级能力矩阵</p>
+          <p className="eyebrow text-gold-ink font-semibold">CAPABILITY MATRIX · 工业级能力矩阵</p>
           <h2 className="mt-3 font-sans text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-ink leading-[1.3]">
             不只是好看，更是坚韧的工业级系统
           </h2>
@@ -59,7 +59,7 @@ export function BentoGrid() {
         {/* Bento Grid */}
         <div className="mt-8 sm:mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {/* Card 1: 零构建单文件 HTML 秒开沙盒 */}
-          <div className="glass-strong rounded-card p-5 sm:p-6 transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-slate-200/60 flex flex-col justify-between min-w-0">
+          <div className="glass-strong rounded-card p-5 sm:p-6 transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08] flex flex-col justify-between min-w-0">
             <div>
               <div className="flex items-center justify-between pb-3 border-b border-ink/[0.06]">
                 <span className="chip bg-jade/15 text-jade font-semibold text-xs ring-1 ring-jade/30">
@@ -75,7 +75,7 @@ export function BentoGrid() {
               </p>
             </div>
 
-            <div className="mt-5 rounded-control bg-paper/90 p-4 border border-slate-200/50 shadow-level-static">
+            <div className="mt-5 rounded-control bg-paper/90 p-4 border border-ink/[0.08] shadow-level-static">
               <div className="flex items-center justify-between text-xs font-mono">
                 <span className="text-ink-soft">首屏解析直出耗时 (LCP)</span>
                 <span className="font-bold text-jade tabular-nums font-mono flex items-center gap-1">
@@ -104,7 +104,7 @@ export function BentoGrid() {
           </div>
 
           {/* Card 2: 戈壁无人区离线断网模拟器 */}
-          <div className="glass-strong rounded-card p-5 sm:p-6 transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-slate-200/60 flex flex-col justify-between min-w-0">
+          <div className="glass-strong rounded-card p-5 sm:p-6 transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08] flex flex-col justify-between min-w-0">
             <div>
               <div className="flex items-center justify-between pb-3 border-b border-ink/[0.06]">
                 <span className="chip bg-ochre/15 text-ochre font-semibold text-xs ring-1 ring-ochre/30">
@@ -113,7 +113,7 @@ export function BentoGrid() {
                 <button
                   type="button"
                   onClick={() => setIsOffline(!isOffline)}
-                  className={`min-h-[44px] flex items-center gap-1.5 rounded-pill px-4 py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                  className={`min-h-[44px] flex items-center gap-1.5 rounded-pill px-4 py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
                     isOffline
                       ? 'bg-ochre text-paper ring-2 ring-ochre/40 shadow-level-static'
                       : 'bg-jade text-paper'
@@ -140,7 +140,7 @@ export function BentoGrid() {
               </p>
             </div>
 
-            <div className="mt-5 rounded-control bg-paper/90 p-4 border border-slate-200/50 shadow-level-static">
+            <div className="mt-5 rounded-control bg-paper/90 p-4 border border-ink/[0.08] shadow-level-static">
               <div className="flex items-center gap-3">
                 <div
                   className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-control font-bold text-paper ${
@@ -169,7 +169,7 @@ export function BentoGrid() {
           </div>
 
           {/* Card 3: Tier 0 智能座舱极简投车协议 */}
-          <div className="glass-strong rounded-card p-5 sm:p-6 transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-slate-200/60 flex flex-col justify-between min-w-0">
+          <div className="glass-strong rounded-card p-5 sm:p-6 transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08] flex flex-col justify-between min-w-0">
             <div>
               <div className="flex items-center justify-between pb-3 border-b border-ink/[0.06]">
                 <span className="chip bg-lapis/15 text-lapis font-semibold text-xs ring-1 ring-lapis/30">
@@ -188,24 +188,24 @@ export function BentoGrid() {
             <div className="mt-5 rounded-control bg-[#14171c] p-4 text-paper shadow-level-static border border-white/10">
               <div className="flex items-center justify-between text-xs text-white/70">
                 <span>车载大屏实时镜像</span>
-                <span className="text-amber-400 font-medium">HUD 导航中</span>
+                <span className="text-gold font-medium">HUD 导航中</span>
               </div>
               <div className="mt-2 flex items-center gap-2 text-sm font-semibold text-white">
-                <RoadIcon className="h-4 w-4 text-amber-400 shrink-0" />
+                <RoadIcon className="h-4 w-4 text-gold shrink-0" />
                 <span className="truncate">当前路段：跨区域自驾主干道 ➔ 高原观景服务区</span>
               </div>
               <div className="mt-3 flex items-center justify-between text-xs text-white/60 border-t border-white/10 pt-2.5">
-                <span className="font-mono tabular-nums">车辆规格: 6.99m × 2.03m × 2.8m</span>
+                <span className="font-mono tabular-nums">车辆规格: 5.25m × 1.96m × 2.15m (7座 MPV 加装车顶箱)</span>
                 <span className="text-jade font-semibold">无窄道预警 ✓</span>
               </div>
             </div>
           </div>
 
           {/* Card 4: 地接社 B 端品牌白标换肤滑块 */}
-          <div className="glass-strong rounded-card p-5 sm:p-6 transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-slate-200/60 flex flex-col justify-between min-w-0">
+          <div className="glass-strong rounded-card p-5 sm:p-6 transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08] flex flex-col justify-between min-w-0">
             <div>
               <div className="flex items-center justify-between pb-3 border-b border-ink/[0.06]">
-                <span className="chip bg-amber-50 text-amber-700 font-semibold text-xs ring-1 ring-amber-300/60">
+                <span className="chip bg-gold/15 text-gold-ink font-semibold text-xs ring-1 ring-gold/30">
                   F-M11-01 B端定制
                 </span>
                 <span className="font-mono text-xs text-ink-soft">机构独家专属</span>
@@ -226,9 +226,9 @@ export function BentoGrid() {
                     key={b.name}
                     type="button"
                     onClick={() => setSelectedBrand(b)}
-                    className={`min-h-[44px] rounded-pill px-3.5 py-2 text-xs font-semibold transition-all inline-flex items-center gap-1.5 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                    className={`min-h-[44px] rounded-pill px-3.5 py-2 text-xs font-semibold transition-all inline-flex items-center gap-1.5 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
                       selectedBrand.name === b.name
-                        ? 'bg-amber-600 text-white shadow-level-static ring-1 ring-amber-700'
+                        ? 'bg-gold text-paper shadow-level-static ring-1 ring-gold-ink'
                         : 'bg-paper/80 text-ink ring-1 ring-ink/10 hover:bg-paper'
                     }`}
                   >
@@ -243,7 +243,7 @@ export function BentoGrid() {
 
               {/* Live Preview card */}
               <div
-                className="mt-4 rounded-control p-4 transition-colors duration-300 shadow-level-static border border-slate-200/60 bg-white"
+                className="mt-4 rounded-control p-4 transition-colors duration-300 shadow-level-static border border-ink/[0.08] bg-white"
                 style={{
                   borderLeft: `5px solid ${selectedBrand.primary}`,
                 }}
@@ -268,10 +268,10 @@ export function BentoGrid() {
           </div>
 
           {/* Card 5: 7座 MPV / SUV 车顶箱通达性物理规则引擎 */}
-          <div className="glass-strong rounded-card p-5 sm:p-6 transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-slate-200/60 flex flex-col justify-between min-w-0">
+          <div className="glass-strong rounded-card p-5 sm:p-6 transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08] flex flex-col justify-between min-w-0">
             <div>
               <div className="flex items-center justify-between pb-3 border-b border-ink/[0.06]">
-                <span className="chip bg-amber-50 text-amber-700 font-semibold text-xs ring-1 ring-amber-300/60">
+                <span className="chip bg-gold/15 text-gold-ink font-semibold text-xs ring-1 ring-gold/30">
                   F-M05-03 物理规则
                 </span>
                 <span className="font-mono text-xs text-ink-soft">自驾车型工程建模</span>
@@ -285,7 +285,7 @@ export function BentoGrid() {
             </div>
 
             {/* Height slider */}
-            <div className="mt-5 rounded-control bg-paper/90 p-4 border border-slate-200/50 shadow-level-static">
+            <div className="mt-5 rounded-control bg-paper/90 p-4 border border-ink/[0.08] shadow-level-static">
               <div className="flex items-center justify-between text-xs">
                 <span className="text-ink-soft">当前模拟车辆总高：</span>
                 <span className="font-mono font-bold tabular-nums text-ink text-sm">
@@ -300,7 +300,7 @@ export function BentoGrid() {
                 value={vehicleHeight}
                 onChange={(e) => setVehicleHeight(parseFloat(e.target.value))}
                 aria-label="车辆总高度滑块 (米)"
-                className="mt-3 w-full h-3 accent-amber-600 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded-pill"
+                className="mt-3 w-full h-3 accent-gold cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60 rounded-pill"
               />
 
               {/* Responsive alert container - wraps gracefully without overflowing mobile */}
@@ -311,8 +311,8 @@ export function BentoGrid() {
                     <span>轿车/裸车 SUV 高度，所有地库与老城窄巷畅通</span>
                   </div>
                 ) : vehicleHeight <= 2.2 ? (
-                  <div className="rounded-control bg-amber-50 text-amber-800 font-semibold text-xs p-2.5 ring-1 ring-amber-300/60 flex items-start gap-1.5 w-full leading-relaxed">
-                    <AlertTriangleIcon className="h-4 w-4 shrink-0 mt-0.5 text-amber-600" />
+                  <div className="rounded-control bg-gold/15 text-gold-ink font-semibold text-xs p-2.5 ring-1 ring-gold/30 flex items-start gap-1.5 w-full leading-relaxed">
+                    <AlertTriangleIcon className="h-4 w-4 shrink-0 mt-0.5 text-gold" />
                     <span>7座MPV+车顶箱：避开老城 2.0m 地库，自动规划地面车位</span>
                   </div>
                 ) : (
@@ -326,7 +326,7 @@ export function BentoGrid() {
           </div>
 
           {/* Card 6: 本地 EXIF 照片隐私回忆录 */}
-          <div className="glass-strong rounded-card p-5 sm:p-6 transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-slate-200/60 flex flex-col justify-between min-w-0">
+          <div className="glass-strong rounded-card p-5 sm:p-6 transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08] flex flex-col justify-between min-w-0">
             <div>
               <div className="flex items-center justify-between pb-3 border-b border-ink/[0.06]">
                 <span className="chip bg-jade/15 text-jade font-semibold text-xs ring-1 ring-jade/30">
@@ -342,7 +342,7 @@ export function BentoGrid() {
               </p>
             </div>
 
-            <div className="mt-5 rounded-control bg-paper/90 p-4 border border-slate-200/50 shadow-level-static">
+            <div className="mt-5 rounded-control bg-paper/90 p-4 border border-ink/[0.08] shadow-level-static">
               <div className="flex items-center justify-between border-b border-ink/[0.06] pb-2 text-xs">
                 <span className="font-semibold text-ink"><span className="font-mono tabular-nums">342</span> 张合照时空足迹分析</span>
                 <span className="text-jade font-bold">100% 本地运算</span>

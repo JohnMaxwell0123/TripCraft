@@ -13,9 +13,9 @@ const AI_TEXT =
   '收到。70 岁长辈膝盖术后、4 岁宝宝、一台 2.15 米高（带车顶箱）的 7 座 MPV——这趟必须按「慢」来设计。我先把你在意的事记下来，有一处想和你确认：';
 
 const CONSTRAINTS = [
-  { Icon: ElderIcon, title: '70 岁长辈', note: '规避高长台阶 · 步行 ≤ 500m', ring: 'ring-amber-500/50', iconColor: 'text-amber-600', glow: 'shadow-[0_0_24px_rgba(245,158,11,0.25)]' },
-  { Icon: BabyIcon, title: '4 岁幼儿', note: '13:00–14:30 午休 · 防中暑', ring: 'ring-orange-500/50', iconColor: 'text-orange-600', glow: 'shadow-[0_0_24px_rgba(249,115,22,0.25)]' },
-  { Icon: CarIcon, title: '7座 MPV (车顶箱)', note: '车高 2.15m · 避开 2m 限高地库', ring: 'ring-blue-500/40', iconColor: 'text-blue-600', glow: 'shadow-[0_0_24px_rgba(59,130,246,0.25)]' },
+  { Icon: ElderIcon, title: '70 岁长辈', note: '规避高长台阶 · 步行 ≤ 500m', ring: 'ring-gold/50', iconColor: 'text-gold-ink', glow: 'shadow-[0_0_24px_rgba(184,134,59,0.25)]' },
+  { Icon: BabyIcon, title: '4 岁幼儿', note: '13:00–14:30 午休 · 防中暑', ring: 'ring-ochre/50', iconColor: 'text-ochre', glow: 'shadow-[0_0_24px_rgba(199,107,43,0.25)]' },
+  { Icon: CarIcon, title: '7座 MPV (车顶箱)', note: '车高 2.15m · 避开 2m 限高地库', ring: 'ring-lapis/40', iconColor: 'text-lapis', glow: 'shadow-[0_0_24px_rgba(31,78,121,0.25)]' },
   { Icon: SunsetIcon, title: '鸣沙山日落', note: '锁定 19:30 日落窗口', ring: 'ring-rose-500/50', iconColor: 'text-rose-600', glow: 'shadow-[0_0_24px_rgba(244,63,94,0.25)]' },
 ];
 
@@ -53,7 +53,7 @@ function ModelRow() {
       <span className="relative chip bg-paper/70 text-ink ring-1 ring-ink/10">
         <motion.span className="absolute inset-0 rounded-full shadow-glow" style={{ opacity: lit }} />
         <span className="relative flex items-center gap-1">
-          <ZapIcon className="h-3 w-3 text-amber-600" />
+          <ZapIcon className="h-3 w-3 text-gold" />
           <span>DeepSeek-v4.1-flash</span>
         </span>
         <motion.span className="relative text-gold-ink" style={{ opacity: lit }}>
@@ -103,7 +103,7 @@ function Thread() {
       <motion.div className="flex flex-col gap-3 pt-4" style={{ y: stackY }}>
         {/* 用户气泡 */}
         <motion.div className="ml-auto max-w-[88%] md:max-w-[80%]" style={{ opacity: userOpacity, y: userY }}>
-          <div className="rounded-card rounded-br-md border border-slate-800/40 bg-slate-900 px-4 py-3 text-xs leading-relaxed text-paper shadow-level-static md:text-sm">
+          <div className="rounded-card rounded-br-md border border-ink/40 bg-ink px-4 py-3 text-xs leading-relaxed text-paper shadow-level-static md:text-sm">
             {USER_TEXT}
           </div>
         </motion.div>
@@ -111,7 +111,7 @@ function Thread() {
         {/* AI 思考中 */}
         <motion.div className="flex items-center gap-2" style={{ opacity: thinking }}>
           <Avatar name="老" tone="gold" size={26} />
-          <span className="flex gap-1 rounded-pill border border-slate-200/60 bg-paper/85 px-3 py-2 shadow-level-static">
+          <span className="flex gap-1 rounded-pill border border-ink/[0.08] bg-paper/85 px-3 py-2 shadow-level-static">
             {[0, 1, 2].map((i) => (
               <span key={i} className="h-1.5 w-1.5 animate-breathe rounded-full bg-gold" style={{ animationDelay: `${i * 0.2}s` }} />
             ))}
@@ -121,7 +121,7 @@ function Thread() {
         {/* AI 流式回复 */}
         <motion.div className="-mt-9 flex max-w-[92%] items-start gap-2" style={{ opacity: aiOpacity }}>
           <Avatar name="老" tone="gold" size={26} className="mt-1" />
-          <div className="rounded-card rounded-tl-md border border-slate-200/60 bg-paper/90 px-4 py-3 text-xs leading-relaxed text-ink shadow-level-static md:text-sm">
+          <div className="rounded-card rounded-tl-md border border-ink/[0.08] bg-paper/90 px-4 py-3 text-xs leading-relaxed text-ink shadow-level-static md:text-sm">
             <span ref={aiRef}>{AI_TEXT}</span>
             <motion.span className="ml-0.5 inline-block h-4 w-[2px] translate-y-[3px] animate-caret bg-gold" style={{ opacity: caretOpacity }} />
           </div>
@@ -140,16 +140,16 @@ function SocraticCard() {
   const y = useRange(p, [T.socraticIn[0], T.socraticIn[1]], [60, 0], { easing: ease.back, rest: 0 });
 
   return (
-    <motion.div className="glass-strong relative ml-8 rounded-card border border-slate-200/60 p-4 shadow-level-static gpu-layer" style={{ opacity, y }}>
+    <motion.div className="glass-strong relative ml-8 rounded-card border border-ink/[0.08] p-4 shadow-level-static gpu-layer" style={{ opacity, y }}>
       <div className="mb-2 flex items-center gap-2 text-xs">
-        <span className="font-semibold text-amber-700">老定制师 · 专业意见</span>
-        <span className="chip rounded-pill border border-slate-200/50 bg-slate-900/5 px-2 py-0.5 text-xs text-ink-soft">可否决</span>
+        <span className="font-semibold text-gold-ink">老定制师 · 专业意见</span>
+        <span className="chip rounded-pill border border-ink/[0.08] bg-ink/[0.05] px-2 py-0.5 text-xs text-ink-soft">可否决</span>
       </div>
       <p className="text-xs leading-relaxed text-ink md:text-sm">
-        <span className="mr-1 rounded-control bg-slate-100 px-1.5 py-0.5 text-xs font-semibold text-slate-700 border border-slate-200/50">事实</span>
+        <span className="mr-1 rounded-control bg-ink/[0.06] px-1.5 py-0.5 text-xs font-semibold text-ink border border-ink/[0.08]">事实</span>
         莫高窟常规洞窟需攀爬多段陡峭高架栈道，且自驾私家车需统一停放游客中心换乘。
         <br />
-        <span className="mr-1 rounded-control bg-amber-50 px-1.5 py-0.5 text-xs font-semibold text-amber-700 border border-amber-200/60">建议</span>
+        <span className="mr-1 rounded-control bg-gold/15 px-1.5 py-0.5 text-xs font-semibold text-gold-ink border border-gold/30">建议</span>
         改乘景区无障碍摆渡车，主看 4 个平层大窟，让长辈慢慢看。
       </p>
       <SocraticOptions />
@@ -172,19 +172,19 @@ function SocraticOptions() {
     <Reveal at={[T.optionsIn[0], T.optionsIn[1]]} y={8} className="relative mt-3 flex flex-wrap gap-2">
       <span
         className={`relative chip rounded-pill overflow-hidden py-1.5 text-xs transition-colors duration-300 ${
-          locked ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-level-static' : 'bg-amber-50 text-amber-700 border border-amber-200/60'
+          locked ? 'btn-primary text-paper shadow-level-static' : 'bg-gold/15 text-gold-ink border border-gold/30'
         }`}
       >
-        <motion.span className="absolute inset-0 rounded-pill bg-amber-500" style={{ scale: ripple, opacity: rippleOpacity }} />
+        <motion.span className="absolute inset-0 rounded-pill bg-gold" style={{ scale: ripple, opacity: rippleOpacity }} />
         <span className="relative inline-flex items-center gap-1">
           {locked ? <CheckIcon className="h-3 w-3 shrink-0" /> : <span className="inline-block h-1.5 w-1.5 rounded-full bg-current" />}
           <span>方案 A：无障碍慢游（推荐）</span>
         </span>
       </span>
-      <span className={`chip rounded-pill border border-slate-200/60 bg-white/70 py-1.5 text-xs text-ink transition-opacity duration-300 ${locked ? 'opacity-40' : ''}`}>
+      <span className={`chip rounded-pill border border-ink/[0.08] bg-white/70 py-1.5 text-xs text-ink transition-opacity duration-300 ${locked ? 'opacity-40' : ''}`}>
         方案 B：常规窟 · 人工陪护
       </span>
-      <span className={`chip rounded-pill hidden border border-slate-200/60 bg-white/70 py-1.5 text-xs text-ink transition-opacity duration-300 sm:inline-flex ${locked ? 'opacity-40' : ''}`}>
+      <span className={`chip rounded-pill hidden border border-ink/[0.08] bg-white/70 py-1.5 text-xs text-ink transition-opacity duration-300 sm:inline-flex ${locked ? 'opacity-40' : ''}`}>
         我再想想
       </span>
     </Reveal>
@@ -201,19 +201,19 @@ function InputBar() {
   const sendGlow = useRange(p, [T.typeInput[1] - 0.004, T.typeInput[1], T.send + 0.002, T.send + 0.006], [0, 1, 1, 0]);
 
   return (
-    <div className="glass-strong mt-3 flex items-end gap-3 rounded-control border border-slate-200/60 p-2 pl-4 shadow-level-static">
+    <div className="glass-strong mt-3 flex items-end gap-3 rounded-control border border-ink/[0.08] p-2 pl-4 shadow-level-static">
       <div className="relative min-h-[44px] flex-1 py-2.5 text-xs leading-relaxed text-ink md:text-sm">
         <motion.span className="pointer-events-none absolute inset-y-2.5 left-0 text-ink-soft" style={{ opacity: placeholder }}>
           说说这趟旅行：谁去、开什么车、最在意什么…
         </motion.span>
         <motion.span className="line-clamp-2" style={{ opacity: textOpacity }}>
           <span ref={typed}>{USER_TEXT}</span>
-          <span className="ml-0.5 inline-block h-4 w-[2px] translate-y-[3px] animate-caret bg-amber-600" />
+          <span className="ml-0.5 inline-block h-4 w-[2px] translate-y-[3px] animate-caret bg-gold" />
         </motion.span>
       </div>
       <motion.span
         aria-hidden
-        className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-control bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-level-static gpu-layer"
+        className="btn-primary relative flex h-11 w-11 shrink-0 items-center justify-center rounded-control shadow-level-static gpu-layer"
         style={{ scale: press }}
       >
         <motion.span className="absolute inset-0 rounded-control shadow-glow" style={{ opacity: sendGlow }} />
@@ -231,14 +231,14 @@ function ConstraintPanel() {
   const panel = useFade(p, T.chips[0] - 0.012, T.chips[0]);
   return (
     <motion.aside className="hidden w-[36%] max-w-[340px] flex-col md:flex" style={{ opacity: panel }}>
-      <div className="glass-strong flex h-full flex-col rounded-card border border-slate-200/60 p-4 shadow-level-static">
-        <p className="eyebrow text-amber-600 font-semibold">已理解的约束</p>
+      <div className="glass-strong flex h-full flex-col rounded-card border border-ink/[0.08] p-4 shadow-level-static">
+        <p className="eyebrow text-gold-ink font-semibold">已理解的约束</p>
         <p className="mt-1 text-xs text-ink-soft">从你的话里抽取，可随时修改</p>
         <ul className="mt-4 flex flex-col gap-2.5">
           {CONSTRAINTS.map((c, i) => (
             <li key={c.title}>
               <Pop at={T.chips[i]}>
-                <div className={`flex items-center gap-3 rounded-control bg-paper/90 p-2.5 border border-slate-200/60 shadow-level-static ${c.ring}`}>
+                <div className={`flex items-center gap-3 rounded-control bg-paper/90 p-2.5 border border-ink/[0.08] shadow-level-static ${c.ring}`}>
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control bg-sand/70">
                     <c.Icon className={`h-5 w-5 ${c.iconColor}`} />
                   </span>
@@ -252,7 +252,7 @@ function ConstraintPanel() {
           ))}
         </ul>
         <Reveal at={[T.chips[3] + 0.008, T.chips[3] + 0.014]} y={6} className="mt-auto pt-4">
-          <p className="rounded-control bg-slate-900/5 p-2.5 font-mono text-xs leading-relaxed text-ink-soft tabular-nums border border-slate-200/40">
+          <p className="rounded-control bg-ink/[0.05] p-2.5 font-mono text-xs leading-relaxed text-ink-soft tabular-nums border border-ink/[0.08]">
             constraints.hard ← 4 条
             <br />
             schema: trip.schema.json · <span className="text-jade font-semibold inline-flex items-center gap-0.5"><span>AJV</span><CheckIcon className="h-3 w-3" /></span>

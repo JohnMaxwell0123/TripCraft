@@ -236,7 +236,7 @@ export function TechFoundation() {
   };
 
   return (
-    <section id="foundation" className="relative overflow-hidden py-12 sm:py-16 md:py-24 bg-slate-50/60 border-t border-slate-200/80 scroll-mt-20 md:scroll-mt-24">
+    <section id="foundation" className="relative overflow-hidden py-12 sm:py-16 md:py-24 bg-sand/40 border-t border-ink/[0.08] scroll-mt-20 md:scroll-mt-24">
       {/* Decorative ambient background glows */}
       <div
         aria-hidden
@@ -244,13 +244,13 @@ export function TechFoundation() {
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute bottom-12 right-1/4 h-96 w-96 translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(217,119,6,0.05),transparent_70%)] blur-3xl"
+        className="pointer-events-none absolute bottom-12 right-1/4 h-96 w-96 translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(184,134,59,0.05),transparent_70%)] blur-3xl"
       />
 
       <div className="relative mx-auto max-w-[1240px] px-4 sm:px-8">
         {/* Section Header */}
         <div className="text-center">
-          <p className="eyebrow text-amber-600 font-semibold">ENGINEERING FOUNDATION & PHILOSOPHY · 技术底座与工程哲学</p>
+          <p className="eyebrow text-gold-ink font-semibold">ENGINEERING FOUNDATION & PHILOSOPHY · 技术底座与工程哲学</p>
           <h2 className="mt-3 font-sans text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-ink leading-[1.3]">
             支撑旅艺的硬核技术底座
           </h2>
@@ -261,23 +261,23 @@ export function TechFoundation() {
 
         {/* Engineering Hard Benchmarks Bar */}
         <div className="mt-8 sm:mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-          <div className="glass rounded-card p-3.5 sm:p-5 text-center transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-slate-200/60">
-            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-amber-600">≤ 1.8 MB</p>
+          <div className="glass rounded-card p-3.5 sm:p-5 text-center transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08]">
+            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-gold-ink">≤ 1.8 MB</p>
             <p className="mt-1 text-xs font-semibold text-ink">单文件自包含体积</p>
             <p className="text-xs text-ink-soft">含全量矢量图与子集字体</p>
           </div>
-          <div className="glass rounded-card p-3.5 sm:p-5 text-center transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-slate-200/60">
-            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-amber-600">&lt; 300 ms</p>
+          <div className="glass rounded-card p-3.5 sm:p-5 text-center transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08]">
+            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-gold-ink">&lt; 300 ms</p>
             <p className="mt-1 text-xs font-semibold text-ink">离线双击秒开耗时</p>
             <p className="text-xs text-ink-soft">零网络冷启动首屏</p>
           </div>
-          <div className="glass rounded-card p-3.5 sm:p-5 text-center transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-slate-200/60">
-            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-amber-600">25 道</p>
+          <div className="glass rounded-card p-3.5 sm:p-5 text-center transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08]">
+            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-gold-ink">25 道</p>
             <p className="mt-1 text-xs font-semibold text-ink">物理规则刚性防御墙</p>
             <p className="text-xs text-ink-soft">BR-001~025 彻底杜绝幻觉</p>
           </div>
-          <div className="glass rounded-card p-3.5 sm:p-5 text-center transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-slate-200/60">
-            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-amber-600">Tier 0</p>
+          <div className="glass rounded-card p-3.5 sm:p-5 text-center transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08]">
+            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-gold-ink">Tier 0</p>
             <p className="mt-1 text-xs font-semibold text-ink">极简座舱互联协议</p>
             <p className="text-xs text-ink-soft">零前装准入深度唤醒</p>
           </div>
@@ -299,17 +299,17 @@ export function TechFoundation() {
                   setActivePillar(pillar);
                   setGuardrailTested(false);
                 }}
-                className={`relative rounded-card p-3.5 sm:p-4 text-left transition-all duration-300 flex flex-col justify-between shadow-level-static active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                className={`relative rounded-card p-3.5 sm:p-4 text-left transition-all duration-300 flex flex-col justify-between shadow-level-static active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
                   isSelected
-                    ? 'glass-strong ring-2 ring-amber-500/70 shadow-level-hover border-amber-500/30 -translate-y-0.5'
-                    : 'bg-paper/70 hover:bg-paper/95 border border-slate-200/50 hover:border-slate-300'
+                    ? 'glass-strong ring-2 ring-gold/70 shadow-level-hover border-gold/40 -translate-y-0.5'
+                    : 'bg-paper/70 hover:bg-paper/95 border border-ink/[0.08] hover:border-ink/20'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between">
                     <span
                       className={`font-mono text-lg font-bold tabular-nums ${
-                        isSelected ? 'text-amber-600' : 'text-slate-400'
+                        isSelected ? 'text-gold-ink' : 'text-ink-soft'
                       }`}
                     >
                       {pillar.number}
@@ -346,13 +346,13 @@ export function TechFoundation() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 16 }}
                 transition={{ duration: 0.25 }}
-                className="glass-strong rounded-container p-6 sm:p-8 shadow-level-static border border-slate-200/60"
+                className="glass-strong rounded-container p-6 sm:p-8 shadow-level-static border border-ink/[0.08]"
               >
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-ink/[0.06] pb-4">
-                  <span className="font-mono text-2xl font-bold tabular-nums text-amber-600">
+                  <span className="font-mono text-2xl font-bold tabular-nums text-gold-ink">
                     PILLAR {activePillar.number}
                   </span>
-                  <span className="chip rounded-pill bg-amber-50 text-amber-700 font-semibold text-xs ring-1 ring-amber-300/60">
+                  <span className="chip rounded-pill bg-gold/10 text-gold-ink font-semibold text-xs ring-1 ring-gold/30">
                     {activePillar.contractBadge}
                   </span>
                 </div>
@@ -365,7 +365,7 @@ export function TechFoundation() {
                 </p>
 
                 {/* Engineering philosophical quote */}
-                <blockquote className="mt-5 rounded-control bg-amber-50/50 border-l-4 border-amber-500 p-4 text-xs font-sans italic text-ink sm:text-sm leading-relaxed">
+                <blockquote className="mt-5 rounded-control bg-gold/10 border-l-4 border-gold p-4 text-xs font-sans italic text-ink sm:text-sm leading-relaxed">
                   {activePillar.quote}
                 </blockquote>
 
@@ -381,10 +381,10 @@ export function TechFoundation() {
                   {activePillar.highlights.map((item, idx) => (
                     <div
                       key={idx}
-                      className="rounded-control bg-paper/85 p-3.5 border border-slate-200/50 transition-all hover:bg-paper"
+                      className="rounded-control bg-paper/85 p-3.5 border border-ink/[0.08] transition-all hover:bg-paper"
                     >
                       <p className="text-xs font-bold text-ink flex items-center gap-2">
-                        <span className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-gold shrink-0" />
                         {item.label}
                       </p>
                       <p className="mt-1 text-xs text-ink-soft leading-relaxed">
@@ -395,10 +395,10 @@ export function TechFoundation() {
                 </div>
 
                 {/* Interactive Mini-Sandbox for Current Pillar */}
-                <div className="mt-6 rounded-card bg-sand/60 p-4 border border-slate-200/60">
+                <div className="mt-6 rounded-card bg-sand/60 p-4 border border-ink/[0.08]">
                   <div className="text-xs font-bold text-ink flex items-center justify-between">
                     <span className="flex items-center gap-1.5">
-                      <ZapIcon className="h-3.5 w-3.5 text-amber-600" />
+                      <ZapIcon className="h-3.5 w-3.5 text-gold" />
                       <span>架构交互演练微沙盒：</span>
                     </span>
                     <span className="text-xs text-ink-soft font-normal">点击即时触发</span>
@@ -411,7 +411,7 @@ export function TechFoundation() {
                         <button
                           type="button"
                           onClick={() => setFailoverLevel(1)}
-                          className={`flex-1 min-h-[44px] rounded-control py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                          className={`flex-1 min-h-[44px] rounded-control py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
                             failoverLevel === 1
                               ? 'bg-jade text-paper shadow-level-static'
                               : 'bg-paper text-ink-soft hover:text-ink'
@@ -422,9 +422,9 @@ export function TechFoundation() {
                         <button
                           type="button"
                           onClick={() => setFailoverLevel(2)}
-                          className={`flex-1 min-h-[44px] rounded-control py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                          className={`flex-1 min-h-[44px] rounded-control py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
                             failoverLevel === 2
-                              ? 'bg-amber-600 text-paper shadow-level-static'
+                              ? 'bg-gold text-paper shadow-level-static'
                               : 'bg-paper text-ink-soft hover:text-ink'
                           }`}
                         >
@@ -433,7 +433,7 @@ export function TechFoundation() {
                         <button
                           type="button"
                           onClick={() => setFailoverLevel(3)}
-                          className={`flex-1 min-h-[44px] rounded-control py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                          className={`flex-1 min-h-[44px] rounded-control py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
                             failoverLevel === 3
                               ? 'bg-ochre text-paper shadow-level-static'
                               : 'bg-paper text-ink-soft hover:text-ink'
@@ -442,7 +442,7 @@ export function TechFoundation() {
                           Level 3 拓扑卡片
                         </button>
                       </div>
-                      <div className="rounded-control bg-paper p-3 text-xs border border-slate-200/50">
+                      <div className="rounded-control bg-paper p-3 text-xs border border-ink/[0.08]">
                         {failoverLevel === 1 && (
                           <div className="flex items-center gap-2 text-jade font-semibold">
                             <span>● 网络畅通：</span>
@@ -450,7 +450,7 @@ export function TechFoundation() {
                           </div>
                         )}
                         {failoverLevel === 2 && (
-                          <div className="flex items-center gap-2 text-amber-700 font-semibold">
+                          <div className="flex items-center gap-2 text-gold-ink font-semibold">
                             <span>▲ 触发超时降级：</span>
                             <span className="text-ink">网络中断，无缝秒级切换至内联离线 SVG 矢量图</span>
                           </div>
@@ -467,7 +467,7 @@ export function TechFoundation() {
 
                   {/* Demo 2: DSL AST Verification */}
                   {activePillar.interactiveDemoType === 'dsl' && (
-                    <div className="mt-3 rounded-control bg-paper p-3 text-xs border border-slate-200/50 space-y-1.5">
+                    <div className="mt-3 rounded-control bg-paper p-3 text-xs border border-ink/[0.08] space-y-1.5">
                       <div className="flex items-center justify-between text-jade font-semibold">
                         <span className="flex items-center gap-1.5">
                           <CheckIcon className="h-3.5 w-3.5 text-jade" />
@@ -487,7 +487,7 @@ export function TechFoundation() {
                       <button
                         type="button"
                         onClick={() => setGuardrailTested(!guardrailTested)}
-                        className="w-full min-h-[44px] rounded-control bg-ochre/10 text-ochre hover:bg-ochre/20 border border-ochre/30 py-2.5 px-3 text-xs font-semibold transition-all flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 text-center"
+                        className="w-full min-h-[44px] rounded-control bg-ochre/10 text-ochre hover:bg-ochre/20 border border-ochre/30 py-2.5 px-3 text-xs font-semibold transition-all flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold text-center"
                       >
                         <span>模拟大模型指令：7座 MPV (加装车顶箱 2.15m) 直接驶入 2.0m 老城地库</span>
                         <span className="underline shrink-0">触发断言拦截</span>
@@ -511,7 +511,7 @@ export function TechFoundation() {
 
                   {/* Demo 4: Compiler Pipeline */}
                   {activePillar.interactiveDemoType === 'compiler' && (
-                    <div className="mt-3 rounded-control bg-paper p-3 text-xs border border-slate-200/50 space-y-2">
+                    <div className="mt-3 rounded-control bg-paper p-3 text-xs border border-ink/[0.08] space-y-2">
                       <div className="flex items-center justify-between font-mono text-xs">
                         <span className="text-ink font-semibold">打包目标: expedition-pro.v1.1.html</span>
                         <span className="text-jade font-bold tabular-nums">1.8 MB (已压缩)</span>
@@ -531,7 +531,7 @@ export function TechFoundation() {
 
           {/* Right Column: Code & Formal Contract Inspector */}
           <div className="space-y-4 lg:col-span-6 lg:sticky lg:top-28 min-w-0">
-            <div className="glass-strong rounded-container p-5 sm:p-7 shadow-level-float overflow-hidden border border-slate-200/60">
+            <div className="glass-strong rounded-container p-5 sm:p-7 shadow-level-float overflow-hidden border border-ink/[0.08]">
               {/* Code window chrome header */}
               <div className="flex items-center justify-between border-b border-ink/[0.06] pb-3">
                 <div className="flex items-center gap-2">
@@ -551,7 +551,7 @@ export function TechFoundation() {
                   <button
                     type="button"
                     onClick={handleCopyCode}
-                    className="chip rounded-pill min-h-[40px] py-1.5 px-3.5 text-xs text-amber-700 hover:text-amber-800 transition-all active:scale-95 font-semibold border border-amber-300/60 hover:bg-amber-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                    className="chip rounded-pill min-h-[40px] py-1.5 px-3.5 text-xs text-gold-ink hover:text-ink transition-all active:scale-95 font-semibold border border-gold/40 hover:bg-gold/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
                     title="复制真实代码"
                   >
                     {copiedCode ? '已复制 ✓' : '复制代码'}
@@ -572,14 +572,14 @@ export function TechFoundation() {
                   <span className="h-2 w-2 rounded-full bg-jade" />
                   <span>与核心架构契约 100% 一致</span>
                 </span>
-                <span className="font-mono text-xs text-amber-700 font-medium">
+                <span className="font-mono text-xs text-gold-ink font-medium">
                   TripCraft Architecture Spec v2
                 </span>
               </div>
             </div>
 
             {/* Architecture Ecosystem Summary Card */}
-            <div className="glass rounded-card p-5 border border-slate-200/60 text-xs shadow-level-static">
+            <div className="glass rounded-card p-5 border border-ink/[0.08] text-xs shadow-level-static">
               <p className="font-serif font-bold text-ink text-sm">
                 为什么我们坚守这些工程哲学？
               </p>

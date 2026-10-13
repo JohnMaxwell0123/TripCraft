@@ -37,7 +37,7 @@ export function Navbar() {
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
         scrolled || mobileMenuOpen
-          ? 'bg-white/85 backdrop-blur-xl border-b border-slate-200/70 shadow-level-static py-2.5'
+          ? 'bg-paper/90 backdrop-blur-xl border-b border-ink/[0.08] shadow-level-static py-2.5'
           : 'bg-transparent py-3.5 sm:py-4'
       }`}
     >
@@ -50,14 +50,14 @@ export function Navbar() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
           aria-label="TripCraft 旅艺 首页"
-          className="group flex items-center gap-3 no-underline transition-opacity hover:opacity-90 min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded-control px-1"
+          className="group flex items-center gap-3 no-underline transition-opacity hover:opacity-90 min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60 rounded-control px-1"
         >
-          <span className="flex h-9 w-9 items-center justify-center rounded-control bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 font-sans text-base font-bold text-white shadow-level-static ring-1 ring-amber-300/40 transition-transform duration-300 group-hover:scale-105">
+          <span className="flex h-9 w-9 items-center justify-center rounded-control bg-gradient-to-br from-gold via-gold-ink to-ink font-serif text-base font-bold text-paper shadow-level-static ring-1 ring-gold/40 transition-transform duration-300 group-hover:scale-105">
             旅
           </span>
           <div className="flex flex-col">
             <span className="font-sans text-base font-bold tracking-tight text-ink sm:text-lg">
-              TripCraft <span className="font-semibold text-amber-600 text-sm">· 旅艺</span>
+              TripCraft <span className="font-serif font-bold text-gold-ink text-sm">· 旅艺</span>
             </span>
             <span className="hidden text-xs font-medium tracking-wider text-ink-soft sm:inline">
               智能自驾路书协同中枢
@@ -73,7 +73,7 @@ export function Navbar() {
               e.preventDefault();
               scrollToSection('demo');
             }}
-            className="inline-flex min-h-[44px] items-center px-3.5 py-2 rounded-pill transition-colors hover:text-amber-600 hover:bg-amber-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+            className="inline-flex min-h-[44px] items-center px-3.5 py-2 rounded-pill transition-colors hover:text-gold-ink hover:bg-gold/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
           >
             故事流视差演进
           </a>
@@ -83,7 +83,7 @@ export function Navbar() {
               e.preventDefault();
               scrollToSection('bento');
             }}
-            className="inline-flex min-h-[44px] items-center px-3.5 py-2 rounded-pill transition-colors hover:text-amber-600 hover:bg-amber-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+            className="inline-flex min-h-[44px] items-center px-3.5 py-2 rounded-pill transition-colors hover:text-gold-ink hover:bg-gold/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
           >
             全能矩阵画廊
           </a>
@@ -93,7 +93,7 @@ export function Navbar() {
               e.preventDefault();
               scrollToSection('foundation');
             }}
-            className="inline-flex min-h-[44px] items-center px-3.5 py-2 rounded-pill transition-colors hover:text-amber-600 hover:bg-amber-50/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+            className="inline-flex min-h-[44px] items-center px-3.5 py-2 rounded-pill transition-colors hover:text-gold-ink hover:bg-gold/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
           >
             技术底座与哲学
           </a>
@@ -123,7 +123,7 @@ export function Navbar() {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-expanded={mobileMenuOpen}
             aria-label={mobileMenuOpen ? '关闭导航菜单' : '打开导航菜单'}
-            className="flex h-11 w-11 items-center justify-center rounded-pill border border-slate-200/70 bg-white/80 text-ink shadow-level-static transition-colors hover:bg-white hover:text-amber-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 md:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-pill border border-ink/10 bg-paper/85 text-ink shadow-level-static transition-colors hover:bg-paper hover:text-gold-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60 md:hidden"
           >
             {mobileMenuOpen ? (
               <XIcon className="h-5 w-5" />
@@ -138,7 +138,7 @@ export function Navbar() {
       {mobileMenuOpen && (
         <nav
           aria-label="移动端主导航"
-          className="mx-4 mt-2.5 flex flex-col gap-1 rounded-card border border-slate-200/70 bg-white/95 p-3 shadow-level-float backdrop-blur-xl md:hidden animate-fadeIn"
+          className="mx-4 mt-2.5 flex flex-col gap-1 rounded-card border border-ink/10 bg-paper/95 p-3 shadow-level-float backdrop-blur-xl md:hidden animate-fadeIn"
         >
           <a
             href="#demo"
@@ -146,10 +146,10 @@ export function Navbar() {
               e.preventDefault();
               scrollToSection('demo');
             }}
-            className="flex min-h-[44px] items-center justify-between rounded-control px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-amber-50 hover:text-amber-700"
+            className="flex min-h-[44px] items-center justify-between rounded-control px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-gold/10 hover:text-gold-ink"
           >
             <span>故事流视差演进</span>
-            <span className="text-xs font-mono text-amber-600 font-bold">01~05</span>
+            <span className="text-xs font-mono text-gold-ink font-bold">01~05</span>
           </a>
           <a
             href="#bento"
@@ -157,7 +157,7 @@ export function Navbar() {
               e.preventDefault();
               scrollToSection('bento');
             }}
-            className="flex min-h-[44px] items-center justify-between rounded-control px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-amber-50 hover:text-amber-700"
+            className="flex min-h-[44px] items-center justify-between rounded-control px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-gold/10 hover:text-gold-ink"
           >
             <span>全能矩阵画廊</span>
             <span className="text-xs text-ink-soft">F-M05~M11</span>
@@ -168,7 +168,7 @@ export function Navbar() {
               e.preventDefault();
               scrollToSection('foundation');
             }}
-            className="flex min-h-[44px] items-center justify-between rounded-control px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-amber-50 hover:text-amber-700"
+            className="flex min-h-[44px] items-center justify-between rounded-control px-4 py-2 text-sm font-semibold text-ink transition-colors hover:bg-gold/10 hover:text-gold-ink"
           >
             <span>技术底座与哲学</span>
             <span className="text-xs font-mono text-ink-soft">ADR / BR-025</span>

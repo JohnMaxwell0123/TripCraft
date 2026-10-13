@@ -278,7 +278,7 @@ function Badge({ x, y, anchorX, anchorY, text, tone, w, at }: { x: number; y: nu
   const opacity = useRange(p, [at, at + 0.004, T.zoomLanzhou[0], T.zoomLanzhou[0] + 0.01], [0, 1, 1, 0]);
   const size = 15;
   const h = 30;
-  const color = tone === 'jade' ? 'rgb(14 134 116)' : 'rgb(176 112 16)';
+  const color = tone === 'jade' ? 'rgb(14 134 116)' : 'rgb(184 134 59)';
   return (
     <motion.g style={{ opacity, scale }} className="will-change-transform">
       <line x1={anchorX} y1={anchorY} x2={x + 10} y2={y} stroke={color} strokeWidth={1.4} strokeDasharray="3 3" />

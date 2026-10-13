@@ -27,9 +27,9 @@ export function Workspace() {
 }
 
 const SIDEBAR_CONSTRAINTS = [
-  { Icon: ElderIcon, label: '少台阶', color: 'text-amber-600' },
-  { Icon: BabyIcon, label: '午休', color: 'text-orange-600' },
-  { Icon: CarIcon, label: '2.15m', color: 'text-blue-600' },
+  { Icon: ElderIcon, label: '少台阶', color: 'text-gold-ink' },
+  { Icon: BabyIcon, label: '午休', color: 'text-ochre' },
+  { Icon: CarIcon, label: '2.15m', color: 'text-lapis' },
   { Icon: SunsetIcon, label: '19:30', color: 'text-rose-600' },
 ];
 
@@ -41,19 +41,19 @@ function Sidebar() {
   const isCh5 = useStep(p, [0.842]) >= 1;
 
   return (
-    <motion.aside className="glass-strong hidden w-[220px] shrink-0 flex-col gap-4 rounded-card border border-slate-200/60 p-4 shadow-level-static xl:flex gpu-layer" style={{ opacity, x }}>
+    <motion.aside className="glass-strong hidden w-[220px] shrink-0 flex-col gap-4 rounded-card border border-ink/[0.08] p-4 shadow-level-static xl:flex gpu-layer" style={{ opacity, x }}>
       <div>
-        <p className="eyebrow text-amber-600 font-semibold">对话</p>
-        <div className="mt-2 rounded-control rounded-br-sm bg-slate-900/90 p-2.5 text-xs leading-relaxed text-paper shadow-level-static">全家 5 口带长辈幼儿，7座 MPV (车顶箱)，爷爷膝盖术后，慢节奏…</div>
+        <p className="eyebrow text-gold-ink font-semibold">对话</p>
+        <div className="mt-2 rounded-control rounded-br-sm bg-ink p-2.5 text-xs leading-relaxed text-paper shadow-level-static">全家 5 口带长辈幼儿，7座 MPV (车顶箱)，爷爷膝盖术后，慢节奏…</div>
         <div className="mt-2 flex items-center gap-1.5 text-xs text-ink-soft">
           <Avatar name="老" tone="gold" size={18} /> 已采纳 · 方案 A 无障碍慢游
         </div>
       </div>
       <div>
-        <p className="eyebrow text-amber-600 font-semibold">约束 · 4</p>
+        <p className="eyebrow text-gold-ink font-semibold">约束 · 4</p>
         <div className="mt-2 flex flex-wrap gap-1.5">
           {SIDEBAR_CONSTRAINTS.map((c) => (
-            <span key={c.label} className="chip rounded-pill bg-paper/85 px-2 py-0.5 text-xs text-ink border border-slate-200/60 inline-flex items-center gap-1">
+            <span key={c.label} className="chip rounded-pill bg-paper/85 px-2 py-0.5 text-xs text-ink border border-ink/[0.08] inline-flex items-center gap-1">
               <c.Icon className={`h-3 w-3 ${c.color}`} />
               <span className="font-mono">{c.label}</span>
             </span>
@@ -62,31 +62,31 @@ function Sidebar() {
       </div>
       <div>
         <div className="flex items-center justify-between">
-          <p className="eyebrow text-amber-600 font-semibold">{isCh5 ? '协作成员 · 3 端同频' : '协作成员'}</p>
+          <p className="eyebrow text-gold-ink font-semibold">{isCh5 ? '协作成员 · 3 端同频' : '协作成员'}</p>
           <span className="chip rounded-pill bg-jade/10 text-jade text-[10px] px-1.5 py-0 font-medium">全员在网</span>
         </div>
         <ul className="mt-2 flex flex-col gap-2 text-xs">
           <li className="flex items-center gap-2">
             <Avatar name="我" tone="gold" size={24} />
             <span className="font-medium text-ink">我</span>
-            <span className={`chip rounded-pill text-[10px] px-1.5 py-0 font-mono transition-colors duration-300 ${isCh5 ? 'bg-amber-500/15 text-amber-800 font-semibold' : 'bg-slate-900/5 text-ink-soft'}`}>💻 桌面掌控</span>
+            <span className={`chip rounded-pill text-[10px] px-1.5 py-0 font-mono transition-colors duration-300 ${isCh5 ? 'bg-gold/15 text-gold-ink font-semibold' : 'bg-ink/[0.05] text-ink-soft'}`}>💻 桌面掌控</span>
             <span className="ml-auto text-xs text-ink-soft">领队</span>
           </li>
           <MemberRow name="阿杰" tone="jade" at={T.joinAJie[0]} device="📱 手机同步" active={isCh5} />
           <MemberRow name="小雨" tone="lapis" at={T.joinXiaoyu[0]} device="📱 手机 · 🚗 车机" active={isCh5} />
         </ul>
       </div>
-      <div className="mt-auto rounded-control bg-slate-900/5 p-2.5 text-xs leading-relaxed text-ink-soft border border-slate-200/40">
+      <div className="mt-auto rounded-control bg-ink/[0.05] p-2.5 text-xs leading-relaxed text-ink-soft border border-ink/[0.08]">
         <div className="flex items-center justify-between">
           <span className="font-semibold text-jade flex items-center gap-1">
             <span className="h-1.5 w-1.5 animate-breathe rounded-full bg-jade" />
             离线安全锦囊
           </span>
-          <span className="chip rounded-pill bg-amber-500/10 text-amber-800 font-mono text-[10px] px-1.5 py-0 font-bold">1.8 MB</span>
+          <span className="chip rounded-pill bg-gold/10 text-gold-ink font-mono text-[10px] px-1.5 py-0 font-bold">1.8 MB</span>
         </div>
         <p className="mt-1 text-[11px] text-ink-soft leading-tight">
           自包含单文件 · IndexedDB 本机固化<br />
-          <span className="text-amber-800 font-medium">线上多端同频，离线从容兜底</span>
+          <span className="text-gold-ink font-medium">线上多端同频，离线从容兜底</span>
         </p>
       </div>
     </motion.aside>
@@ -105,8 +105,8 @@ function MemberRow({ name, tone, at, device, active }: { name: string; tone: 'ja
               active
                 ? tone === 'jade'
                   ? 'bg-jade/15 text-jade font-semibold'
-                  : 'bg-blue-600/15 text-blue-700 font-semibold'
-                : 'bg-slate-900/5 text-ink-soft'
+                  : 'bg-lapis/15 text-lapis font-semibold'
+                : 'bg-ink/[0.05] text-ink-soft'
             }`}
           >
             {device}
@@ -128,7 +128,7 @@ function TimelineColumn() {
   return (
     <motion.section
       aria-label="九天日程"
-      className="glass-strong order-2 flex min-h-0 flex-1 flex-col rounded-card border border-slate-200/60 p-3 shadow-level-static md:order-none md:w-[300px] md:flex-none lg:w-[320px] gpu-layer"
+      className="glass-strong order-2 flex min-h-0 flex-1 flex-col rounded-card border border-ink/[0.08] p-3 shadow-level-static md:order-none md:w-[300px] md:flex-none lg:w-[320px] gpu-layer"
       style={{ opacity }}
     >
       <div className="flex items-baseline justify-between px-1 pb-2">
@@ -147,7 +147,7 @@ function TimelineColumn() {
 
 const badgeTone: Record<Tone, string> = {
   jade: 'bg-jade/10 text-jade ring-jade/25',
-  amber: 'bg-amber/10 text-amber ring-amber/30',
+  amber: 'bg-gold/10 text-gold-ink ring-gold/30',
   lapis: 'bg-lapis/10 text-lapis ring-lapis/25',
   ochre: 'bg-ochre/10 text-ochre ring-ochre/25',
 };
@@ -168,7 +168,7 @@ function DayCard({ day, index }: { day: DayPlan; index: number }) {
 
   return (
     <motion.li style={{ opacity, y }} className="shrink-0 will-change-transform">
-      <div className="relative overflow-hidden rounded-control border border-slate-200/50 bg-paper/75 px-3 py-2 shadow-level-static">
+      <div className="relative overflow-hidden rounded-control border border-ink/[0.08] bg-paper/75 px-3 py-2 shadow-level-static">
         {/* 活跃状态高亮图层：纯 MotionValue 驱动，0 React 重渲染 */}
         <motion.div
           aria-hidden
@@ -204,17 +204,17 @@ function InsertedNode() {
   const syncTagOpacity = useFade(p, 0.84, 0.854);
   return (
     <motion.div style={{ height }} className="overflow-hidden">
-      <motion.div style={{ opacity, x }} className="mt-1.5 flex items-center gap-2 rounded-control border border-dashed border-amber-500/60 bg-amber-500/10 py-1.5 pl-2 pr-1.5">
-        <span className="text-xs font-bold tabular-nums font-mono text-amber-700">20:00</span>
+      <motion.div style={{ opacity, x }} className="mt-1.5 flex items-center gap-2 rounded-control border border-dashed border-gold/60 bg-gold/10 py-1.5 pl-2 pr-1.5">
+        <span className="text-xs font-bold tabular-nums font-mono text-gold-ink">20:00</span>
         <span className="min-w-0 flex-1 truncate text-xs font-semibold text-ink inline-flex items-center gap-1">
-          <UtensilsIcon className="h-3.5 w-3.5 text-amber-700 shrink-0" />
+          <UtensilsIcon className="h-3.5 w-3.5 text-gold-ink shrink-0" />
           <span>正宁路夜市 · 牛奶鸡蛋醪糟</span>
         </span>
         <motion.span style={{ opacity: syncTagOpacity }} className="hidden sm:inline-flex chip rounded-pill bg-jade/15 text-jade border border-jade/30 text-[10px] px-1.5 py-0 font-mono font-medium">
           ⚡ 3端同频
         </motion.span>
         <Pop at={T.stamp}>
-          <span className="flex h-6 w-6 rotate-[-12deg] items-center justify-center rounded-full border-2 border-amber-600 text-xs font-bold text-amber-600">
+          <span className="flex h-6 w-6 rotate-[-12deg] items-center justify-center rounded-full border-2 border-gold text-xs font-bold text-gold-ink">
             打卡
           </span>
         </Pop>
@@ -228,10 +228,10 @@ function WishPool() {
   const p = useProgress();
   const opacity = useFade(p, T.poolIn[0], T.poolIn[1]);
   return (
-    <motion.div className="mt-2 rounded-control border border-dashed border-slate-300 bg-sand/60 p-2" style={{ opacity }}>
+    <motion.div className="mt-2 rounded-control border border-dashed border-ink/20 bg-sand/60 p-2" style={{ opacity }}>
       <div className="flex items-center justify-between px-1 pb-1.5">
         <span className="text-xs font-semibold text-ink inline-flex items-center gap-1">
-          <SparklesIcon className="h-3.5 w-3.5 text-amber-600" />
+          <SparklesIcon className="h-3.5 w-3.5 text-gold" />
           <span>待决愿望池</span>
         </span>
         <WishPoolBadge />
@@ -250,7 +250,7 @@ function WishPoolBadge() {
   const p = useProgress();
   const count = useStep(p, [T.poolIn[0], T.poolLand[0], T.poolResolveOut[1]]);
   const n = [0, 1, 2, 1][count];
-  return <span className="rounded-pill bg-slate-900/5 px-1.5 text-xs tabular-nums font-mono text-ink-soft">{n}</span>;
+  return <span className="rounded-pill bg-ink/[0.05] px-1.5 text-xs tabular-nums font-mono text-ink-soft">{n}</span>;
 }
 
 function PoolLanding() {
@@ -272,7 +272,7 @@ function ResolvedWishItem() {
     <WishItem
       who="阿杰"
       tone="jade"
-      icon={<UtensilsIcon className="h-4 w-4 text-amber-700" />}
+      icon={<UtensilsIcon className="h-4 w-4 text-gold-ink" />}
       title="赵记牛奶鸡蛋醪糟"
       status={
         resolved ? (
@@ -291,10 +291,10 @@ function ResolvedWishItem() {
 
 function WishItem({ who, tone, icon, title, status, resolved }: { who: string; tone: 'jade' | 'lapis'; icon: ReactNode; title: string; status?: ReactNode; resolved?: boolean }) {
   return (
-    <div className="flex h-9 items-center gap-2 rounded-control bg-paper/90 px-2 border border-slate-200/50 shadow-level-static">
+    <div className="flex h-9 items-center gap-2 rounded-control bg-paper/90 px-2 border border-ink/[0.08] shadow-level-static">
       <span className="flex h-5 w-5 shrink-0 items-center justify-center">{icon}</span>
       <span className="min-w-0 flex-1 truncate text-xs font-medium text-ink">{title}</span>
-      {status ? <span className={`shrink-0 text-xs font-semibold ${resolved ? 'text-jade font-semibold' : 'text-amber-700'}`}>{status}</span> : null}
+      {status ? <span className={`shrink-0 text-xs font-semibold ${resolved ? 'text-jade font-semibold' : 'text-gold-ink'}`}>{status}</span> : null}
       <Avatar name={who} tone={tone} size={20} />
     </div>
   );
@@ -308,16 +308,16 @@ function MapPanel() {
   return (
     <motion.section
       aria-label="路线地图"
-      className="glass-strong relative order-1 h-[44%] shrink-0 overflow-hidden rounded-card border border-slate-200/60 shadow-level-static md:order-none md:h-auto md:flex-1 gpu-layer [container-type:size]"
+      className="glass-strong relative order-1 h-[44%] shrink-0 overflow-hidden rounded-card border border-ink/[0.08] shadow-level-static md:order-none md:h-auto md:flex-1 gpu-layer [container-type:size]"
       style={{ opacity, scale }}
     >
       <RouteMap />
       <div className="pointer-events-none absolute left-3 top-3 flex flex-col gap-1">
-        <span className="chip rounded-pill glass-strong border border-slate-200/60 px-2.5 py-1 text-xs tabular-nums text-ink shadow-level-static inline-flex items-center gap-1">
-          <CompassIcon className="h-3.5 w-3.5 text-amber-600" />
+        <span className="chip rounded-pill glass-strong border border-ink/[0.08] px-2.5 py-1 text-xs tabular-nums text-ink shadow-level-static inline-flex items-center gap-1">
+          <CompassIcon className="h-3.5 w-3.5 text-gold" />
           <span>河西走廊 · 9 天 · 12 站</span>
         </span>
-        <span className="chip rounded-pill hidden bg-paper/80 border border-slate-200/50 px-2.5 py-0.5 text-xs text-ink-soft md:inline-flex">离线 SVG 底图 · 零外部瓦片</span>
+        <span className="chip rounded-pill hidden bg-paper/80 border border-ink/[0.08] px-2.5 py-0.5 text-xs text-ink-soft md:inline-flex">离线 SVG 底图 · 零外部瓦片</span>
       </div>
       <ElevationCard />
       <PresenceCursor name="阿杰" tone="jade" xs={[62, 48, 30, 26]} ys={[30, 46, 40, 58]} />
@@ -342,7 +342,7 @@ function ElevationCard() {
   const rise = useRange(p, [T.elevDraw[0], T.elevDraw[1]], [0, 1]);
   const peak = useFade(p, T.elevDraw[1] - 0.008, T.elevDraw[1]);
   return (
-    <motion.div className="glass-strong absolute bottom-3 left-3 hidden w-[290px] rounded-control border border-slate-200/60 p-3 shadow-level-float sm:block gpu-layer" style={{ opacity, y }}>
+    <motion.div className="glass-strong absolute bottom-3 left-3 hidden w-[290px] rounded-control border border-ink/[0.08] p-3 shadow-level-float sm:block gpu-layer" style={{ opacity, y }}>
       <div className="flex items-baseline justify-between">
         <span className="text-xs font-semibold text-ink">全程海拔剖面</span>
         <span className="text-xs font-mono tabular-nums text-jade inline-flex items-center gap-0.5">
@@ -417,9 +417,9 @@ function ComputingPill() {
   const y = useRange(p, [T.computing[0], T.computing[1]], [-12, 0], { rest: 0 });
   return (
     <motion.div className="pointer-events-none absolute inset-x-0 top-3 flex justify-center" style={{ opacity, y }}>
-      <span className="chip rounded-pill glass-strong border border-slate-200/60 shadow-level-float gap-2 px-3 py-1.5 text-xs text-ink">
+      <span className="chip rounded-pill glass-strong border border-ink/[0.08] shadow-level-float gap-2 px-3 py-1.5 text-xs text-ink">
         <span className="h-3 w-3 animate-radar rounded-full border-2 border-gold border-t-transparent" />
-        Web Worker 本地重算 · 3 个候选方案 · <b className="tabular-nums font-mono text-amber-600">42ms</b>
+        Web Worker 本地重算 · 3 个候选方案 · <b className="tabular-nums font-mono text-gold-ink">42ms</b>
       </span>
     </motion.div>
   );
@@ -439,7 +439,7 @@ function WalkLens() {
 
   return (
     <motion.div
-      className="glass-strong absolute right-3 top-1/2 overflow-hidden rounded-full border border-slate-200/60 shadow-level-float md:right-6 gpu-layer"
+      className="glass-strong absolute right-3 top-1/2 overflow-hidden rounded-full border border-ink/[0.08] shadow-level-float md:right-6 gpu-layer"
       style={{ opacity, scale, width: size, height: size, marginTop: -size / 2 }}
       aria-label="兰州街区放大：酒店步行 950 米至正宁路夜市"
     >
@@ -509,9 +509,9 @@ function FlyingCard() {
       className="pointer-events-none absolute left-0 top-0 z-40 w-[240px] gpu-layer [contain:layout_paint]"
       style={{ x, y, scale, rotate, opacity, visibility }}
     >
-      <div className="glass-strong flex items-center gap-2 rounded-control border border-slate-200/60 p-2 shadow-level-float">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-control bg-amber-100 text-amber-800">
-          <UtensilsIcon className="h-5 w-5 text-amber-700" />
+      <div className="glass-strong flex items-center gap-2 rounded-control border border-ink/[0.08] p-2 shadow-level-float">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-control bg-gold/15 text-gold-ink">
+          <UtensilsIcon className="h-5 w-5 text-gold-ink" />
         </span>
         <span className="min-w-0 flex-1">
           <span className="block truncate text-xs font-semibold text-ink md:text-sm">赵记牛奶鸡蛋醪糟</span>

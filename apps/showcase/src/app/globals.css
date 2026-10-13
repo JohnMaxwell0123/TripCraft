@@ -8,21 +8,21 @@
  * 「沉，不是亮」——氧化金箔、青金石、沙色暖白、赭石红、暖褐黑（不用纯黑）
  * ======================================================================== */
 :root {
-  --tc-sand: 248 250 252;       /* #F8FAFC 现代中性清爽冷白 (Slate 50) */
-  --tc-paper: 255 255 255;      /* #FFFFFF 纯白高光卡片 (Pure White) */
-  --tc-ink: 15 23 42;           /* #0F172A 现代极深石板黑 (Slate 900) */
-  --tc-ink-soft: 71 85 105;     /* #475569 次级文字 (Slate 600，高对比度) */
-  --tc-gold: 217 119 6;         /* #D97706 现代琥珀金 (Amber 600) */
-  --tc-gold-ink: 180 83 9;      /* #B45309 深琥珀金文字 (Amber 700) */
-  --tc-lapis: 37 99 235;        /* #2563EB 国际化极客蓝 (Blue 600) */
-  --tc-lapis-deep: 15 23 42;    /* #0F172A 深色背景底蕴 */
-  --tc-ochre: 225 29 72;        /* #E11D48 现代绯红 (Rose 600) */
-  --tc-jade: 16 185 129;        /* #10B981 现代翡翠绿 (Emerald 500) */
-  --tc-amber: 245 158 11;       /* #F59E0B 琥珀亮橙 (Amber 500) */
-  --tc-dusk: 234 88 12;         /* #EA580C 暮色暖橙 (Orange 600) */
+  --tc-sand: 242 232 213;       /* #F2E8D5 沙色暖底 */
+  --tc-paper: 250 245 235;      /* #FAF5EB 亚麻纸色卡片 */
+  --tc-ink: 58 46 31;           /* #3A2E1F 沉稳暖褐黑（杜绝冷黑与OLED拖影） */
+  --tc-ink-soft: 107 93 74;     /* #6B5D4A 次级文字（对沙底 ≥ 4.5:1） */
+  --tc-gold: 184 134 59;        /* #B8863B 氧化金箔（沉，不是亮） */
+  --tc-gold-ink: 122 85 32;     /* #7A5520 氧化金文字（对沙底 ≥ 4.5:1） */
+  --tc-lapis: 31 78 121;        /* #1F4E79 敦煌壁画青金石蓝 */
+  --tc-lapis-deep: 14 26 44;    /* #0E1A2C 戈壁夜空 */
+  --tc-ochre: 140 58 43;        /* #8C3A2B 赭石红 */
+  --tc-jade: 14 134 116;        /* #0E8674 青甘碧（通行 / 成功） */
+  --tc-amber: 176 112 16;       /* #B07010 琥珀（提醒） */
+  --tc-dusk: 201 138 90;        /* #C98A5A 鸣沙山落日 */
   --tc-accent: var(--tc-gold);  /* 白标换肤可覆盖 */
 
-  --tc-glass-bg: 255 255 255;
+  --tc-glass-bg: 250 245 235;   /* 亚麻纸暖透玻璃 */
   --tc-ease-dust: cubic-bezier(0.22, 0.8, 0.24, 1);
 
   color-scheme: light;
@@ -46,7 +46,7 @@ body {
 }
 
 ::selection {
-  background: rgb(var(--tc-lapis) / 0.15);
+  background: rgb(var(--tc-gold) / 0.25);
   color: rgb(var(--tc-ink));
 }
 
@@ -117,28 +117,28 @@ body {
   }
 
   .eyebrow {
-    @apply text-xs font-semibold uppercase tracking-[0.24em] text-amber-600;
+    @apply text-xs font-semibold uppercase tracking-[0.24em] text-gold-ink;
   }
 
   .chip {
     @apply inline-flex items-center gap-1.5 rounded-pill px-3 py-1 text-xs font-medium leading-none;
   }
 
-  /* 品牌主色主行动按钮：琥珀金/敦煌金渐变 + 温暖金色光晕 + 白色文字 */
+  /* 品牌主色主行动按钮：氧化金箔渐变 + 沉稳温润金色光晕 + 亚麻暖白字 */
   .btn-primary {
-    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-pill px-6 text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 active:scale-95;
-    background: linear-gradient(135deg, rgb(245 158 11) 0%, rgb(217 119 6) 55%, rgb(180 83 9) 100%);
-    color: #ffffff;
-    border: 1px solid rgb(255 255 255 / 0.3);
-    box-shadow: 0 8px 24px -4px rgb(217 119 6 / 0.4), 0 2px 6px -1px rgb(217 119 6 / 0.2), inset 0 1px 0 rgb(255 255 255 / 0.4);
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-pill px-6 text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 active:scale-95;
+    background: linear-gradient(135deg, rgb(184 134 59) 0%, rgb(140 98 38) 60%, rgb(122 85 32) 100%);
+    color: #faf5eb;
+    border: 1px solid rgb(255 255 255 / 0.25);
+    box-shadow: 0 8px 24px -4px rgb(184 134 59 / 0.35), 0 2px 6px -1px rgb(184 134 59 / 0.2), inset 0 1px 0 rgb(255 255 255 / 0.35);
   }
   .btn-primary:hover {
-    background: linear-gradient(135deg, rgb(251 191 36) 0%, rgb(245 158 11) 50%, rgb(217 119 6) 100%);
-    box-shadow: 0 14px 32px -4px rgb(217 119 6 / 0.5), 0 4px 12px -2px rgb(217 119 6 / 0.3), inset 0 1px 0 rgb(255 255 255 / 0.5);
+    background: linear-gradient(135deg, rgb(199 148 68) 0%, rgb(184 134 59) 50%, rgb(140 98 38) 100%);
+    box-shadow: 0 12px 30px -4px rgb(184 134 59 / 0.45), 0 4px 10px -2px rgb(184 134 59 / 0.25), inset 0 1px 0 rgb(255 255 255 / 0.45);
     transform: translateY(-1px);
   }
   .btn-ghost {
-    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-pill border border-slate-200/60 bg-white/80 px-6 text-sm font-semibold text-slate-800 transition-all duration-200 hover:bg-white hover:border-amber-500/40 hover:text-amber-700 hover:shadow-level-static focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 active:scale-95;
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-pill border border-ink/15 bg-paper/85 px-6 text-sm font-semibold text-ink transition-all duration-200 hover:bg-paper hover:border-gold/50 hover:text-gold-ink hover:shadow-level-static focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 active:scale-95;
   }
 
   .mask-fade-b {

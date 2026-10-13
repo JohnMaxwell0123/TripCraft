@@ -109,10 +109,10 @@ export function Toast({ range, children, tone = 'jade' }: { range: readonly [num
   return (
     <motion.div
       role="status"
-      className="glass-strong flex items-center gap-2 whitespace-nowrap rounded-pill border border-slate-200/60 px-4 py-1.5 text-xs font-medium text-ink shadow-level-float"
+      className="glass-strong flex items-center gap-2 whitespace-nowrap rounded-pill border border-ink/[0.08] px-4 py-1.5 text-xs font-medium text-ink shadow-level-float"
       style={{ opacity, y, scale }}
     >
-      <span className={`flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold text-paper ${tone === 'jade' ? 'bg-jade' : 'bg-gradient-to-br from-amber-500 to-amber-600'}`}>
+      <span className={`flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold text-paper ${tone === 'jade' ? 'bg-jade' : 'bg-gradient-to-br from-gold to-gold-ink'}`}>
         <CheckIcon className="h-3 w-3" />
       </span>
       {children}

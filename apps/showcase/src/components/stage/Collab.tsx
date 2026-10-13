@@ -84,7 +84,7 @@ export function Topbar() {
       {/* 顶部微高光反光层 */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/90 to-transparent" />
       <MacTrafficLights />
-      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-control bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 font-serif text-sm font-bold text-white shadow-level-static">旅</span>
+      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-control bg-gradient-to-br from-gold via-gold-ink to-ink font-serif text-sm font-bold text-paper shadow-level-static ring-1 ring-gold/40">旅</span>
       <div className="relative h-5 min-w-0 flex-1 overflow-hidden text-xs font-semibold text-ink md:text-sm">
         <motion.span className="absolute inset-0 truncate" style={{ opacity: draft }}>
           新的旅行 <span className="font-normal text-ink-soft">· 对话中</span>
@@ -101,7 +101,7 @@ export function Topbar() {
       <AvatarStack />
 
       <motion.span
-        className="relative flex h-8 items-center gap-1.5 rounded-pill bg-gradient-to-r from-amber-500 to-amber-600 px-3 text-xs font-semibold text-white shadow-level-static hover:shadow-level-hover hover:from-amber-600 hover:to-amber-700"
+        className="btn-primary relative flex h-8 items-center gap-1.5 rounded-pill px-3 text-xs font-semibold shadow-level-static hover:shadow-level-hover"
         style={{ scale: sharePress }}
       >
         <motion.span className="absolute inset-0 rounded-pill shadow-glow" style={{ opacity: shareGlow }} />
@@ -137,11 +137,11 @@ function OfflinePouchBadge() {
   const opacity = useFade(p, T.timelineIn[1], T.timelineIn[1] + 0.02);
   return (
     <motion.span
-      className="hidden items-center gap-1 rounded-pill border border-amber-500/25 bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-800 lg:inline-flex"
+      className="hidden items-center gap-1 rounded-pill border border-gold/30 bg-gold/10 px-2 py-0.5 text-xs font-medium text-gold-ink lg:inline-flex"
       style={{ opacity }}
       title="单文件 1.8MB 随身离线兜底 · 零外部网络依赖"
     >
-      <ShieldIcon className="h-3 w-3 text-amber-700" />
+      <ShieldIcon className="h-3 w-3 text-gold-ink" />
       <span>离线锦囊</span>
     </motion.span>
   );
@@ -154,7 +154,7 @@ function VersionBadge() {
   const verPulse = useRange(p, [T.version, T.version + 0.004, T.version + 0.016], [1, 1.18, 1], { rest: 1 });
   return (
     <motion.span
-      className={`chip rounded-pill hidden px-2 py-0.5 font-mono tabular-nums text-xs border transition-colors duration-500 sm:inline-flex ${ver ? 'bg-jade/10 text-jade border-jade/30' : 'bg-slate-900/5 text-ink-soft border-slate-200/50'}`}
+      className={`chip rounded-pill hidden px-2 py-0.5 font-mono tabular-nums text-xs border transition-colors duration-500 sm:inline-flex ${ver ? 'bg-jade/10 text-jade border-jade/30' : 'bg-ink/[0.05] text-ink-soft border-ink/[0.08]'}`}
       style={{ opacity: verOpacity, scale: verPulse }}
     >
       {ver ? 'v1.1' : 'v1.0'}
@@ -197,20 +197,20 @@ export function ShareSheet() {
   const scale = useRange(p, [a, b], [0.96, 1], { rest: 1 });
   return (
     <motion.div
-      className="glass-strong absolute right-3 top-2 z-40 w-[min(320px,calc(100%-1.5rem))] rounded-card border border-slate-200/60 p-4 shadow-level-float gpu-layer [contain:layout_paint]"
+      className="glass-strong absolute right-3 top-2 z-40 w-[min(320px,calc(100%-1.5rem))] rounded-card border border-ink/[0.08] p-4 shadow-level-float gpu-layer [contain:layout_paint]"
       style={{ opacity, y, scale, visibility }}
     >
       <p className="text-sm font-semibold text-ink">邀请同行的人</p>
       <p className="mt-0.5 text-xs text-ink-soft">免注册 · 微信扫码即加入 · 7 天有效</p>
       <div className="mt-3 flex gap-3">
-        <div className="relative rounded-control bg-paper p-2 border border-slate-200/60 shadow-level-static">
+        <div className="relative rounded-control bg-paper p-2 border border-ink/[0.08] shadow-level-static">
           <svg viewBox="-1 -1 27 27" className="h-24 w-24" shapeRendering="crispEdges" aria-label="邀请二维码（演示）">
             <path d={QR} fill="rgb(58 46 31)" />
           </svg>
           <span className="absolute left-1/2 top-1/2 flex h-7 w-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-control bg-gradient-to-br from-gold to-ochre font-serif text-xs font-bold text-paper ring-2 ring-paper">旅</span>
         </div>
         <div className="flex min-w-0 flex-1 flex-col justify-between text-xs">
-          <span className="truncate rounded-control bg-slate-900/5 px-2 py-1.5 font-mono tabular-nums text-ink border border-slate-200/40">tc.trip/j/西行-7QX</span>
+          <span className="truncate rounded-control bg-ink/[0.05] px-2 py-1.5 font-mono tabular-nums text-ink border border-ink/[0.08]">tc.trip/j/西行-7QX</span>
           <div className="flex flex-col gap-1 text-ink-soft">
             <span className="flex items-center gap-1"><CheckIcon className="h-3 w-3 text-jade shrink-0" /> 可提名景点 / 美食</span>
             <span className="flex items-center gap-1"><CheckIcon className="h-3 w-3 text-jade shrink-0" /> 可评论与投票</span>
@@ -324,7 +324,7 @@ export function CollabDrawer() {
   return (
     <motion.aside
       aria-label="协同愿望池"
-      className="glass-strong absolute inset-x-0 bottom-0 z-40 flex h-[86%] flex-col rounded-t-container border border-slate-200/60 p-4 shadow-level-float md:inset-x-auto md:bottom-3 md:right-3 md:top-3 md:h-auto md:w-[340px] md:rounded-container gpu-layer [contain:layout_paint]"
+      className="glass-strong absolute inset-x-0 bottom-0 z-40 flex h-[86%] flex-col rounded-t-container border border-ink/[0.08] p-4 shadow-level-float md:inset-x-auto md:bottom-3 md:right-3 md:top-3 md:h-auto md:w-[340px] md:rounded-container gpu-layer [contain:layout_paint]"
       style={{ x: xs, y: ys, opacity, visibility }}
     >
       <div className="flex items-center gap-2">
@@ -335,25 +335,25 @@ export function CollabDrawer() {
         <Avatar name="阿杰" tone="jade" size={18} /> 阿杰 正在添加…
       </div>
       <div className="mt-3 flex gap-2">
-        <span className="chip rounded-pill bg-slate-900/5 text-ink-soft border border-slate-200/40 inline-flex items-center gap-1">
-          <PinIcon className="h-3 w-3 text-amber-600" />
+        <span className="chip rounded-pill bg-ink/[0.05] text-ink-soft border border-ink/[0.08] inline-flex items-center gap-1">
+          <PinIcon className="h-3 w-3 text-gold" />
           <span>景点</span>
         </span>
-        <span className="chip rounded-pill bg-slate-900 text-white shadow-level-static inline-flex items-center gap-1">
-          <UtensilsIcon className="h-3 w-3 text-amber-400" />
+        <span className="chip rounded-pill bg-ink text-paper shadow-level-static inline-flex items-center gap-1">
+          <UtensilsIcon className="h-3 w-3 text-gold" />
           <span>美食</span>
         </span>
-        <span className="chip rounded-pill bg-slate-900/5 text-ink-soft border border-slate-200/40 inline-flex items-center gap-1">
+        <span className="chip rounded-pill bg-ink/[0.05] text-ink-soft border border-ink/[0.08] inline-flex items-center gap-1">
           <HotelIcon className="h-3 w-3 text-ink-soft" />
           <span>住宿</span>
         </span>
       </div>
-      <div className="mt-3 flex h-11 items-center gap-2 rounded-control bg-paper px-3 border border-slate-200/60 shadow-level-static">
+      <div className="mt-3 flex h-11 items-center gap-2 rounded-control bg-paper px-3 border border-ink/[0.08] shadow-level-static">
         <SearchIcon className="h-4 w-4 text-ink-soft shrink-0" />
         <span className="text-sm text-ink">
           <span ref={searchRef}>{SEARCH}</span>
         </span>
-        <span className="h-4 w-[2px] animate-caret bg-amber-600" />
+        <span className="h-4 w-[2px] animate-caret bg-gold" />
       </div>
 
       <div className="relative mt-3 min-h-0 flex-1">
@@ -361,7 +361,7 @@ export function CollabDrawer() {
         <motion.ul className="absolute inset-x-0 top-0 flex flex-col gap-1.5 pointer-events-none" style={{ opacity: suggestListOpacity }}>
           <FirstSuggestionItem name={SUGGESTIONS[0].name} meta={SUGGESTIONS[0].meta} />
           {SUGGESTIONS.slice(1).map((s) => (
-            <li key={s.name} className="rounded-control bg-paper/75 px-3 py-2 border border-slate-200/40 shadow-level-static">
+            <li key={s.name} className="rounded-control bg-paper/75 px-3 py-2 border border-ink/[0.08] shadow-level-static">
               <p className="text-xs font-semibold text-ink md:text-sm">{s.name}</p>
               <p className="text-xs tabular-nums text-ink-soft">{s.meta}</p>
             </li>
@@ -369,9 +369,9 @@ export function CollabDrawer() {
         </motion.ul>
         {/* 已选详情 + 推荐理由：纯 MotionValue 控制显隐 */}
         <motion.div className="absolute inset-x-0 top-0 flex flex-col gap-2.5 pointer-events-none" style={{ opacity: detailOpacity }}>
-          <div className="flex gap-3 rounded-control bg-paper/85 p-2.5 border border-slate-200/50 shadow-level-static">
-            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-control bg-amber-100 text-amber-800">
-              <UtensilsIcon className="h-7 w-7 text-amber-700" />
+          <div className="flex gap-3 rounded-control bg-paper/85 p-2.5 border border-ink/[0.08] shadow-level-static">
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-control bg-gold/15 text-gold-ink">
+              <UtensilsIcon className="h-7 w-7 text-gold-ink" />
             </span>
             <span className="min-w-0">
               <span className="block text-sm font-semibold text-ink">赵记牛奶鸡蛋醪糟</span>
@@ -379,7 +379,7 @@ export function CollabDrawer() {
               <span className="mt-1 inline-block rounded-control bg-jade/10 px-1.5 text-xs font-semibold tabular-nums text-jade font-mono">距 D0 酒店 950m</span>
             </span>
           </div>
-          <div className="min-h-[72px] rounded-control bg-paper px-3 py-2 text-xs leading-relaxed text-ink border border-slate-200/60 shadow-level-static md:text-sm">
+          <div className="min-h-[72px] rounded-control bg-paper px-3 py-2 text-xs leading-relaxed text-ink border border-ink/[0.08] shadow-level-static md:text-sm">
             <span className="mb-1 block text-xs font-semibold text-ink-soft">推荐理由</span>
             <span ref={reasonRef}>{REASON}</span>
           </div>
@@ -400,7 +400,7 @@ function FirstSuggestionItem({ name, meta }: { name: string; meta: string }) {
   const picked = useStep(p, [T.suggestPick]) === 1;
   return (
     <li
-      className={`rounded-control px-3 py-2 border transition-colors duration-200 ${picked ? 'bg-amber-500/15 border-amber-500/50 shadow-level-static' : 'border-slate-200/40 bg-paper/75'}`}
+      className={`rounded-control px-3 py-2 border transition-colors duration-200 ${picked ? 'bg-gold/15 border-gold/50 shadow-level-static' : 'border-ink/[0.08] bg-paper/75'}`}
     >
       <p className="text-xs font-semibold text-ink md:text-sm">{name}</p>
       <p className="text-xs tabular-nums text-ink-soft">{meta}</p>
@@ -414,7 +414,7 @@ function CollabSubmitButton() {
   const submitted = useStep(p, [T.submitClick + 0.001]) === 1;
   return (
     <motion.span
-      className={`flex h-11 items-center justify-center gap-1.5 rounded-control text-sm font-semibold text-white transition-colors duration-200 ${submitted ? 'bg-jade shadow-level-static' : 'bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 shadow-level-hover'}`}
+      className={`btn-primary flex h-11 items-center justify-center gap-1.5 rounded-control text-sm font-semibold shadow-level-hover ${submitted ? 'bg-jade text-paper shadow-level-static' : ''}`}
       style={{ scale: submitPress }}
     >
       {submitted ? (
