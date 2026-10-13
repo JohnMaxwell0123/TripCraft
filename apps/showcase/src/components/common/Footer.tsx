@@ -15,7 +15,7 @@ export function Footer() {
             className="pointer-events-none absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(184,134,59,0.12),transparent_70%)] blur-2xl"
           />
 
-          <span className="chip rounded-pill bg-gold/15 text-gold-ink font-semibold text-xs ring-1 ring-gold/30">
+          <span className="chip rounded-pill bg-blue-50 text-blue-900 font-semibold text-xs ring-1 ring-blue-200/60">
             开放体验 · 零门槛
           </span>
           <h2 className="mt-4 font-sans text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-ink leading-[1.3]">
@@ -65,10 +65,10 @@ export function Footer() {
           {/* Column 1: Brand & Philosophy */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-control bg-gradient-to-br from-gold via-gold-ink to-ink font-serif text-sm font-bold text-paper shadow-level-static ring-1 ring-gold/40">
+              <span className="flex h-8 w-8 items-center justify-center rounded-control bg-gradient-to-br from-blue-900 via-blue-950 to-slate-900 font-serif text-sm font-bold text-white shadow-level-static ring-1 ring-blue-500/20">
                 旅
               </span>
-              <span className="font-sans text-base font-bold text-ink">TripCraft · 旅艺</span>
+              <span className="font-sans text-base font-bold text-ink">TripCraft <span className="font-serif font-bold text-blue-900 text-sm">· 旅艺</span></span>
             </div>
             <p className="mt-3 text-xs leading-relaxed text-ink-soft">
               面向自驾与深度游的智能旅行路书协同系统与数字化交付中枢。

@@ -250,7 +250,7 @@ export function TechFoundation() {
       <div className="relative mx-auto max-w-[1240px] px-4 sm:px-8">
         {/* Section Header */}
         <div className="text-center">
-          <p className="eyebrow text-gold-ink font-semibold">ENGINEERING FOUNDATION & PHILOSOPHY · 技术底座与工程哲学</p>
+          <p className="eyebrow text-blue-900 font-semibold">ENGINEERING FOUNDATION & PHILOSOPHY · 技术底座与工程哲学</p>
           <h2 className="mt-3 font-sans text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-ink leading-[1.3]">
             支撑旅艺的硬核技术底座
           </h2>
@@ -262,22 +262,22 @@ export function TechFoundation() {
         {/* Engineering Hard Benchmarks Bar */}
         <div className="mt-8 sm:mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
           <div className="glass rounded-card p-3.5 sm:p-5 text-center transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08]">
-            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-gold-ink">≤ 1.8 MB</p>
+            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-blue-900">≤ 1.8 MB</p>
             <p className="mt-1 text-xs font-semibold text-ink">单文件自包含体积</p>
             <p className="text-xs text-ink-soft">含全量矢量图与子集字体</p>
           </div>
           <div className="glass rounded-card p-3.5 sm:p-5 text-center transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08]">
-            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-gold-ink">&lt; 300 ms</p>
+            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-blue-900">&lt; 300 ms</p>
             <p className="mt-1 text-xs font-semibold text-ink">离线双击秒开耗时</p>
             <p className="text-xs text-ink-soft">零网络冷启动首屏</p>
           </div>
           <div className="glass rounded-card p-3.5 sm:p-5 text-center transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08]">
-            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-gold-ink">25 道</p>
+            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-blue-900">25 道</p>
             <p className="mt-1 text-xs font-semibold text-ink">物理规则刚性防御墙</p>
             <p className="text-xs text-ink-soft">BR-001~025 彻底杜绝幻觉</p>
           </div>
           <div className="glass rounded-card p-3.5 sm:p-5 text-center transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08]">
-            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-gold-ink">Tier 0</p>
+            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-blue-900">Tier 0</p>
             <p className="mt-1 text-xs font-semibold text-ink">极简座舱互联协议</p>
             <p className="text-xs text-ink-soft">零前装准入深度唤醒</p>
           </div>
@@ -299,9 +299,9 @@ export function TechFoundation() {
                   setActivePillar(pillar);
                   setGuardrailTested(false);
                 }}
-                className={`relative rounded-card p-3.5 sm:p-4 text-left transition-all duration-300 flex flex-col justify-between shadow-level-static active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
+                className={`relative rounded-card p-3.5 sm:p-4 text-left transition-all duration-300 flex flex-col justify-between shadow-level-static active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
                   isSelected
-                    ? 'glass-strong ring-2 ring-gold/70 shadow-level-hover border-gold/40 -translate-y-0.5'
+                    ? 'glass-strong ring-2 ring-blue-600/70 shadow-level-hover border-blue-600/40 -translate-y-0.5'
                     : 'bg-paper/70 hover:bg-paper/95 border border-ink/[0.08] hover:border-ink/20'
                 }`}
               >
@@ -309,7 +309,7 @@ export function TechFoundation() {
                   <div className="flex items-center justify-between">
                     <span
                       className={`font-mono text-lg font-bold tabular-nums ${
-                        isSelected ? 'text-gold-ink' : 'text-ink-soft'
+                        isSelected ? 'text-blue-900' : 'text-ink-soft'
                       }`}
                     >
                       {pillar.number}
@@ -349,10 +349,10 @@ export function TechFoundation() {
                 className="glass-strong rounded-container p-6 sm:p-8 shadow-level-static border border-ink/[0.08]"
               >
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-ink/[0.06] pb-4">
-                  <span className="font-mono text-2xl font-bold tabular-nums text-gold-ink">
+                  <span className="font-mono text-2xl font-bold tabular-nums text-blue-900">
                     PILLAR {activePillar.number}
                   </span>
-                  <span className="chip rounded-pill bg-gold/10 text-gold-ink font-semibold text-xs ring-1 ring-gold/30">
+                  <span className="chip rounded-pill bg-blue-50 text-blue-900 font-semibold text-xs ring-1 ring-blue-200/60">
                     {activePillar.contractBadge}
                   </span>
                 </div>
@@ -365,7 +365,7 @@ export function TechFoundation() {
                 </p>
 
                 {/* Engineering philosophical quote */}
-                <blockquote className="mt-5 rounded-control bg-gold/10 border-l-4 border-gold p-4 text-xs font-sans italic text-ink sm:text-sm leading-relaxed">
+                <blockquote className="mt-5 rounded-control bg-blue-50/70 border-l-4 border-blue-800 p-4 text-xs font-sans italic text-ink sm:text-sm leading-relaxed">
                   {activePillar.quote}
                 </blockquote>
 
@@ -384,7 +384,7 @@ export function TechFoundation() {
                       className="rounded-control bg-paper/85 p-3.5 border border-ink/[0.08] transition-all hover:bg-paper"
                     >
                       <p className="text-xs font-bold text-ink flex items-center gap-2">
-                        <span className="h-1.5 w-1.5 rounded-full bg-gold shrink-0" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-blue-800 shrink-0" />
                         {item.label}
                       </p>
                       <p className="mt-1 text-xs text-ink-soft leading-relaxed">
@@ -398,7 +398,7 @@ export function TechFoundation() {
                 <div className="mt-6 rounded-card bg-sand/60 p-4 border border-ink/[0.08]">
                   <div className="text-xs font-bold text-ink flex items-center justify-between">
                     <span className="flex items-center gap-1.5">
-                      <ZapIcon className="h-3.5 w-3.5 text-gold" />
+                      <ZapIcon className="h-3.5 w-3.5 text-blue-800" />
                       <span>架构交互演练微沙盒：</span>
                     </span>
                     <span className="text-xs text-ink-soft font-normal">点击即时触发</span>
@@ -411,7 +411,7 @@ export function TechFoundation() {
                         <button
                           type="button"
                           onClick={() => setFailoverLevel(1)}
-                          className={`flex-1 min-h-[44px] rounded-control py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
+                          className={`flex-1 min-h-[44px] rounded-control py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
                             failoverLevel === 1
                               ? 'bg-jade text-paper shadow-level-static'
                               : 'bg-paper text-ink-soft hover:text-ink'
@@ -422,9 +422,9 @@ export function TechFoundation() {
                         <button
                           type="button"
                           onClick={() => setFailoverLevel(2)}
-                          className={`flex-1 min-h-[44px] rounded-control py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
+                          className={`flex-1 min-h-[44px] rounded-control py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
                             failoverLevel === 2
-                              ? 'bg-gold text-paper shadow-level-static'
+                              ? 'bg-blue-800 text-paper shadow-level-static'
                               : 'bg-paper text-ink-soft hover:text-ink'
                           }`}
                         >
@@ -433,7 +433,7 @@ export function TechFoundation() {
                         <button
                           type="button"
                           onClick={() => setFailoverLevel(3)}
-                          className={`flex-1 min-h-[44px] rounded-control py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
+                          className={`flex-1 min-h-[44px] rounded-control py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
                             failoverLevel === 3
                               ? 'bg-ochre text-paper shadow-level-static'
                               : 'bg-paper text-ink-soft hover:text-ink'
@@ -487,7 +487,7 @@ export function TechFoundation() {
                       <button
                         type="button"
                         onClick={() => setGuardrailTested(!guardrailTested)}
-                        className="w-full min-h-[44px] rounded-control bg-ochre/10 text-ochre hover:bg-ochre/20 border border-ochre/30 py-2.5 px-3 text-xs font-semibold transition-all flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold text-center"
+                        className="w-full min-h-[44px] rounded-control bg-ochre/10 text-ochre hover:bg-ochre/20 border border-ochre/30 py-2.5 px-3 text-xs font-semibold transition-all flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 text-center"
                       >
                         <span>模拟大模型指令：7座 MPV (加装车顶箱 2.15m) 直接驶入 2.0m 老城地库</span>
                         <span className="underline shrink-0">触发断言拦截</span>
@@ -551,7 +551,7 @@ export function TechFoundation() {
                   <button
                     type="button"
                     onClick={handleCopyCode}
-                    className="chip rounded-pill min-h-[40px] py-1.5 px-3.5 text-xs text-gold-ink hover:text-ink transition-all active:scale-95 font-semibold border border-gold/40 hover:bg-gold/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                    className="chip rounded-pill min-h-[40px] py-1.5 px-3.5 text-xs text-blue-900 hover:text-blue-950 transition-all active:scale-95 font-semibold border border-blue-300 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
                     title="复制真实代码"
                   >
                     {copiedCode ? '已复制 ✓' : '复制代码'}
@@ -572,7 +572,7 @@ export function TechFoundation() {
                   <span className="h-2 w-2 rounded-full bg-jade" />
                   <span>与核心架构契约 100% 一致</span>
                 </span>
-                <span className="font-mono text-xs text-gold-ink font-medium">
+                <span className="font-mono text-xs text-blue-900 font-medium">
                   TripCraft Architecture Spec v2
                 </span>
               </div>

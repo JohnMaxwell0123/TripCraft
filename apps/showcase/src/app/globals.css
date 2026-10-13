@@ -8,21 +8,21 @@
  * 「沉，不是亮」——氧化金箔、青金石、沙色暖白、赭石红、暖褐黑（不用纯黑）
  * ======================================================================== */
 :root {
-  --tc-sand: 242 232 213;       /* #F2E8D5 沙色暖底 */
-  --tc-paper: 250 245 235;      /* #FAF5EB 亚麻纸色卡片 */
-  --tc-ink: 58 46 31;           /* #3A2E1F 沉稳暖褐黑（杜绝冷黑与OLED拖影） */
-  --tc-ink-soft: 107 93 74;     /* #6B5D4A 次级文字（对沙底 ≥ 4.5:1） */
-  --tc-gold: 184 134 59;        /* #B8863B 氧化金箔（沉，不是亮） */
-  --tc-gold-ink: 122 85 32;     /* #7A5520 氧化金文字（对沙底 ≥ 4.5:1） */
-  --tc-lapis: 31 78 121;        /* #1F4E79 敦煌壁画青金石蓝 */
-  --tc-lapis-deep: 14 26 44;    /* #0E1A2C 戈壁夜空 */
+  --tc-sand: 248 250 252;       /* #F8FAFC 现代中性清爽冷白 (Slate 50) */
+  --tc-paper: 255 255 255;      /* #FFFFFF 纯白高光卡片 (Pure White) */
+  --tc-ink: 15 23 42;           /* #0F172A 现代极深石板黑 (Slate 900) */
+  --tc-ink-soft: 71 85 105;     /* #475569 次级文字 (Slate 600，高对比度) */
+  --tc-gold: 184 134 59;        /* #B8863B 敦煌氧化金箔（舞台内特色/大字） */
+  --tc-gold-ink: 122 85 32;     /* #7A5520 氧化金文字（沉稳金墨） */
+  --tc-lapis: 30 58 138;        /* #1E3A8A 现代极客深蓝 / 青金石蓝 (Blue 900) */
+  --tc-lapis-deep: 15 23 42;    /* #0F172A 戈壁夜空/深色底蕴 (Slate 900) */
   --tc-ochre: 140 58 43;        /* #8C3A2B 赭石红 */
   --tc-jade: 14 134 116;        /* #0E8674 青甘碧（通行 / 成功） */
-  --tc-amber: 176 112 16;       /* #B07010 琥珀（提醒） */
+  --tc-amber: 217 119 6;        /* #D97706 琥珀（提醒） */
   --tc-dusk: 201 138 90;        /* #C98A5A 鸣沙山落日 */
-  --tc-accent: var(--tc-gold);  /* 白标换肤可覆盖 */
+  --tc-accent: var(--tc-lapis); /* 外部主行动使用深蓝，白标换肤可覆盖 */
 
-  --tc-glass-bg: 250 245 235;   /* 亚麻纸暖透玻璃 */
+  --tc-glass-bg: 255 255 255;   /* 现代高透玻璃基底 */
   --tc-ease-dust: cubic-bezier(0.22, 0.8, 0.24, 1);
 
   color-scheme: light;
@@ -46,12 +46,12 @@ body {
 }
 
 ::selection {
-  background: rgb(var(--tc-gold) / 0.25);
+  background: rgb(var(--tc-lapis) / 0.18);
   color: rgb(var(--tc-ink));
 }
 
 :focus-visible {
-  outline: 2px solid rgb(var(--tc-gold));
+  outline: 2px solid rgb(var(--tc-lapis));
   outline-offset: 2px;
   border-radius: 6px;
 }
@@ -62,14 +62,14 @@ body {
     background: rgb(var(--tc-glass-bg) / 0.78);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgb(226 232 240 / 0.6);
+    border: 1px solid rgb(226 232 240 / 0.8);
     box-shadow: 0 2px 8px -2px rgb(15 23 42 / 0.04), inset 0 1px 0 rgb(255 255 255 / 0.85);
   }
   .glass-strong {
     background: rgb(var(--tc-glass-bg) / 0.9);
     -webkit-backdrop-filter: blur(28px) saturate(190%);
     backdrop-filter: blur(28px) saturate(190%);
-    border: 1px solid rgb(226 232 240 / 0.65);
+    border: 1px solid rgb(226 232 240 / 0.85);
     box-shadow: 0 10px 28px -6px rgb(15 23 42 / 0.07), inset 0 1px 0 rgb(255 255 255 / 0.9);
   }
   .glass-dark {
@@ -82,12 +82,12 @@ body {
   /* 次级嵌套玻璃（用于 StageWindow 内部子面板） */
   .glass-sub {
     background: rgb(var(--tc-paper) / 0.88);
-    border: 1px solid rgb(226 232 240 / 0.55);
+    border: 1px solid rgb(226 232 240 / 0.7);
     box-shadow: 0 2px 8px -2px rgb(15 23 42 / 0.03), inset 0 1px 0 rgb(255 255 255 / 0.9);
   }
   /* macOS 软件模拟窗口边框体系：高精度细边框 + 顶部内高光 + 浮层层级弥散阴影 */
   .macos-window {
-    border: 1px solid rgb(226 232 240 / 0.65);
+    border: 1px solid rgb(226 232 240 / 0.8);
     box-shadow:
       0 24px 50px -12px rgb(15 23 42 / 0.16),
       0 12px 24px -6px rgb(15 23 42 / 0.08),
@@ -111,34 +111,34 @@ body {
   /* 现代微网格点阵底纹 */
   .paper-texture {
     background-image:
-      radial-gradient(rgb(var(--tc-ink) / 0.04) 1px, transparent 1px);
+      radial-gradient(rgb(var(--tc-ink) / 0.045) 1px, transparent 1px);
     background-size: 24px 24px;
     background-position: 0 0;
   }
 
   .eyebrow {
-    @apply text-xs font-semibold uppercase tracking-[0.24em] text-gold-ink;
+    @apply text-xs font-semibold uppercase tracking-[0.24em] text-blue-900;
   }
 
   .chip {
     @apply inline-flex items-center gap-1.5 rounded-pill px-3 py-1 text-xs font-medium leading-none;
   }
 
-  /* 品牌主色主行动按钮：氧化金箔渐变 + 沉稳温润金色光晕 + 亚麻暖白字 */
+  /* 现代专业软件深蓝色主行动按钮：极客深蓝/青金石渐变 + 精密微光反射 + 优雅弥散阴影 */
   .btn-primary {
-    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-pill px-6 text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 active:scale-95;
-    background: linear-gradient(135deg, rgb(184 134 59) 0%, rgb(140 98 38) 60%, rgb(122 85 32) 100%);
-    color: #faf5eb;
-    border: 1px solid rgb(255 255 255 / 0.25);
-    box-shadow: 0 8px 24px -4px rgb(184 134 59 / 0.35), 0 2px 6px -1px rgb(184 134 59 / 0.2), inset 0 1px 0 rgb(255 255 255 / 0.35);
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-pill px-6 text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 active:scale-95;
+    background: linear-gradient(180deg, #1e3a8a 0%, #0f172a 100%);
+    color: #ffffff;
+    border: 1px solid rgb(255 255 255 / 0.16);
+    box-shadow: 0 8px 24px -4px rgba(30, 58, 138, 0.38), 0 2px 6px -1px rgba(15, 23, 42, 0.25), inset 0 1px 0 rgba(255 255 255 / 0.25);
   }
   .btn-primary:hover {
-    background: linear-gradient(135deg, rgb(199 148 68) 0%, rgb(184 134 59) 50%, rgb(140 98 38) 100%);
-    box-shadow: 0 12px 30px -4px rgb(184 134 59 / 0.45), 0 4px 10px -2px rgb(184 134 59 / 0.25), inset 0 1px 0 rgb(255 255 255 / 0.45);
+    background: linear-gradient(180deg, #2563eb 0%, #1e3a8a 100%);
+    box-shadow: 0 12px 28px -4px rgba(30, 58, 138, 0.48), 0 4px 10px -2px rgba(15, 23, 42, 0.25), inset 0 1px 0 rgba(255 255 255 / 0.35);
     transform: translateY(-1px);
   }
   .btn-ghost {
-    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-pill border border-ink/15 bg-paper/85 px-6 text-sm font-semibold text-ink transition-all duration-200 hover:bg-paper hover:border-gold/50 hover:text-gold-ink hover:shadow-level-static focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 active:scale-95;
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-pill border border-slate-200/90 bg-white/85 px-6 text-sm font-semibold text-slate-800 transition-all duration-200 hover:bg-white hover:border-slate-300 hover:text-slate-900 hover:shadow-level-static focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 active:scale-95;
   }
 
   .mask-fade-b {

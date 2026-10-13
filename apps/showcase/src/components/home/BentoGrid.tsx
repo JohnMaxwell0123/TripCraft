@@ -47,7 +47,7 @@ export function BentoGrid() {
       <div className="relative mx-auto max-w-[1240px] px-4 sm:px-8">
         {/* Section Header */}
         <div className="text-center">
-          <p className="eyebrow text-gold-ink font-semibold">CAPABILITY MATRIX · 工业级能力矩阵</p>
+          <p className="eyebrow text-blue-900 font-semibold">CAPABILITY MATRIX · 工业级能力矩阵</p>
           <h2 className="mt-3 font-sans text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-ink leading-[1.3]">
             不只是好看，更是坚韧的工业级系统
           </h2>
@@ -113,7 +113,7 @@ export function BentoGrid() {
                 <button
                   type="button"
                   onClick={() => setIsOffline(!isOffline)}
-                  className={`min-h-[44px] flex items-center gap-1.5 rounded-pill px-4 py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
+                  className={`min-h-[44px] flex items-center gap-1.5 rounded-pill px-4 py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
                     isOffline
                       ? 'bg-ochre text-paper ring-2 ring-ochre/40 shadow-level-static'
                       : 'bg-jade text-paper'
@@ -226,7 +226,7 @@ export function BentoGrid() {
                     key={b.name}
                     type="button"
                     onClick={() => setSelectedBrand(b)}
-                    className={`min-h-[44px] rounded-pill px-3.5 py-2 text-xs font-semibold transition-all inline-flex items-center gap-1.5 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
+                    className={`min-h-[44px] rounded-pill px-3.5 py-2 text-xs font-semibold transition-all inline-flex items-center gap-1.5 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
                       selectedBrand.name === b.name
                         ? 'bg-gold text-paper shadow-level-static ring-1 ring-gold-ink'
                         : 'bg-paper/80 text-ink ring-1 ring-ink/10 hover:bg-paper'
@@ -300,7 +300,7 @@ export function BentoGrid() {
                 value={vehicleHeight}
                 onChange={(e) => setVehicleHeight(parseFloat(e.target.value))}
                 aria-label="车辆总高度滑块 (米)"
-                className="mt-3 w-full h-3 accent-gold cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60 rounded-pill"
+                className="mt-3 w-full h-3 accent-gold cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 rounded-pill"
               />
 
               {/* Responsive alert container - wraps gracefully without overflowing mobile */}

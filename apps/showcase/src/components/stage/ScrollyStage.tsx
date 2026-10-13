@@ -445,8 +445,8 @@ function AutoPlayController({
           ) : isPlaying ? (
             <>
               <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gold opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-gold" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-600 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-600" />
               </span>
               <span className="font-medium text-ink">自动演进中</span>
               <span className="hidden text-xs text-ink-soft md:inline">· 滚动可随时接管</span>
@@ -467,7 +467,7 @@ function AutoPlayController({
             type="button"
             onClick={onReplay}
             title="重新播放全流程演示"
-            className="btn-primary flex min-h-[40px] items-center gap-1.5 rounded-pill px-4 py-1.5 text-xs font-semibold shadow-level-static hover:scale-105 active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+            className="btn-primary flex min-h-[40px] items-center gap-1.5 rounded-pill px-4 py-1.5 text-xs font-semibold shadow-level-static hover:scale-105 active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
           >
             <RotateCcwIcon className="h-3.5 w-3.5" />
             <span>重播</span>
@@ -477,7 +477,7 @@ function AutoPlayController({
             type="button"
             onClick={onToggle}
             title={isPlaying ? '暂停自动播放演示 (快捷键: 空格)' : '继续自动播放演示 (快捷键: 空格)'}
-            className={`flex min-h-[40px] items-center gap-1.5 rounded-pill px-4 py-1.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
+            className={`flex min-h-[40px] items-center gap-1.5 rounded-pill px-4 py-1.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
               isPlaying
                 ? 'bg-ink/10 text-ink hover:bg-ink/20 active:scale-95'
                 : 'btn-primary shadow-level-static hover:scale-105 active:scale-95'
@@ -495,7 +495,7 @@ function AutoPlayController({
             onClick={onCycleSpeed}
             title={`点击切换播放倍速 (当前: ${speed.toFixed(1)}x)`}
             aria-label={`当前播放倍速 ${speed.toFixed(1)}x，点击切换`}
-            className="chip min-h-[36px] px-3 py-1 font-mono text-xs tabular-nums font-semibold text-ink-soft transition-all active:scale-95 hover:bg-paper/90 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+            className="chip min-h-[36px] px-3 py-1 font-mono text-xs tabular-nums font-semibold text-ink-soft transition-all active:scale-95 hover:bg-paper/90 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
           >
             {speed.toFixed(1)}x
           </button>
@@ -557,7 +557,7 @@ function Caption({ chapter, first, last }: { chapter: Chapter; first: boolean; l
       style={{ opacity, y, visibility }}
       aria-hidden={false}
     >
-      <p className="eyebrow text-gold-ink font-semibold">{chapter.eyebrow}</p>
+      <p className="eyebrow text-blue-900 font-semibold">{chapter.eyebrow}</p>
       <h2 className="mt-2 text-balance font-sans text-2xl font-bold leading-[1.3] text-ink sm:text-3xl md:text-4xl lg:text-[2.5rem]">{chapter.title}</h2>
       <p className="mt-2 max-w-2xl text-pretty text-xs leading-relaxed text-ink-soft md:text-sm">{chapter.desc}</p>
     </motion.div>
@@ -572,7 +572,7 @@ function StageWindow() {
 
   return (
     <motion.div
-      className="glass-strong glass-sheen macos-window absolute inset-x-0 top-0 mx-auto flex h-full max-h-[720px] w-full max-w-[1180px] flex-col overflow-hidden rounded-container shadow-level-float gpu-layer [contain:layout_paint]"
+      className="glass-strong glass-sheen macos-window absolute inset-x-0 top-0 mx-auto flex h-full max-h-[720px] w-full max-w-[1180px] flex-col overflow-hidden rounded-container shadow-level-float gpu-layer [contain:layout_paint] bg-[#FAF8F5]/95"
       style={{ scale, opacity }}
     >
       <Topbar />
@@ -598,19 +598,19 @@ function ChapterRail({ onJump }: { onJump: (c: Chapter) => void }) {
     <nav aria-label="演示章节" className="absolute left-5 top-1/2 hidden -translate-y-1/2 2xl:block">
       <div className="relative flex flex-col gap-6 pl-5">
         <span className="absolute bottom-1 left-[5px] top-1 w-px bg-ink/15" />
-        <motion.span className="absolute left-[5px] top-1 h-[calc(100%-0.5rem)] w-px origin-top bg-gold" style={{ scaleY: fill }} />
+        <motion.span className="absolute left-[5px] top-1 h-[calc(100%-0.5rem)] w-px origin-top bg-blue-600" style={{ scaleY: fill }} />
         {CHAPTERS.map((c, i) => (
           <button
             key={c.id}
             type="button"
             onClick={() => onJump(c)}
-            className={`group relative flex min-h-[36px] items-center gap-2 text-left text-xs transition-colors rounded-pill px-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${i === active ? 'text-gold-ink font-bold' : 'text-ink-soft hover:text-ink'}`}
+            className={`group relative flex min-h-[36px] items-center gap-2 text-left text-xs transition-colors rounded-pill px-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${i === active ? 'text-blue-900 font-bold' : 'text-ink-soft hover:text-ink'}`}
             aria-current={i === active ? 'step' : undefined}
           >
             <span
               className={`absolute -left-[19px] h-[11px] w-[11px] rounded-full border-2 transition-all duration-300 ${
-                i <= active ? 'border-gold bg-gold' : 'border-ink/25 bg-sand'
-              } ${i === active ? 'scale-125 shadow-glow ring-2 ring-gold/40' : ''}`}
+                i <= active ? 'border-blue-600 bg-blue-600' : 'border-ink/25 bg-sand'
+              } ${i === active ? 'scale-125 shadow-sm ring-2 ring-blue-600/40' : ''}`}
             />
             <span className="font-mono font-semibold tabular-nums">{c.no}</span>
             <span>{c.label}</span>
@@ -627,7 +627,7 @@ function MobileProgress() {
   const fill = useRange(p, [0, 1], [0, 1], { easing: ease.linear });
   return (
     <div aria-hidden className="absolute inset-x-0 top-[3.5rem] z-10 h-0.5 bg-ink/10 2xl:hidden">
-      <motion.div className="h-full origin-left bg-gradient-to-r from-gold to-ochre" style={{ scaleX: fill }} />
+      <motion.div className="h-full origin-left bg-gradient-to-r from-blue-700 via-blue-900 to-indigo-600" style={{ scaleX: fill }} />
     </div>
   );
 }
