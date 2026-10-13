@@ -9,12 +9,12 @@
 [![Phase](https://img.shields.io/badge/Phase-2%20Arch%20Package%20v2-green.svg)](docs/delivery/DLV-01-roadmap-mvp.md)
 [![Schema Contract](https://img.shields.io/badge/Schema%20Contract-v1.0.0%20Verified-success.svg)](spec/)
 [![Gate Check](https://img.shields.io/badge/Gate%20Check-Passed%20(4%20Gates)-brightgreen.svg)](tools/)
-[![Live Benchmark](https://img.shields.io/badge/Live%20Benchmark-trip--cts.pages.dev-orange.svg)](https://trip-cts.pages.dev)
+[![Live Showcase](https://img.shields.io/badge/Live%20Showcase-GitHub%20Pages-orange.svg)](https://johnmaxwell0123.github.io/TripCraft/)
 [![Architecture](https://img.shields.io/badge/Architecture-Local--First%20%7C%20Zero--Build-purple.svg)](docs/architecture/ARC-01-overview.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](docs/delivery/DLV-01-roadmap-mvp.md)
 
 <p align="center">
-  <a href="https://trip-cts.pages.dev"><b>🌐 在线演示 (Live Demo)</b></a> •
+  <a href="https://johnmaxwell0123.github.io/TripCraft/"><b>🌐 在线演示 (Live Demo)</b></a> •
   <a href="#-标杆样例与实战体验-live-benchmark"><b>🎯 标杆体验</b></a> •
   <a href="#-核心杀手级特性-killer-features"><b>⚡ 核心特性</b></a> •
   <a href="#-系统架构总览-system-architecture"><b>🏛️ 系统架构</b></a> •
@@ -32,15 +32,15 @@
 
 ---
 
-## 🌐 标杆样例与实战体验 (Live Benchmark)
+## 🌐 标杆样例与实战体验 (Live Benchmark & Showcase)
 
-无需配置开发环境，立即在浏览器中感受 TripCraft 的高质感交付魅力：
+无需配置开发环境，立即在浏览器中感受 TripCraft 的高质感交付魅力与全景交互演进：
 
 <div align="center">
 
-### 👉 **[点击即刻体验：trip-cts.pages.dev (在线路书实战基准)](https://trip-cts.pages.dev)** 👈
+### 👉 [TripCraft · 旅艺 —— 面向自驾与深度游的智能旅行路书协同中枢](https://johnmaxwell0123.github.io/TripCraft/) 👈
 
-*西行计划 · 丝路自驾路书（RELEASE v3.6.3 · 2,400km 穿越河西走廊、张掖丹霞、嘉峪关、敦煌莫高窟、东风航天城）*
+*西行计划 · 丝路自驾路书与官方 Universal Studio 体验中枢（RELEASE v3.6.3 · 2,400km 穿越河西走廊、张掖丹霞、嘉峪关、敦煌莫高窟、东风航天城）*
 
 </div>
 
@@ -360,6 +360,7 @@ flowchart TB
 | **`spec/` 契约集** | 契约层 (L2) | **已验证** | **已实现** | [`spec/`](spec/)、[`docs/04-dsl-specification-v1.md`](docs/04-dsl-specification-v1.md) |
 | **`tools/` 门禁工具链** | 工程基础设施 | **已验证** | **已实现** | [`tools/`](tools/)、[`package.json`](package.json) |
 | **`examples/` 标杆数据** | 数据基准 | **已验证** | **已实现** | [`examples/dunhuang-silkroad-9d/trip.json`](examples/dunhuang-silkroad-9d/trip.json) |
+| **`apps/showcase` 体验站** | 交付体验 (L5) | **已验证** | **已上线** | [`apps/showcase/`](apps/showcase/)、[在线体验](https://johnmaxwell0123.github.io/TripCraft/) |
 | **`S-EXPORT` 单文件编译器** | 编译流水线 (L3) | 已评审 | 原型验证 | [`docs/05-compiler-pipeline.md`](docs/05-compiler-pipeline.md) |
 | **`C-SNAPSHOT` 离线运行时** | 容灾运行时 (L4) | 已评审 | 原型验证 | [`docs/architecture/ARC-04-clients-channels.md`](docs/architecture/ARC-04-clients-channels.md) |
 | **`C-CABIN` 座舱交付协议** | 终端接入 (L5) | 已评审 | 协议已定 | [`docs/02-cockpit-protocol.md`](docs/02-cockpit-protocol.md) |
@@ -388,10 +389,10 @@ timeline
 
 ## ⚡ 快速上手与门禁验证
 
-无需复杂的后端服务与数据库环境，四步即可完成从在线体验到工程门禁校验的完整流程：
+无需复杂的后端服务与数据库环境，即可完成从在线体验到工程门禁校验、再到 Showcase 本地运行的完整流程：
 
-### 1. 即刻体验在线标杆
-直接访问在线演示站 👉 **[trip-cts.pages.dev](https://trip-cts.pages.dev)**，无需任何本地安装。
+### 1. 即刻体验在线标杆与官方主页
+直接访问在线演示站 👉 [TripCraft · 旅艺 —— 面向自驾与深度游的智能旅行路书协同中枢](https://johnmaxwell0123.github.io/TripCraft/)，无需任何本地安装。
 
 ### 2. 查看标杆脱敏 DSL 数据
 查阅位于 [`examples/dunhuang-silkroad-9d/trip.json`](examples/dunhuang-silkroad-9d/trip.json) 的完整路书数据结构，了解 9 天西北自驾的点位、时间线与弹性熔断配置。
@@ -419,6 +420,16 @@ npm run check
 ├── 2. check-links  扫描全仓库 Markdown 文档的跨文件链接与标题锚点完整性 (1100+ 链接)
 ├── 3. check-br025  严苛扫描并拦截任何违规内联的图商导航算路密集折线，保障测绘合规
 └── 4. check-trace  自动化校验场景、功能、架构决策(ADR)与商业假设的全链路双向追溯闭环
+```
+
+### 5. 启动本地交互式 Showcase 官方体验站点
+```bash
+# 启动 Showcase 体验站本地开发服务 (Next.js 16 + Tailwind CSS)
+npm run showcase:dev
+
+# 或执行静态全量导出构建与类型检查
+npm run showcase:typecheck
+npm run showcase:build
 ```
 
 ---
@@ -469,6 +480,8 @@ docs/
 
 ```text
 TripCraft/
+├── apps/
+│   └── showcase/      # 现代化交互式官方展示站 (Next.js 16 / Tailwind / 液态玻璃 / Scrollytelling) [已实现]
 ├── spec/              # 核心 JSON Schema 工业级契约 (trip, brand, node, patch) [已实现]
 ├── docs/              # 完整文档体系 (产品 PRD、系统架构 ARC、交付 DLV、执行全书 16 章、白皮书)
 │   ├── product/       # 产品设计包 (PRD-01 ~ PRD-05) [已评审]
@@ -492,9 +505,9 @@ TripCraft/
 - **Description (一句话简介)**：  
   `新一代自驾与深度游智能路书系统 —— 统一账号、多端协同、单文件离线快照一等公民与 B 端白标 SaaS（产品设计与系统架构全案）`
 - **Website (在线主页)**：  
-  `https://trip-cts.pages.dev`
+  [TripCraft · 旅艺 —— 面向自驾与深度游的智能旅行路书协同中枢](https://johnmaxwell0123.github.io/TripCraft/)（`https://johnmaxwell0123.github.io/TripCraft/`）
 - **Topics (主题标签)**：  
-  `travel` · `roadbook` · `itinerary` · `offline-first` · `local-first` · `dsl` · `cockpit` · `b2b2c` · `architecture`
+  `travel` · `roadbook` · `itinerary` · `offline-first` · `local-first` · `dsl` · `cockpit` · `b2b2c` · `architecture` · `nextjs` · `tailwind`
 
 ---
 

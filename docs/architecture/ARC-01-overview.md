@@ -180,7 +180,7 @@ TripCraft/
 | **`spec/` 数据契约** | L2 契约层 | 已验证 | **已实现** | 4 份 JSON Schema 与 Dunhuang 样例通过门禁校验 |
 | **`tools/` 门禁工具链** | 工程基础设施 | 已验证 | **已实现** | `validate-schemas.js`, `check-links.mjs`, `check-br025.mjs` |
 | **`S-EXPORT` 单文件打包器** | L3 编译器 | 已评审 | 原型 | 历史 `tools/compile.mjs` 单文件编译器雏形验证 |
-| **`C-SNAPSHOT` 离线运行时** | L4 运行时 | 已评审 | 原型 | 参考体验站 `trip-cts.pages.dev`（静态参考实现） |
+| **`C-SNAPSHOT` 离线运行时** | L4 运行时 | 已评审 | 原型 | 参考体验站 [TripCraft · 旅艺 —— 面向自驾与深度游的智能旅行路书协同中枢](https://johnmaxwell0123.github.io/TripCraft/)（静态参考实现） |
 | **`S-IDENTITY` 账号身份** | 后端服务 | 草案 | 无 | 待阶段 1 开发 |
 | **`S-WORKSPACE` 行程空间** | 后端服务 | 草案 | 无 | 待阶段 1 开发 |
 | **`S-GENERATE` 智能澄清** | 后端服务 | 草案 | 无 | 待阶段 1 开发（结合 `docs/08` 提示词设计） |

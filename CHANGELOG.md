@@ -2,6 +2,15 @@
 
 所有关键架构修订、外部事实核查与规范变更记录在此。历史更正详情见 [docs/ERRATA.md](docs/ERRATA.md)。
 
+## [2026-10-13] - 官方 Showcase 体验站上线与 GitHub 首页同步
+
+- **官方体验中枢全量替换**：
+  - 将项目首页及全库文档中的历史演示站链接全量升级为 GitHub Pages 官方在线体验中枢：`[TripCraft · 旅艺 —— 面向自驾与深度游的智能旅行路书协同中枢](https://johnmaxwell0123.github.io/TripCraft/)`。
+  - 同步更新 README 顶部徽标 (Live Showcase) 与 GitHub 仓库 About 元数据建议。
+- **Showcase 体验站工程与文档闭环**：
+  - 在 `README.md` 组件工程状态对照表与仓库结构树中正式纳入 `apps/showcase`。
+  - 在快速上手章节增加本地运行与构建 Showcase 体验站的启动命令（`npm run showcase:dev`、`npm run showcase:build`）。
+
 ## [2026-10-08] - 产品与系统架构包 v2 (Architecture Package v2)
 
 - **产品架构包落地 (`docs/product/`)**：

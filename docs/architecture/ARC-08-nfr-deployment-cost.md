@@ -64,8 +64,8 @@ flowchart TB
     SVC_TASK --> OBJ_STORE
 ```
 
-### 现存静态快照托管基准
-- 当前在线参考体验站（`trip-cts.pages.dev`）托管于 Cloudflare Pages 边缘节点，作为单文件自包含 HTML 的分发可行性基准。
+### 现存静态快照与官方体验站托管基准
+- 当前在线官方体验站托管于 GitHub Pages（[TripCraft · 旅艺 —— 面向自驾与深度游的智能旅行路书协同中枢](https://johnmaxwell0123.github.io/TripCraft/)），作为单文件自包含 HTML 与官方 Showcase 的分发可行性基准。
 
 ---
 
