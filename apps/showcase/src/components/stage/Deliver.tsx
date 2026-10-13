@@ -1,166 +1,345 @@
 'use client';
 
-import type { ReactNode } from 'react';
-import { motion } from 'framer-motion';
-import { ease, useFade, useRange, useVisibility } from '@/lib/motion';
+import { motion, useTransform } from 'framer-motion';
+import { ease, useFade, useRange, useStep, useVisibility } from '@/lib/motion';
 import { T } from './timeline';
-import { Reveal, useProgress } from './primitives';
+import { Avatar, Reveal, useProgress } from './primitives';
+import {
+  CarIcon,
+  CheckIcon,
+  ShieldIcon,
+  AlertTriangleIcon,
+  UtensilsIcon,
+  RadioIcon,
+  SmartphoneIcon,
+  MonitorIcon,
+} from '@/components/common/Icons';
 
-const STEPS = ['AJV Schema 校验通过 · 0 错误', '内联离线 SVG 底图与降级卡片', '字体子集化 · 186 KB', '单文件 1.8 MB · 0 外部请求'];
-
+/**
+ * 05 章：多端同频 · 全团同行（SHOWCASE §4 终态闭环）
+ *
+ * 核心设计原则：
+ * 1. 桌面三栏工作台作为母体保持清晰可见（不淡出、不缩小隐藏）。
+ * 2. 前台下层以 Continuity 连续互联质感浮动底座，优雅呼应副驾随身手机、座舱车机大屏与随身离线安全锦囊，展现多端实时流转。
+ * 3. 展现从“手端/协同端决策，到车机无缝流转，再到智驾系统巡航导航与限高避险”的完整闭环。
+ * 4. 常驻强调“线上实时多端协同，离线安全从容兜底”。
+ */
 export function DeliverScene() {
   const p = useProgress();
-  const visibility = useVisibility(p, T.fileIn[0] - 0.01, 1.0);
-  const fileOpacity = useFade(p, T.fileIn[0], T.fileIn[1]);
-  const fileScale = useRange(p, [T.fileIn[0], T.fileIn[1], T.fileUp[0], T.fileUp[1]], [0.7, 1, 1, 0.78], { easing: ease.out, rest: 1 });
-  const fileY = useRange(p, [T.fileIn[0], T.fileIn[1], T.fileUp[0], T.fileUp[1]], [40, 0, 0, -150], { rest: 0 });
-  const bar = useRange(p, [T.compileSteps[0] - 0.004, T.compileSteps[3] + 0.002], [0.04, 1], { easing: ease.linear });
+  const visibility = useVisibility(p, T.syncStart[0] - 0.01, 1.0);
+  const deckOpacity = useFade(p, T.devicesIn[0], T.devicesIn[1]);
+  const deckScale = useRange(p, [T.devicesIn[0], T.devicesIn[1]], [0.95, 1], { easing: ease.back, rest: 1 });
+  const deckY = useRange(p, [T.devicesIn[0], T.devicesIn[1]], [36, 0], { easing: ease.out, rest: 0 });
 
   return (
     <motion.div
-      className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center gpu-layer [contain:layout_paint]"
+      className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex flex-col justify-end overflow-hidden pb-1 sm:pb-2.5 px-2 sm:px-4 md:px-6 gpu-layer [contain:layout_paint]"
       style={{ visibility }}
+      role="region"
+      aria-label="多端同频与智能座舱流转演示"
     >
-      <motion.div className="glass-strong relative z-10 w-[min(400px,92%)] rounded-3xl p-5 gpu-layer" style={{ opacity: fileOpacity, scale: fileScale, y: fileY }}>
-        <div className="flex items-center gap-4">
-          <FileIcon />
-          <div className="min-w-0">
-            <p className="truncate font-mono text-sm font-semibold text-ink">西行计划.v1.1.html</p>
-            <p className="mt-0.5 text-[11px] text-ink-soft">自包含 · 双击秒开 · 无需安装</p>
+      <motion.div
+        className="pointer-events-auto flex flex-col items-center w-full max-w-[1080px] mx-auto glass-strong rounded-container border border-slate-200/60 p-2 sm:p-3 shadow-level-float backdrop-blur-2xl"
+        style={{ opacity: deckOpacity, scale: deckScale, y: deckY }}
+      >
+        {/* 多端实时同频流转连接条 */}
+        <SyncFlowBar />
+
+        {/* 多设备并列场景：副驾手机端 + 座舱车机中控 + 离线安全锦囊 */}
+        <div className="flex items-stretch justify-center gap-2 sm:gap-3 md:gap-4 w-full">
+          <PhoneCompanionDevice />
+          <CockpitCompanionDevice />
+          <OfflinePouchCard />
+        </div>
+
+        {/* 底部升华标语 */}
+        <Reveal at={[T.tagline[0], T.tagline[1]]} y={6} className="mt-1.5 sm:mt-2 text-center px-4">
+          <p className="font-serif text-xs sm:text-sm md:text-base font-bold text-ink">
+            从桌面掌控到座舱流转，
+            <span className="bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 bg-clip-text text-transparent">
+              多端同频 · 全团同行
+            </span>
+            。
+          </p>
+          <p className="text-[10px] sm:text-xs text-ink-soft mt-0.5">
+            线上实时多端协同，离线安全从容兜底。
+          </p>
+        </Reveal>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+/* ── 顶部数据流转指示条（动态呈现数据流在多设备间的广播跃迁） ── */
+function SyncFlowBar() {
+  const p = useProgress();
+  // 流转步进：0=未激活，1=桌面母体广播，2=手机收到更新，3=座舱巡航就绪，4=离线兜底固化
+  const step = useStep(p, [T.streamSync[0], 0.892, 0.904, 0.914]);
+
+  return (
+    <div
+      className="mb-1.5 sm:mb-2 flex w-full max-w-2xl items-center justify-between rounded-pill border border-slate-200/70 bg-paper/95 px-2.5 py-1 shadow-level-static backdrop-blur-xl sm:px-4"
+      aria-label="多端同频广播流流转状态"
+    >
+      <div className="flex items-center gap-1.5 text-xs font-semibold text-ink">
+        <RadioIcon className="h-3.5 w-3.5 text-amber-600 animate-pulse" aria-hidden="true" />
+        <span className="text-[11px] sm:text-xs">多端同频广播流</span>
+        <span
+          className={`font-mono text-[9px] sm:text-[10px] px-1.5 py-0.2 rounded-pill font-semibold transition-colors duration-300 ${
+            step >= 4
+              ? 'bg-jade/15 text-jade border border-jade/30'
+              : step >= 2
+                ? 'bg-amber-500/15 text-amber-800 border border-amber-500/30'
+                : 'bg-slate-900/5 text-ink-soft'
+          }`}
+        >
+          {step >= 4 ? '18ms 极速对齐 · 全团同频' : step >= 2 ? '流转进行中 · 极速同步' : '广播通道就绪'}
+        </span>
+      </div>
+
+      <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] text-ink-soft">
+        <span
+          className={`inline-flex items-center gap-0.5 sm:gap-1 font-medium transition-colors duration-200 ${
+            step >= 1 ? 'text-amber-700 font-semibold' : 'text-ink-soft'
+          }`}
+        >
+          <MonitorIcon className="h-3 w-3 text-amber-600" aria-hidden="true" />
+          <span>桌面母体</span>
+        </span>
+        <span className="text-ink/30">➔</span>
+        <span
+          className={`inline-flex items-center gap-0.5 sm:gap-1 font-medium transition-colors duration-200 ${
+            step >= 2 ? 'text-jade font-semibold' : 'text-ink-soft'
+          }`}
+        >
+          <SmartphoneIcon className="h-3 w-3 text-jade" aria-hidden="true" />
+          <span>副驾手机</span>
+        </span>
+        <span className="text-ink/30">➔</span>
+        <span
+          className={`inline-flex items-center gap-0.5 sm:gap-1 font-medium transition-colors duration-200 ${
+            step >= 3 ? 'text-blue-600 font-semibold' : 'text-ink-soft'
+          }`}
+        >
+          <CarIcon className="h-3 w-3 text-blue-600" aria-hidden="true" />
+          <span>座舱巡航</span>
+        </span>
+        <span className="hidden text-ink/30 sm:inline">➔</span>
+        <span
+          className={`hidden sm:inline-flex items-center gap-0.5 sm:gap-1 font-medium transition-colors duration-200 ${
+            step >= 4 ? 'text-amber-800 font-semibold' : 'text-ink-soft'
+          }`}
+        >
+          <ShieldIcon className="h-3 w-3 text-amber-700" aria-hidden="true" />
+          <span>离线兜底</span>
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ── 设备 1：副驾随身手机端（实时感知最新行程与多人状态） ──── */
+function PhoneCompanionDevice() {
+  const p = useProgress();
+  const step = useStep(p, [0.892]);
+  const syncGlow = useRange(p, [0.892, 0.902, 0.916], [0, 1, 0.25]);
+  const cardBorder = useTransform(syncGlow, (v) => `rgba(245, 158, 11, ${0.3 + v * 0.4})`);
+  const cardShadow = useTransform(syncGlow, (v) => `0 0 ${v * 12}px rgba(245, 158, 11, ${v * 0.3})`);
+
+  return (
+    <div
+      className="relative h-[195px] sm:h-[215px] w-[130px] sm:w-[155px] shrink-0 rounded-[24px] sm:rounded-[28px] bg-[#16181d] p-[4px] sm:p-[5px] shadow-level-float ring-1 ring-white/10 overflow-hidden"
+      role="region"
+      aria-label="副驾手机协同端"
+    >
+      <div className="relative flex h-full flex-col overflow-hidden rounded-[20px] sm:rounded-[23px] bg-[#faf6ee] text-ink">
+        {/* 顶部灵动岛与状态栏 */}
+        <div className="relative flex h-5 items-center justify-between px-2 sm:px-2.5 pt-1 text-[9px] font-mono font-semibold text-slate-800">
+          <span>20:00</span>
+          <div className="absolute left-1/2 top-1 h-2.5 w-10 sm:w-12 -translate-x-1/2 rounded-full bg-black" />
+          <span className="text-[8px] sm:text-[9px]">5G · 98%</span>
+        </div>
+
+        {/* 手机 App 顶栏 */}
+        <div className="flex items-center gap-1 border-b border-ink/[0.08] px-2 py-0.5 sm:py-1">
+          <Avatar name="小雨" tone="lapis" size={16} />
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-[10px] sm:text-[11px] font-bold text-ink">副驾 · 小雨</p>
+          </div>
+          <span className="flex items-center gap-0.5 text-[8px] sm:text-[9px] font-semibold text-jade">
+            <span className="h-1.5 w-1.5 animate-breathe rounded-full bg-jade" />
+            {step >= 1 ? '已同频' : '同步中'}
+          </span>
+        </div>
+
+        {/* 实时同步的 D0 晚间最新行程卡 */}
+        <div className="p-1.5 sm:p-2 space-y-1 sm:space-y-1.5 flex-1 overflow-hidden">
+          <motion.div
+            className="rounded-control bg-gradient-to-br from-amber-500/15 to-amber-600/10 p-1.5 sm:p-2 border"
+            style={{ borderColor: cardBorder, boxShadow: cardShadow }}
+          >
+            <div className="flex items-center justify-between">
+              <span className="font-serif text-[10px] sm:text-[11px] font-bold text-amber-900">D0 晚间 · 已同步</span>
+              <span className="chip rounded-pill bg-jade/20 text-jade text-[8px] sm:text-[9px] px-1 font-mono font-bold">v1.1</span>
+            </div>
+            <p className="mt-0.5 flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-ink truncate">
+              <UtensilsIcon className="h-3 w-3 text-amber-700 shrink-0" aria-hidden="true" />
+              <span>正宁路夜市</span>
+            </p>
+            <p className="text-[9px] sm:text-[10px] text-ink-soft truncate">赵记牛奶鸡蛋醪糟 · 必吃</p>
+          </motion.div>
+
+          <div className="rounded-control bg-paper/90 p-1 sm:p-1.5 border border-slate-200/60 text-[9px] sm:text-[10px] space-y-0.5 sm:space-y-1">
+            <div className="flex items-center justify-between text-ink-soft">
+              <span>步行导航</span>
+              <span className="font-mono text-ink font-semibold">650m · 8分钟</span>
+            </div>
+            <div className="flex items-center gap-0.5 sm:gap-1 text-[8px] sm:text-[9px] text-amber-700">
+              <CheckIcon className="h-2.5 w-2.5 shrink-0" aria-hidden="true" />
+              <span className="truncate">阿杰已确认 · 领队已采纳</span>
+            </div>
           </div>
         </div>
-        <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-ink/10">
-          <motion.div className="h-full origin-left rounded-full bg-gradient-to-r from-gold to-jade" style={{ scaleX: bar }} />
+
+        {/* 手机底部离线兜底标识 */}
+        <div className="mt-auto border-t border-ink/[0.06] bg-slate-900/5 px-1.5 py-0.5 text-center text-[8px] sm:text-[9px] font-mono text-ink-soft">
+          <span className="text-jade font-semibold">● IndexedDB</span> 本地随身离线秒开
         </div>
-        <ul className="mt-3 space-y-1.5">
-          {STEPS.map((s, i) => (
-            <li key={s}>
-              <Reveal at={[T.compileSteps[i], T.compileSteps[i] + 0.005]} y={4} className="flex items-center gap-2 text-[12px] text-ink">
-                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-jade text-[9px] text-paper">✓</span>
-                {s}
-              </Reveal>
-            </li>
-          ))}
-        </ul>
-      </motion.div>
-
-      <Devices />
-
-      <Reveal at={[T.tagline[0], T.tagline[1]]} y={14} className="absolute inset-x-0 bottom-0 text-center">
-        <p className="font-serif text-lg font-semibold text-ink md:text-2xl">从一段对话，到一件可以带走的作品。</p>
-      </Reveal>
-    </motion.div>
-  );
-}
-
-function FileIcon() {
-  return (
-    <svg width="52" height="62" viewBox="0 0 52 62" aria-hidden className="shrink-0 drop-shadow-md">
-      <path d="M4 4 a4 4 0 0 1 4-4 H34 L52 18 V58 a4 4 0 0 1-4 4 H8 a4 4 0 0 1-4-4 Z" fill="rgb(250 245 235)" stroke="rgb(184 134 59)" strokeWidth="1.5" />
-      <path d="M34 0 V14 a4 4 0 0 0 4 4 H52" fill="rgb(242 232 213)" stroke="rgb(184 134 59)" strokeWidth="1.5" />
-      <rect x="10" y="34" width="32" height="14" rx="3" fill="rgb(184 134 59)" />
-      <text x="26" y="44.5" fontSize="9" fontWeight="700" textAnchor="middle" fill="#fff" fontFamily="monospace">HTML</text>
-    </svg>
-  );
-}
-
-/* ── 三端扇形展开：手机离线 / 车机投屏 / 打印手册 ─────────── */
-function Devices() {
-  const p = useProgress();
-  const [a] = T.devices;
-  const opacity = useFade(p, a, a + 0.01);
-  return (
-    <motion.div className="absolute inset-x-0 bottom-10 flex origin-bottom scale-[0.62] items-end justify-center gap-6 sm:scale-75 md:bottom-12 md:scale-90 lg:scale-100" style={{ opacity }}>
-      <DeviceSlot offset={-1} rotate={-7}>
-        <PhoneDevice />
-      </DeviceSlot>
-      <DeviceSlot offset={0} rotate={0}>
-        <CockpitDevice />
-      </DeviceSlot>
-      <DeviceSlot offset={1} rotate={6}>
-        <BookletDevice />
-      </DeviceSlot>
-    </motion.div>
-  );
-}
-
-/** 从中心（文件所在处）沿 offset 方向扇出 */
-function DeviceSlot({ offset, rotate, children }: { offset: number; rotate: number; children: ReactNode }) {
-  const p = useProgress();
-  const [a, b] = T.devices;
-  const x = useRange(p, [a, b], [-offset * 180, 0], { easing: ease.out, rest: 0 });
-  const y = useRange(p, [a, b], [-120, 0], { easing: ease.back, rest: 0 });
-  const r = useRange(p, [a, b], [0, rotate], { easing: ease.out, rest: rotate });
-  const scale = useRange(p, [a, b], [0.4, 1], { easing: ease.out, rest: 1 });
-  return (
-    <motion.div className="shrink-0 gpu-layer" style={{ x, y, rotate: r, scale }}>
-      {children}
-    </motion.div>
-  );
-}
-
-function PhoneDevice() {
-  return (
-    <div className="h-[300px] w-[150px] rounded-[30px] bg-[#1b1a18] p-[6px] shadow-[0_30px_60px_rgba(0,0,0,0.3)]">
-      <div className="flex h-full flex-col overflow-hidden rounded-[24px] bg-sand">
-        <div className="flex items-center justify-between px-3 pt-2 text-[8px] font-semibold text-ink">
-          <span>10:41</span>
-          <span>✈ 无信号</span>
-        </div>
-        <div className="mx-2 mt-2 rounded-xl bg-gradient-to-br from-dusk via-gold to-ochre p-2 text-paper">
-          <p className="font-serif text-[13px] font-bold">西行计划</p>
-          <p className="text-[8px] opacity-85">D3 · 嘉峪关 → 敦煌</p>
-        </div>
-        <ul className="mt-2 space-y-1 px-2">
-          {['08:30 出发 · G30', '13:00 瓜州午休', '17:20 抵达敦煌', '19:30 沙州夜市'].map((r) => (
-            <li key={r} className="rounded-md bg-paper/90 px-2 py-1 text-[8.5px] text-ink">{r}</li>
-          ))}
-        </ul>
-        <Reveal at={[T.deviceDetail[0], T.deviceDetail[1]]} y={4} className="mt-auto p-2">
-          <p className="rounded-lg bg-jade px-2 py-1 text-center text-[8.5px] font-semibold text-paper">离线可读 · 本机 IndexedDB</p>
-        </Reveal>
       </div>
     </div>
   );
 }
 
-function CockpitDevice() {
+/* ── 设备 2：智能座舱车机中控大屏（巡航流转与限高避险） ─────── */
+function CockpitCompanionDevice() {
+  const p = useProgress();
+  // 关键帧流转：0.904 车机接收，0.918~0.958 智驾限高警报与巡航细节高亮
+  const alertGlow = useRange(p, [T.deviceDetail[0], T.deviceDetail[0] + 0.015, T.deviceDetail[1]], [0, 1, 0.45]);
+  const alertBorder = useTransform(alertGlow, (v) => `rgba(245, 158, 11, ${0.35 + v * 0.55})`);
+  const alertShadow = useTransform(alertGlow, (v) => `0 0 ${v * 16}px rgba(245, 158, 11, ${v * 0.35})`);
+  const isDetailActive = useStep(p, [T.deviceDetail[0]]) >= 1;
+
   return (
-    <div className="w-[340px] rounded-2xl bg-[#14171c] p-2 shadow-[0_30px_60px_rgba(0,0,0,0.35)]">
-      <div className="flex h-[130px] gap-3 rounded-xl bg-gradient-to-br from-[#1a2333] to-[#0e1420] p-3 text-white">
-        <div className="flex flex-col justify-between">
-          <p className="text-[9px] uppercase tracking-widest text-white/50">下一站</p>
-          <p className="font-serif text-xl font-bold">乌鞘岭</p>
-          <p className="text-[10px] text-white/70">128 km · 约 1h 35m</p>
-          <p className="text-[9px] text-[#e7c27d]">⚠ 长下坡 18km · 低挡缓行</p>
+    <div
+      className="relative h-[195px] sm:h-[215px] flex-1 min-w-[210px] max-w-[500px] shrink rounded-card bg-[#11141b] p-2 sm:p-2.5 shadow-level-float ring-1 ring-white/10 text-white overflow-hidden flex flex-col justify-between"
+      role="region"
+      aria-label="智能座舱巡航导航中控"
+    >
+      {/* 顶部微反光条 */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-400/40 to-transparent" />
+
+      {/* 车机顶栏状态 */}
+      <div className="flex items-center justify-between border-b border-white/10 pb-1 sm:pb-1.5 shrink-0">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <CarIcon className="h-3.5 w-3.5 text-amber-400 shrink-0" aria-hidden="true" />
+          <span className="font-serif text-[11px] sm:text-xs font-bold tracking-wide text-white truncate">
+            7座 MPV 智能座舱 · 巡航导航流转系统
+          </span>
         </div>
-        <svg viewBox="0 0 140 100" className="flex-1">
-          <path d="M10 90 C 40 70, 50 40, 80 36 S 120 20, 132 8" fill="none" stroke="#e7c27d" strokeWidth="3" strokeLinecap="round" />
-          <circle cx="10" cy="90" r="5" fill="#5ab0ff" />
-          <circle cx="132" cy="8" r="4" fill="#e7c27d" />
-        </svg>
+        <div className="flex items-center gap-1 text-[9px] sm:text-[10px] font-mono text-white/70 shrink-0">
+          <span className="flex items-center gap-1 text-jade">
+            <span className="h-1.5 w-1.5 animate-breathe rounded-full bg-jade" />
+            Tier 0 无缝流转
+          </span>
+          <span className="text-white/30 hidden xs:inline">|</span>
+          <span className="hidden xs:inline">3 端联机</span>
+        </div>
       </div>
-      <Reveal at={[T.deviceDetail[0] + 0.004, T.deviceDetail[1] + 0.004]} y={4}>
-        <p className="mt-2 text-center text-[10px] text-white/70">Tier 0 车机投屏 · 12 个途经点已发送 · 无需车企 SDK</p>
-      </Reveal>
+
+      {/* 车机中控主体：左侧下一站路线 + 右侧 7座 MPV 限高避险与长下坡预案 */}
+      <div className="my-1 grid grid-cols-2 gap-1.5 sm:gap-2 text-xs flex-1">
+        {/* 左栏：下一站与散步指引 */}
+        <div className="flex flex-col justify-between rounded-control bg-white/5 p-1.5 sm:p-2 border border-white/10">
+          <div>
+            <p className="text-[9px] sm:text-[10px] uppercase tracking-wider text-amber-400/90 font-mono">NEXT STOP</p>
+            <p className="font-serif text-xs sm:text-sm font-bold text-white mt-0.5">正宁路夜市</p>
+            <p className="text-[9px] sm:text-[10px] text-white/70 font-mono mt-0.5">距宿点 650m · 全团漫步 12m</p>
+          </div>
+          <div className="mt-1 pt-1 border-t border-white/10 text-[9px] sm:text-[10px] text-white/80 leading-tight">
+            <span className="text-amber-300 font-semibold">泊车指引：</span>
+            <span>7座豪华 MPV 停泊于酒店地面车位 (车顶箱限高2.15m)</span>
+          </div>
+        </div>
+
+        {/* 右栏：智驾系统限高警报与避险措施（由 alertGlow 真实驱动光波） */}
+        <motion.div
+          className="flex flex-col justify-between rounded-control bg-amber-500/10 p-1.5 sm:p-2 border"
+          style={{ borderColor: alertBorder, boxShadow: alertShadow }}
+        >
+          <div>
+            <div className="flex items-center gap-1 text-[10px] sm:text-[11px] font-bold text-amber-300">
+              <AlertTriangleIcon className="h-3.5 w-3.5 text-amber-400 shrink-0 animate-bounce" aria-hidden="true" />
+              <span>7座 MPV 2.15m 限高警报</span>
+            </div>
+            <p className="text-[9px] sm:text-[10px] text-white/85 leading-tight mt-0.5">
+              夜市步行街机动车全段禁行！智驾已完成步行接驳避障。
+            </p>
+          </div>
+          <div
+            className={`mt-1 pt-1 border-t border-amber-500/20 text-[8px] sm:text-[9px] font-mono leading-tight transition-colors duration-300 ${
+              isDetailActive ? 'text-amber-200 font-medium' : 'text-amber-200/60'
+            }`}
+          >
+            D1 乌鞘岭 18km 长下坡巡航预案已推至仪表
+          </div>
+        </motion.div>
+      </div>
+
+      {/* 车机底栏：途经点序列 */}
+      <div className="flex items-center justify-between text-[9px] sm:text-[10px] font-mono text-white/60 shrink-0 pt-0.5 border-t border-white/10">
+        <span>12 个途经点已完整下发车机</span>
+        <span className="text-amber-400 font-semibold">智驾巡航系统待命中 · 零依赖车企 SDK</span>
+      </div>
     </div>
   );
 }
 
-function BookletDevice() {
+/* ── 设备 3：随身离线安全锦囊（单文件 1.8MB 零外部依赖兜底） ── */
+function OfflinePouchCard() {
+  const p = useProgress();
+  const step = useStep(p, [0.914]);
+
   return (
-    <div className="paper-texture h-[220px] w-[160px] rounded-md bg-paper p-3 shadow-[0_24px_50px_rgba(58,46,31,0.25)] ring-1 ring-ink/10">
-      <p className="text-[8px] tracking-[0.3em] text-gold-ink">TRIPCRAFT</p>
-      <p className="mt-1 font-serif text-lg font-bold leading-tight text-ink">西行计划</p>
-      <p className="text-[8px] text-ink-soft">丝路自驾路书 · 九日</p>
-      <div className="mt-3 space-y-1.5">
-        {[90, 75, 82, 60, 70].map((w, i) => (
-          <span key={i} className="block h-1.5 rounded bg-ink/15" style={{ width: `${w}%` }} />
-        ))}
+    <div
+      className="hidden lg:flex h-[195px] sm:h-[215px] w-[155px] sm:w-[170px] shrink-0 flex-col rounded-card border border-amber-500/35 bg-paper/95 p-2 sm:p-2.5 shadow-level-float backdrop-blur-xl justify-between"
+      role="region"
+      aria-label="随身离线安全锦囊"
+    >
+      <div>
+        <div className="flex items-center justify-between">
+          <span className="flex items-center gap-1 text-[11px] sm:text-xs font-bold text-amber-900">
+            <ShieldIcon className="h-3.5 w-3.5 text-amber-600" aria-hidden="true" />
+            <span>离线安全锦囊</span>
+          </span>
+          <span className="chip rounded-pill bg-amber-500/15 text-amber-800 text-[8px] sm:text-[9px] font-mono font-bold px-1.5 py-0">
+            1.8 MB
+          </span>
+        </div>
+        <p className="mt-0.5 text-[9px] sm:text-[10px] text-ink-soft truncate font-mono">西行计划.v1.1.html</p>
+
+        <ul className="mt-1.5 space-y-1 text-[9px] sm:text-[10px] text-ink">
+          <li className="flex items-center gap-1">
+            <CheckIcon className="h-3 w-3 text-jade shrink-0" aria-hidden="true" />
+            <span>自包含单文件路书</span>
+          </li>
+          <li className="flex items-center gap-1">
+            <CheckIcon className="h-3 w-3 text-jade shrink-0" aria-hidden="true" />
+            <span>双击秒开 · 0 外部请求</span>
+          </li>
+          <li className="flex items-center gap-1">
+            <CheckIcon className="h-3 w-3 text-jade shrink-0" aria-hidden="true" />
+            <span>无人区断网从容阅览</span>
+          </li>
+        </ul>
       </div>
-      <Reveal at={[T.deviceDetail[0] + 0.008, T.deviceDetail[1] + 0.008]} y={4} className="mt-4">
-        <p className="rounded bg-ochre/10 px-1.5 py-1 text-center text-[9px] font-semibold text-ochre">A5 打印版 · 长辈大字</p>
-      </Reveal>
+
+      <div
+        className={`rounded-control p-1 text-center text-[9px] sm:text-[10px] font-semibold transition-colors duration-300 ${
+          step >= 1 ? 'bg-jade/15 text-jade border border-jade/30' : 'bg-amber-500/10 text-amber-800'
+        }`}
+      >
+        {step >= 1 ? '✓ IndexedDB 离线固化完成' : '线上多端同频，离线从容兜底'}
+      </div>
     </div>
   );
 }

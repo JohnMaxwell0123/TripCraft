@@ -7,7 +7,7 @@ import { Footer } from '@/components/common/Footer';
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen flex flex-col bg-sand text-ink">
+    <main className="min-h-screen flex flex-col bg-sand text-ink w-full overflow-x-clip">
       <Navbar />
       <Hero />
       <ScrollyStage />

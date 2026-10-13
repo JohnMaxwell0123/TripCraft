@@ -6,41 +6,47 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative bg-slate-50/70 border-t border-slate-200/80 pt-16 pb-12 paper-texture">
+    <footer className="relative bg-slate-50/70 border-t border-slate-200/80 pt-10 pb-8 sm:pt-16 sm:pb-12 paper-texture">
       <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
         {/* Top Call-to-action Banner */}
-        <div className="glass-strong glass-sheen relative overflow-hidden rounded-3xl p-8 sm:p-12 text-center shadow-xl">
+        <div className="glass-strong glass-sheen relative overflow-hidden rounded-container p-6 sm:p-12 text-center shadow-level-float border border-slate-200/60">
           <div
             aria-hidden
-            className="pointer-events-none absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.08),transparent_70%)] blur-2xl"
+            className="pointer-events-none absolute -top-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(217,119,6,0.1),transparent_70%)] blur-2xl"
           />
 
-          <span className="chip bg-blue-50 text-blue-600 font-semibold text-xs ring-1 ring-blue-200/60">
+          <span className="chip rounded-pill bg-amber-50 text-amber-700 font-semibold text-xs ring-1 ring-amber-300/60">
             开放体验 · 零门槛
           </span>
-          <h2 className="mt-4 font-sans text-2xl font-bold tracking-tight text-ink sm:text-4xl">
+          <h2 className="mt-4 font-sans text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-ink leading-[1.3]">
             把下一次自驾，交给懂路也懂你的 TripCraft
           </h2>
-          <p className="mt-3 max-w-xl mx-auto text-sm text-ink-soft leading-relaxed sm:text-base">
+          <p className="mt-3 max-w-xl mx-auto text-sm sm:text-base text-ink-soft leading-relaxed">
             让同行安心、让探索尽兴、让车机与离线无忧。每一本路书，都是一份独一无二的自驾艺术品。
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+          <div className="mt-6 sm:mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
             <button
               onClick={() => {
                 const el = document.getElementById('demo');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                if (el) {
+                  const top = el.getBoundingClientRect().top + window.scrollY;
+                  window.scrollTo({ top, behavior: 'smooth' });
+                }
               }}
-              className="btn-primary min-h-[46px] px-8 text-sm font-semibold shadow-lg hover:shadow-xl"
+              className="btn-primary min-h-[48px] px-8 text-sm font-semibold"
             >
               <span>立即向上滚动 · 体验路书演进</span>
-              <span>↑</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="19" x2="12" y2="5" />
+                <polyline points="5 12 12 5 19 12" />
+              </svg>
             </button>
             <a
               href="https://github.com/JohnMaxwell0123/TripCraft"
               target="_blank"
               rel="noreferrer"
-              className="btn-ghost min-h-[46px] px-6 text-sm text-ink"
+              className="btn-ghost min-h-[48px] px-6 text-sm font-semibold text-ink"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <path
@@ -55,11 +61,11 @@ export function Footer() {
         </div>
 
         {/* Footer Navigation Columns */}
-        <div className="mt-14 grid grid-cols-2 gap-8 md:grid-cols-4 lg:gap-12">
+        <div className="mt-8 sm:mt-14 grid grid-cols-2 gap-8 md:grid-cols-4 lg:gap-12">
           {/* Column 1: Brand & Philosophy */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 font-sans text-sm font-bold text-white shadow-sm ring-1 ring-white/20">
+              <span className="flex h-8 w-8 items-center justify-center rounded-control bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 font-sans text-sm font-bold text-white shadow-level-static ring-1 ring-amber-300/40">
                 旅
               </span>
               <span className="font-sans text-base font-bold text-ink">TripCraft · 旅艺</span>
@@ -104,7 +110,7 @@ export function Footer() {
               </li>
               <li>
                 <span className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-gold" /> 琥珀金 (Amber Gold)
+                  <span className="h-2.5 w-2.5 rounded-full bg-amber-500" /> 琥珀金 (Amber Gold)
                 </span>
               </li>
               <li>
@@ -135,14 +141,17 @@ export function Footer() {
         </div>
 
         {/* Bottom Credits & Back to Top */}
-        <div className="mt-12 flex flex-col sm:flex-row items-center justify-between border-t border-ink/[0.08] pt-6 text-xs text-ink-soft gap-4">
+        <div className="mt-8 sm:mt-12 flex flex-col sm:flex-row items-center justify-between border-t border-ink/[0.06] pt-6 text-xs text-ink-soft gap-4">
           <p>© 2026 TripCraft (旅艺) 项目团队. 基于开源与专业自驾工程经验构建.</p>
           <button
             onClick={scrollToTop}
-            className="flex items-center gap-1 text-blue-600 hover:text-blue-700 transition-colors font-medium"
+            className="min-h-[44px] px-3.5 py-2 flex items-center gap-1.5 text-amber-600 hover:text-amber-700 transition-colors font-semibold rounded-pill focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
           >
             <span>返回页面顶部</span>
-            <span>↑</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="12" y1="19" x2="12" y2="5" />
+              <polyline points="5 12 12 5 19 12" />
+            </svg>
           </button>
         </div>
       </div>

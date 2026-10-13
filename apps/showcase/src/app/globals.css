@@ -32,6 +32,7 @@ html {
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
   scroll-behavior: auto;
+  scroll-padding-top: 5rem;
 }
 
 body {
@@ -40,6 +41,8 @@ body {
   font-feature-settings: 'palt' 1;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+  max-width: 100vw;
 }
 
 ::selection {
@@ -48,26 +51,26 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid rgb(var(--tc-lapis));
-  outline-offset: 3px;
+  outline: 2px solid rgb(var(--tc-gold));
+  outline-offset: 2px;
   border-radius: 6px;
 }
 
 @layer components {
-  /* 苹果液态玻璃：背景模糊 + 轻量透明底 + 1px 高光反射边 */
+  /* 苹果液态玻璃：背景模糊 + 轻量透明底 + 1px 高光反射边 (描边回归「分隔」而非「装饰」) */
   .glass {
-    background: rgb(var(--tc-glass-bg) / 0.75);
+    background: rgb(var(--tc-glass-bg) / 0.78);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgb(226 232 240 / 0.8);
-    box-shadow: 0 10px 30px -10px rgb(15 23 42 / 0.06), inset 0 1px 0 rgb(255 255 255 / 0.9);
+    border: 1px solid rgb(226 232 240 / 0.6);
+    box-shadow: 0 2px 8px -2px rgb(15 23 42 / 0.04), inset 0 1px 0 rgb(255 255 255 / 0.85);
   }
   .glass-strong {
-    background: rgb(var(--tc-glass-bg) / 0.88);
+    background: rgb(var(--tc-glass-bg) / 0.9);
     -webkit-backdrop-filter: blur(28px) saturate(190%);
     backdrop-filter: blur(28px) saturate(190%);
-    border: 1px solid rgb(226 232 240 / 0.85);
-    box-shadow: 0 24px 60px -15px rgb(15 23 42 / 0.1), inset 0 1px 0 rgb(255 255 255 / 0.95);
+    border: 1px solid rgb(226 232 240 / 0.65);
+    box-shadow: 0 10px 28px -6px rgb(15 23 42 / 0.07), inset 0 1px 0 rgb(255 255 255 / 0.9);
   }
   .glass-dark {
     background: rgb(var(--tc-lapis-deep) / 0.85);
@@ -78,18 +81,17 @@ body {
   }
   /* 次级嵌套玻璃（用于 StageWindow 内部子面板） */
   .glass-sub {
-    background: rgb(var(--tc-paper) / 0.85);
-    border: 1px solid rgb(226 232 240 / 0.7);
-    box-shadow: 0 8px 20px -6px rgb(15 23 42 / 0.05), inset 0 1px 0 rgb(255 255 255 / 0.9);
+    background: rgb(var(--tc-paper) / 0.88);
+    border: 1px solid rgb(226 232 240 / 0.55);
+    box-shadow: 0 2px 8px -2px rgb(15 23 42 / 0.03), inset 0 1px 0 rgb(255 255 255 / 0.9);
   }
-  /* macOS 软件模拟窗口边框体系：高精度细边框 + 顶部内高光 + 弥散深阴影 */
+  /* macOS 软件模拟窗口边框体系：高精度细边框 + 顶部内高光 + 浮层层级弥散阴影 */
   .macos-window {
-    border: 1px solid rgb(203 213 225 / 0.8);
+    border: 1px solid rgb(226 232 240 / 0.65);
     box-shadow:
-      0 32px 80px -12px rgb(15 23 42 / 0.16),
-      0 12px 32px -4px rgb(15 23 42 / 0.08),
-      0 2px 8px -1px rgb(15 23 42 / 0.04),
-      inset 0 1px 0 0 rgb(255 255 255 / 0.9);
+      0 24px 50px -12px rgb(15 23 42 / 0.16),
+      0 12px 24px -6px rgb(15 23 42 / 0.08),
+      inset 0 1px 0 0 rgb(255 255 255 / 0.95);
   }
   /* 顶部微高光反光线 */
   .glass-sheen {
@@ -115,27 +117,28 @@ body {
   }
 
   .eyebrow {
-    @apply text-xs font-semibold uppercase tracking-[0.28em];
+    @apply text-xs font-semibold uppercase tracking-[0.24em] text-amber-600;
   }
 
   .chip {
-    @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium;
+    @apply inline-flex items-center gap-1.5 rounded-pill px-3 py-1 text-xs font-medium leading-none;
   }
 
+  /* 品牌主色主行动按钮：琥珀金/敦煌金渐变 + 温暖金色光晕 + 白色文字 */
   .btn-primary {
-    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold transition;
-    background: linear-gradient(180deg, rgb(15 23 42), rgb(2 6 23));
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-pill px-6 text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 active:scale-95;
+    background: linear-gradient(135deg, rgb(245 158 11) 0%, rgb(217 119 6) 55%, rgb(180 83 9) 100%);
     color: #ffffff;
-    border: 1px solid rgb(255 255 255 / 0.12);
-    box-shadow: 0 10px 25px -5px rgb(15 23 42 / 0.25), inset 0 1px 0 rgb(255 255 255 / 0.2);
+    border: 1px solid rgb(255 255 255 / 0.3);
+    box-shadow: 0 8px 24px -4px rgb(217 119 6 / 0.4), 0 2px 6px -1px rgb(217 119 6 / 0.2), inset 0 1px 0 rgb(255 255 255 / 0.4);
   }
   .btn-primary:hover {
-    background: linear-gradient(180deg, rgb(30 41 59), rgb(15 23 42));
-    box-shadow: 0 14px 30px -5px rgb(15 23 42 / 0.35), inset 0 1px 0 rgb(255 255 255 / 0.25);
+    background: linear-gradient(135deg, rgb(251 191 36) 0%, rgb(245 158 11) 50%, rgb(217 119 6) 100%);
+    box-shadow: 0 14px 32px -4px rgb(217 119 6 / 0.5), 0 4px 12px -2px rgb(217 119 6 / 0.3), inset 0 1px 0 rgb(255 255 255 / 0.5);
     transform: translateY(-1px);
   }
   .btn-ghost {
-    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full border border-slate-200/90 bg-white/70 px-6 text-sm font-semibold text-slate-800 transition hover:bg-white hover:border-slate-300 hover:shadow-sm;
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-pill border border-slate-200/60 bg-white/80 px-6 text-sm font-semibold text-slate-800 transition-all duration-200 hover:bg-white hover:border-amber-500/40 hover:text-amber-700 hover:shadow-level-static focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 active:scale-95;
   }
 
   .mask-fade-b {

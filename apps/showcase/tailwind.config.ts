@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+import colors from 'tailwindcss/colors';
 
 /**
  * 设计令牌映射：全部颜色走 CSS 变量（见 src/app/globals.css），
@@ -21,7 +22,10 @@ const config: Config = {
         'lapis-deep': withVar('--tc-lapis-deep'),
         ochre: withVar('--tc-ochre'),
         jade: withVar('--tc-jade'),
-        amber: withVar('--tc-amber'),
+        amber: {
+          ...colors.amber,
+          DEFAULT: withVar('--tc-amber'),
+        },
         dusk: withVar('--tc-dusk'),
         accent: withVar('--tc-accent'),
       },
@@ -38,12 +42,20 @@ const config: Config = {
         ],
       },
       borderRadius: {
+        control: '0.75rem',
+        card: '1rem',
+        container: '1.5rem',
+        pill: '9999px',
         glass: '1.5rem',
       },
       boxShadow: {
-        glass: '0 20px 50px rgb(58 46 31 / 0.12), inset 0 1px 0 rgb(255 255 255 / 0.65)',
-        'glass-lg': '0 40px 100px rgb(31 34 48 / 0.22), inset 0 1px 0 rgb(255 255 255 / 0.7)',
-        glow: '0 0 0 4px rgb(var(--tc-gold) / 0.18), 0 8px 24px rgb(var(--tc-gold) / 0.35)',
+        'level-static': '0 1px 3px 0 rgb(15 23 42 / 0.05), 0 1px 2px -1px rgb(15 23 42 / 0.05)',
+        'level-hover': '0 10px 25px -5px rgb(15 23 42 / 0.08), 0 8px 10px -6px rgb(15 23 42 / 0.04)',
+        'level-float': '0 24px 50px -12px rgb(15 23 42 / 0.16), 0 12px 24px -6px rgb(15 23 42 / 0.08)',
+        glass: '0 20px 50px rgb(58 46 31 / 0.08), inset 0 1px 0 rgb(255 255 255 / 0.85)',
+        'glass-lg': '0 40px 100px rgb(31 34 48 / 0.16), inset 0 1px 0 rgb(255 255 255 / 0.9)',
+        glow: '0 0 0 3px rgb(var(--tc-gold) / 0.22), 0 8px 24px rgb(var(--tc-gold) / 0.35)',
+        'glow-sm': '0 0 0 2px rgb(var(--tc-gold) / 0.25)',
       },
       keyframes: {
         scanline: { '0%': { transform: 'translateY(0)' }, '100%': { transform: 'translateY(100%)' } },

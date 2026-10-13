@@ -1,16 +1,18 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import { motion, useTransform, type MotionValue } from 'framer-motion';
 import { DAYS, elevationPath, type DayPlan, type Tone } from '@/data/trip';
 import { ease, useFade, useRange, useStep, useVisibility } from '@/lib/motion';
 import { T } from './timeline';
 import { Avatar, Pop, Reveal, useLayout, useProgress } from './primitives';
 import { RouteMap } from './RouteMap';
+import { ElderIcon, BabyIcon, CarIcon, SunsetIcon, UtensilsIcon, SparklesIcon, CompassIcon, CheckIcon } from '@/components/common/Icons';
 
 export function Workspace() {
   const p = useProgress();
   const opacity = useFade(p, T.timelineIn[0], T.timelineIn[1]);
-  const visibility = useVisibility(p, T.timelineIn[0] - 0.01, T.windowOut[1] + 0.005);
+  const visibility = useVisibility(p, T.timelineIn[0] - 0.01, 1.0);
   return (
     <motion.div
       className="absolute inset-0 flex flex-col gap-3 p-3 md:flex-row md:p-4 gpu-layer [contain:layout_paint] [container-type:size]"
@@ -24,55 +26,93 @@ export function Workspace() {
   );
 }
 
+const SIDEBAR_CONSTRAINTS = [
+  { Icon: ElderIcon, label: '少台阶', color: 'text-amber-600' },
+  { Icon: BabyIcon, label: '午休', color: 'text-orange-600' },
+  { Icon: CarIcon, label: '2.15m', color: 'text-blue-600' },
+  { Icon: SunsetIcon, label: '19:30', color: 'text-rose-600' },
+];
+
 /* ═════════════════════ 左侧：对话收束为侧栏 + 协作成员 ═════════════════════ */
 function Sidebar() {
   const p = useProgress();
   const opacity = useFade(p, T.sidebarIn[0], T.sidebarIn[1]);
   const x = useRange(p, [T.sidebarIn[0], T.sidebarIn[1]], [-30, 0], { rest: 0 });
+  const isCh5 = useStep(p, [0.842]) >= 1;
+
   return (
-    <motion.aside className="glass-sub hidden w-[220px] shrink-0 flex-col gap-4 rounded-2xl p-4 xl:flex gpu-layer" style={{ opacity, x }}>
+    <motion.aside className="glass-strong hidden w-[220px] shrink-0 flex-col gap-4 rounded-card border border-slate-200/60 p-4 shadow-level-static xl:flex gpu-layer" style={{ opacity, x }}>
       <div>
-        <p className="eyebrow text-gold-ink">对话</p>
-        <div className="mt-2 rounded-xl rounded-br-sm bg-lapis/90 p-2.5 text-[11px] leading-relaxed text-paper">全家 5 口带长辈幼儿，7座 MPV (车顶箱)，爷爷膝盖术后，慢节奏…</div>
-        <div className="mt-2 flex items-center gap-1.5 text-[11px] text-ink-soft">
+        <p className="eyebrow text-amber-600 font-semibold">对话</p>
+        <div className="mt-2 rounded-control rounded-br-sm bg-slate-900/90 p-2.5 text-xs leading-relaxed text-paper shadow-level-static">全家 5 口带长辈幼儿，7座 MPV (车顶箱)，爷爷膝盖术后，慢节奏…</div>
+        <div className="mt-2 flex items-center gap-1.5 text-xs text-ink-soft">
           <Avatar name="老" tone="gold" size={18} /> 已采纳 · 方案 A 无障碍慢游
         </div>
       </div>
       <div>
-        <p className="eyebrow text-gold-ink">约束 · 4</p>
+        <p className="eyebrow text-amber-600 font-semibold">约束 · 4</p>
         <div className="mt-2 flex flex-wrap gap-1.5">
-          {['👴 少台阶', '👶 午休', '🚙 2.15m', '🌅 19:30'].map((c) => (
-            <span key={c} className="chip bg-paper/80 px-2 py-0.5 text-[11px] text-ink ring-1 ring-ink/10">
-              {c}
+          {SIDEBAR_CONSTRAINTS.map((c) => (
+            <span key={c.label} className="chip rounded-pill bg-paper/85 px-2 py-0.5 text-xs text-ink border border-slate-200/60 inline-flex items-center gap-1">
+              <c.Icon className={`h-3 w-3 ${c.color}`} />
+              <span className="font-mono">{c.label}</span>
             </span>
           ))}
         </div>
       </div>
       <div>
-        <p className="eyebrow text-gold-ink">协作成员</p>
+        <div className="flex items-center justify-between">
+          <p className="eyebrow text-amber-600 font-semibold">{isCh5 ? '协作成员 · 3 端同频' : '协作成员'}</p>
+          <span className="chip rounded-pill bg-jade/10 text-jade text-[10px] px-1.5 py-0 font-medium">全员在网</span>
+        </div>
         <ul className="mt-2 flex flex-col gap-2 text-xs">
           <li className="flex items-center gap-2">
-            <Avatar name="我" tone="gold" size={24} /> 我 <span className="ml-auto text-[10px] text-ink-soft">领队</span>
+            <Avatar name="我" tone="gold" size={24} />
+            <span className="font-medium text-ink">我</span>
+            <span className={`chip rounded-pill text-[10px] px-1.5 py-0 font-mono transition-colors duration-300 ${isCh5 ? 'bg-amber-500/15 text-amber-800 font-semibold' : 'bg-slate-900/5 text-ink-soft'}`}>💻 桌面掌控</span>
+            <span className="ml-auto text-xs text-ink-soft">领队</span>
           </li>
-          <MemberRow name="阿杰" tone="jade" at={T.joinAJie[0]} />
-          <MemberRow name="小雨" tone="lapis" at={T.joinXiaoyu[0]} />
+          <MemberRow name="阿杰" tone="jade" at={T.joinAJie[0]} device="📱 手机同步" active={isCh5} />
+          <MemberRow name="小雨" tone="lapis" at={T.joinXiaoyu[0]} device="📱 手机 · 🚗 车机" active={isCh5} />
         </ul>
       </div>
-      <div className="mt-auto rounded-xl bg-ink/[0.04] p-2.5 text-[10.5px] leading-relaxed text-ink-soft">
-        <span className="font-semibold text-jade">● 已保存在本机</span>
-        <br />
-        IndexedDB · 离线可读 · 联网后增量同步
+      <div className="mt-auto rounded-control bg-slate-900/5 p-2.5 text-xs leading-relaxed text-ink-soft border border-slate-200/40">
+        <div className="flex items-center justify-between">
+          <span className="font-semibold text-jade flex items-center gap-1">
+            <span className="h-1.5 w-1.5 animate-breathe rounded-full bg-jade" />
+            离线安全锦囊
+          </span>
+          <span className="chip rounded-pill bg-amber-500/10 text-amber-800 font-mono text-[10px] px-1.5 py-0 font-bold">1.8 MB</span>
+        </div>
+        <p className="mt-1 text-[11px] text-ink-soft leading-tight">
+          自包含单文件 · IndexedDB 本机固化<br />
+          <span className="text-amber-800 font-medium">线上多端同频，离线从容兜底</span>
+        </p>
       </div>
     </motion.aside>
   );
 }
 
-function MemberRow({ name, tone, at }: { name: string; tone: 'jade' | 'lapis'; at: number }) {
+function MemberRow({ name, tone, at, device, active }: { name: string; tone: 'jade' | 'lapis'; at: number; device?: string; active?: boolean }) {
   return (
     <Reveal at={[at, at + 0.008]} y={6}>
       <li className="flex items-center gap-2">
-        <Avatar name={name} tone={tone} size={24} /> {name}
-        <span className="ml-auto flex items-center gap-1 text-[10px] text-jade">
+        <Avatar name={name} tone={tone} size={24} />
+        <span className="font-medium text-ink">{name}</span>
+        {device ? (
+          <span
+            className={`chip rounded-pill px-1.5 py-0 text-[10px] font-mono transition-colors duration-300 ${
+              active
+                ? tone === 'jade'
+                  ? 'bg-jade/15 text-jade font-semibold'
+                  : 'bg-blue-600/15 text-blue-700 font-semibold'
+                : 'bg-slate-900/5 text-ink-soft'
+            }`}
+          >
+            {device}
+          </span>
+        ) : null}
+        <span className="ml-auto flex items-center gap-1 text-xs text-jade">
           <span className="h-1.5 w-1.5 animate-breathe rounded-full bg-jade" /> 在线
         </span>
       </li>
@@ -88,12 +128,12 @@ function TimelineColumn() {
   return (
     <motion.section
       aria-label="九天日程"
-      className="glass-sub order-2 flex min-h-0 flex-1 flex-col rounded-2xl p-3 md:order-none md:w-[300px] md:flex-none lg:w-[320px] gpu-layer"
+      className="glass-strong order-2 flex min-h-0 flex-1 flex-col rounded-card border border-slate-200/60 p-3 shadow-level-static md:order-none md:w-[300px] md:flex-none lg:w-[320px] gpu-layer"
       style={{ opacity }}
     >
       <div className="flex items-baseline justify-between px-1 pb-2">
         <h3 className="font-serif text-base font-semibold text-ink">西行计划 · 9 天</h3>
-        <span className="text-[11px] text-ink-soft">1,980 km · 长辈友好</span>
+        <span className="text-xs tabular-nums text-ink-soft">1,980 km · 长辈友好</span>
       </div>
       <ol className="mask-fade-b flex min-h-0 flex-1 flex-col gap-1.5 overflow-hidden">
         {DAYS.map((d, i) => (
@@ -128,24 +168,24 @@ function DayCard({ day, index }: { day: DayPlan; index: number }) {
 
   return (
     <motion.li style={{ opacity, y }} className="shrink-0 will-change-transform">
-      <div className="relative overflow-hidden rounded-xl bg-paper/70 px-3 py-2">
+      <div className="relative overflow-hidden rounded-control border border-slate-200/50 bg-paper/75 px-3 py-2 shadow-level-static">
         {/* 活跃状态高亮图层：纯 MotionValue 驱动，0 React 重渲染 */}
         <motion.div
           aria-hidden
-          className="pointer-events-none absolute inset-0 rounded-xl bg-paper shadow-glow"
+          className="pointer-events-none absolute inset-0 rounded-control bg-paper shadow-glow"
           style={{ opacity: activeHighlight }}
         />
         <motion.span className="absolute inset-y-0 left-0 w-1 origin-top bg-gradient-to-b from-gold to-ochre z-10" style={{ scaleY: bar }} />
         <div className="relative z-10 flex items-center gap-2">
           <span className="w-7 font-serif text-sm font-bold text-gold-ink">{day.tag}</span>
-          <span className="min-w-0 flex-1 truncate text-[13px] font-semibold text-ink">{day.title}</span>
-          <span className="text-[10px] tabular-nums text-ink-soft">{day.date}</span>
+          <span className="min-w-0 flex-1 truncate text-xs font-semibold text-ink md:text-sm">{day.title}</span>
+          <span className="text-xs tabular-nums font-mono text-ink-soft">{day.date}</span>
         </div>
         <div className="relative z-10 flex items-center gap-2 pl-9">
-          <span className="min-w-0 truncate text-[11px] text-ink-soft">{day.meta}</span>
+          <span className="min-w-0 truncate text-xs text-ink-soft tabular-nums">{day.meta}</span>
           {day.badge && BADGE_AT[day.tag] !== undefined ? (
             <Pop at={BADGE_AT[day.tag]} className="ml-auto shrink-0">
-              <span className={`chip px-1.5 py-0 text-[10px] ring-1 ${badgeTone[day.badge.tone]}`}>{day.badge.text}</span>
+              <span className={`chip rounded-pill px-1.5 py-0 text-xs border border-transparent ${badgeTone[day.badge.tone]}`}>{day.badge.text}</span>
             </Pop>
           ) : null}
         </div>
@@ -161,13 +201,20 @@ function InsertedNode() {
   const height = useRange(p, [T.insertRow[0], T.insertRow[1]], [0, 42]);
   const opacity = useFade(p, T.insertRow[0] + 0.006, T.insertRow[1]);
   const x = useRange(p, [T.insertRow[0] + 0.006, T.insertRow[1]], [-16, 0], { rest: 0 });
+  const syncTagOpacity = useFade(p, 0.84, 0.854);
   return (
     <motion.div style={{ height }} className="overflow-hidden">
-      <motion.div style={{ opacity, x }} className="mt-1.5 flex items-center gap-2 rounded-lg border border-dashed border-gold/60 bg-gold/10 py-1.5 pl-2 pr-1.5">
-        <span className="text-[11px] font-bold tabular-nums text-gold-ink">20:00</span>
-        <span className="min-w-0 flex-1 truncate text-[12px] font-semibold text-ink">🍜 正宁路夜市 · 牛奶鸡蛋醪糟</span>
+      <motion.div style={{ opacity, x }} className="mt-1.5 flex items-center gap-2 rounded-control border border-dashed border-amber-500/60 bg-amber-500/10 py-1.5 pl-2 pr-1.5">
+        <span className="text-xs font-bold tabular-nums font-mono text-amber-700">20:00</span>
+        <span className="min-w-0 flex-1 truncate text-xs font-semibold text-ink inline-flex items-center gap-1">
+          <UtensilsIcon className="h-3.5 w-3.5 text-amber-700 shrink-0" />
+          <span>正宁路夜市 · 牛奶鸡蛋醪糟</span>
+        </span>
+        <motion.span style={{ opacity: syncTagOpacity }} className="hidden sm:inline-flex chip rounded-pill bg-jade/15 text-jade border border-jade/30 text-[10px] px-1.5 py-0 font-mono font-medium">
+          ⚡ 3端同频
+        </motion.span>
         <Pop at={T.stamp}>
-          <span className="flex h-6 w-6 rotate-[-12deg] items-center justify-center rounded-full border-2 border-ochre text-[9px] font-bold text-ochre">
+          <span className="flex h-6 w-6 rotate-[-12deg] items-center justify-center rounded-full border-2 border-amber-600 text-xs font-bold text-amber-600">
             打卡
           </span>
         </Pop>
@@ -181,14 +228,17 @@ function WishPool() {
   const p = useProgress();
   const opacity = useFade(p, T.poolIn[0], T.poolIn[1]);
   return (
-    <motion.div className="mt-2 rounded-xl border border-dashed border-ink/15 bg-sand/60 p-2" style={{ opacity }}>
+    <motion.div className="mt-2 rounded-control border border-dashed border-slate-300 bg-sand/60 p-2" style={{ opacity }}>
       <div className="flex items-center justify-between px-1 pb-1.5">
-        <span className="text-[11px] font-semibold text-ink">✨ 待决愿望池</span>
+        <span className="text-xs font-semibold text-ink inline-flex items-center gap-1">
+          <SparklesIcon className="h-3.5 w-3.5 text-amber-600" />
+          <span>待决愿望池</span>
+        </span>
         <WishPoolBadge />
       </div>
       <div className="flex flex-col gap-1.5">
         <Reveal at={[T.poolIn[0] + 0.004, T.poolIn[1]]} y={8}>
-          <WishItem who="小雨" tone="lapis" icon="🐪" title="鸣沙山骆驼队 · 日落机位" />
+          <WishItem who="小雨" tone="lapis" icon={<CompassIcon className="h-4 w-4 text-lapis" />} title="鸣沙山骆驼队 · 日落机位" />
         </Reveal>
         <PoolLanding />
       </div>
@@ -200,7 +250,7 @@ function WishPoolBadge() {
   const p = useProgress();
   const count = useStep(p, [T.poolIn[0], T.poolLand[0], T.poolResolveOut[1]]);
   const n = [0, 1, 2, 1][count];
-  return <span className="rounded-full bg-ink/5 px-1.5 text-[10px] tabular-nums text-ink-soft">{n}</span>;
+  return <span className="rounded-pill bg-slate-900/5 px-1.5 text-xs tabular-nums font-mono text-ink-soft">{n}</span>;
 }
 
 function PoolLanding() {
@@ -219,16 +269,32 @@ function ResolvedWishItem() {
   const p = useProgress();
   const resolved = useStep(p, [T.poolResolve]) === 1;
   return (
-    <WishItem who="阿杰" tone="jade" icon="🍜" title="赵记牛奶鸡蛋醪糟" status={resolved ? '✓ 已排入 D0 20:00' : '待编排'} resolved={resolved} />
+    <WishItem
+      who="阿杰"
+      tone="jade"
+      icon={<UtensilsIcon className="h-4 w-4 text-amber-700" />}
+      title="赵记牛奶鸡蛋醪糟"
+      status={
+        resolved ? (
+          <span className="inline-flex items-center gap-0.5">
+            <CheckIcon className="h-3 w-3" />
+            <span>已排入 D0 20:00</span>
+          </span>
+        ) : (
+          '待编排'
+        )
+      }
+      resolved={resolved}
+    />
   );
 }
 
-function WishItem({ who, tone, icon, title, status, resolved }: { who: string; tone: 'jade' | 'lapis'; icon: string; title: string; status?: string; resolved?: boolean }) {
+function WishItem({ who, tone, icon, title, status, resolved }: { who: string; tone: 'jade' | 'lapis'; icon: ReactNode; title: string; status?: ReactNode; resolved?: boolean }) {
   return (
-    <div className="flex h-9 items-center gap-2 rounded-lg bg-paper/90 px-2 ring-1 ring-ink/5">
-      <span className="text-base">{icon}</span>
-      <span className="min-w-0 flex-1 truncate text-[12px] font-medium text-ink">{title}</span>
-      {status ? <span className={`shrink-0 text-[10px] font-semibold ${resolved ? 'text-jade' : 'text-amber'}`}>{status}</span> : null}
+    <div className="flex h-9 items-center gap-2 rounded-control bg-paper/90 px-2 border border-slate-200/50 shadow-level-static">
+      <span className="flex h-5 w-5 shrink-0 items-center justify-center">{icon}</span>
+      <span className="min-w-0 flex-1 truncate text-xs font-medium text-ink">{title}</span>
+      {status ? <span className={`shrink-0 text-xs font-semibold ${resolved ? 'text-jade font-semibold' : 'text-amber-700'}`}>{status}</span> : null}
       <Avatar name={who} tone={tone} size={20} />
     </div>
   );
@@ -242,13 +308,16 @@ function MapPanel() {
   return (
     <motion.section
       aria-label="路线地图"
-      className="glass-sub relative order-1 h-[44%] shrink-0 overflow-hidden rounded-2xl md:order-none md:h-auto md:flex-1 gpu-layer [container-type:size]"
+      className="glass-strong relative order-1 h-[44%] shrink-0 overflow-hidden rounded-card border border-slate-200/60 shadow-level-static md:order-none md:h-auto md:flex-1 gpu-layer [container-type:size]"
       style={{ opacity, scale }}
     >
       <RouteMap />
       <div className="pointer-events-none absolute left-3 top-3 flex flex-col gap-1">
-        <span className="chip glass-sub px-2.5 py-1 text-[11px] text-ink">🗺 河西走廊 · 9 天 · 12 站</span>
-        <span className="chip hidden bg-paper/70 px-2.5 py-0.5 text-[10px] text-ink-soft md:inline-flex">离线 SVG 底图 · 零外部瓦片</span>
+        <span className="chip rounded-pill glass-strong border border-slate-200/60 px-2.5 py-1 text-xs tabular-nums text-ink shadow-level-static inline-flex items-center gap-1">
+          <CompassIcon className="h-3.5 w-3.5 text-amber-600" />
+          <span>河西走廊 · 9 天 · 12 站</span>
+        </span>
+        <span className="chip rounded-pill hidden bg-paper/80 border border-slate-200/50 px-2.5 py-0.5 text-xs text-ink-soft md:inline-flex">离线 SVG 底图 · 零外部瓦片</span>
       </div>
       <ElevationCard />
       <PresenceCursor name="阿杰" tone="jade" xs={[62, 48, 30, 26]} ys={[30, 46, 40, 58]} />
@@ -273,10 +342,13 @@ function ElevationCard() {
   const rise = useRange(p, [T.elevDraw[0], T.elevDraw[1]], [0, 1]);
   const peak = useFade(p, T.elevDraw[1] - 0.008, T.elevDraw[1]);
   return (
-    <motion.div className="glass-sub absolute bottom-3 left-3 hidden w-[290px] rounded-xl p-3 sm:block gpu-layer" style={{ opacity, y }}>
+    <motion.div className="glass-strong absolute bottom-3 left-3 hidden w-[290px] rounded-control border border-slate-200/60 p-3 shadow-level-float sm:block gpu-layer" style={{ opacity, y }}>
       <div className="flex items-baseline justify-between">
-        <span className="text-[11px] font-semibold text-ink">全程海拔剖面</span>
-        <span className="text-[10px] text-jade">全程 &lt; 长辈上限 3600m ✓</span>
+        <span className="text-xs font-semibold text-ink">全程海拔剖面</span>
+        <span className="text-xs font-mono tabular-nums text-jade inline-flex items-center gap-0.5">
+          <span>全程 &lt; 长辈上限 3600m</span>
+          <CheckIcon className="h-3.5 w-3.5" />
+        </span>
       </div>
       <svg viewBox={`0 -14 ${EW} ${EH + 16}`} className="mt-1 h-[70px] w-full overflow-visible">
         <defs>
@@ -288,8 +360,8 @@ function ElevationCard() {
         <motion.path d={ELEV.area} fill="url(#elev-fill)" style={{ scaleY: rise, originY: 1 }} />
         <motion.path d={ELEV.line} fill="none" stroke="rgb(140 58 43)" strokeWidth={1.8} style={{ pathLength: draw }} />
         <motion.g style={{ opacity: peak }}>
-          <circle cx={ELEV.peak[0]} cy={ELEV.peak[1]} r={3} fill="rgb(140 58 43)" />
-          <text x={ELEV.peak[0] + 6} y={ELEV.peak[1] - 2} fontSize={10} fill="rgb(58 46 31)" fontWeight={600}>
+          <circle cx={ELEV.peak[0]} cy={ELEV.peak[1]} r={3.5} fill="rgb(140 58 43)" />
+          <text x={ELEV.peak[0] + 6} y={ELEV.peak[1] - 2} fontSize={12} fill="rgb(58 46 31)" fontWeight={600}>
             乌鞘岭 2980m
           </text>
         </motion.g>
@@ -319,7 +391,7 @@ function PresenceCursor({ name, tone, xs, ys }: { name: string; tone: 'jade' | '
       <svg width="16" height="16" viewBox="0 0 24 24">
         <path d="M4 2.5 L19.5 12 L12.4 13.6 L9 20.5 Z" fill={color} stroke="#fff" strokeWidth="1.8" strokeLinejoin="round" />
       </svg>
-      <span className="ml-3 rounded-full px-2 py-0.5 text-[10px] font-semibold text-paper" style={{ background: color }}>
+      <span className="ml-3 rounded-pill px-2 py-0.5 text-xs font-semibold text-paper" style={{ background: color }}>
         {name}
       </span>
     </motion.div>
@@ -345,9 +417,9 @@ function ComputingPill() {
   const y = useRange(p, [T.computing[0], T.computing[1]], [-12, 0], { rest: 0 });
   return (
     <motion.div className="pointer-events-none absolute inset-x-0 top-3 flex justify-center" style={{ opacity, y }}>
-      <span className="chip glass-strong gap-2 py-1.5 text-[11px] text-ink">
+      <span className="chip rounded-pill glass-strong border border-slate-200/60 shadow-level-float gap-2 px-3 py-1.5 text-xs text-ink">
         <span className="h-3 w-3 animate-radar rounded-full border-2 border-gold border-t-transparent" />
-        Web Worker 本地重算 · 3 个候选方案 · <b className="tabular-nums text-gold-ink">42ms</b>
+        Web Worker 本地重算 · 3 个候选方案 · <b className="tabular-nums font-mono text-amber-600">42ms</b>
       </span>
     </motion.div>
   );
@@ -367,7 +439,7 @@ function WalkLens() {
 
   return (
     <motion.div
-      className="glass-strong absolute right-3 top-1/2 overflow-hidden rounded-full md:right-6 gpu-layer"
+      className="glass-strong absolute right-3 top-1/2 overflow-hidden rounded-full border border-slate-200/60 shadow-level-float md:right-6 gpu-layer"
       style={{ opacity, scale, width: size, height: size, marginTop: -size / 2 }}
       aria-label="兰州街区放大：酒店步行 950 米至正宁路夜市"
     >
@@ -381,29 +453,34 @@ function WalkLens() {
           <path d="M168 -10 L176 210" />
         </g>
         <path d="M-10 30 C 50 18, 120 34, 210 14" stroke="#8fb3cf" strokeWidth="16" fill="none" strokeLinecap="round" />
-        <text x="150" y="20" fontSize="9" fill="#3f6f96">黄河</text>
+        <text x="150" y="20" fontSize="12" fontWeight="600" fill="#3f6f96">黄河</text>
         <motion.path d="M 62 96 C 80 110, 92 124, 120 128 S 150 150, 150 160" fill="none" stroke="rgb(184 134 59)" strokeWidth="4" strokeLinecap="round" strokeDasharray="0.01 9" style={{ pathLength: walk }} />
         <g transform="translate(62 96)">
           <circle r="9" fill="rgb(31 78 121)" stroke="#fff" strokeWidth="2.5" />
-          <text y="3.5" fontSize="9" textAnchor="middle" fill="#fff" fontWeight="700">宿</text>
-          <text x="-2" y="-14" fontSize="9" textAnchor="middle" fill="rgb(58 46 31)" fontWeight="600">水岸云上酒店</text>
+          <text y="3.5" fontSize="10" textAnchor="middle" fill="#fff" fontWeight="700">宿</text>
+          <text x="-2" y="-14" fontSize="12" textAnchor="middle" fill="rgb(58 46 31)" fontWeight="600">水岸云上酒店</text>
           <g transform="translate(-30 14)">
             <rect x="-11" y="-8" width="22" height="16" rx="4" fill="rgb(31 78 121)" />
-            <text y="4" fontSize="9" textAnchor="middle" fill="#fff" fontWeight="700">P</text>
-            <text y="20" fontSize="8" textAnchor="middle" fill="rgb(107 93 74)">MPV地面车位</text>
+            <text y="4" fontSize="10" textAnchor="middle" fill="#fff" fontWeight="700">P</text>
+            <text y="21" fontSize="11" textAnchor="middle" fill="rgb(58 46 31)" fontWeight="600">MPV地面车位</text>
           </g>
         </g>
         <g transform="translate(150 160)">
           <motion.circle r="10" fill="none" stroke="rgb(184 134 59)" strokeWidth="2" style={{ scale: ripple, opacity: rippleO }} />
           <motion.g style={{ scale: marketPin }}>
             <circle r="10" fill="rgb(184 134 59)" stroke="#fff" strokeWidth="2.5" />
-            <text y="4" fontSize="10" textAnchor="middle">🍜</text>
+            <g transform="translate(-5, -5) scale(0.42)" stroke="#fff" fill="none" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 2v6a3 3 0 0 1-3 3 3 3 0 0 1-3-3V2" />
+              <path d="M15 2v18" />
+              <path d="M6 2v20" />
+              <path d="M4 2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4" />
+            </g>
           </motion.g>
-          <text x="-4" y="24" fontSize="9" textAnchor="middle" fill="rgb(58 46 31)" fontWeight="700">正宁路夜市</text>
+          <text x="-4" y="24" fontSize="12" textAnchor="middle" fill="rgb(58 46 31)" fontWeight="700">正宁路夜市</text>
         </g>
         <g transform="translate(100 186)">
-          <rect x="-46" y="-10" width="92" height="18" rx="9" fill="rgb(255 252 246)" stroke="rgb(184 134 59)" strokeOpacity="0.6" />
-          <text y="3" fontSize="9" textAnchor="middle" fill="rgb(122 85 32)" fontWeight="700">步行 950m · 12 分钟</text>
+          <rect x="-56" y="-11" width="112" height="22" rx="11" fill="rgb(255 252 246)" stroke="rgb(184 134 59)" strokeOpacity="0.6" />
+          <text y="4" fontSize="11" textAnchor="middle" fill="rgb(122 85 32)" fontWeight="700">步行 950m · 12 分钟</text>
         </g>
       </svg>
     </motion.div>
@@ -432,11 +509,13 @@ function FlyingCard() {
       className="pointer-events-none absolute left-0 top-0 z-40 w-[240px] gpu-layer [contain:layout_paint]"
       style={{ x, y, scale, rotate, opacity, visibility }}
     >
-      <div className="glass-strong flex items-center gap-2 rounded-xl p-2">
-        <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-[#f2c27b] to-ochre text-xl">🍜</span>
+      <div className="glass-strong flex items-center gap-2 rounded-control border border-slate-200/60 p-2 shadow-level-float">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-control bg-amber-100 text-amber-800">
+          <UtensilsIcon className="h-5 w-5 text-amber-700" />
+        </span>
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-[13px] font-semibold text-ink">赵记牛奶鸡蛋醪糟</span>
-          <span className="block text-[10px] text-ink-soft">阿杰提名 · 🔥 必吃</span>
+          <span className="block truncate text-xs font-semibold text-ink md:text-sm">赵记牛奶鸡蛋醪糟</span>
+          <span className="block text-xs text-ink-soft">阿杰提名 · 必吃精选</span>
         </span>
         <Avatar name="阿杰" tone="jade" size={22} />
       </div>

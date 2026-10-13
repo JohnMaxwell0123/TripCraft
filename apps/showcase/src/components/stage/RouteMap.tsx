@@ -177,8 +177,13 @@ export function RouteMap() {
 
       {/* 跟随路线头部的 7座 MPV（纯 MotionValue 驱动） */}
       <motion.g style={{ x: carX, y: carY, opacity: carOpacity }} className="will-change-transform">
-        <circle r={13} fill="rgb(31 78 121)" stroke="#fff" strokeWidth={3} />
-        <text y={4.5} fontSize={13} textAnchor="middle">🚙</text>
+        <circle r={13} fill="rgb(31 78 121)" stroke="#fff" strokeWidth={2.5} />
+        <g transform="translate(-7, -7) scale(0.58)" stroke="#ffffff" fill="none" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9C2.1 11.2 2 11.6 2 12v4c0 .6.4 1 1 1h2" />
+          <circle cx="7" cy="17" r="2" />
+          <path d="M9 17h6" />
+          <circle cx="17" cy="17" r="2" />
+        </g>
       </motion.g>
 
       <VehicleBadges />
@@ -250,9 +255,9 @@ function textWidth(s: string, size: number) {
 }
 
 const BADGES = [
-  { stop: 'wsl', text: '✓ G30 连霍高速 · 乌鞘岭长下坡防刹车过热', tone: 'jade' as const, dx: 26, dy: -36, w: textWidth('✓ G30 连霍高速 · 乌鞘岭长下坡防刹车过热', 13) + 22 },
-  { stop: 'dx', text: '✓ 丹霞平缓步道 · 7座 MPV 车位充裕', tone: 'jade' as const, dx: -150, dy: 46, w: textWidth('✓ 丹霞平缓步道 · 7座 MPV 车位充裕', 13) + 22 },
-  { stop: 'dh', text: '✓ 莫高窟预约无障碍摆渡 · 平层大窟', tone: 'jade' as const, dx: -20, dy: 62, w: textWidth('✓ 莫高窟预约无障碍摆渡 · 平层大窟', 13) + 22 },
+  { stop: 'wsl', text: '✓ G30 连霍高速 · 乌鞘岭长下坡防刹车过热', tone: 'jade' as const, dx: 26, dy: -36, w: textWidth('✓ G30 连霍高速 · 乌鞘岭长下坡防刹车过热', 15) + 24 },
+  { stop: 'dx', text: '✓ 丹霞平缓步道 · 7座 MPV 车位充裕', tone: 'jade' as const, dx: -150, dy: 46, w: textWidth('✓ 丹霞平缓步道 · 7座 MPV 车位充裕', 15) + 24 },
+  { stop: 'dh', text: '✓ 莫高窟预约无障碍摆渡 · 平层大窟', tone: 'jade' as const, dx: -20, dy: 62, w: textWidth('✓ 莫高窟预约无障碍摆渡 · 平层大窟', 15) + 24 },
 ];
 
 function VehicleBadges() {
@@ -271,14 +276,14 @@ function Badge({ x, y, anchorX, anchorY, text, tone, w, at }: { x: number; y: nu
   const p = useProgress();
   const scale = useRange(p, [at, at + 0.008], [0.5, 1], { easing: ease.back, rest: 1 });
   const opacity = useRange(p, [at, at + 0.004, T.zoomLanzhou[0], T.zoomLanzhou[0] + 0.01], [0, 1, 1, 0]);
-  const size = 13;
-  const h = 26;
+  const size = 15;
+  const h = 30;
   const color = tone === 'jade' ? 'rgb(14 134 116)' : 'rgb(176 112 16)';
   return (
     <motion.g style={{ opacity, scale }} className="will-change-transform">
       <line x1={anchorX} y1={anchorY} x2={x + 10} y2={y} stroke={color} strokeWidth={1.4} strokeDasharray="3 3" />
       <rect x={x} y={y - h / 2} width={w} height={h} rx={h / 2} fill="rgb(255 252 246)" fillOpacity={0.94} stroke={color} strokeOpacity={0.5} />
-      <text x={x + 11} y={y + 4.5} fontSize={size} fontWeight={600} fill={color}>
+      <text x={x + 12} y={y + 5.5} fontSize={size} fontWeight={600} fill={color}>
         {text}
       </text>
     </motion.g>

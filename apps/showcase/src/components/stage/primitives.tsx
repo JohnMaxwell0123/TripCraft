@@ -3,6 +3,7 @@
 import { createContext, useContext, type ReactNode } from 'react';
 import { motion, useTransform, type MotionValue } from 'framer-motion';
 import { useFade, useRange, interp, ease } from '@/lib/motion';
+import { CheckIcon } from '@/components/common/Icons';
 
 /* -------------------------------------------------------------------------- */
 /*  舞台进度上下文                                                               */
@@ -68,7 +69,7 @@ export function FakeCursor({ times, xs, ys, clickAt, hideAt, label }: FakeCursor
           <path d="M4 2.5 L19.5 12 L12.4 13.6 L9 20.5 Z" fill="#fff" stroke="rgb(58 46 31)" strokeWidth="1.6" strokeLinejoin="round" />
         </motion.svg>
         {label ? (
-          <span className="absolute left-5 top-4 whitespace-nowrap rounded-full bg-ink px-2 py-0.5 text-[10px] font-medium text-paper">{label}</span>
+          <span className="absolute left-5 top-4 whitespace-nowrap rounded-pill bg-ink px-2 py-0.5 text-xs font-medium text-paper shadow-level-static">{label}</span>
         ) : null}
       </motion.div>
     </div>
@@ -108,11 +109,11 @@ export function Toast({ range, children, tone = 'jade' }: { range: readonly [num
   return (
     <motion.div
       role="status"
-      className="glass-strong flex items-center gap-2 whitespace-nowrap rounded-full py-1.5 pl-1.5 pr-4 text-xs font-medium text-ink"
+      className="glass-strong flex items-center gap-2 whitespace-nowrap rounded-pill border border-slate-200/60 px-4 py-1.5 text-xs font-medium text-ink shadow-level-float"
       style={{ opacity, y, scale }}
     >
-      <span className={`flex h-6 w-6 items-center justify-center rounded-full text-[11px] text-paper ${tone === 'jade' ? 'bg-jade' : 'bg-gold'}`}>
-        ✓
+      <span className={`flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold text-paper ${tone === 'jade' ? 'bg-jade' : 'bg-gradient-to-br from-amber-500 to-amber-600'}`}>
+        <CheckIcon className="h-3 w-3" />
       </span>
       {children}
     </motion.div>

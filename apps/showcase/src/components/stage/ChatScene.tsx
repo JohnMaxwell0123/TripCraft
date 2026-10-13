@@ -4,6 +4,7 @@ import { motion, useTransform } from 'framer-motion';
 import { useFade, useRange, useScrollTypewriter, useStep, useVisibility, ease } from '@/lib/motion';
 import { T } from './timeline';
 import { Avatar, FakeCursor, Pop, Reveal, useProgress } from './primitives';
+import { ElderIcon, BabyIcon, CarIcon, SunsetIcon, ZapIcon, BrainIcon, KeyIcon, CheckIcon } from '@/components/common/Icons';
 
 const USER_TEXT =
   '我们全家 5 口人，带 70 岁爷爷和 4 岁小孩，国庆去甘肃自驾。租了一辆 7 座豪华 MPV（腾势 D9），加了车顶行李箱。爷爷膝盖做过手术不能爬长楼梯；孩子每天要午休。想去莫高窟、鸣沙山看日落，千万别太赶。';
@@ -12,10 +13,10 @@ const AI_TEXT =
   '收到。70 岁长辈膝盖术后、4 岁宝宝、一台 2.15 米高（带车顶箱）的 7 座 MPV——这趟必须按「慢」来设计。我先把你在意的事记下来，有一处想和你确认：';
 
 const CONSTRAINTS = [
-  { icon: '👴', title: '70 岁长辈', note: '规避高长台阶 · 步行 ≤ 500m', ring: 'ring-gold/50', glow: 'shadow-[0_0_24px_rgb(var(--tc-gold)/0.35)]' },
-  { icon: '👶', title: '4 岁幼儿', note: '13:00–14:30 午休 · 防中暑', ring: 'ring-[#d98a3a]/50', glow: 'shadow-[0_0_24px_rgba(217,138,58,0.35)]' },
-  { icon: '🚙', title: '7座 MPV (车顶箱)', note: '车高 2.15m · 避开 2m 限高地库', ring: 'ring-lapis/40', glow: 'shadow-[0_0_24px_rgb(var(--tc-lapis)/0.3)]' },
-  { icon: '🌅', title: '鸣沙山日落', note: '锁定 19:30 日落窗口', ring: 'ring-[#d9776b]/50', glow: 'shadow-[0_0_24px_rgba(217,119,107,0.35)]' },
+  { Icon: ElderIcon, title: '70 岁长辈', note: '规避高长台阶 · 步行 ≤ 500m', ring: 'ring-amber-500/50', iconColor: 'text-amber-600', glow: 'shadow-[0_0_24px_rgba(245,158,11,0.25)]' },
+  { Icon: BabyIcon, title: '4 岁幼儿', note: '13:00–14:30 午休 · 防中暑', ring: 'ring-orange-500/50', iconColor: 'text-orange-600', glow: 'shadow-[0_0_24px_rgba(249,115,22,0.25)]' },
+  { Icon: CarIcon, title: '7座 MPV (车顶箱)', note: '车高 2.15m · 避开 2m 限高地库', ring: 'ring-blue-500/40', iconColor: 'text-blue-600', glow: 'shadow-[0_0_24px_rgba(59,130,246,0.25)]' },
+  { Icon: SunsetIcon, title: '鸣沙山日落', note: '锁定 19:30 日落窗口', ring: 'ring-rose-500/50', iconColor: 'text-rose-600', glow: 'shadow-[0_0_24px_rgba(244,63,94,0.25)]' },
 ];
 
 export function ChatScene() {
@@ -51,13 +52,22 @@ function ModelRow() {
     <div className="flex flex-wrap items-center gap-2 pb-3">
       <span className="relative chip bg-paper/70 text-ink ring-1 ring-ink/10">
         <motion.span className="absolute inset-0 rounded-full shadow-glow" style={{ opacity: lit }} />
-        <span className="relative">⚡ DeepSeek-v4.1-flash</span>
+        <span className="relative flex items-center gap-1">
+          <ZapIcon className="h-3 w-3 text-amber-600" />
+          <span>DeepSeek-v4.1-flash</span>
+        </span>
         <motion.span className="relative text-gold-ink" style={{ opacity: lit }}>
           · 默认 · 秒级响应
         </motion.span>
       </span>
-      <span className="chip hidden bg-ink/5 text-ink-soft sm:inline-flex">🧠 深度推理 R1 / Claude / GPT · 会员</span>
-      <span className="chip hidden bg-ink/5 text-ink-soft lg:inline-flex">🔑 BYOK · 密钥仅存本机</span>
+      <span className="chip hidden bg-ink/5 text-ink-soft sm:inline-flex items-center gap-1">
+        <BrainIcon className="h-3 w-3 text-ink-soft" />
+        <span>深度推理 R1 / Claude / GPT · 会员</span>
+      </span>
+      <span className="chip hidden bg-ink/5 text-ink-soft lg:inline-flex items-center gap-1">
+        <KeyIcon className="h-3 w-3 text-ink-soft" />
+        <span>BYOK · 密钥仅存本机</span>
+      </span>
     </div>
   );
 }
@@ -68,7 +78,8 @@ function MobileChips() {
       {CONSTRAINTS.map((c, i) => (
         <Pop key={c.title} at={T.chips[i]}>
           <span className={`chip bg-paper/80 text-ink ring-1 ${c.ring}`}>
-            {c.icon} {c.title}
+            <c.Icon className={`h-3 w-3 inline mr-1 ${c.iconColor}`} />
+            {c.title}
           </span>
         </Pop>
       ))}
@@ -92,7 +103,7 @@ function Thread() {
       <motion.div className="flex flex-col gap-3 pt-4" style={{ y: stackY }}>
         {/* 用户气泡 */}
         <motion.div className="ml-auto max-w-[88%] md:max-w-[80%]" style={{ opacity: userOpacity, y: userY }}>
-          <div className="rounded-2xl rounded-br-md bg-lapis px-4 py-3 text-[13px] leading-relaxed text-paper shadow-lg md:text-sm">
+          <div className="rounded-card rounded-br-md border border-slate-800/40 bg-slate-900 px-4 py-3 text-xs leading-relaxed text-paper shadow-level-static md:text-sm">
             {USER_TEXT}
           </div>
         </motion.div>
@@ -100,7 +111,7 @@ function Thread() {
         {/* AI 思考中 */}
         <motion.div className="flex items-center gap-2" style={{ opacity: thinking }}>
           <Avatar name="老" tone="gold" size={26} />
-          <span className="flex gap-1 rounded-full bg-paper/80 px-3 py-2 ring-1 ring-ink/5">
+          <span className="flex gap-1 rounded-pill border border-slate-200/60 bg-paper/85 px-3 py-2 shadow-level-static">
             {[0, 1, 2].map((i) => (
               <span key={i} className="h-1.5 w-1.5 animate-breathe rounded-full bg-gold" style={{ animationDelay: `${i * 0.2}s` }} />
             ))}
@@ -110,7 +121,7 @@ function Thread() {
         {/* AI 流式回复 */}
         <motion.div className="-mt-9 flex max-w-[92%] items-start gap-2" style={{ opacity: aiOpacity }}>
           <Avatar name="老" tone="gold" size={26} className="mt-1" />
-          <div className="rounded-2xl rounded-tl-md bg-paper/85 px-4 py-3 text-[13px] leading-relaxed text-ink ring-1 ring-ink/5 md:text-sm">
+          <div className="rounded-card rounded-tl-md border border-slate-200/60 bg-paper/90 px-4 py-3 text-xs leading-relaxed text-ink shadow-level-static md:text-sm">
             <span ref={aiRef}>{AI_TEXT}</span>
             <motion.span className="ml-0.5 inline-block h-4 w-[2px] translate-y-[3px] animate-caret bg-gold" style={{ opacity: caretOpacity }} />
           </div>
@@ -129,21 +140,22 @@ function SocraticCard() {
   const y = useRange(p, [T.socraticIn[0], T.socraticIn[1]], [60, 0], { easing: ease.back, rest: 0 });
 
   return (
-    <motion.div className="glass-sub glass-sheen relative ml-8 rounded-2xl p-4 gpu-layer" style={{ opacity, y }}>
+    <motion.div className="glass-strong relative ml-8 rounded-card border border-slate-200/60 p-4 shadow-level-static gpu-layer" style={{ opacity, y }}>
       <div className="mb-2 flex items-center gap-2 text-xs">
-        <span className="font-semibold text-gold-ink">老定制师 · 专业意见</span>
-        <span className="chip bg-ink/5 px-2 py-0.5 text-[10px] text-ink-soft">可否决</span>
+        <span className="font-semibold text-amber-700">老定制师 · 专业意见</span>
+        <span className="chip rounded-pill border border-slate-200/50 bg-slate-900/5 px-2 py-0.5 text-xs text-ink-soft">可否决</span>
       </div>
-      <p className="text-[13px] leading-relaxed text-ink md:text-sm">
-        <span className="mr-1 rounded bg-lapis/10 px-1 text-[11px] font-semibold text-lapis">事实</span>
+      <p className="text-xs leading-relaxed text-ink md:text-sm">
+        <span className="mr-1 rounded-control bg-slate-100 px-1.5 py-0.5 text-xs font-semibold text-slate-700 border border-slate-200/50">事实</span>
         莫高窟常规洞窟需攀爬多段陡峭高架栈道，且自驾私家车需统一停放游客中心换乘。
         <br />
-        <span className="mr-1 rounded bg-gold/15 px-1 text-[11px] font-semibold text-gold-ink">建议</span>
+        <span className="mr-1 rounded-control bg-amber-50 px-1.5 py-0.5 text-xs font-semibold text-amber-700 border border-amber-200/60">建议</span>
         改乘景区无障碍摆渡车，主看 4 个平层大窟，让长辈慢慢看。
       </p>
       <SocraticOptions />
-      <Reveal at={[T.lockA, T.lockA + 0.006]} y={6} className="mt-2 text-[11px] font-medium text-jade">
-        ✓ 已锁定排程策略，写入 constraints.hard，开始生成路书…
+      <Reveal at={[T.lockA, T.lockA + 0.006]} y={6} className="mt-2 text-xs font-medium text-jade flex items-center gap-1">
+        <CheckIcon className="h-3.5 w-3.5 shrink-0" />
+        <span>已锁定排程策略，写入 constraints.hard，开始生成路书…</span>
       </Reveal>
       <FakeCursor times={[T.cursorA[0], T.cursorA[1]]} xs={[78, 22]} ys={[130, 72]} clickAt={T.clickA} hideAt={T.lockA + 0.01} />
     </motion.div>
@@ -159,17 +171,20 @@ function SocraticOptions() {
   return (
     <Reveal at={[T.optionsIn[0], T.optionsIn[1]]} y={8} className="relative mt-3 flex flex-wrap gap-2">
       <span
-        className={`relative chip overflow-hidden py-1.5 text-[12px] transition-colors duration-300 ${
-          locked ? 'bg-gold text-paper shadow-glow' : 'bg-jade/10 text-jade ring-1 ring-jade/30'
+        className={`relative chip rounded-pill overflow-hidden py-1.5 text-xs transition-colors duration-300 ${
+          locked ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-level-static' : 'bg-amber-50 text-amber-700 border border-amber-200/60'
         }`}
       >
-        <motion.span className="absolute inset-0 rounded-full bg-gold" style={{ scale: ripple, opacity: rippleOpacity }} />
-        <span className="relative">{locked ? '✓' : '●'} 方案 A：无障碍慢游（推荐）</span>
+        <motion.span className="absolute inset-0 rounded-pill bg-amber-500" style={{ scale: ripple, opacity: rippleOpacity }} />
+        <span className="relative inline-flex items-center gap-1">
+          {locked ? <CheckIcon className="h-3 w-3 shrink-0" /> : <span className="inline-block h-1.5 w-1.5 rounded-full bg-current" />}
+          <span>方案 A：无障碍慢游（推荐）</span>
+        </span>
       </span>
-      <span className={`chip py-1.5 text-[12px] ring-1 ring-ink/10 transition-opacity duration-300 ${locked ? 'opacity-40' : ''}`}>
+      <span className={`chip rounded-pill border border-slate-200/60 bg-white/70 py-1.5 text-xs text-ink transition-opacity duration-300 ${locked ? 'opacity-40' : ''}`}>
         方案 B：常规窟 · 人工陪护
       </span>
-      <span className={`chip hidden py-1.5 text-[12px] ring-1 ring-ink/10 transition-opacity duration-300 sm:inline-flex ${locked ? 'opacity-40' : ''}`}>
+      <span className={`chip rounded-pill hidden border border-slate-200/60 bg-white/70 py-1.5 text-xs text-ink transition-opacity duration-300 sm:inline-flex ${locked ? 'opacity-40' : ''}`}>
         我再想想
       </span>
     </Reveal>
@@ -186,22 +201,22 @@ function InputBar() {
   const sendGlow = useRange(p, [T.typeInput[1] - 0.004, T.typeInput[1], T.send + 0.002, T.send + 0.006], [0, 1, 1, 0]);
 
   return (
-    <div className="glass-sub mt-3 flex items-end gap-3 rounded-2xl p-2 pl-4">
-      <div className="relative min-h-[44px] flex-1 py-2.5 text-[13px] leading-relaxed text-ink md:text-sm">
+    <div className="glass-strong mt-3 flex items-end gap-3 rounded-control border border-slate-200/60 p-2 pl-4 shadow-level-static">
+      <div className="relative min-h-[44px] flex-1 py-2.5 text-xs leading-relaxed text-ink md:text-sm">
         <motion.span className="pointer-events-none absolute inset-y-2.5 left-0 text-ink-soft" style={{ opacity: placeholder }}>
           说说这趟旅行：谁去、开什么车、最在意什么…
         </motion.span>
         <motion.span className="line-clamp-2" style={{ opacity: textOpacity }}>
           <span ref={typed}>{USER_TEXT}</span>
-          <span className="ml-0.5 inline-block h-4 w-[2px] translate-y-[3px] animate-caret bg-lapis" />
+          <span className="ml-0.5 inline-block h-4 w-[2px] translate-y-[3px] animate-caret bg-amber-600" />
         </motion.span>
       </div>
       <motion.span
         aria-hidden
-        className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-b from-gold to-gold-ink text-paper gpu-layer"
+        className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-control bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-level-static gpu-layer"
         style={{ scale: press }}
       >
-        <motion.span className="absolute inset-0 rounded-xl shadow-glow" style={{ opacity: sendGlow }} />
+        <motion.span className="absolute inset-0 rounded-control shadow-glow" style={{ opacity: sendGlow }} />
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className="relative">
           <path d="M4 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -216,18 +231,20 @@ function ConstraintPanel() {
   const panel = useFade(p, T.chips[0] - 0.012, T.chips[0]);
   return (
     <motion.aside className="hidden w-[36%] max-w-[340px] flex-col md:flex" style={{ opacity: panel }}>
-      <div className="glass-sub flex h-full flex-col rounded-2xl p-4">
-        <p className="eyebrow text-gold-ink">已理解的约束</p>
+      <div className="glass-strong flex h-full flex-col rounded-card border border-slate-200/60 p-4 shadow-level-static">
+        <p className="eyebrow text-amber-600 font-semibold">已理解的约束</p>
         <p className="mt-1 text-xs text-ink-soft">从你的话里抽取，可随时修改</p>
         <ul className="mt-4 flex flex-col gap-2.5">
           {CONSTRAINTS.map((c, i) => (
             <li key={c.title}>
               <Pop at={T.chips[i]}>
-                <div className={`flex items-center gap-3 rounded-xl bg-paper/80 p-2.5 ring-1 ${c.ring} ${c.glow}`}>
-                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-sand text-lg">{c.icon}</span>
+                <div className={`flex items-center gap-3 rounded-control bg-paper/90 p-2.5 border border-slate-200/60 shadow-level-static ${c.ring}`}>
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control bg-sand/70">
+                    <c.Icon className={`h-5 w-5 ${c.iconColor}`} />
+                  </span>
                   <span className="min-w-0">
                     <span className="block text-sm font-semibold text-ink">{c.title}</span>
-                    <span className="block truncate text-[11px] text-ink-soft">{c.note}</span>
+                    <span className="block truncate text-xs text-ink-soft tabular-nums font-mono">{c.note}</span>
                   </span>
                 </div>
               </Pop>
@@ -235,10 +252,10 @@ function ConstraintPanel() {
           ))}
         </ul>
         <Reveal at={[T.chips[3] + 0.008, T.chips[3] + 0.014]} y={6} className="mt-auto pt-4">
-          <p className="rounded-lg bg-ink/[0.04] p-2.5 font-mono text-[10.5px] leading-relaxed text-ink-soft">
+          <p className="rounded-control bg-slate-900/5 p-2.5 font-mono text-xs leading-relaxed text-ink-soft tabular-nums border border-slate-200/40">
             constraints.hard ← 4 条
             <br />
-            schema: trip.schema.json · <span className="text-jade">AJV ✓</span>
+            schema: trip.schema.json · <span className="text-jade font-semibold inline-flex items-center gap-0.5"><span>AJV</span><CheckIcon className="h-3 w-3" /></span>
           </p>
         </Reveal>
       </div>
