@@ -21,7 +21,7 @@ export function Hero() {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TripCraft · 数字化自驾离线路书 (单文件自包含交付样例)</title>
+  <title>TripCraft · 数字化自驾路书 (出游容灾舱样例)</title>
   <style>
     :root { --sand: #F8FAFC; --ink: #0F172A; --gold: #B8863B; --paper: #FFFFFF; --jade: #10B981; }
     body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--sand); color: var(--ink); padding: 32px 20px; }
@@ -34,7 +34,7 @@ export function Hero() {
 </head>
 <body>
   <div class="card">
-    <div class="badge">✓ TripCraft 单文件离线自包含交付 · 双击秒开 · 零网络依赖</div>
+    <div class="badge">✓ TripCraft 出游容灾舱 · 多端同频与无人区无感保活交付样例</div>
     <h1>全地形自驾路书 · 离线交互快照</h1>
     <p style="color: #64748B; font-size: 14px;">9 天 1,280 km · 物理规则刚性防御引擎 · AST 状态已封存</p>
     <div class="day">
@@ -56,7 +56,7 @@ export function Hero() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'TripCraft_数字化自驾路书_单文件离线样例.html';
+    a.download = 'TripCraft_数字化自驾路书_出游容灾舱样例.html';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -93,7 +93,7 @@ export function Hero() {
             >
               <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-xs font-semibold tracking-wide text-blue-950">
-                次世代智能自驾协同中枢 · Local-First 数字化交付引擎
+                次世代智能自驾协同中枢 · 多端实时云协同与容灾交付引擎
               </span>
             </motion.div>
 
@@ -119,8 +119,8 @@ export function Hero() {
               className="mt-6 max-w-2xl text-pretty text-sm sm:text-base leading-relaxed text-ink-soft"
             >
               从大白话旅行诉求，到 AI 老定制师启发式多维推演；
-              从好友微信免登协同共创，到浏览器纯本地毫秒级重算编排。
-              零第三方强依赖，单文件自包含秒开，断网亦可在无人区穿行。
+              从全团微信免登协同愿望池，到车路云一体秒级流转与领队确认。
+              多端实时云端同频，断网无感切换无人区离线舱，出游全程安心。
             </motion.p>
 
             {/* CTA Buttons */}
@@ -156,7 +156,7 @@ export function Hero() {
                 <span className="text-emerald-600 font-bold">✓</span> 车辆空间物理刚性断言
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="text-emerald-600 font-bold">✓</span> 纯本地数据隐私安全
+                <span className="text-emerald-600 font-bold">✓</span> 端云协同与数据隐私安全
               </span>
             </motion.div>
           </div>
@@ -189,7 +189,7 @@ export function Hero() {
                   <div className="flex items-center gap-1.5">
                     <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                     <span className="font-mono text-xs font-semibold text-emerald-600 tabular-nums">
-                      Local Engine 0ms
+                      云协同连接中 · 18ms
                     </span>
                   </div>
                 </div>
@@ -333,12 +333,12 @@ export function Hero() {
                             <div className="min-w-0 flex-1">
                               <div className="flex items-center justify-between">
                                 <span className="text-xs font-semibold text-ink">
-                                  山海营地停泊 · 离线切片
+                                  山海营地停泊 · 拓扑信标
                                 </span>
-                                <span className="text-xs text-ink-soft font-medium">待触发</span>
+                                <span className="text-xs text-ink-soft font-medium">已对齐</span>
                               </div>
                               <p className="text-xs text-ink-soft truncate">
-                                离线矢量 SVG 缓存预载 · 卫星坐标信标对齐 · 本地 AST 封存
+                                矢量高保真沙盘 · 卫星坐标信标对齐 · 云端模型已对齐
                               </p>
                             </div>
                           </div>
@@ -359,7 +359,7 @@ export function Hero() {
                               </span>
                             </div>
                             <span className="text-xs text-ink-soft">
-                              Alex 正在拖拽微调节点 #2 · <span className="font-mono font-bold text-gold-ink tabular-nums">14ms</span> 本地重算
+                              Alex 正在拖拽微调节点 #2 · <span className="font-mono font-bold text-gold-ink tabular-nums">14ms</span> 协同同频
                             </span>
                           </div>
                           <span className="font-mono text-xs font-semibold text-ink-soft">
@@ -410,7 +410,7 @@ export function Hero() {
                               </span>
                               <div>
                                 <p className="font-semibold text-ink">黄金采光摄影窗口与营地停泊</p>
-                                <p className="text-xs text-ink-soft">落日黄金光照窗口打卡，提前预载离线矢量图</p>
+                                <p className="text-xs text-ink-soft">落日黄金光照窗口打卡，高保真矢量拓扑与车机流转</p>
                               </div>
                             </div>
                           </div>
@@ -438,9 +438,9 @@ export function Hero() {
                         <div className="grid grid-cols-3 gap-2 text-center text-xs">
                           <div className="rounded-card bg-paper p-3 sm:p-3.5 border border-ink/[0.08] shadow-level-static hover:shadow-level-hover transition-shadow flex flex-col items-center justify-center">
                             <FileTextIcon className="h-5 w-5 text-emerald-600" />
-                            <div className="mt-1 font-bold text-ink text-xs">单文件 HTML</div>
+                            <div className="mt-1 font-bold text-ink text-xs">出游容灾舱</div>
                             <div className="mt-0.5 font-mono text-xs text-emerald-700 font-bold tabular-nums">
-                              1.8 MB 离线
+                              无人区就绪
                             </div>
                           </div>
                           <div className="rounded-card bg-paper p-3 sm:p-3.5 border border-ink/[0.08] shadow-level-static hover:shadow-level-hover transition-shadow flex flex-col items-center justify-center">
@@ -465,11 +465,11 @@ export function Hero() {
                           className="btn-primary w-full min-h-[46px] text-xs font-semibold flex items-center justify-center gap-2"
                         >
                           <ZapIcon className="h-3.5 w-3.5 text-white" />
-                          <span>立即导出自包含离线路书 (.html)</span>
+                          <span>立即导出出游容灾舱 (.html)</span>
                         </button>
 
                         <p className="text-center text-xs text-ink-soft">
-                          双击秒开 · 0 外部网络请求 · 断网也能带走旅行的全部记忆
+                          双击秒开 · 全要素离线封存 · 无信号区域无感保活守护
                         </p>
                       </motion.div>
                     )}
@@ -490,13 +490,13 @@ export function Hero() {
               <div className="hidden sm:flex absolute sm:-top-4 sm:-right-4 rounded-pill border border-ink/[0.08] bg-paper/95 px-3 py-1 sm:px-3.5 sm:py-1.5 shadow-level-float backdrop-blur-md ring-1 ring-ink/[0.04] z-20 items-center gap-1">
                 <ZapIcon className="h-3 w-3 text-gold" />
                 <span className="font-mono text-xs font-bold text-gold-ink tabular-nums">14ms</span>
-                <span className="text-xs font-medium text-ink">纯前端秒级重算</span>
+                <span className="text-xs font-medium text-ink">毫秒级协同调度</span>
               </div>
 
               <div className="hidden sm:flex absolute sm:-bottom-4 sm:-left-4 rounded-pill border border-ink/[0.08] bg-paper/95 px-3 py-1 sm:px-3.5 sm:py-1.5 shadow-level-float backdrop-blur-md ring-1 ring-ink/[0.04] z-20 items-center gap-1">
                 <ShieldIcon className="h-3.5 w-3.5 text-emerald-600" />
                 <span className="text-xs font-medium text-ink">
-                  100% 本地隐私 · 离线全穿透
+                  多端实时同频 · 无人区无感守护
                 </span>
               </div>
             </motion.div>

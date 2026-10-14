@@ -5,7 +5,21 @@ import { qrPath } from '@/data/trip';
 import { ease, useFade, useRange, useScrollTypewriter, useStep, useVisibility } from '@/lib/motion';
 import { T } from './timeline';
 import { Avatar, FakeCursor, Reveal, useLayout, useProgress } from './primitives';
-import { PinIcon, UtensilsIcon, HotelIcon, SearchIcon, CheckIcon, ShieldIcon } from '@/components/common/Icons';
+import {
+  PinIcon,
+  UtensilsIcon,
+  HotelIcon,
+  SearchIcon,
+  CheckIcon,
+  ShieldIcon,
+  SparklesIcon,
+  CompassIcon,
+  FlameIcon,
+  RadioIcon,
+  CommandIcon,
+  ShareIcon,
+  SmartphoneIcon,
+} from '@/components/common/Icons';
 
 const QR = qrPath();
 
@@ -13,7 +27,7 @@ const QR = qrPath();
 export function MacTrafficLights() {
   return (
     <div
-      className="group/traffic flex shrink-0 items-center gap-2 select-none py-1 pr-1.5 sm:pr-2.5"
+      className="group/traffic flex shrink-0 items-center gap-1.5 sm:gap-2 select-none py-1 pr-1.5 sm:pr-2.5"
       role="group"
       aria-label="macOS 窗口控制"
     >
@@ -71,7 +85,7 @@ export function MacTrafficLights() {
   );
 }
 
-/* ═════════════════════ 窗口顶栏 ═════════════════════ */
+/* ═════════════════════ App 原生界面顶栏 (In-App Master Header) ═════════════════════ */
 export function Topbar() {
   const p = useProgress();
   const named = useFade(p, T.timelineIn[0], T.timelineIn[1]);
@@ -80,69 +94,155 @@ export function Topbar() {
   const sharePress = useRange(p, [T.shareClick - 0.003, T.shareClick, T.shareClick + 0.003], [1, 0.9, 1]);
 
   return (
-    <header className="relative z-30 flex h-12 shrink-0 items-center gap-2 sm:gap-3 border-b border-ink/[0.08] bg-paper/40 backdrop-blur-md px-3.5 md:h-14 md:px-5">
+    <header className="relative z-30 flex h-12 shrink-0 items-center justify-between gap-1.5 sm:gap-2.5 border-b border-ink/[0.08] bg-paper/70 backdrop-blur-md px-2.5 sm:px-4 md:h-13">
       {/* 顶部微高光反光层 */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/90 to-transparent" />
-      <MacTrafficLights />
-      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-control bg-gradient-to-br from-gold via-gold-ink to-ink font-serif text-sm font-bold text-paper shadow-level-static ring-1 ring-gold/40">旅</span>
-      <div className="relative h-5 min-w-0 flex-1 overflow-hidden text-xs font-semibold text-ink md:text-sm">
-        <motion.span className="absolute inset-0 truncate" style={{ opacity: draft }}>
-          新的旅行 <span className="font-normal text-ink-soft">· 对话中</span>
-        </motion.span>
-        <motion.span className="absolute inset-0 truncate" style={{ opacity: named }}>
-          西行计划 <span className="hidden font-normal text-ink-soft sm:inline">· 丝路自驾路书</span>
-        </motion.span>
+
+      {/* 左侧：macOS 交通灯 + TripCraft 原生 App 标识与面包屑路径 */}
+      <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+        <MacTrafficLights />
+        <div className="flex items-center gap-1.5 pl-1 pr-1.5 sm:pr-2 border-r border-ink/10">
+          <span className="flex h-5 w-5 sm:h-6 sm:w-6 shrink-0 items-center justify-center rounded-control bg-gradient-to-br from-gold via-gold-ink to-ink font-serif text-[11px] sm:text-xs font-bold text-paper shadow-level-static ring-1 ring-gold/40">
+            旅
+          </span>
+          <span className="font-serif font-bold text-xs tracking-tight text-ink hidden xs:inline">TripCraft</span>
+        </div>
+
+        {/* 动态项目导航面包屑 */}
+        <div className="relative h-5 min-w-0 flex-1 overflow-hidden text-xs font-medium text-ink flex items-center">
+          <motion.div className="truncate flex items-center gap-1" style={{ opacity: draft }}>
+            <span className="font-semibold text-ink">新的旅行</span>
+            <span className="chip rounded-pill bg-gold/15 text-gold-ink text-[10px] px-1.5 py-0 font-medium">规划中</span>
+          </motion.div>
+          <motion.div className="absolute inset-0 truncate flex items-center gap-1" style={{ opacity: named }}>
+            <span className="font-semibold text-ink">西行计划</span>
+            <span className="hidden lg:inline text-ink-soft text-[11px]">· 9D 丝路自驾 (腾势 D9)</span>
+          </motion.div>
+        </div>
       </div>
 
-      <MultiDeviceSyncBadge />
-      <OfflinePouchBadge />
-      <VersionBadge />
+      {/* 中间：App 内部业务模式切换器（随剧情进度高亮对应模块，体现真实 App 操作台质感） */}
+      <InAppModuleSwitcher />
 
-      <AvatarStack />
+      {/* 右侧：多端同频、离线容灾状态、版本、协作成员与邀请按钮 */}
+      <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+        <CommandPaletteBadge />
+        <MultiDeviceSyncBadge />
+        <DisasterRecoveryBadge />
+        <VersionBadge />
 
-      <motion.span
-        className="btn-primary relative flex h-8 items-center gap-1.5 rounded-pill px-3 text-xs font-semibold shadow-level-static hover:shadow-level-hover"
-        style={{ scale: sharePress }}
-      >
-        <motion.span className="absolute inset-0 rounded-pill shadow-glow" style={{ opacity: shareGlow }} />
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" className="relative">
-          <path d="M12 3v12M7 8l5-5 5 5M5 14v5a2 2 0 002 2h10a2 2 0 002-2v-5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        <span className="relative hidden sm:inline">邀请</span>
-      </motion.span>
-      <FakeCursor times={[T.shareCursor[0], T.shareCursor[1]]} xs={[78, 95]} ys={[260, 55]} clickAt={T.shareClick} />
+        <AvatarStack />
+
+        {/* 邀请好友加入按钮 */}
+        <motion.button
+          type="button"
+          aria-label="邀请同行人加入协作"
+          className="btn-primary relative flex h-7 sm:h-8 items-center gap-1 sm:gap-1.5 rounded-pill px-2.5 sm:px-3 text-xs font-semibold shadow-level-static hover:shadow-level-hover"
+          style={{ scale: sharePress }}
+        >
+          <motion.span className="absolute inset-0 rounded-pill shadow-glow" style={{ opacity: shareGlow }} />
+          <ShareIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+          <span className="relative hidden sm:inline">邀请</span>
+        </motion.button>
+        <FakeCursor times={[T.shareCursor[0], T.shareCursor[1]]} xs={[78, 95]} ys={[260, 55]} clickAt={T.shareClick} />
+      </div>
     </header>
+  );
+}
+
+/* ── App 原生模式切换胶囊（智能规划 / 路线沙盘 / 愿望池 / 智驾流转） ── */
+function InAppModuleSwitcher() {
+  const p = useProgress();
+  // 0=智能规划(Ch1), 1=路线沙盘(Ch2), 2=愿望池共创(Ch3), 3=路线编排(Ch4), 4=多端同频(Ch5)
+  const activeStep = useStep(p, [0.20, 0.42, 0.62, 0.84]);
+
+  const tabs = [
+    { id: 'chat', label: '智能规划', icon: SparklesIcon, activeIn: [0] },
+    { id: 'route', label: '路线沙盘', icon: CompassIcon, activeIn: [1, 3] },
+    { id: 'pool', label: '愿望池', icon: FlameIcon, activeIn: [2] },
+    { id: 'cockpit', label: '多端同频', icon: RadioIcon, activeIn: [4] },
+  ];
+
+  const currentTab = tabs.find((t) => t.activeIn.includes(activeStep)) || tabs[0];
+  const CurrentIcon = currentTab.icon;
+
+  return (
+    <>
+      {/* 桌面端：完整四模块胶囊切换器 */}
+      <nav
+        aria-label="TripCraft 模块导航"
+        className="hidden md:flex items-center rounded-pill bg-ink/[0.04] p-0.5 border border-ink/[0.06] text-xs font-medium"
+      >
+        {tabs.map((tab) => {
+          const isActive = tab.activeIn.includes(activeStep);
+          const Icon = tab.icon;
+          return (
+            <span
+              key={tab.id}
+              className={`flex items-center gap-1 rounded-pill px-2.5 py-1 text-[11px] transition-all duration-300 ${
+                isActive
+                  ? 'bg-paper text-ink font-semibold shadow-level-static ring-1 ring-ink/10'
+                  : 'text-ink-soft hover:text-ink'
+              }`}
+            >
+              <Icon className={`h-3 w-3 ${isActive ? 'text-gold' : 'text-ink-soft'}`} />
+              <span>{tab.label}</span>
+            </span>
+          );
+        })}
+      </nav>
+
+      {/* 移动端：根据剧情自动流转的紧凑模式徽标 */}
+      <div className="flex md:hidden items-center gap-1 rounded-pill bg-paper px-2 py-0.5 border border-ink/[0.08] shadow-level-static text-[10px] font-semibold text-ink">
+        <CurrentIcon className="h-2.5 w-2.5 text-gold shrink-0" />
+        <span className="truncate max-w-[68px]">{currentTab.label}</span>
+      </div>
+    </>
+  );
+}
+
+function CommandPaletteBadge() {
+  return (
+    <span
+      title="全局指令面板 (⌘K)"
+      className="hidden xl:inline-flex items-center gap-1 rounded-control border border-ink/[0.08] bg-ink/[0.03] px-2 py-0.5 text-[10px] font-mono text-ink-soft"
+    >
+      <CommandIcon className="h-2.5 w-2.5" />
+      <span>K</span>
+    </span>
   );
 }
 
 function MultiDeviceSyncBadge() {
   const p = useProgress();
-  const opacity = useFade(p, 0.84, 0.854);
+  const opacity = useFade(p, 0.42, 0.435);
+  const isCh5 = useStep(p, [0.84]) === 1;
   return (
     <motion.span
-      className="hidden items-center gap-1.5 rounded-pill border border-jade/30 bg-jade/10 px-2 py-0.5 text-xs font-medium text-jade md:inline-flex"
+      className="hidden items-center gap-1 rounded-pill border border-jade/30 bg-jade/10 px-2 py-0.5 text-[11px] font-medium text-jade md:inline-flex"
       style={{ opacity }}
+      title="多端云同频 · 极速双向同步"
     >
-      <span className="relative flex h-2 w-2">
+      <span className="relative flex h-1.5 w-1.5">
         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-jade opacity-75" />
-        <span className="relative inline-flex h-2 w-2 rounded-full bg-jade" />
+        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-jade" />
       </span>
-      <span className="font-mono text-xs">3端同频</span>
+      <span className="font-mono text-[10px]">{isCh5 ? '3端+车机同频' : '3端云同频'}</span>
     </motion.span>
   );
 }
 
-function OfflinePouchBadge() {
+function DisasterRecoveryBadge() {
   const p = useProgress();
   const opacity = useFade(p, T.timelineIn[1], T.timelineIn[1] + 0.02);
   return (
     <motion.span
-      className="hidden items-center gap-1 rounded-pill border border-gold/30 bg-gold/10 px-2 py-0.5 text-xs font-medium text-gold-ink lg:inline-flex"
+      className="hidden items-center gap-1 rounded-pill border border-gold/30 bg-gold/10 px-2 py-0.5 text-[11px] font-medium text-gold-ink xl:inline-flex"
       style={{ opacity }}
-      title="单文件 1.8MB 随身离线兜底 · 零外部网络依赖"
+      title="多端云同频极速同步 · 无人区离线容灾就绪"
     >
       <ShieldIcon className="h-3 w-3 text-gold-ink" />
-      <span>离线锦囊</span>
+      <span className="font-mono text-[10px]">离线容灾防护</span>
     </motion.span>
   );
 }
@@ -154,7 +254,9 @@ function VersionBadge() {
   const verPulse = useRange(p, [T.version, T.version + 0.004, T.version + 0.016], [1, 1.18, 1], { rest: 1 });
   return (
     <motion.span
-      className={`chip rounded-pill hidden px-2 py-0.5 font-mono tabular-nums text-xs border transition-colors duration-500 sm:inline-flex ${ver ? 'bg-jade/10 text-jade border-jade/30' : 'bg-ink/[0.05] text-ink-soft border-ink/[0.08]'}`}
+      className={`chip rounded-pill hidden px-1.5 py-0 font-mono tabular-nums text-[10px] border transition-colors duration-500 sm:inline-flex ${
+        ver ? 'bg-jade/10 text-jade border-jade/30 font-semibold' : 'bg-ink/[0.05] text-ink-soft border-ink/[0.08]'
+      }`}
       style={{ opacity: verOpacity, scale: verPulse }}
     >
       {ver ? 'v1.1' : 'v1.0'}
@@ -165,7 +267,7 @@ function VersionBadge() {
 function AvatarStack() {
   return (
     <div className="flex items-center">
-      <Avatar name="我" tone="gold" size={28} />
+      <Avatar name="我" tone="gold" size={24} />
       <JoiningAvatar name="阿杰" tone="jade" range={T.joinAJie} />
       <JoiningAvatar name="小雨" tone="lapis" range={T.joinXiaoyu} />
     </div>
@@ -174,14 +276,14 @@ function AvatarStack() {
 
 function JoiningAvatar({ name, tone, range }: { name: string; tone: 'jade' | 'lapis'; range: readonly [number, number] }) {
   const p = useProgress();
-  const width = useRange(p, [range[0], range[1]], [0, 20]);
+  const width = useRange(p, [range[0], range[1]], [0, 18]);
   const scale = useRange(p, [range[0], range[1]], [0, 1], { easing: ease.back });
   const halo = useRange(p, [range[1], range[1] + 0.006, range[1] + 0.03], [0, 1, 0.35]);
   return (
-    <motion.span className="relative flex h-7 justify-end" style={{ width }}>
+    <motion.span className="relative flex h-6 justify-end" style={{ width }}>
       <motion.span className="relative" style={{ scale }}>
         <motion.span className={`absolute -inset-1 rounded-full ${tone === 'jade' ? 'bg-jade/40' : 'bg-lapis/40'} blur-[3px]`} style={{ opacity: halo }} />
-        <Avatar name={name} tone={tone} size={28} className="relative" />
+        <Avatar name={name} tone={tone} size={24} className="relative" />
       </motion.span>
     </motion.span>
   );
@@ -199,22 +301,44 @@ export function ShareSheet() {
     <motion.div
       className="glass-strong absolute right-3 top-2 z-40 w-[min(320px,calc(100%-1.5rem))] rounded-card border border-ink/[0.08] p-4 shadow-level-float gpu-layer [contain:layout_paint]"
       style={{ opacity, y, scale, visibility }}
+      role="dialog"
+      aria-label="邀请同行人加入路书协同"
     >
-      <p className="text-sm font-semibold text-ink">邀请同行的人</p>
-      <p className="mt-0.5 text-xs text-ink-soft">免注册 · 微信扫码即加入 · 7 天有效</p>
+      <div className="flex items-center justify-between pb-1 border-b border-ink/[0.06]">
+        <p className="text-sm font-semibold text-ink flex items-center gap-1.5">
+          <SmartphoneIcon className="h-4 w-4 text-gold" />
+          <span>邀请同行人实时协同</span>
+        </p>
+        <span className="chip rounded-pill bg-jade/10 text-jade text-[10px] px-1.5 py-0 font-medium">微信免登</span>
+      </div>
+      <p className="mt-1 text-xs text-ink-soft">免注册 · 微信扫码即加入 · 权限受控</p>
+
       <div className="mt-3 flex gap-3">
         <div className="relative rounded-control bg-paper p-2 border border-ink/[0.08] shadow-level-static">
-          <svg viewBox="-1 -1 27 27" className="h-24 w-24" shapeRendering="crispEdges" aria-label="邀请二维码（演示）">
+          <svg viewBox="-1 -1 27 27" className="h-22 w-22" shapeRendering="crispEdges" aria-label="邀请二维码（演示）">
             <path d={QR} fill="rgb(58 46 31)" />
           </svg>
-          <span className="absolute left-1/2 top-1/2 flex h-7 w-7 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-control bg-gradient-to-br from-gold to-ochre font-serif text-xs font-bold text-paper ring-2 ring-paper">旅</span>
+          <span className="absolute left-1/2 top-1/2 flex h-6 w-6 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-control bg-gradient-to-br from-gold to-ochre font-serif text-[10px] font-bold text-paper ring-2 ring-paper">
+            旅
+          </span>
         </div>
         <div className="flex min-w-0 flex-1 flex-col justify-between text-xs">
-          <span className="truncate rounded-control bg-ink/[0.05] px-2 py-1.5 font-mono tabular-nums text-ink border border-ink/[0.08]">tc.trip/j/西行-7QX</span>
-          <div className="flex flex-col gap-1 text-ink-soft">
-            <span className="flex items-center gap-1"><CheckIcon className="h-3 w-3 text-jade shrink-0" /> 可提名景点 / 美食</span>
-            <span className="flex items-center gap-1"><CheckIcon className="h-3 w-3 text-jade shrink-0" /> 可评论与投票</span>
-            <span className="flex items-center gap-1"><CheckIcon className="h-3 w-3 text-jade shrink-0" /> 改路线需领队确认</span>
+          <span className="truncate rounded-control bg-ink/[0.05] px-2 py-1 font-mono tabular-nums text-ink border border-ink/[0.08] text-[11px]">
+            tc.trip/j/西行-7QX
+          </span>
+          <div className="flex flex-col gap-1 text-ink-soft text-[11px]">
+            <span className="flex items-center gap-1">
+              <CheckIcon className="h-3 w-3 text-jade shrink-0" />
+              <span>微信扫码免登 · 3 人实时同频</span>
+            </span>
+            <span className="flex items-center gap-1">
+              <CheckIcon className="h-3 w-3 text-jade shrink-0" />
+              <span>愿望池自由提名与点赞投票</span>
+            </span>
+            <span className="flex items-center gap-1 text-gold-ink font-medium">
+              <ShieldIcon className="h-3 w-3 text-gold-ink shrink-0" />
+              <span>路线变更领队确认 · 车机秒级流转</span>
+            </span>
           </div>
         </div>
       </div>
@@ -222,18 +346,18 @@ export function ShareSheet() {
   );
 }
 
-/* ═════════════════════ 手机模拟：好友扫码加入 ═════════════════════ */
+/* ═════════════════════ 手机模拟：高保真好友扫码与随身协同端 ═════════════════════ */
 export function PhoneMock() {
   const p = useProgress();
   const [a, b, c, d] = T.phoneIn;
   const visibility = useVisibility(p, a - 0.005, d + 0.005);
   const opacity = useFade(p, a, b, c, d);
   const y = useRange(p, [a, b, c, d], [120, 0, 0, 80], { easing: ease.out, rest: 0 });
-  const rotate = useRange(p, [a, b], [10, -4], { rest: -4 });
+  const rotate = useRange(p, [a, b], [8, -3], { rest: -3 });
   const tap = useRange(p, [T.phoneSteps[2] - 0.002, T.phoneSteps[2], T.phoneSteps[2] + 0.008], [0, 0.8, 0]);
   const tapScale = useRange(p, [T.phoneSteps[2], T.phoneSteps[2] + 0.008], [0.4, 1.8]);
 
-  // 纯 MotionValue 状态直写，消除 4 次步骤触发的整屏 Phone 重渲染
+  // 纯 MotionValue 状态切换
   const screen1Opacity = useRange(p, [T.phoneSteps[1] - 0.002, T.phoneSteps[1] + 0.002], [1, 0]);
   const screen2Opacity = useRange(p, [T.phoneSteps[1] - 0.002, T.phoneSteps[1] + 0.002, T.phoneSteps[3] - 0.002, T.phoneSteps[3] + 0.002], [0, 1, 1, 0]);
   const screen3Opacity = useRange(p, [T.phoneSteps[3] - 0.002, T.phoneSteps[3] + 0.002], [0, 1]);
@@ -241,68 +365,111 @@ export function PhoneMock() {
   return (
     <motion.div
       aria-hidden
-      className="pointer-events-none absolute -right-4 bottom-[-12px] z-50 hidden lg:block xl:-right-10 gpu-layer [contain:layout_paint]"
+      className="pointer-events-none absolute right-1 sm:right-3 md:-right-2 lg:-right-6 xl:-right-10 bottom-1 sm:bottom-2 md:bottom-[-8px] z-50 origin-bottom-right scale-[0.74] xs:scale-[0.82] sm:scale-90 md:scale-100 gpu-layer [contain:layout_paint]"
       style={{ opacity, y, rotate, visibility }}
     >
-      <div className="relative h-[380px] w-[188px] rounded-[38px] bg-[#1b1a18] p-[7px] shadow-[0_40px_80px_rgba(0,0,0,0.35)] ring-1 ring-white/10">
-        <div className="relative h-full w-full overflow-hidden rounded-[31px] bg-[#0f1114]">
-          <div className="absolute left-1/2 top-2 z-10 h-5 w-20 -translate-x-1/2 rounded-full bg-black" />
-          {/* 0~1: 扫码取景 */}
-          <motion.div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none" style={{ opacity: screen1Opacity }}>
-            <p className="mb-4 text-xs font-medium text-white/80">扫一扫</p>
-            <div className="relative h-32 w-32">
+      {/* 现代智能手机高保真外壳 */}
+      <div className="relative h-[390px] w-[195px] rounded-[38px] bg-[#1a1c23] p-[7px] shadow-[0_32px_70px_rgba(15,23,42,0.38)] ring-1 ring-white/15">
+        <div className="relative h-full w-full overflow-hidden rounded-[31px] bg-[#0c0e14] text-white">
+          {/* 顶部灵动岛与状态栏 */}
+          <div className="absolute inset-x-0 top-0 z-30 flex h-7 items-center justify-between px-3 text-[9px] font-mono">
+            <span className="font-semibold text-white/90">20:00</span>
+            <div className="absolute left-1/2 top-1.5 h-3.5 w-16 -translate-x-1/2 rounded-full bg-black ring-1 ring-white/10" />
+            <span className="text-white/70">5G · 98%</span>
+          </div>
+
+          {/* 状态 1: 微信扫码取景器 */}
+          <motion.div className="absolute inset-0 flex flex-col items-center justify-center p-3 pt-6 pointer-events-none" style={{ opacity: screen1Opacity }}>
+            <p className="mb-2 text-[11px] font-medium text-white/80">微信扫一扫 · 免登加入</p>
+            <div className="relative h-28 w-28">
               {['left-0 top-0 border-l-2 border-t-2', 'right-0 top-0 border-r-2 border-t-2', 'left-0 bottom-0 border-l-2 border-b-2', 'right-0 bottom-0 border-r-2 border-b-2'].map((c) => (
-                <span key={c} className={`absolute h-5 w-5 border-[#2fd18b] ${c}`} />
+                <span key={c} className={`absolute h-4 w-4 border-[#2fd18b] ${c}`} />
               ))}
-              <svg viewBox="-1 -1 27 27" className="absolute inset-4 opacity-70" shapeRendering="crispEdges">
-                <path d={QR} fill="#e8e3d8" />
+              <svg viewBox="-1 -1 27 27" className="absolute inset-3 opacity-60" shapeRendering="crispEdges">
+                <path d={QR} fill="#ffffff" />
               </svg>
-              <span className="absolute inset-x-2 top-0 h-full">
+              <span className="absolute inset-x-1 top-0 h-full">
                 <span className="block h-0.5 w-full animate-scanline bg-gradient-to-r from-transparent via-[#2fd18b] to-transparent shadow-[0_0_12px_#2fd18b]" />
               </span>
             </div>
-            <p className="mt-4 text-xs text-white/60">将二维码放入框内</p>
+            <p className="mt-3 text-[10px] text-white/60">已识别: 西行计划协同空间</p>
           </motion.div>
-          {/* 2~3: 邀请卡 */}
-          <motion.div className="absolute inset-0 flex flex-col bg-sand p-4 pt-10 pointer-events-none" style={{ opacity: screen2Opacity }}>
-            <div className="h-24 rounded-control bg-gradient-to-br from-dusk via-gold to-ochre p-3 text-paper">
-              <p className="text-xs opacity-90">你被邀请加入</p>
-              <p className="mt-1 font-serif text-lg font-bold leading-tight">西行计划</p>
-              <p className="text-xs opacity-90">9 天 · 河西走廊 · 7座 MPV</p>
+
+          {/* 状态 2: 微信小程序入队邀请卡 */}
+          <motion.div className="absolute inset-0 flex flex-col bg-sand p-3 pt-8 text-ink pointer-events-none" style={{ opacity: screen2Opacity }}>
+            <div className="rounded-control bg-gradient-to-br from-blue-950 via-slate-900 to-blue-900 p-2.5 text-paper shadow-level-static">
+              <span className="chip rounded-pill bg-gold/25 text-gold text-[9px] px-1.5 py-0 font-medium">TripCraft 微信协同</span>
+              <p className="mt-1 font-serif text-base font-bold leading-tight text-white">西行计划</p>
+              <p className="text-[10px] text-slate-300">9 天 · 河西走廊 · 7座 MPV</p>
             </div>
-            <div className="mt-3 flex items-center gap-1.5 text-xs text-ink-soft">
-              <Avatar name="我" tone="gold" size={18} /> 来自领队 · 已有 3 人
+            <div className="mt-2.5 flex items-center gap-1.5 text-[11px] text-ink-soft">
+              <Avatar name="我" tone="gold" size={18} />
+              <span>来自领队邀请 · 3 人协同在线</span>
             </div>
-            <p className="mt-3 text-xs leading-relaxed text-ink-soft">无需注册与密码，加入后可提名想去的景点和想吃的店。</p>
-            <div className="relative mt-auto">
-              <span className="flex h-10 items-center justify-center rounded-control text-xs font-semibold text-paper bg-jade shadow-level-static">
-                加入行程（免注册）
+            <p className="mt-2 text-[10px] leading-relaxed text-ink-soft">免注册免密码，微信扫码秒入，愿望池自由提名与点赞投票，中控秒级同频。</p>
+            <div className="relative mt-auto pb-1">
+              <span className="flex h-9 items-center justify-center rounded-control text-xs font-semibold text-paper bg-jade shadow-level-static">
+                一键加入行程 (微信免登)
               </span>
-              <motion.span className="absolute left-1/2 top-1/2 -ml-4 -mt-4 h-8 w-8 rounded-full bg-white" style={{ opacity: tap, scale: tapScale }} />
+              <motion.span className="absolute left-1/2 top-1/2 -ml-3.5 -mt-3.5 h-7 w-7 rounded-full bg-white" style={{ opacity: tap, scale: tapScale }} />
             </div>
           </motion.div>
-          {/* 4: 已加入 */}
-          <motion.div className="absolute inset-0 flex flex-col items-center justify-center bg-sand pointer-events-none" style={{ opacity: screen3Opacity }}>
-            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-jade text-paper shadow-level-static">
-              <CheckIcon className="h-7 w-7" />
-            </span>
-            <p className="mt-3 text-sm font-semibold text-ink">阿杰，欢迎上车</p>
-            <p className="mt-1 text-xs text-ink-soft">正在打开路书…</p>
+
+          {/* 状态 3: TripCraft 移动端原生路书界面 */}
+          <motion.div className="absolute inset-0 flex flex-col bg-sand text-ink pointer-events-none" style={{ opacity: screen3Opacity }}>
+            {/* 移动端 App 顶栏 */}
+            <div className="flex items-center justify-between border-b border-ink/[0.08] bg-paper px-3 pt-8 pb-1.5">
+              <div className="flex items-center gap-1.5">
+                <span className="h-4 w-4 rounded bg-gold text-paper flex items-center justify-center text-[9px] font-bold">旅</span>
+                <span className="text-[11px] font-bold text-ink">TripCraft 随身路书</span>
+              </div>
+              <span className="chip rounded-pill bg-jade/15 text-jade text-[9px] px-1 py-0 font-medium">● 实时同频</span>
+            </div>
+
+            {/* 欢迎加入与操作提示 */}
+            <div className="p-2 space-y-1.5 flex-1 overflow-hidden flex flex-col justify-between">
+              <div className="rounded-control bg-jade/10 p-2 border border-jade/30">
+                <p className="text-[11px] font-bold text-jade flex items-center gap-1">
+                  <CheckIcon className="h-3 w-3" />
+                  <span>阿杰，欢迎上车！</span>
+                </p>
+                <p className="text-[9px] text-ink-soft mt-0.5">全团最新路线已秒级同频 · 离线容灾就绪</p>
+              </div>
+
+              {/* 阿杰正在提名的 POI 卡片 */}
+              <div className="rounded-control bg-paper p-2 border border-gold/40 shadow-level-static">
+                <div className="flex items-center justify-between">
+                  <span className="text-[9px] font-bold text-gold-ink uppercase font-mono">D0 晚间候选</span>
+                  <span className="chip rounded-pill bg-gold/15 text-gold-ink text-[8px] px-1">4.8分</span>
+                </div>
+                <p className="text-[11px] font-bold text-ink mt-0.5 truncate">正宁路夜市 · 牛奶鸡蛋醪糟</p>
+                <p className="text-[9px] text-ink-soft font-mono">距酒店 950m · 步行即达</p>
+                <div className="mt-1.5 flex items-center justify-between border-t border-ink/[0.06] pt-1 text-[8px]">
+                  <span className="text-jade font-medium">✓ 已提交至待决池</span>
+                  <span className="text-ink-soft">待领队一键确认</span>
+                </div>
+              </div>
+
+              {/* 移动端底栏指示 */}
+              <div className="rounded-control bg-ink/[0.04] p-1 text-center text-[8px] font-mono text-ink-soft">
+                ⚡ 多端云协同实时同频 · 微信免登
+              </div>
+            </div>
           </motion.div>
         </div>
       </div>
-      <span className="mt-2 block text-center text-xs font-medium text-ink-soft">阿杰的手机</span>
+      <span className="mt-1 sm:mt-2 block text-center text-[10px] sm:text-xs font-semibold text-ink-soft">副驾阿杰的手机 · 随身协同端</span>
     </motion.div>
   );
 }
 
-/* ═════════════════════ 协同愿望池抽屉 ═════════════════════ */
+/* ═════════════════════ 协同愿望池抽屉 (In-App POI Nomination Drawer) ═════════════════════ */
 const SEARCH = '正宁路夜市';
 const REASON = '上过《舌尖上的中国》，离第一晚酒店走路就到，晚上必须去喝一碗！';
 const SUGGESTIONS = [
-  { name: '赵记牛奶鸡蛋醪糟', meta: '正宁路夜市 · 距 D0 酒店 950m · 评分 4.8' },
+  { name: '赵记牛奶鸡蛋醪糟 (正宗老店)', meta: '正宁路夜市 · 距 D0 酒店 950m · 评分 4.8 · 地面停车畅通' },
   { name: '正宁路烤肉一条街', meta: '正宁路夜市 · 人均 ¥45 · 评分 4.6' },
-  { name: '马子禄牛肉面', meta: '大众巷 · 早餐 · 评分 4.7' },
+  { name: '马子禄牛肉面', meta: '大众巷 · 早餐名店 · 评分 4.7' },
 ];
 
 export function CollabDrawer() {
@@ -324,72 +491,89 @@ export function CollabDrawer() {
   return (
     <motion.aside
       aria-label="协同愿望池"
-      className="glass-strong absolute inset-x-0 bottom-0 z-40 flex h-[86%] flex-col rounded-t-container border border-ink/[0.08] p-4 shadow-level-float md:inset-x-auto md:bottom-3 md:right-3 md:top-3 md:h-auto md:w-[340px] md:rounded-container gpu-layer [contain:layout_paint]"
+      className="glass-strong absolute inset-x-0 bottom-0 z-40 flex h-[82%] sm:h-[86%] flex-col rounded-t-container border border-ink/[0.08] p-3 sm:p-4 shadow-level-float md:inset-x-auto md:bottom-3 md:right-3 md:top-3 md:h-auto md:w-[350px] md:rounded-container gpu-layer [contain:layout_paint]"
       style={{ x: xs, y: ys, opacity, visibility }}
     >
-      <div className="flex items-center gap-2">
-        <span className="font-serif text-base font-semibold text-ink">愿望池</span>
-        <span className="text-xs text-ink-soft">想去的 · 想吃的，先丢进来</span>
+      <div className="flex items-center justify-between border-b border-ink/[0.06] pb-2">
+        <div>
+          <span className="font-serif text-base font-semibold text-ink flex items-center gap-1.5">
+            <FlameIcon className="h-4 w-4 text-gold" />
+            <span>愿望池提名</span>
+          </span>
+          <span className="text-[11px] text-ink-soft">想去的 · 想吃的，全员实时共创</span>
+        </div>
+        <span className="chip rounded-pill bg-jade/10 text-jade text-[10px] px-1.5 py-0 font-medium flex items-center gap-1">
+          <Avatar name="阿杰" tone="jade" size={16} />
+          <span>阿杰正在编辑</span>
+        </span>
       </div>
-      <div className="mt-1 flex items-center gap-1.5 text-xs text-jade">
-        <Avatar name="阿杰" tone="jade" size={18} /> 阿杰 正在添加…
-      </div>
-      <div className="mt-3 flex gap-2">
-        <span className="chip rounded-pill bg-ink/[0.05] text-ink-soft border border-ink/[0.08] inline-flex items-center gap-1">
+
+      {/* 类别筛选 */}
+      <div className="mt-2.5 flex gap-1.5">
+        <span className="chip rounded-pill bg-ink/[0.05] text-ink-soft border border-ink/[0.08] inline-flex items-center gap-1 text-xs">
           <PinIcon className="h-3 w-3 text-gold" />
           <span>景点</span>
         </span>
-        <span className="chip rounded-pill bg-ink text-paper shadow-level-static inline-flex items-center gap-1">
+        <span className="chip rounded-pill bg-blue-900 text-paper shadow-level-static inline-flex items-center gap-1 text-xs font-semibold">
           <UtensilsIcon className="h-3 w-3 text-gold" />
-          <span>美食</span>
+          <span>美食 (已选)</span>
         </span>
-        <span className="chip rounded-pill bg-ink/[0.05] text-ink-soft border border-ink/[0.08] inline-flex items-center gap-1">
+        <span className="chip rounded-pill bg-ink/[0.05] text-ink-soft border border-ink/[0.08] inline-flex items-center gap-1 text-xs">
           <HotelIcon className="h-3 w-3 text-ink-soft" />
           <span>住宿</span>
         </span>
       </div>
-      <div className="mt-3 flex h-11 items-center gap-2 rounded-control bg-paper px-3 border border-ink/[0.08] shadow-level-static">
+
+      {/* POI 搜索输入框 */}
+      <div className="mt-2.5 flex h-10 items-center gap-2 rounded-control bg-paper px-3 border border-ink/[0.08] shadow-level-static">
         <SearchIcon className="h-4 w-4 text-ink-soft shrink-0" />
-        <span className="text-sm text-ink">
+        <span className="text-xs sm:text-sm text-ink font-medium">
           <span ref={searchRef}>{SEARCH}</span>
         </span>
         <span className="h-4 w-[2px] animate-caret bg-gold" />
       </div>
 
-      <div className="relative mt-3 min-h-0 flex-1">
+      <div className="relative mt-2.5 min-h-0 flex-1">
         {/* 联想列表：纯 MotionValue 控制显隐 */}
         <motion.ul className="absolute inset-x-0 top-0 flex flex-col gap-1.5 pointer-events-none" style={{ opacity: suggestListOpacity }}>
           <FirstSuggestionItem name={SUGGESTIONS[0].name} meta={SUGGESTIONS[0].meta} />
           {SUGGESTIONS.slice(1).map((s) => (
-            <li key={s.name} className="rounded-control bg-paper/75 px-3 py-2 border border-ink/[0.08] shadow-level-static">
-              <p className="text-xs font-semibold text-ink md:text-sm">{s.name}</p>
-              <p className="text-xs tabular-nums text-ink-soft">{s.meta}</p>
+            <li key={s.name} className="rounded-control bg-paper/75 px-2.5 py-2 border border-ink/[0.08] shadow-level-static">
+              <p className="text-xs font-semibold text-ink">{s.name}</p>
+              <p className="text-[11px] tabular-nums text-ink-soft">{s.meta}</p>
             </li>
           ))}
         </motion.ul>
+
         {/* 已选详情 + 推荐理由：纯 MotionValue 控制显隐 */}
-        <motion.div className="absolute inset-x-0 top-0 flex flex-col gap-2.5 pointer-events-none" style={{ opacity: detailOpacity }}>
-          <div className="flex gap-3 rounded-control bg-paper/85 p-2.5 border border-ink/[0.08] shadow-level-static">
-            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-control bg-gold/15 text-gold-ink">
-              <UtensilsIcon className="h-7 w-7 text-gold-ink" />
+        <motion.div className="absolute inset-x-0 top-0 flex flex-col gap-2 pointer-events-none" style={{ opacity: detailOpacity }}>
+          <div className="flex gap-2.5 rounded-control bg-paper/90 p-2.5 border border-ink/[0.08] shadow-level-static">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-control bg-gold/15 text-gold-ink">
+              <UtensilsIcon className="h-6 w-6 text-gold-ink" />
             </span>
             <span className="min-w-0">
-              <span className="block text-sm font-semibold text-ink">赵记牛奶鸡蛋醪糟</span>
-              <span className="block text-xs tabular-nums text-ink-soft font-mono">正宁路夜市 · 人均 ¥15</span>
-              <span className="mt-1 inline-block rounded-control bg-jade/10 px-1.5 text-xs font-semibold tabular-nums text-jade font-mono">距 D0 酒店 950m</span>
+              <span className="block text-xs sm:text-sm font-semibold text-ink truncate">赵记牛奶鸡蛋醪糟</span>
+              <span className="block text-[11px] tabular-nums text-ink-soft font-mono">正宁路夜市 · 评分 4.8 · 人均 ¥15</span>
+              <span className="mt-0.5 inline-block rounded-control bg-jade/10 px-1.5 text-[10px] font-semibold tabular-nums text-jade font-mono">
+                距 D0 酒店 950m · 步道平坦
+              </span>
             </span>
           </div>
-          <div className="min-h-[72px] rounded-control bg-paper px-3 py-2 text-xs leading-relaxed text-ink border border-ink/[0.08] shadow-level-static md:text-sm">
-            <span className="mb-1 block text-xs font-semibold text-ink-soft">推荐理由</span>
+
+          <div className="min-h-[64px] rounded-control bg-paper px-3 py-2 text-xs leading-relaxed text-ink border border-ink/[0.08] shadow-level-static">
+            <span className="mb-0.5 block text-[10px] font-semibold uppercase tracking-wider text-ink-soft">推荐理由</span>
             <span ref={reasonRef}>{REASON}</span>
           </div>
+
           <CollabSubmitButton />
         </motion.div>
+
         <FakeCursor times={[T.suggestIn[1], T.suggestPick - 0.002]} xs={[80, 40]} ys={[80, 12]} clickAt={T.suggestPick} label="阿杰" />
         <FakeCursor times={[T.reasonType[1] - 0.002, T.submitClick - 0.002]} xs={[85, 60]} ys={[60, 66]} clickAt={T.submitClick} label="阿杰" />
       </div>
-      <Reveal at={[T.drawer[1], T.drawer[1] + 0.006]} y={4} className="pt-3 text-xs text-ink-soft">
-        提名进入「待决池」，不会直接改动路线 · 由领队与算法共同编排
+
+      <Reveal at={[T.drawer[1], T.drawer[1] + 0.006]} y={4} className="pt-2 text-[11px] text-ink-soft border-t border-ink/[0.06]">
+        提名进入「愿望池」实时广播 · 经算法顺路重排，由领队一键确认生效
       </Reveal>
     </motion.aside>
   );
@@ -400,10 +584,12 @@ function FirstSuggestionItem({ name, meta }: { name: string; meta: string }) {
   const picked = useStep(p, [T.suggestPick]) === 1;
   return (
     <li
-      className={`rounded-control px-3 py-2 border transition-colors duration-200 ${picked ? 'bg-gold/15 border-gold/50 shadow-level-static' : 'border-ink/[0.08] bg-paper/75'}`}
+      className={`rounded-control px-2.5 py-2 border transition-colors duration-200 ${
+        picked ? 'bg-gold/15 border-gold/50 shadow-level-static' : 'border-ink/[0.08] bg-paper/75'
+      }`}
     >
-      <p className="text-xs font-semibold text-ink md:text-sm">{name}</p>
-      <p className="text-xs tabular-nums text-ink-soft">{meta}</p>
+      <p className="text-xs font-semibold text-ink">{name}</p>
+      <p className="text-[11px] tabular-nums text-ink-soft">{meta}</p>
     </li>
   );
 }
@@ -414,7 +600,9 @@ function CollabSubmitButton() {
   const submitted = useStep(p, [T.submitClick + 0.001]) === 1;
   return (
     <motion.span
-      className={`btn-primary flex h-11 items-center justify-center gap-1.5 rounded-control text-sm font-semibold shadow-level-hover ${submitted ? 'bg-jade text-paper shadow-level-static' : ''}`}
+      className={`btn-primary flex h-10 items-center justify-center gap-1.5 rounded-control text-xs sm:text-sm font-semibold shadow-level-hover ${
+        submitted ? 'bg-jade text-paper shadow-level-static' : ''
+      }`}
       style={{ scale: submitPress }}
     >
       {submitted ? (

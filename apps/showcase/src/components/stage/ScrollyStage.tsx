@@ -10,7 +10,7 @@ import { Workspace } from './Workspace';
 import { CollabDrawer, PhoneMock, ShareSheet, Topbar } from './Collab';
 import { Backdrop, RecommendModal, StageToasts } from './Recommend';
 import { DeliverScene } from './Deliver';
-import { PlayIcon, PauseIcon, RotateCcwIcon } from '@/components/common/Icons';
+import { PlayIcon, PauseIcon, RotateCcwIcon, TerminalIcon, DatabaseIcon, ShieldIcon } from '@/components/common/Icons';
 
 /**
  * 核心视差滚动演示区（SHOWCASE §4）
@@ -528,7 +528,7 @@ function StageBackdrop() {
 /* ── 章节标题（Apple 式大字幕） ───────────────────────────── */
 function Captions() {
   return (
-    <div className="relative h-[7.25rem] shrink-0 md:h-[8.25rem]">
+    <div className="relative h-[4.75rem] shrink-0 sm:h-[6rem] md:h-[8.25rem]">
       {CHAPTERS.map((c, i) => (
         <Caption key={c.id} chapter={c} first={i === 0} last={i === CHAPTERS.length - 1} />
       ))}
@@ -558,8 +558,8 @@ function Caption({ chapter, first, last }: { chapter: Chapter; first: boolean; l
       aria-hidden={false}
     >
       <p className="eyebrow text-blue-900 font-semibold">{chapter.eyebrow}</p>
-      <h2 className="mt-2 text-balance font-sans text-2xl font-bold leading-[1.3] text-ink sm:text-3xl md:text-4xl lg:text-[2.5rem]">{chapter.title}</h2>
-      <p className="mt-2 max-w-2xl text-pretty text-xs leading-relaxed text-ink-soft md:text-sm">{chapter.desc}</p>
+      <h2 className="mt-1 sm:mt-2 text-balance font-sans text-xl sm:text-2xl md:text-3xl lg:text-[2.5rem] font-bold leading-[1.25] sm:leading-[1.3] text-ink">{chapter.title}</h2>
+      <p className="mt-1 sm:mt-2 max-w-2xl text-pretty text-[11px] sm:text-xs md:text-sm leading-tight sm:leading-relaxed text-ink-soft line-clamp-2 md:line-clamp-none">{chapter.desc}</p>
     </motion.div>
   );
 }
@@ -572,7 +572,7 @@ function StageWindow() {
 
   return (
     <motion.div
-      className="glass-strong glass-sheen macos-window absolute inset-x-0 top-0 mx-auto flex h-full max-h-[720px] w-full max-w-[1180px] flex-col overflow-hidden rounded-container shadow-level-float gpu-layer [contain:layout_paint] bg-[#FAF8F5]/95"
+      className="glass-strong glass-sheen macos-window absolute inset-x-0 top-0 mx-auto flex h-full max-h-[720px] w-full max-w-[1180px] flex-col overflow-hidden rounded-xl sm:rounded-container shadow-level-float gpu-layer [contain:layout_paint] bg-[#FAF8F5]/98"
       style={{ scale, opacity }}
     >
       <Topbar />
@@ -585,7 +585,68 @@ function StageWindow() {
         <RecommendModal />
         <StageToasts />
       </div>
+      <InAppStatusBar />
     </motion.div>
+  );
+}
+
+/* ── App 原生底栏遥测状态栏 (In-App Master Footer Telemetry Bar) ── */
+function InAppStatusBar() {
+  const p = useProgress();
+  const chapterStep = useStep(p, [0.20, 0.42, 0.62, 0.84]);
+  const isV11 = useStep(p, [T.version]) === 1;
+  const isDelivery = chapterStep === 4;
+
+  const telemetry = [
+    { text: '智能语义解析: 提取 5 人自驾意图 · 适老适幼与 MPV 规则契约锁死', badge: 'AI 规则引擎' },
+    { text: 'GIS 拓扑沙盘: 38.05°N, 102.64°E · G30 连霍高速 (1,980km 贯通)', badge: '拓扑沙盘' },
+    { text: '团队实时协同网: 3 端同频在线 · 微信免登免密极速入队 · 愿望池广播', badge: '多端同频' },
+    { text: '协同重排调度引擎: 顺路度 98% · 领队一键确认 · 全团毫秒广播', badge: '共创决策' },
+    { text: '车路云协同流转: 腾势 D9 巡航导航与 2.15m 限高预案已推车机 · 无人区离线舱就绪', badge: '车机流转' },
+  ][chapterStep] || { text: '云协同网络已就绪 · 全团毫秒同频', badge: '云协同' };
+
+  return (
+    <footer className="relative z-30 flex h-6 sm:h-7 shrink-0 items-center justify-between border-t border-ink/[0.08] bg-paper/85 px-2.5 sm:px-4 text-[9px] sm:text-[10px] font-mono text-ink-soft select-none backdrop-blur-md">
+      {/* 左侧：云协同网络已连接 + 弱网/无人区离线乐观保活 + 版本分支 */}
+      <div className="flex items-center gap-1.5 sm:gap-2.5">
+        <span className="flex items-center gap-1 font-semibold text-jade">
+          <span className="h-1.5 w-1.5 animate-breathe rounded-full bg-jade" />
+          <span className="hidden xs:inline">云协同网络已连接</span>
+          <span className="xs:hidden">云协同已连</span>
+          <span className="text-ink-soft font-normal text-[9px] hidden lg:inline">(双向加密 · 18ms)</span>
+        </span>
+        <span className="text-ink/20 hidden xs:inline">|</span>
+        <span className="text-gold-ink font-medium hidden sm:inline-flex items-center gap-0.5">
+          <span>{isDelivery ? '⚡ 离线无感切换' : '⚡ 离线乐观保活'}</span>
+        </span>
+        <span className="text-ink/20">|</span>
+        <span className="font-medium text-ink flex items-center gap-1">
+          <span className="text-gold-ink font-bold">git:</span>
+          <span>{isV11 ? '西行计划-v1.1' : '西行计划-v1.0'}</span>
+        </span>
+      </div>
+
+      {/* 中间：根据当前章节动态遥测的主控状态 */}
+      <div className="hidden md:flex items-center gap-1.5 text-ink">
+        <TerminalIcon className="h-2.5 w-2.5 text-gold-ink shrink-0" />
+        <span className="truncate max-w-[380px] lg:max-w-[480px]">{telemetry.text}</span>
+        <span className="chip rounded-pill bg-ink/[0.05] text-ink-soft text-[8px] px-1 py-0">{telemetry.badge}</span>
+      </div>
+
+      {/* 右侧：无人区离线舱/容灾包 + 契约校验 + 视图比例 */}
+      <div className="flex items-center gap-1.5 sm:gap-2">
+        <span className="text-gold-ink font-semibold flex items-center gap-0.5">
+          <ShieldIcon className="h-2.5 w-2.5 text-gold-ink" />
+          <span>无人区离线舱已就绪</span>
+        </span>
+        <span className="text-ink/20 hidden sm:inline">|</span>
+        <span className="text-jade font-semibold hidden sm:inline-flex items-center gap-0.5">
+          <span>契约校验对齐</span>
+        </span>
+        <span className="text-ink/20 hidden xs:inline">|</span>
+        <span className="hidden xs:inline text-ink-soft">100%</span>
+      </div>
+    </footer>
   );
 }
 

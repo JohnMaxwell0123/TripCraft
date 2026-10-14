@@ -33,7 +33,7 @@ const PILLARS: Pillar[] = [
     enTitle: 'Extreme Network Resilience & Local Sovereignty',
     quote: '“断网绝非异常，而是荒野自驾探索中的物理常态。”',
     summary:
-      '用户的行程轨迹、家庭成员证件与照片默认保存在浏览器私有 IndexedDB，计算在 Web Worker 进行。无网弱网下具备 100% 完整阅读与编辑能力，网络恢复时经由 RFC 6902 JSON Patch 增量同步。',
+      '日常多端云协同极速同频；行程轨迹、证件与照片等数据主权端侧受控。无网弱网下自动无感切入离线保活，网络恢复时经由 RFC 6902 JSON Patch 增量同步，无人区从容兜底。',
     highlights: [
       {
         label: '三级容灾降级管道',
@@ -171,18 +171,18 @@ export function assertVehicleClearance(vehicle: VehicleMeta, poi: PoiNode): Asse
   },
   {
     id: 'zero-build-compiler',
-    tag: '单文件秒开 · 座舱协议',
+    tag: '容灾秒开 · 座舱协议',
     number: '04',
-    title: '零构建自包含编译器与座舱互联',
-    shortTitle: '零构建单文件编译',
+    title: '全要素自包含容灾编译器与座舱互联',
+    shortTitle: '自包含容灾编译',
     enTitle: 'Zero-Build Compiler & Tier 0 Cockpit Protocol',
     quote: '“随处可开，零依赖安装，做一件真正能带走的数字化艺术品。”',
     summary:
-      '自研单文件编译器将 9 天完整路书、内联离线矢量图、子集化中文字体与轻量运行时封装为单个 1.8 MB 自包含 HTML。配合极简 Tier 0 座舱深链协议，零 SDK 前装准入直接唤醒车机投屏。',
+      '自研单文件编译器将 9 天完整路书、内联离线矢量图、子集化中文字体与轻量运行时封装为出游容灾舱。配合极简 Tier 0 座舱深链协议，零 SDK 前装准入直接唤醒车机投屏。',
     highlights: [
       {
-        label: '单文件双击秒开 (≤1.8 MB)',
-        desc: '0 外部网络请求、0 npm 运行时依赖。无论戈壁滩还是飞机舱，随时随地双击瞬时呈现。',
+        label: '出游容灾舱双击秒开',
+        desc: '全要素自包含封装，0 运行时安装依赖。无论戈壁滩还是深山无信号区，随时随地双击瞬时呈现，无人区从容兜底。',
       },
       {
         label: 'Tier 0 车机极简唤醒',
@@ -263,7 +263,7 @@ export function TechFoundation() {
         <div className="mt-8 sm:mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
           <div className="glass rounded-card p-3.5 sm:p-5 text-center transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08]">
             <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-blue-900">≤ 1.8 MB</p>
-            <p className="mt-1 text-xs font-semibold text-ink">单文件自包含体积</p>
+            <p className="mt-1 text-xs font-semibold text-ink">出游容灾舱体积</p>
             <p className="text-xs text-ink-soft">含全量矢量图与子集字体</p>
           </div>
           <div className="glass rounded-card p-3.5 sm:p-5 text-center transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08]">
@@ -513,7 +513,7 @@ export function TechFoundation() {
                   {activePillar.interactiveDemoType === 'compiler' && (
                     <div className="mt-3 rounded-control bg-paper p-3 text-xs border border-ink/[0.08] space-y-2">
                       <div className="flex items-center justify-between font-mono text-xs">
-                        <span className="text-ink font-semibold">打包目标: expedition-pro.v1.1.html</span>
+                        <span className="text-ink font-semibold">容灾舱目标: expedition-pro.v1.1.html</span>
                         <span className="text-jade font-bold tabular-nums">1.8 MB (已压缩)</span>
                       </div>
                       <div className="flex flex-wrap items-center gap-2 text-xs text-ink-soft">

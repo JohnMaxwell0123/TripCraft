@@ -4,7 +4,7 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'TripCraft · 旅艺 —— 面向自驾与深度游的智能旅行路书协同中枢',
   description:
-    '通过故事流视差滚动动画 (Apple Scrollytelling)，生动展示 TripCraft 从用户大白话诉求、AI 深度对谈推演、九天可视化路书渐进生成、好友微信免登协同添加美食，到自动路线规划重算推荐与单文件零构建交付的全流程。',
+    '通过故事流视差滚动动画 (Apple Scrollytelling)，生动展示 TripCraft 从用户大白话诉求、AI 深度对谈推演、九天可视化路书渐进生成、三人微信免登协同愿望池、领队一键确认与算法重排，到多端同频车机流转与无人区离线容灾的全流程。',
   keywords: [
     'TripCraft',
     '旅艺',
@@ -15,8 +15,9 @@ export const metadata: Metadata = {
     '甘青大环线',
     '7座豪华MPV',
     '全家自驾关怀',
-    'Local-First',
-    '单文件交付',
+    '车路云协同',
+    '多端实时同频',
+    '无人区离线舱',
   ],
   authors: [{ name: 'TripCraft Team' }],
 };

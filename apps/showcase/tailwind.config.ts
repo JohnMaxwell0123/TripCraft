@@ -11,6 +11,9 @@ const config: Config = {
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      screens: {
+        xs: '420px',
+      },
       colors: {
         sand: withVar('--tc-sand'),
         paper: withVar('--tc-paper'),

@@ -184,6 +184,16 @@ export function RouteMap() {
           <path d="M9 17h6" />
           <circle cx="17" cy="17" r="2" />
         </g>
+        {/* 车标随车微标签：车速与车高限高合规 */}
+        <g transform="translate(18, -12)">
+          <rect x="0" y="0" width="88" height="24" rx="6" fill="rgb(255 252 246)" fillOpacity={0.92} stroke="rgb(31 78 121)" strokeWidth={1} />
+          <text x="6" y="11" fontSize="9" fontWeight={700} fill="rgb(31 78 121)" fontFamily="sans-serif">
+            腾势 D9 · 85km/h
+          </text>
+          <text x="6" y="20" fontSize="8" fontWeight={500} fill="rgb(122 85 32)" fontFamily="sans-serif">
+            限高2.15m 巡航中
+          </text>
+        </g>
       </motion.g>
 
       <VehicleBadges />

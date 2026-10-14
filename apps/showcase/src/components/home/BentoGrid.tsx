@@ -58,20 +58,20 @@ export function BentoGrid() {
 
         {/* Bento Grid */}
         <div className="mt-8 sm:mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* Card 1: 零构建单文件 HTML 秒开沙盒 */}
+          {/* Card 1: 无人区自包含容灾舱秒开沙盒 */}
           <div className="glass-strong rounded-card p-5 sm:p-6 transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08] flex flex-col justify-between min-w-0">
             <div>
               <div className="flex items-center justify-between pb-3 border-b border-ink/[0.06]">
                 <span className="chip bg-jade/15 text-jade font-semibold text-xs ring-1 ring-jade/30">
-                  F-M08-01 交付铁律
+                  F-M08-01 容灾交付
                 </span>
-                <span className="font-mono text-xs text-ink-soft tabular-nums">1.8 MB · 零外部请求</span>
+                <span className="font-mono text-xs text-ink-soft tabular-nums">全要素离线舱 · 秒级直出</span>
               </div>
               <h3 className="mt-4 font-sans text-base sm:text-lg font-bold tracking-tight text-ink">
-                零构建单文件 HTML 秒开
+                无人区自包含容灾舱秒开
               </h3>
               <p className="mt-1 text-xs text-ink-soft leading-relaxed">
-                路书经专属单文件编译器打包为完全自包含的 HTML。无需 Node.js，无需服务器，双击秒开。
+                日常多端实时云端协同，亦可一键封存为全要素自包含容灾舱。无需外部依赖，无人区双击秒开，安心兜底。
               </p>
             </div>
 
@@ -89,15 +89,15 @@ export function BentoGrid() {
               <div className="mt-3 grid grid-cols-3 gap-2 text-center text-xs text-ink-soft">
                 <div className="rounded-control bg-ink/[0.04] p-2">
                   <span className="block font-mono font-bold text-ink tabular-nums text-sm">0</span>
-                  <span>运行时 npm</span>
+                  <span>运行时依赖</span>
                 </div>
                 <div className="rounded-control bg-ink/[0.04] p-2">
                   <span className="block font-mono font-bold text-ink tabular-nums text-sm">100%</span>
-                  <span>内联矢量底图</span>
+                  <span>矢量沙盘内联</span>
                 </div>
                 <div className="rounded-control bg-ink/[0.04] p-2">
-                  <span className="block font-bold text-ink text-sm">永久</span>
-                  <span>离线可归档</span>
+                  <span className="block font-bold text-ink text-sm">全域</span>
+                  <span>无感保活守护</span>
                 </div>
               </div>
             </div>
@@ -136,7 +136,7 @@ export function BentoGrid() {
                 无人区离线与增量补丁
               </h3>
               <p className="mt-1 text-xs text-ink-soft leading-relaxed">
-                自驾途经荒野峡谷、高海拔隧道或远郊无信号区域，自动切入 IndexedDB 离线模式，绝不发生白屏崩溃。
+                自驾途经荒野峡谷、高海拔隧道或远郊无信号区域，自动切入离线保活模式，出网增量对齐，绝不发生白屏崩溃。
               </p>
             </div>
 
