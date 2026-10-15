@@ -25,10 +25,10 @@ export function Footer() {
           />
 
           <span className="unify-pill-badge bg-white/10 border-white/20 text-white/90 text-xs font-mono">
-            TripCraft 2.0 · Open Source & Local-First
+            TripCraft · 旅艺 2.0 · 开源与本地优先
           </span>
           <h2 className="mt-5 font-serif text-3xl sm:text-5xl font-normal tracking-tight text-white leading-tight max-w-2xl mx-auto">
-            From prompt to self-driving adventure
+            从一句话诉求，到全地形自驾探险
           </h2>
           <p className="mt-4 max-w-xl mx-auto text-sm sm:text-base text-white/70 leading-relaxed font-normal">
             将每一次出发交托给懂路、懂车、更懂人性的专业自驾协同中枢。

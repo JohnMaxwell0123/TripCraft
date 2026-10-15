@@ -33,11 +33,11 @@ export function CustomerStories() {
       <div className="relative mx-auto max-w-[1240px] px-4 sm:px-8">
         {/* Section Header (Unify Hanging Quote Section Style) */}
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#FE3C01]">
-            CREW EXPERIENCES · 真实自驾见证
+          <p className="text-xs font-semibold tracking-wider text-[#FE3C01]">
+            车主与领队真实见证
           </p>
           <h2 className="mt-3 font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#241E20] leading-[1.15]">
-            Trusted by self-driving explorers across thousands of miles
+            万千自驾探索者的行路之选
           </h2>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-[#6E6A67]">
             从川西大环线到阿里无人区，听听那些在极端路况下依靠 TripCraft 穿越险阻的车主故事。

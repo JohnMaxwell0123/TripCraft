@@ -93,7 +93,7 @@ function Sidebar() {
       <div>
         <div className="flex items-center justify-between">
           <p className="eyebrow text-gold-ink font-semibold">排程风控 · 4</p>
-          <span className="text-[10px] text-ink-soft font-mono">AST Hard</span>
+          <span className="text-[10px] text-ink-soft font-mono">刚性规则集</span>
         </div>
         <div className="mt-1.5 flex flex-col gap-1">
           {SIDEBAR_CONSTRAINTS.map((c) => (

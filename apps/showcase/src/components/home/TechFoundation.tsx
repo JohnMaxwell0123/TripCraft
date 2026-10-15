@@ -9,7 +9,7 @@ interface Pillar {
   tag: string;
   number: string;
   title: string;
-  enTitle: string;
+  subTitle: string;
   quote: string;
   summary: string;
   highlights: { label: string; desc: string }[];
@@ -28,16 +28,16 @@ const PILLARS: Pillar[] = [
     id: 'local-first',
     tag: '数据主权 · 极端弹性',
     number: '01',
-    title: 'Local-First 本地优先与极端网络弹性',
-    shortTitle: 'Local-First 架构',
-    enTitle: 'Extreme Network Resilience & Local Sovereignty',
+    title: '本地优先与极端网络弹性',
+    shortTitle: '本地优先架构',
+    subTitle: '极端网络弹性与数据主权闭环',
     quote: '“断网绝非异常，而是荒野自驾探索中的物理常态。”',
     summary:
-      '日常多端云协同极速同频；行程轨迹、证件与照片等数据主权端侧受控。无网弱网下自动无感切入离线保活，网络恢复时经由 RFC 6902 JSON Patch 增量同步，无人区从容兜底。',
+      '日常多端云协同极速同频；行程轨迹、证件与照片等数据主权端侧受控。无网弱网下自动无感切入离线保活，网络恢复时经由增量补丁同步，无人区从容兜底。',
     highlights: [
       {
         label: '三级容灾降级管道',
-        desc: '高德/百度矢量瓦片超时 (>3s) 瞬间降级为离线矢量 SVG 底图；若 SVG 异常则退化至纯时序拓扑卡片，彻底消灭白屏。',
+        desc: '在线地图服务超时 (>3s) 瞬间降级为离线矢量 SVG 底图；若矢量图异常则退化至纯时序拓扑卡片，彻底消灭白屏。',
       },
       {
         label: '数据隐私端侧闭环',
@@ -45,10 +45,10 @@ const PILLARS: Pillar[] = [
       },
       {
         label: '增量时钟协同合并',
-        desc: '基于向量时钟与 JSON Patch 事务流，团队成员离线改动在线后自动无损合流。',
+        desc: '基于向量时钟与事务流，团队成员离线改动在线后自动无损合流。',
       },
     ],
-    contractBadge: 'ADR-004 · 本地存储与三级降级管道',
+    contractBadge: '架构决策 · 本地存储与三级降级管道',
     codeSnippet: {
       filename: 'src/lib/resilience/failover-pipeline.ts',
       language: 'typescript',
@@ -73,27 +73,27 @@ export async function resolveMapLayer(ctx: RenderContext): Promise<MapRenderer> 
     id: 'dsl-truth',
     tag: '形式契约 · 语法中枢',
     number: '02',
-    title: '可执行 DSL 作为唯一真相源',
-    shortTitle: '可执行 DSL 契约',
-    enTitle: 'Executable DSL as the Single Source of Truth',
+    title: '可执行结构化契约作为唯一真相源',
+    shortTitle: '可执行契约语法',
+    subTitle: '严格形式化约束与唯一数据真相源',
     quote: '“路书不是凌乱的图文备忘，而是一份结构严谨、机器可执行的自驾程序。”',
     summary:
-      '所有界面交互、AI 决策输出与协作补丁，全部映射至 spec/trip.schema.json 的抽象语法树（AST），并通过 AJV 严格校验。单一数据源编译驱动网页、车机与 A5 纸质手册全端表现。',
+      '所有界面交互、智能体决策输出与协作补丁，全部映射至自驾抽象语法树，并通过严格契约校验。单一数据源编译驱动网页、车机与 A5 纸质手册全端表现。',
     highlights: [
       {
-        label: '严格 JSON Schema 2020-12',
+        label: '严格规范定义约束',
         desc: '经纬度坐标、车型尺寸、道路坡度、高程阶梯、餐饮补给均有形式化元数据定义。',
       },
       {
-        label: '不可变 Patch 事务流',
-        desc: '每一次微调均产生确定性 JSON Patch 事务，天然支持版本无损回滚、冲突比对与协同存证。',
+        label: '不可变补丁事务流',
+        desc: '每一次微调均产生确定性补丁事务，天然支持版本无损回滚、冲突比对与协同存证。',
       },
       {
         label: '全端同源编译驱动',
-        desc: '同一份 trip.json 数据，既是前端动态画布的源动力，也是导出车机深链与纸质印刷排版的核心。',
+        desc: '同一份结构化数据，既是前端动态画布的源动力，也是导出车机深链与纸质印刷排版的核心。',
       },
     ],
-    contractBadge: 'spec/trip.schema.json · RFC 6902 JSON Patch',
+    contractBadge: '核心契约 · 增量事务规范',
     codeSnippet: {
       filename: 'spec/node.schema.json',
       language: 'json',
@@ -130,34 +130,34 @@ export async function resolveMapLayer(ctx: RenderContext): Promise<MapRenderer> 
     number: '03',
     title: '双轨防幻觉与物理安全断言',
     shortTitle: '双轨物理防御引擎',
-    enTitle: 'Dual-Track Guardrails & Physical Rule Assertions',
-    quote: '“客观物理规律是刚性红线，AI 是懂人性与美学的同路副驾。”',
+    subTitle: '物理规则刚性防御与事实分离',
+    quote: '“客观物理规律是刚性红线，智能体是懂人性与美学的同路副驾。”',
     summary:
-      '客观交通限制（车型限高、山路限速、刹车热衰减、特窟闭馆）标记为刚性「事实」；AI 定制师优化策略标记为「建议」。大模型输出必须通过 BR-001 ~ BR-025 物理规则引擎防御墙硬校验。',
+      '客观交通限制（车型限高、山路限速、刹车热衰减、特窟闭馆）标记为刚性「事实」；优化策略标记为「建议」。模型输出必须通过 25 道物理规则防御墙硬校验。',
     highlights: [
       {
         label: '事实与建议形式化分离',
-        desc: '严禁 AI 擅自篡改既定行程。系统绝不伪造虚假通行能力，用户永远保留最终裁决权。',
+        desc: '严禁模型擅自篡改既定行程。系统绝不伪造虚假通行能力，用户永远保留最终裁决权。',
       },
       {
         label: '25 道物理规则防御墙',
         desc: '长下坡制动热衰减警告、高反急剧爬升限速、地库限高 2.1m 拦截、无人区加油站极限间距刚性断言。',
       },
       {
-        label: '苏格拉底启发式对谈',
-        desc: '遇到路线冲突时，AI 绝不越俎代庖，而是通过权衡利弊选项引导领队做出清晰抉择。',
+        label: '启发式对谈与抉择引导',
+        desc: '遇到路线冲突时，系统绝不越俎代庖，而是通过权衡利弊选项引导领队做出清晰抉择。',
       },
     ],
-    contractBadge: 'ADR-008 · BR-001~025 规则防御引擎',
+    contractBadge: '风控决策 · 物理规则防御引擎',
     codeSnippet: {
       filename: 'src/lib/guardrails/physics-assert.ts',
       language: 'typescript',
-      code: `// 物理规则硬拦截：BR-025 车型限高与地库断言
+      code: `// 物理规则硬拦截：车型限高与地库断言
 export function assertVehicleClearance(vehicle: VehicleMeta, poi: PoiNode): AssertionResult {
   if (vehicle.height_m > 2.0 && poi.parking_type === 'underground') {
     return {
       passed: false,
-      code: 'BR-025_CLEARANCE_VIOLATION',
+      code: 'CLEARANCE_VIOLATION',
       severity: 'FATAL_OVERRIDE',
       fact: \`车辆加装车顶箱后总高 \${vehicle.height_m}m 超过该老城区地库限高 2.0m\`,
       suggestion: '已强制规划为酒店地面专用车位，并为全家生成慢步导引 950m（约12分钟）',
@@ -175,7 +175,7 @@ export function assertVehicleClearance(vehicle: VehicleMeta, poi: PoiNode): Asse
     number: '04',
     title: '全要素自包含容灾编译器与座舱互联',
     shortTitle: '自包含容灾编译',
-    enTitle: 'Zero-Build Compiler & Tier 0 Cockpit Protocol',
+    subTitle: '单文件离线秒开与车机协议',
     quote: '“随处可开，零依赖安装，做一件真正能带走的数字化艺术品。”',
     summary:
       '自研单文件编译器将 9 天完整路书、内联离线矢量图、子集化中文字体与轻量运行时封装为出游容灾舱。配合极简 Tier 0 座舱深链协议，零 SDK 前装准入直接唤醒车机投屏。',
@@ -324,8 +324,8 @@ export function TechFoundation() {
                     {pillar.shortTitle}
                   </span>
                 </div>
-                <p className="mt-2 text-[11px] text-[#6E6A67] line-clamp-1 font-mono">
-                  {pillar.enTitle}
+                <p className="mt-2 text-[11px] text-[#6E6A67] line-clamp-1 font-sans">
+                  {pillar.subTitle}
                 </p>
               </button>
             );
@@ -352,9 +352,9 @@ export function TechFoundation() {
               >
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#241E20]/[0.06] pb-4">
                   <span className="font-mono text-xl font-bold tabular-nums text-[#241E20]">
-                    PILLAR {activePillar.number}
+                    支柱 0{activePillar.number}
                   </span>
-                  <span className="unify-pill-badge text-[#FE3C01] font-mono">
+                  <span className="unify-pill-badge text-[#FE3C01]">
                     {activePillar.contractBadge}
                   </span>
                 </div>
@@ -362,8 +362,8 @@ export function TechFoundation() {
                 <h3 className="mt-5 font-serif text-2xl font-normal text-[#241E20] leading-snug">
                   {activePillar.title}
                 </h3>
-                <p className="mt-1 text-xs font-mono uppercase tracking-wider text-[#6E6A67]">
-                  {activePillar.enTitle}
+                <p className="mt-1 text-xs text-[#6E6A67]">
+                  {activePillar.subTitle}
                 </p>
 
                 {/* Engineering philosophical quote (Unify quote style) */}

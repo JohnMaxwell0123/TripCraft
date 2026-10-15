@@ -27,11 +27,11 @@ export function BentoGrid() {
       <div className="relative mx-auto max-w-[1240px] px-4 sm:px-8">
         {/* Section Header (Unify style: Eyebrow + Serif Headline) */}
         <div className="text-center max-w-3xl mx-auto">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#FE3C01]">
-            CAPABILITY MATRIX · 工业级能力矩阵
+          <p className="text-xs font-semibold tracking-wider text-[#FE3C01]">
+            全地形能力矩阵 · 工业级工程基准
           </p>
           <h2 className="mt-3 font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#241E20] leading-[1.15]">
-            One platform with the whole self-driving toolkit at its disposal
+            一套协同中枢，驾驭全场景自驾工具链
           </h2>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-[#6E6A67]">
             拒绝华而不实的玩具模型。从老城地库 2.15m 限高物理截断，到无人区断网秒开的离线单文件容灾舱，每项能力皆针对荒野自驾真实痛点工程化落地。
@@ -41,34 +41,34 @@ export function BentoGrid() {
         {/* 1. Large Top Hero Bento Card (Unify Wide Showcase Card) */}
         <div className="mt-12 rounded-[16px] bg-[#FFFFFF] border border-[#241E20]/10 p-6 sm:p-8 shadow-[0_4px_24px_rgba(36,30,32,0.04)] grid gap-8 lg:grid-cols-12 items-center">
           <div className="lg:col-span-6 space-y-4 text-left">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[#FE3C01]">
-              INTELLIGENT WORKFLOW · 全链路协同
+            <span className="text-xs font-semibold tracking-wider text-[#FE3C01]">
+              全链路协同架构
             </span>
             <h3 className="font-serif text-2xl sm:text-3xl font-normal text-[#241E20] leading-snug">
-              全能智能体调度自驾全流程工具链
+              智能体全局调度自驾全流程工具链
             </h3>
             <p className="text-sm leading-relaxed text-[#6E6A67]">
-              从对话倾诉提炼诉求，到多人微信扫码博弈投票；从车路云车道级领航避障，到离线单文件零构建交付。一个经过自驾 DSL 契约校验的工业级中枢。
+              从对话倾诉提炼诉求，到多人微信扫码博弈投票；从车道级领航避障，到离线单文件零构建交付。一个经过自驾形式化契约校验的工业级中枢。
             </p>
             <div className="pt-2 flex flex-wrap gap-2 text-xs">
-              <span className="unify-pill-badge">自然语言转 AST 编排</span>
+              <span className="unify-pill-badge">自然语言提取约束</span>
               <span className="unify-pill-badge">微信免登全团同频</span>
               <span className="unify-pill-badge">50+ 物理自驾风控规则</span>
-              <span className="unify-pill-badge">车规级 C-CABIN 双向流转</span>
+              <span className="unify-pill-badge">车规座舱双向流转</span>
             </div>
           </div>
 
-          <div className="lg:col-span-6 rounded-[12px] bg-[#FFFFF9] border border-[#241E20]/[0.08] p-4 font-mono text-xs text-[#241E20]">
+          <div className="lg:col-span-6 rounded-[12px] bg-[#FFFFF9] border border-[#241E20]/[0.08] p-4 text-xs text-[#241E20]">
             <div className="flex items-center justify-between pb-2 mb-3 border-b border-[#241E20]/[0.08]">
-              <span className="font-bold text-[#FE3C01]">agent-orchestration.log</span>
-              <span className="text-[#6E6A67]">status: 200 OK</span>
+              <span className="font-bold text-[#FE3C01]">智能体协同调度流水</span>
+              <span className="text-emerald-700 font-medium">执行状态：全部通过</span>
             </div>
             <div className="space-y-1.5 text-[11px] leading-relaxed">
-              <p className="text-emerald-700">✓ [NLP-Parser] 提取诉求: 川西 7 天 · 腾势 D9 带顶箱 · 长辈防高反</p>
-              <p className="text-blue-800">✓ [Wishlist] 微信全团 5 人意向聚合完成，折多山雪山观景置顶</p>
-              <p className="text-amber-700">⚠ [BR-025] 拦截康定老城地下通道 (限高 2.0m &lt; 车高 2.15m)</p>
-              <p className="text-emerald-700">✓ [Reroute] 自动规划地面开阔路线，距目的地 150m 专用车位</p>
-              <p className="text-purple-700">✓ [Compiler] 生成自包含 offline.html (单文件 1.2MB, 无外链)</p>
+              <p className="text-emerald-700">✓ [诉求抽取] 提取诉求: 川西 6 天 · 腾势 D9 带顶箱 · 长辈防高反</p>
+              <p className="text-blue-800">✓ [愿望池] 微信全团 5 人意向聚合完成，折多山雪山观景置顶</p>
+              <p className="text-amber-700">⚠ [限高风控] 拦截康定老城地下通道 (限高 2.0m &lt; 车高 2.28m)</p>
+              <p className="text-emerald-700">✓ [动态避险] 自动规划地面开阔路线，距目的地 150m 专用车位</p>
+              <p className="text-purple-700">✓ [离线编译] 生成自包含离线单文件 (1.2MB, 零外链依赖)</p>
             </div>
           </div>
         </div>
@@ -78,14 +78,14 @@ export function BentoGrid() {
           {/* Card 1: AI Prompting & Route Generation */}
           <div className="unify-card p-6 flex flex-col justify-between">
             <div>
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#FE3C01] block">
-                BUILD ANY ROUTE
+              <span className="text-[11px] font-semibold tracking-wider text-[#FE3C01] block">
+                自如对话编排
               </span>
               <h4 className="mt-2 font-serif text-xl font-normal text-[#241E20]">
-                AI 倾诉式多轮对话生成
+                倾诉式多轮对话生成
               </h4>
               <p className="mt-2 text-xs leading-relaxed text-[#6E6A67]">
-                即使诉求零碎杂乱，AI 规划师亦能从“带老人看雪山但不爬高楼”、“想吃牦牛肉汤锅”等口语中提炼出严谨的日程 AST。
+                即使诉求零碎杂乱，规划师亦能从“带老人看雪山但不爬高楼”、“想吃牦牛肉汤锅”等口语中提炼出严谨的日程方案。
               </p>
             </div>
 
@@ -109,14 +109,14 @@ export function BentoGrid() {
           {/* Card 2: WeChat Zero-Login Collaborative Wishlist */}
           <div className="unify-card p-6 flex flex-col justify-between">
             <div>
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#FE3C01] block">
-                COLLABORATIVE SIGNALS
+              <span className="text-[11px] font-semibold tracking-wider text-[#FE3C01] block">
+                微信全团协同
               </span>
               <h4 className="mt-2 font-serif text-xl font-normal text-[#241E20]">
                 全团微信免登愿望池
               </h4>
               <p className="mt-2 text-xs leading-relaxed text-[#6E6A67]">
-                分享微信卡片，同乘伙伴无需下载 App 即可点亮心仪打卡点。算法自动加权计算，智能平衡各方意图。
+                分享微信卡片，同乘伙伴无需下载应用即可点亮心仪打卡点。算法自动加权计算，智能平衡各方意图。
               </p>
             </div>
 
@@ -143,14 +143,14 @@ export function BentoGrid() {
           {/* Card 3: 2.15m Height Clearance Simulator */}
           <div className="unify-card p-6 flex flex-col justify-between">
             <div>
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#FE3C01] block">
-                RIGID PHYSICAL GUARDRAILS
+              <span className="text-[11px] font-semibold tracking-wider text-[#FE3C01] block">
+                刚性物理风控
               </span>
               <h4 className="mt-2 font-serif text-xl font-normal text-[#241E20]">
-                2.15m 限高刚性风控 (BR-025)
+                2.15m 限高刚性风控
               </h4>
               <p className="mt-2 text-xs leading-relaxed text-[#6E6A67]">
-                7座 MPV 加装车顶行李箱后高度达 2.15m。系统在路线规划与车机领航中全程物理拦截老城限高地库与涵洞。
+                7座 MPV 加装车顶行李箱后高度达 2.28m。系统在路线规划与车机领航中全程物理拦截老城限高地库与涵洞。
               </p>
             </div>
 
@@ -191,8 +191,8 @@ export function BentoGrid() {
           {/* Card 4: Cockpit Autonomous NOA */}
           <div className="unify-card p-6 flex flex-col justify-between">
             <div>
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#FE3C01] block">
-                C-CABIN AUTONOMOUS NOA
+              <span className="text-[11px] font-semibold tracking-wider text-[#FE3C01] block">
+                座舱车道级领航
               </span>
               <h4 className="mt-2 font-serif text-xl font-normal text-[#241E20]">
                 车机双向车道级领航协同
@@ -204,7 +204,7 @@ export function BentoGrid() {
 
             <div className="mt-5 rounded-lg bg-[#241E20] text-white p-3 space-y-2 text-xs font-mono">
               <div className="flex justify-between items-center text-white/70">
-                <span>NOA 巡航引导</span>
+                <span>车道级领航巡航</span>
                 <span className="text-emerald-400 font-bold">82 km/h</span>
               </div>
               <div className="flex items-center gap-2 text-[11px] text-amber-400">
@@ -213,7 +213,7 @@ export function BentoGrid() {
               </div>
               <div className="text-[10px] text-white/40 pt-1 border-t border-white/10 flex justify-between">
                 <span>腾势 D9 顶视自车感知</span>
-                <span>高精 RTK 校验</span>
+                <span>高精卫星定位校验</span>
               </div>
             </div>
 
@@ -226,8 +226,8 @@ export function BentoGrid() {
           {/* Card 5: Zero-Build Deliverability & Offline Safe Cabin */}
           <div className="unify-card p-6 flex flex-col justify-between">
             <div>
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#FE3C01] block">
-                ZERO-BUILD DELIVERABILITY
+              <span className="text-[11px] font-semibold tracking-wider text-[#FE3C01] block">
+                零构建离线安全舱
               </span>
               <h4 className="mt-2 font-serif text-xl font-normal text-[#241E20]">
                 零构建离线单文件安全舱
@@ -257,7 +257,7 @@ export function BentoGrid() {
                   </span>
                 ) : (
                   <span className="text-[#6E6A67]">
-                    在线状态下实时同步天气预警与多人微信变更，自动持久化至 IndexedDB。
+                    在线状态下实时同步天气预警与多人微信变更，自动持久化至本地存储。
                   </span>
                 )}
               </div>
@@ -272,8 +272,8 @@ export function BentoGrid() {
           {/* Card 6: Multi-Dimensional Post-Trip Reporting */}
           <div className="unify-card p-6 flex flex-col justify-between">
             <div>
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#FE3C01] block">
-                POST-TRIP INSIGHTS & AA
+              <span className="text-[11px] font-semibold tracking-wider text-[#FE3C01] block">
+                履约复盘与平账
               </span>
               <h4 className="mt-2 font-serif text-xl font-normal text-[#241E20]">
                 行程履约看板与智能平账

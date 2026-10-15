@@ -192,7 +192,7 @@ export function Navbar() {
               onClick={() => scrollToSection('demo')}
               className="inline-flex min-h-[40px] items-center px-3 py-1.5 rounded text-sm text-[#241E20]/80 hover:text-[#241E20] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01]"
             >
-              智驾座舱 NOA
+              车道级领航
             </button>
             <button
               type="button"
@@ -277,7 +277,7 @@ export function Navbar() {
               className="flex min-h-[40px] items-center justify-between rounded px-3 py-2 text-sm font-medium text-[#241E20] hover:bg-[#241E20]/[0.04]"
             >
               <span>技术底座与哲学</span>
-              <span className="text-xs text-[#6E6A67]">ADR / Schema</span>
+              <span className="text-xs text-[#6E6A67]">工程铁律与契约</span>
             </button>
             <div className="pt-2 border-t border-[#241E20]/10 flex gap-2">
               <button

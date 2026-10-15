@@ -250,7 +250,7 @@ function CockpitCompanionDevice() {
         {/* 左栏：下一站与散步指引 */}
         <div className="flex flex-col justify-between rounded-control bg-white/5 p-1 sm:p-2 border border-white/10">
           <div>
-            <p className="text-[7px] sm:text-[9px] uppercase tracking-wider text-gold font-mono">NEXT STOP</p>
+            <p className="text-[7px] sm:text-[9px] font-semibold tracking-wider text-gold">下一站到达</p>
             <p className="font-serif text-[10px] sm:text-sm font-bold text-white mt-0.5 truncate">正宁路夜市</p>
             <p className="text-[8px] sm:text-[10px] text-white/70 font-mono truncate">距宿点 650m · 漫步</p>
           </div>

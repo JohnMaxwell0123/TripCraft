@@ -35,7 +35,7 @@ const CONSTRAINTS = [
   {
     Icon: ElderIcon,
     title: '70 岁长辈 · 膝关节风控',
-    type: 'HARD 硬性规则',
+    type: '刚性安全规则',
     note: '规避高长台阶 · 单次步行 ≤ 500m',
     ring: 'ring-gold/50',
     iconColor: 'text-gold-ink',
@@ -44,7 +44,7 @@ const CONSTRAINTS = [
   {
     Icon: BabyIcon,
     title: '4 岁幼儿 · 作息节律',
-    type: 'HARD 硬性规则',
+    type: '刚性安全规则',
     note: '13:00–14:30 午休静止期 · 防中暑',
     ring: 'ring-ochre/50',
     iconColor: 'text-ochre',
@@ -53,7 +53,7 @@ const CONSTRAINTS = [
   {
     Icon: CarIcon,
     title: '7座 MPV · 腾势 D9 轮廓',
-    type: 'HARD 物理限高',
+    type: '刚性物理限高',
     note: '车高 2.15m (车顶箱) · 避让 2.0m 地库',
     ring: 'ring-lapis/40',
     iconColor: 'text-lapis',
@@ -62,7 +62,7 @@ const CONSTRAINTS = [
   {
     Icon: SunsetIcon,
     title: '鸣沙山月牙泉 · 摄影机位',
-    type: 'SOFT 景观偏好',
+    type: '柔性景观偏好',
     note: '锁定 19:30 黄金日落窗口',
     ring: 'ring-rose-500/50',
     iconColor: 'text-rose-600',
@@ -117,19 +117,19 @@ function AssistantStatusBar() {
           <motion.span className="absolute inset-0 rounded-full shadow-glow" style={{ opacity: lit }} />
           <span className="relative flex items-center gap-1">
             <ZapIcon className="h-2.5 w-2.5 text-gold" />
-            <span className="font-mono font-semibold">DeepSeek-v4.1</span>
+            <span className="font-mono font-semibold">大模型推理引擎</span>
           </span>
           <motion.span className="relative text-gold-ink font-mono text-[10px]" style={{ opacity: lit }}>
-            ~420 tok/s
+            毫秒级生成
           </motion.span>
         </span>
         <span className="chip hidden bg-ink/[0.03] text-ink-soft md:inline-flex items-center gap-1 text-[10px] py-0.5">
           <BrainIcon className="h-2.5 w-2.5 text-ink-soft" />
-          <span>R1 深度推理</span>
+          <span>深度思维链推理</span>
         </span>
         <span className="chip hidden bg-ink/[0.03] text-ink-soft lg:inline-flex items-center gap-1 text-[10px] py-0.5">
           <KeyIcon className="h-2.5 w-2.5 text-ink-soft" />
-          <span>BYOK</span>
+          <span>端侧隐私计算</span>
         </span>
       </div>
     </div>
@@ -202,13 +202,13 @@ function Thread() {
                 <span>老定制师深度思考中</span>
               </span>
               <span className="chip rounded-pill bg-gold/20 text-gold-ink text-[9px] font-mono px-1.5 py-0 font-bold">
-                1.2s · 420 tok/s
+                1.2秒 · 极速推理
               </span>
             </div>
             <ul className="text-[10px] text-ink-soft space-y-0.5 font-mono leading-tight">
               <li>• 适老适幼: 70岁膝关节术后 ➔ 筛除长梯洞窟；4岁幼童 ➔ 锁定 13:00 午休</li>
               <li>• 车辆物理: 腾势 D9 2.15m (车顶箱) ➔ 规避 2.0m 地库，排布地面车位</li>
-              <li>• 拓扑引擎: 1,980km 丝路大纲生成 ➔ 校验 trip.schema (0 警告)</li>
+              <li>• 拓扑引擎: 1,980km 丝路大纲生成 ➔ 校验路书契约规范 (0 警告)</li>
             </ul>
           </div>
         </motion.div>
@@ -269,7 +269,7 @@ function SocraticCard() {
 
       <Reveal at={[T.lockA, T.lockA + 0.006]} y={4} className="mt-2 text-[11px] font-medium text-jade flex items-center gap-1">
         <CheckIcon className="h-3.5 w-3.5 shrink-0" />
-        <span>策略已写入 constraints.hard，通过 trip.schema 校验，正在生成大纲…</span>
+        <span>策略已写入刚性约束规则树，通过路书契约严格校验，正在生成大纲…</span>
       </Reveal>
 
       {/* 虚拟点击光标（平滑划过并点击选项 A） */}
