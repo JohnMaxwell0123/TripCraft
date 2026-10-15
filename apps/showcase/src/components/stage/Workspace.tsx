@@ -74,7 +74,7 @@ function Sidebar() {
 
   return (
     <motion.aside
-      className="glass-strong hidden w-[195px] xl:w-[205px] shrink-0 flex-col gap-2.5 rounded-card border border-ink/[0.08] p-3 shadow-level-static xl:flex gpu-layer"
+      className="glass-strong hidden w-[175px] xl:w-[185px] shrink-0 flex-col gap-2 rounded-card border border-ink/[0.08] p-2.5 shadow-level-static xl:flex gpu-layer"
       style={{ opacity, x }}
     >
       {/* 行程概要信息卡 */}
@@ -187,7 +187,7 @@ function TimelineColumn() {
   return (
     <motion.section
       aria-label="九天日程时序编排"
-      className="glass-strong order-2 flex min-h-0 flex-1 flex-col rounded-card border border-ink/[0.08] p-2.5 sm:p-3 shadow-level-static md:order-none md:w-[250px] md:flex-none lg:w-[270px] gpu-layer"
+      className="glass-strong order-2 flex min-h-0 flex-1 flex-col rounded-card border border-ink/[0.08] p-2 sm:p-2.5 shadow-level-static md:order-none md:w-[225px] md:flex-none lg:w-[245px] gpu-layer"
       style={{ opacity }}
     >
       {/* 顶部标题与里程概览 */}

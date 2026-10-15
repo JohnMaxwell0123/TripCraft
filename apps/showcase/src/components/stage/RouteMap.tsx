@@ -7,12 +7,13 @@ import { local, useFade, useRange, ease, useReduced } from '@/lib/motion';
 import { T } from './timeline';
 import { useProgress } from './primitives';
 
-/* 相机关键帧：中国尺度 → 河西走廊 → 兰州街区 */
+/* 相机关键帧：中国尺度 → 河西走廊全景 (适配工作台视窗，100% 完整展现 9 日全线) → 兰州街区 */
 const LZ = PROJECTED[0];
 const VB_WIDE = [-700, -448, 2400, 1536];
-const VB_CORRIDOR = [0, 0, MAP_W, MAP_H];
+// 优化纵向工作台全景视口：涵盖兰州(D0)到乌鞘岭、张掖、嘉峪关、敦煌、雅丹(D7)的完整1980km自驾走廊，拒绝贴脸过度放大与裁切
+const VB_CORRIDOR = [-140, -320, 1200, 1260];
 const ZW = 440;
-const VB_LANZHOU = [LZ.x - ZW / 2, LZ.y - (ZW * MAP_H) / MAP_W / 2, ZW, (ZW * MAP_H) / MAP_W];
+const VB_LANZHOU = [LZ.x - ZW / 2, LZ.y - (ZW * 1260) / 1200 / 2, ZW, (ZW * 1260) / 1200];
 
 function viewBoxAt(v: number, reduced: boolean): string {
   const cam = reduced ? 1 : local(v, T.camera[0], T.camera[1]);
