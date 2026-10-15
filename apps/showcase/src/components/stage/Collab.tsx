@@ -385,11 +385,11 @@ export function PhoneMock() {
   return (
     <motion.div
       aria-hidden
-      className="pointer-events-none absolute right-1 sm:right-3 md:-right-2 lg:-right-6 xl:-right-10 bottom-1 sm:bottom-2 md:bottom-[-8px] z-50 origin-bottom-right scale-[0.74] xs:scale-[0.82] sm:scale-90 md:scale-100 gpu-layer [contain:layout_paint]"
+      className="pointer-events-none absolute right-2 sm:right-4 md:-right-1 lg:-right-4 xl:-right-6 bottom-5 sm:bottom-7 md:bottom-6 lg:bottom-7 z-50 origin-bottom-right scale-[0.78] xs:scale-[0.85] sm:scale-[0.92] md:scale-100 gpu-layer"
       style={{ opacity, y, rotate, visibility }}
     >
-      {/* 现代智能手机高保真外壳 */}
-      <div className="relative h-[390px] w-[195px] rounded-[38px] bg-[#1a1c23] p-[7px] shadow-[0_32px_70px_rgba(15,23,42,0.38)] ring-1 ring-white/15">
+      {/* 现代智能手机高保真外壳 (全圆角 3D 悬浮，无硬裁切，深度物理阴影) */}
+      <div className="relative h-[390px] w-[195px] rounded-[38px] bg-[#1a1c23] p-[7px] shadow-[0_28px_65px_rgba(15,23,42,0.48),0_12px_24px_rgba(15,23,42,0.22)] ring-1 ring-white/20">
         <div className="relative h-full w-full overflow-hidden rounded-[31px] bg-[#0c0e14] text-white">
           {/* 顶部灵动岛与状态栏 */}
           <div className="absolute inset-x-0 top-0 z-30 flex h-7 items-center justify-between px-3 text-[9px] font-mono">
@@ -529,7 +529,11 @@ export function PhoneMock() {
           </motion.div>
         </div>
       </div>
-      <span className="mt-1 sm:mt-2 block text-center text-[10px] sm:text-xs font-semibold text-ink-soft">副驾阿杰的手机 · 随身协同端</span>
+      <div className="flex justify-center">
+        <span className="mt-1.5 sm:mt-2 inline-flex items-center justify-center gap-1 text-[10px] sm:text-xs font-semibold text-[#1E2024]/75 bg-white/90 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-black/8 shadow-sm">
+          副驾阿杰的手机 · 随身协同端
+        </span>
+      </div>
     </motion.div>
   );
 }

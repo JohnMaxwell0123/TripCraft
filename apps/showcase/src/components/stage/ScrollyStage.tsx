@@ -209,28 +209,30 @@ export function ScrollyStage() {
       <div className="relative mx-auto max-w-[1640px] px-6 sm:px-10 lg:px-12 xl:px-16">
         {/* 左右分栏交互容器：左侧大标题+5个垂直Tab，右侧浮动应用视窗+背景艺术画报 (完全对齐 Unify 图2) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 xl:gap-14 items-center">
-          {/* 左侧栏 (lg:col-span-4 xl:col-span-4)：顶部大标题 + 5个垂直指示条 Tab */}
+          {/* 左侧栏 (lg:col-span-4 xl:col-span-4)：顶部大标题 + 5个垂直指示条 Tab + 导览控制 */}
           <div className="lg:col-span-4 xl:col-span-4 flex flex-col justify-center text-left" role="tablist">
-            {/* 顶部标题区 (对齐 Unify 图2: 左对齐 + 优雅大字号 + 橙红斜体强调词) */}
+            {/* 顶部标题区 (现代无衬线高保真排版，舒朗呼吸感，告别拥挤与杂乱倾斜) */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="mb-8 lg:mb-12"
+              className="mb-8 lg:mb-10"
             >
-              <h2 className="text-3xl sm:text-4xl lg:text-[36px] xl:text-[44px] font-serif tracking-tight leading-[1.25] text-[#241E20]">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FE3C01]/10 text-[#FE3C01] text-xs font-semibold tracking-wider mb-4">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FE3C01]" />
+                <span>全链路数字化自驾协同中枢</span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl lg:text-[32px] xl:text-[38px] font-sans font-bold tracking-tight leading-[1.38] text-[#1E2024]">
                 告别碎片路书与导航死角，<br className="hidden sm:inline" />
-                一体化协同中枢涵盖{' '}
-                <span className="inline-block text-[#FE3C01] font-serif italic">意图解析</span>、{' '}
-                <span className="inline-block text-[#FE3C01] font-serif italic">航线拓扑</span>、{' '}
-                <span className="inline-block text-[#FE3C01] font-serif italic">愿望协同</span>、{' '}
-                <span className="inline-block text-[#FE3C01] font-serif italic">车道级领航</span> 与{' '}
-                <span className="inline-block text-[#FE3C01] font-serif italic">离线交付</span>。
+                打造一体化自驾协同中枢
               </h2>
+              <p className="mt-3.5 text-base sm:text-lg text-black/60 leading-relaxed font-sans max-w-xl">
+                打通自然语义提炼、GIS 拓扑沙盘、多端实时愿望池、车道级领航与离线交付，让每一程自驾丝滑同频。
+              </p>
             </motion.div>
 
-            {/* 5 个垂直流光步进指示器 (完全对齐 Unify 图2 极简设计) */}
+            {/* 5 个垂直流光步进指示器 (完全对齐 Unify 极简设计) */}
             <div className="flex flex-col space-y-6 sm:space-y-7 xl:space-y-8">
               {TABS.map((tab, idx) => {
                 const isActive = activeTab === idx;
@@ -284,23 +286,55 @@ export function ScrollyStage() {
                 );
               })}
             </div>
+
+            {/* 导览播放控制坞 (放置于左侧栏底部，绝不遮挡右侧产品主视窗与悬浮手机) */}
+            <div className="mt-8 pt-5 border-t border-black/[0.08] flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <button
+                  onClick={togglePause}
+                  className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-black/5 hover:bg-black/10 text-black/75 hover:text-black transition-colors"
+                  title={isPaused ? '继续播放' : '暂停演进'}
+                >
+                  {isPaused ? <PlayIcon className="w-3.5 h-3.5 text-[#FE3C01]" /> : <PauseIcon className="w-3.5 h-3.5 text-[#FE3C01]" />}
+                  <span>{isPaused ? '继续播放' : '暂停演进'}</span>
+                </button>
+                <span className="font-mono text-black/45 text-xs">
+                  0{activeTab + 1} / 0{TABS.length}
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 text-black/60 text-xs">
+                <button
+                  onClick={handlePrev}
+                  className="px-2.5 py-1 rounded-md hover:bg-black/5 hover:text-black transition-colors"
+                  title="上一幕"
+                >
+                  ← 上一幕
+                </button>
+                <button
+                  onClick={handleNext}
+                  className="px-2.5 py-1 rounded-md hover:bg-black/5 hover:text-black transition-colors"
+                  title="下一幕"
+                >
+                  下一幕 →
+                </button>
+              </div>
+            </div>
           </div>
 
-          {/* 右侧栏 (lg:col-span-8 xl:col-span-8)：全宽原生应用视窗 (向右完全展开，彻底移除红色背景卡片) */}
+          {/* 右侧栏 (lg:col-span-8 xl:col-span-8)：全宽原生应用视窗 (向右完全展开，手机自由悬浮无硬裁切) */}
           <div className="lg:col-span-8 xl:col-span-8 w-full relative flex items-center min-h-[620px] sm:min-h-[680px] xl:min-h-[740px]">
-            {/* 核心应用高保真母体视窗 (单层真实应用外壳，无双层顶栏冗余) */}
-            <div className="relative z-10 w-full rounded-2xl bg-white border border-[#241E20]/[0.08] shadow-[0_28px_80px_rgba(0,0,0,0.14)] overflow-hidden">
-              {/* 视窗内容主体：高保真母体画布 (注入 virtualProgress 上下文) */}
-              <ProgressContext.Provider value={virtualProgress}>
-                <LayoutContext.Provider value={{ desktop, wide }}>
-                  <div className="macos-window relative flex h-[620px] sm:h-[660px] lg:h-[700px] w-full flex-col overflow-hidden bg-[#FAF8F5]/98 text-left">
+            <ProgressContext.Provider value={virtualProgress}>
+              <LayoutContext.Provider value={{ desktop, wide }}>
+                {/* 视窗包装容器：允许子元素 (如副驾手机) 自然悬浮探出，绝不被硬裁切 */}
+                <div className="relative z-10 w-full">
+                  {/* 核心应用高保真母体视窗 */}
+                  <div className="macos-window relative flex h-[620px] sm:h-[660px] lg:h-[700px] w-full flex-col overflow-hidden rounded-2xl bg-[#FAF8F5]/98 text-left border border-[#241E20]/[0.08] shadow-[0_28px_80px_rgba(0,0,0,0.14)]">
                     <Topbar />
                     <div className="relative min-h-0 flex-1 overflow-hidden">
                       <ChatScene />
                       <Workspace />
                       <CollabDrawer />
                       <ShareSheet />
-                      <PhoneMock />
                       <Backdrop />
                       <RecommendModal />
                       <StageToasts />
@@ -309,42 +343,12 @@ export function ScrollyStage() {
                     </div>
                     <InAppStatusBar />
                   </div>
-                </LayoutContext.Provider>
-              </ProgressContext.Provider>
 
-              {/* 独立悬浮导览控制器 (赋予用户随时暂停/步进控制权，绝不污染真实桌面软件界面) */}
-              <div className="absolute right-4 bottom-10 z-40 hidden sm:flex items-center gap-2 rounded-full border border-black/10 bg-white/95 backdrop-blur-md px-3.5 py-1.5 shadow-level-float text-xs font-sans select-none">
-                <button
-                  onClick={togglePause}
-                  className="flex items-center gap-1.5 font-medium text-black/75 hover:text-black transition-colors"
-                  title={isPaused ? '继续播放' : '暂停演进'}
-                >
-                  {isPaused ? <PlayIcon className="w-3.5 h-3.5 text-[#FE3C01]" /> : <PauseIcon className="w-3.5 h-3.5 text-[#FE3C01]" />}
-                  <span>{isPaused ? '继续' : '暂停'}</span>
-                </button>
-                <span className="w-px h-3.5 bg-black/10" />
-                <span className="font-mono text-black/50 text-[11px]">
-                  0{activeTab + 1} / 0{TABS.length}
-                </span>
-                <span className="w-px h-3.5 bg-black/10" />
-                <div className="flex items-center gap-0.5 text-black/60">
-                  <button
-                    onClick={handlePrev}
-                    className="p-1 rounded hover:bg-black/5 hover:text-black transition-colors"
-                    title="上一幕"
-                  >
-                    ←
-                  </button>
-                  <button
-                    onClick={handleNext}
-                    className="p-1 rounded hover:bg-black/5 hover:text-black transition-colors"
-                    title="下一幕"
-                  >
-                    →
-                  </button>
+                  {/* 随身手机协同端 (独立悬浮于母体视窗之上，完全无边缘硬裁切，超高质感 3D 悬浮投影) */}
+                  <PhoneMock />
                 </div>
-              </div>
-            </div>
+              </LayoutContext.Provider>
+            </ProgressContext.Provider>
           </div>
         </div>
       </div>
