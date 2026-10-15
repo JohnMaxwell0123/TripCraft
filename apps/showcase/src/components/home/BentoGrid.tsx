@@ -7,359 +7,309 @@ import {
   RoadIcon,
   AlertTriangleIcon,
   CheckIcon,
-  CameraIcon,
+  CarIcon,
+  CompassIcon,
+  ClockIcon,
 } from '@/components/common/Icons';
 
 export function BentoGrid() {
-  // Card 3 State: Offline network simulator
-  const [isOffline, setIsOffline] = useState(false);
-
-  // Card 4 State: B2B whitelabel brand customizer
-  const [selectedBrand, setSelectedBrand] = useState({
-    name: 'Horizon Expeditions · 高山探索社',
-    primary: '#2563EB',
-    accent: '#1D4ED8',
-    themeName: '远峰蓝',
-  });
-
-  const BRANDS = [
-    { name: 'Horizon Expeditions · 高山探索社', primary: '#2563EB', accent: '#1D4ED8', themeName: '远峰蓝' },
-    { name: 'Silk Road Prestige · 丝路定制行', primary: '#B8863B', accent: '#7A5520', themeName: '敦煌金' },
-    { name: 'Verdant Eco-Drive · 青翠生态巡航', primary: '#0E8674', accent: '#065F52', themeName: '青甘碧' },
-    { name: 'Aurora Grand Tour · 极光纵横自驾', primary: '#7C3AED', accent: '#6D28D9', themeName: '赛博紫' },
-  ];
-
-  // Card 5 State: Vehicle Clearance Simulator (7-seat MPV + Roof Box)
+  // Card 3 State: Vehicle Clearance Simulator
   const [vehicleHeight, setVehicleHeight] = useState(2.15);
 
-  return (
-    <section id="bento" className="relative overflow-hidden py-12 sm:py-16 md:py-20 paper-texture scroll-mt-20 md:scroll-mt-24">
-      {/* Decorative ambient background glows */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute top-10 left-1/3 h-80 w-80 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(184,134,59,0.08),transparent_70%)] blur-3xl"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-10 right-1/4 h-80 w-80 translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(14,134,116,0.06),transparent_70%)] blur-3xl"
-      />
+  // Card 5 State: Offline network simulator
+  const [isOffline, setIsOffline] = useState(false);
 
+  // Card 6 State: Dynamic AA split preview
+  const [memberCount, setMemberCount] = useState(5);
+
+  return (
+    <section id="bento" className="relative overflow-hidden py-16 sm:py-24 bg-[#FFFFF9] scroll-mt-20">
       <div className="relative mx-auto max-w-[1240px] px-4 sm:px-8">
-        {/* Section Header */}
-        <div className="text-center">
-          <p className="eyebrow text-blue-900 font-semibold">CAPABILITY MATRIX · 工业级能力矩阵</p>
-          <h2 className="mt-3 font-sans text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-ink leading-[1.3]">
-            不只是好看，更是坚韧的工业级系统
+        {/* Section Header (Unify style: Eyebrow + Serif Headline) */}
+        <div className="text-center max-w-3xl mx-auto">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#FE3C01]">
+            CAPABILITY MATRIX · 工业级能力矩阵
+          </p>
+          <h2 className="mt-3 font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#241E20] leading-[1.15]">
+            One platform with the whole self-driving toolkit at its disposal
           </h2>
-          <p className="mt-3 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed text-ink-soft">
-            从极端弱网离线穿透，到车型物理安全规则刚性断言；从全家多代同行节奏设计，到地接社一键白标交付。
+          <p className="mt-4 text-sm sm:text-base leading-relaxed text-[#6E6A67]">
+            拒绝华而不实的玩具模型。从老城地库 2.15m 限高物理截断，到无人区断网秒开的离线单文件容灾舱，每项能力皆针对荒野自驾真实痛点工程化落地。
           </p>
         </div>
 
-        {/* Bento Grid */}
-        <div className="mt-8 sm:mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* Card 1: 无人区自包含容灾舱秒开沙盒 */}
-          <div className="glass-strong rounded-card p-5 sm:p-6 transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08] flex flex-col justify-between min-w-0">
-            <div>
-              <div className="flex items-center justify-between pb-3 border-b border-ink/[0.06]">
-                <span className="chip bg-jade/15 text-jade font-semibold text-xs ring-1 ring-jade/30">
-                  F-M08-01 容灾交付
-                </span>
-                <span className="font-mono text-xs text-ink-soft tabular-nums">全要素离线舱 · 秒级直出</span>
-              </div>
-              <h3 className="mt-4 font-sans text-base sm:text-lg font-bold tracking-tight text-ink">
-                无人区自包含容灾舱秒开
-              </h3>
-              <p className="mt-1 text-xs text-ink-soft leading-relaxed">
-                日常多端实时云端协同，亦可一键封存为全要素自包含容灾舱。无需外部依赖，无人区双击秒开，安心兜底。
-              </p>
-            </div>
-
-            <div className="mt-5 rounded-control bg-paper/90 p-4 border border-ink/[0.08] shadow-level-static">
-              <div className="flex items-center justify-between text-xs font-mono">
-                <span className="text-ink-soft">首屏解析直出耗时 (LCP)</span>
-                <span className="font-bold text-jade tabular-nums font-mono flex items-center gap-1">
-                  <span>14 ms</span>
-                  <ZapIcon className="h-3 w-3 text-jade" />
-                </span>
-              </div>
-              <div className="mt-2.5 h-1.5 w-full bg-ink/10 rounded-pill overflow-hidden">
-                <div className="h-full bg-jade rounded-pill w-[96%]" />
-              </div>
-              <div className="mt-3 grid grid-cols-3 gap-2 text-center text-xs text-ink-soft">
-                <div className="rounded-control bg-ink/[0.04] p-2">
-                  <span className="block font-mono font-bold text-ink tabular-nums text-sm">0</span>
-                  <span>运行时依赖</span>
-                </div>
-                <div className="rounded-control bg-ink/[0.04] p-2">
-                  <span className="block font-mono font-bold text-ink tabular-nums text-sm">100%</span>
-                  <span>矢量沙盘内联</span>
-                </div>
-                <div className="rounded-control bg-ink/[0.04] p-2">
-                  <span className="block font-bold text-ink text-sm">全域</span>
-                  <span>无感保活守护</span>
-                </div>
-              </div>
+        {/* 1. Large Top Hero Bento Card (Unify Wide Showcase Card) */}
+        <div className="mt-12 rounded-[16px] bg-[#FFFFFF] border border-[#241E20]/10 p-6 sm:p-8 shadow-[0_4px_24px_rgba(36,30,32,0.04)] grid gap-8 lg:grid-cols-12 items-center">
+          <div className="lg:col-span-6 space-y-4 text-left">
+            <span className="text-xs font-semibold uppercase tracking-wider text-[#FE3C01]">
+              INTELLIGENT WORKFLOW · 全链路协同
+            </span>
+            <h3 className="font-serif text-2xl sm:text-3xl font-normal text-[#241E20] leading-snug">
+              全能智能体调度自驾全流程工具链
+            </h3>
+            <p className="text-sm leading-relaxed text-[#6E6A67]">
+              从对话倾诉提炼诉求，到多人微信扫码博弈投票；从车路云车道级领航避障，到离线单文件零构建交付。一个经过自驾 DSL 契约校验的工业级中枢。
+            </p>
+            <div className="pt-2 flex flex-wrap gap-2 text-xs">
+              <span className="unify-pill-badge">自然语言转 AST 编排</span>
+              <span className="unify-pill-badge">微信免登全团同频</span>
+              <span className="unify-pill-badge">50+ 物理自驾风控规则</span>
+              <span className="unify-pill-badge">车规级 C-CABIN 双向流转</span>
             </div>
           </div>
 
-          {/* Card 2: 戈壁无人区离线断网模拟器 */}
-          <div className="glass-strong rounded-card p-5 sm:p-6 transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08] flex flex-col justify-between min-w-0">
+          <div className="lg:col-span-6 rounded-[12px] bg-[#FFFFF9] border border-[#241E20]/[0.08] p-4 font-mono text-xs text-[#241E20]">
+            <div className="flex items-center justify-between pb-2 mb-3 border-b border-[#241E20]/[0.08]">
+              <span className="font-bold text-[#FE3C01]">agent-orchestration.log</span>
+              <span className="text-[#6E6A67]">status: 200 OK</span>
+            </div>
+            <div className="space-y-1.5 text-[11px] leading-relaxed">
+              <p className="text-emerald-700">✓ [NLP-Parser] 提取诉求: 川西 7 天 · 腾势 D9 带顶箱 · 长辈防高反</p>
+              <p className="text-blue-800">✓ [Wishlist] 微信全团 5 人意向聚合完成，折多山雪山观景置顶</p>
+              <p className="text-amber-700">⚠ [BR-025] 拦截康定老城地下通道 (限高 2.0m &lt; 车高 2.15m)</p>
+              <p className="text-emerald-700">✓ [Reroute] 自动规划地面开阔路线，距目的地 150m 专用车位</p>
+              <p className="text-purple-700">✓ [Compiler] 生成自包含 offline.html (单文件 1.2MB, 无外链)</p>
+            </div>
+          </div>
+        </div>
+
+        {/* 2. 6-Feature Bento Grid (Unify 3-Column Card Matrix) */}
+        <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3 text-left">
+          {/* Card 1: AI Prompting & Route Generation */}
+          <div className="unify-card p-6 flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between pb-3 border-b border-ink/[0.06]">
-                <span className="chip bg-ochre/15 text-ochre font-semibold text-xs ring-1 ring-ochre/30">
-                  F-M06-01 极度容灾
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setIsOffline(!isOffline)}
-                  className={`min-h-[44px] flex items-center gap-1.5 rounded-pill px-4 py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
-                    isOffline
-                      ? 'bg-ochre text-paper ring-2 ring-ochre/40 shadow-level-static'
-                      : 'bg-jade text-paper'
-                  }`}
-                >
-                  {isOffline ? (
-                    <>
-                      <SignalSlashIcon className="h-3.5 w-3.5 text-paper" />
-                      <span>正在断网演练</span>
-                    </>
-                  ) : (
-                    <>
-                      <CheckIcon className="h-3.5 w-3.5 text-paper" />
-                      <span>网络正常</span>
-                    </>
-                  )}
-                </button>
-              </div>
-              <h3 className="mt-4 font-sans text-base sm:text-lg font-bold tracking-tight text-ink">
-                无人区离线与增量补丁
-              </h3>
-              <p className="mt-1 text-xs text-ink-soft leading-relaxed">
-                自驾途经荒野峡谷、高海拔隧道或远郊无信号区域，自动切入离线保活模式，出网增量对齐，绝不发生白屏崩溃。
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#FE3C01] block">
+                BUILD ANY ROUTE
+              </span>
+              <h4 className="mt-2 font-serif text-xl font-normal text-[#241E20]">
+                AI 倾诉式多轮对话生成
+              </h4>
+              <p className="mt-2 text-xs leading-relaxed text-[#6E6A67]">
+                即使诉求零碎杂乱，AI 规划师亦能从“带老人看雪山但不爬高楼”、“想吃牦牛肉汤锅”等口语中提炼出严谨的日程 AST。
               </p>
             </div>
 
-            <div className="mt-5 rounded-control bg-paper/90 p-4 border border-ink/[0.08] shadow-level-static">
-              <div className="flex items-center gap-3">
-                <div
-                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-control font-bold text-paper ${
-                    isOffline ? 'bg-ochre' : 'bg-jade'
-                  }`}
-                >
-                  {isOffline ? '断' : '通'}
-                </div>
-                <div className="min-w-0 flex-1 text-xs">
-                  <p className="font-semibold text-ink">
-                    {isOffline ? '已激活本地 IndexedDB 快照' : '实时 WebSocket 云端通道在线'}
-                  </p>
-                  <p className="text-xs text-ink-soft truncate">
-                    {isOffline
-                      ? '改动沉淀为 JSON Patch，面对面扫码即同步'
-                      : <>延迟: <span className="font-mono tabular-nums font-semibold">28ms</span> · 成员实时光标广播中</>}
-                  </p>
-                </div>
+            <div className="mt-5 rounded-lg bg-[#FFFFF9] p-3 border border-[#241E20]/[0.06] text-xs">
+              <span className="text-[#6E6A67] block text-[10px]">输入示例:</span>
+              <span className="text-[#241E20] font-medium block mt-1">
+                “我们 5 个人开 MPV 走川西，老人腿脚不便，千万别安排爬山的台阶！”
+              </span>
+              <div className="mt-2 pt-2 border-t border-[#241E20]/[0.06] flex items-center justify-between text-[11px] text-emerald-700 font-medium">
+                <span>✓ 坡度过滤断言生效</span>
+                <span>排除陡坡步道 14 处</span>
               </div>
+            </div>
 
-              <div className="mt-3 flex items-center justify-between rounded-control bg-ink/[0.04] px-3 py-2 text-xs">
-                <span className="text-ink-soft">离线数据安全校验</span>
-                <span className="font-mono font-semibold text-jade">spec/patch.schema.json ✓</span>
-              </div>
+            <div className="mt-4 pt-3 border-t border-[#241E20]/[0.06] flex flex-wrap gap-1.5 text-[11px]">
+              <span className="unify-pill-badge !text-[10px] !py-0.5">多轮意图消歧</span>
+              <span className="unify-pill-badge !text-[10px] !py-0.5">动态节奏均衡</span>
             </div>
           </div>
 
-          {/* Card 3: Tier 0 智能座舱极简投车协议 */}
-          <div className="glass-strong rounded-card p-5 sm:p-6 transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08] flex flex-col justify-between min-w-0">
+          {/* Card 2: WeChat Zero-Login Collaborative Wishlist */}
+          <div className="unify-card p-6 flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between pb-3 border-b border-ink/[0.06]">
-                <span className="chip bg-lapis/15 text-lapis font-semibold text-xs ring-1 ring-lapis/30">
-                  F-M07-01 极简互联
-                </span>
-                <span className="font-mono text-xs text-ink-soft">Tier 0 免签约</span>
-              </div>
-              <h3 className="mt-4 font-sans text-base sm:text-lg font-bold tracking-tight text-ink">
-                车机投屏与途经点协议
-              </h3>
-              <p className="mt-1 text-xs text-ink-soft leading-relaxed">
-                无需车企定制系统或蓝牙配对，利用原生 Intent 标准将 12 个途经点一键注入车机高德/百度。
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#FE3C01] block">
+                COLLABORATIVE SIGNALS
+              </span>
+              <h4 className="mt-2 font-serif text-xl font-normal text-[#241E20]">
+                全团微信免登愿望池
+              </h4>
+              <p className="mt-2 text-xs leading-relaxed text-[#6E6A67]">
+                分享微信卡片，同乘伙伴无需下载 App 即可点亮心仪打卡点。算法自动加权计算，智能平衡各方意图。
               </p>
             </div>
 
-            <div className="mt-5 rounded-control bg-[#14171c] p-4 text-paper shadow-level-static border border-white/10">
-              <div className="flex items-center justify-between text-xs text-white/70">
-                <span>车载大屏实时镜像</span>
-                <span className="text-gold font-medium">HUD 导航中</span>
+            <div className="mt-5 rounded-lg bg-[#FFFFF9] p-3 border border-[#241E20]/[0.06] space-y-2 text-xs">
+              <div className="flex justify-between items-center">
+                <span className="font-medium text-[#241E20]">鱼子西星空日落</span>
+                <span className="text-[#FE3C01] font-mono text-[11px] font-semibold">4/5 票</span>
               </div>
-              <div className="mt-2 flex items-center gap-2 text-sm font-semibold text-white">
-                <RoadIcon className="h-4 w-4 text-gold shrink-0" />
-                <span className="truncate">当前路段：跨区域自驾主干道 ➔ 高原观景服务区</span>
+              <div className="w-full bg-[#241E20]/10 h-1.5 rounded-full overflow-hidden">
+                <div className="bg-[#FE3C01] h-full w-4/5" />
               </div>
-              <div className="mt-3 flex items-center justify-between text-xs text-white/60 border-t border-white/10 pt-2.5">
-                <span className="font-mono tabular-nums">车辆规格: 5.25m × 1.96m × 2.15m (7座 MPV 加装车顶箱)</span>
-                <span className="text-jade font-semibold">无窄道预警 ✓</span>
+              <div className="flex justify-between items-center text-[10px] text-[#6E6A67]">
+                <span>小林、王叔、张阿姨想去</span>
+                <span>对齐 19:20 黄金时刻</span>
               </div>
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-[#241E20]/[0.06] flex flex-wrap gap-1.5 text-[11px]">
+              <span className="unify-pill-badge !text-[10px] !py-0.5">免注册微信同频</span>
+              <span className="unify-pill-badge !text-[10px] !py-0.5">冲突权重消解</span>
             </div>
           </div>
 
-          {/* Card 4: 地接社 B 端品牌白标换肤滑块 */}
-          <div className="glass-strong rounded-card p-5 sm:p-6 transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08] flex flex-col justify-between min-w-0">
+          {/* Card 3: 2.15m Height Clearance Simulator */}
+          <div className="unify-card p-6 flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between pb-3 border-b border-ink/[0.06]">
-                <span className="chip bg-gold/15 text-gold-ink font-semibold text-xs ring-1 ring-gold/30">
-                  F-M11-01 B端定制
-                </span>
-                <span className="font-mono text-xs text-ink-soft">机构独家专属</span>
-              </div>
-              <h3 className="mt-4 font-sans text-base sm:text-lg font-bold tracking-tight text-ink">
-                旅行社白标与品牌换肤
-              </h3>
-              <p className="mt-1 text-xs text-ink-soft leading-relaxed">
-                一键隐去平台标识，注入定制机构 Logo、专属主题色及领队个人签名名片。
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#FE3C01] block">
+                RIGID PHYSICAL GUARDRAILS
+              </span>
+              <h4 className="mt-2 font-serif text-xl font-normal text-[#241E20]">
+                2.15m 限高刚性风控 (BR-025)
+              </h4>
+              <p className="mt-2 text-xs leading-relaxed text-[#6E6A67]">
+                7座 MPV 加装车顶行李箱后高度达 2.15m。系统在路线规划与车机领航中全程物理拦截老城限高地库与涵洞。
               </p>
             </div>
 
-            <div>
-              {/* Live brand switcher */}
-              <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="B 端旅行社品牌换肤演练">
-                {BRANDS.map((b) => (
-                  <button
-                    key={b.name}
-                    type="button"
-                    onClick={() => setSelectedBrand(b)}
-                    className={`min-h-[44px] rounded-pill px-3.5 py-2 text-xs font-semibold transition-all inline-flex items-center gap-1.5 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
-                      selectedBrand.name === b.name
-                        ? 'bg-gold text-paper shadow-level-static ring-1 ring-gold-ink'
-                        : 'bg-paper/80 text-ink ring-1 ring-ink/10 hover:bg-paper'
-                    }`}
-                  >
-                    <span
-                      className="h-2.5 w-2.5 rounded-full inline-block"
-                      style={{ backgroundColor: b.primary }}
-                    />
-                    <span>{b.themeName}</span>
-                  </button>
-                ))}
-              </div>
-
-              {/* Live Preview card */}
-              <div
-                className="mt-4 rounded-control p-4 transition-colors duration-300 shadow-level-static border border-ink/[0.08] bg-white"
-                style={{
-                  borderLeft: `5px solid ${selectedBrand.primary}`,
-                }}
-              >
-                <div className="flex items-center justify-between">
-                  <span
-                    className="font-sans text-xs font-bold"
-                    style={{ color: selectedBrand.primary }}
-                  >
-                    {selectedBrand.name}
-                  </span>
-                  <span className="text-xs text-ink-soft">官方认证路书</span>
-                </div>
-                <p className="mt-1.5 text-xs font-semibold text-ink">
-                  全地形全景漫游 · 尊享 9 日私人订制行
-                </p>
-                <p className="mt-1 text-xs text-ink-soft">
-                  已根据 spec/brand.schema.json 完成资产签名验真
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 5: 7座 MPV / SUV 车顶箱通达性物理规则引擎 */}
-          <div className="glass-strong rounded-card p-5 sm:p-6 transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08] flex flex-col justify-between min-w-0">
-            <div>
-              <div className="flex items-center justify-between pb-3 border-b border-ink/[0.06]">
-                <span className="chip bg-gold/15 text-gold-ink font-semibold text-xs ring-1 ring-gold/30">
-                  F-M05-03 物理规则
-                </span>
-                <span className="font-mono text-xs text-ink-soft">自驾车型工程建模</span>
-              </div>
-              <h3 className="mt-4 font-sans text-base sm:text-lg font-bold tracking-tight text-ink">
-                7座 MPV 车顶箱限高通达校验
-              </h3>
-              <p className="mt-1 text-xs text-ink-soft leading-relaxed">
-                针对 5 口之家自驾常用的 7 座豪华 MPV（如腾势 D9/别克 GL8 加装车顶箱），精准建模车长 <span className="font-mono tabular-nums">5.25m</span>、转弯半径与 <span className="font-mono tabular-nums">2.15m</span> 限高。
-              </p>
-            </div>
-
-            {/* Height slider */}
-            <div className="mt-5 rounded-control bg-paper/90 p-4 border border-ink/[0.08] shadow-level-static">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-ink-soft">当前模拟车辆总高：</span>
-                <span className="font-mono font-bold tabular-nums text-ink text-sm">
-                  {vehicleHeight.toFixed(2)} 米
-                </span>
+            <div className="mt-5 rounded-lg bg-[#FFFFF9] p-3 border border-[#241E20]/[0.06]">
+              <div className="flex justify-between text-xs mb-1.5">
+                <span className="text-[#6E6A67]">当前整车高度设定:</span>
+                <span className="font-mono font-bold text-[#FE3C01]">{vehicleHeight.toFixed(2)} 米</span>
               </div>
               <input
                 type="range"
-                min="1.8"
-                max="2.5"
+                min="1.80"
+                max="2.50"
                 step="0.05"
                 value={vehicleHeight}
                 onChange={(e) => setVehicleHeight(parseFloat(e.target.value))}
-                aria-label="车辆总高度滑块 (米)"
-                className="mt-3 w-full h-3 accent-gold cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 rounded-pill"
+                aria-label="整车高度滑块"
+                className="w-full accent-[#FE3C01] cursor-pointer"
               />
-
-              {/* Responsive alert container - wraps gracefully without overflowing mobile */}
-              <div className="mt-3.5 flex items-start text-xs">
-                {vehicleHeight <= 2.0 ? (
-                  <div className="rounded-control bg-jade/15 text-jade font-semibold text-xs p-2.5 ring-1 ring-jade/30 flex items-start gap-1.5 w-full leading-relaxed">
-                    <CheckIcon className="h-4 w-4 shrink-0 mt-0.5" />
-                    <span>轿车/裸车 SUV 高度，所有地库与老城窄巷畅通</span>
-                  </div>
-                ) : vehicleHeight <= 2.2 ? (
-                  <div className="rounded-control bg-gold/15 text-gold-ink font-semibold text-xs p-2.5 ring-1 ring-gold/30 flex items-start gap-1.5 w-full leading-relaxed">
-                    <AlertTriangleIcon className="h-4 w-4 shrink-0 mt-0.5 text-gold" />
-                    <span>7座MPV+车顶箱：避开老城 2.0m 地库，自动规划地面车位</span>
-                  </div>
+              <div className="mt-2 text-[11px]">
+                {vehicleHeight > 2.05 ? (
+                  <span className="text-amber-700 font-semibold flex items-center gap-1">
+                    <span>⚠</span> 触发拦截: 严禁进入 ≤2.0m 老城地库，已重定向至地面宽位
+                  </span>
                 ) : (
-                  <div className="rounded-control bg-rose-50 text-rose-800 font-semibold text-xs p-2.5 ring-1 ring-rose-300/60 flex items-start gap-1.5 w-full leading-relaxed">
-                    <AlertTriangleIcon className="h-4 w-4 shrink-0 mt-0.5 text-rose-600" />
-                    <span>严重拦截！该高度超过景区与县道 2.2m 限高横杆</span>
-                  </div>
+                  <span className="text-emerald-700 font-semibold flex items-center gap-1">
+                    <span>✓</span> 通行正常: 满足绝大多数普通地库标准
+                  </span>
                 )}
               </div>
             </div>
+
+            <div className="mt-4 pt-3 border-t border-[#241E20]/[0.06] flex flex-wrap gap-1.5 text-[11px]">
+              <span className="unify-pill-badge !text-[10px] !py-0.5">物理规则断言</span>
+              <span className="unify-pill-badge !text-[10px] !py-0.5">地库涵洞强防御</span>
+            </div>
           </div>
 
-          {/* Card 6: 本地 EXIF 照片隐私回忆录 */}
-          <div className="glass-strong rounded-card p-5 sm:p-6 transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08] flex flex-col justify-between min-w-0">
+          {/* Card 4: Cockpit Autonomous NOA */}
+          <div className="unify-card p-6 flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between pb-3 border-b border-ink/[0.06]">
-                <span className="chip bg-jade/15 text-jade font-semibold text-xs ring-1 ring-jade/30">
-                  F-M10-02 隐私零泄露
-                </span>
-                <span className="font-mono text-xs text-ink-soft">纯前端 Web Worker</span>
-              </div>
-              <h3 className="mt-4 font-sans text-base sm:text-lg font-bold tracking-tight text-ink">
-                本地 EXIF 隐私足迹生成
-              </h3>
-              <p className="mt-1 text-xs text-ink-soft leading-relaxed">
-                手机拍摄的几百张家庭合影，原图完全不出浏览器。在 Worker 线程本地聚类生成旅行回忆录。
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#FE3C01] block">
+                C-CABIN AUTONOMOUS NOA
+              </span>
+              <h4 className="mt-2 font-serif text-xl font-normal text-[#241E20]">
+                车机双向车道级领航协同
+              </h4>
+              <p className="mt-2 text-xs leading-relaxed text-[#6E6A67]">
+                手机规划一键投屏腾势座舱，车道级流金光毯导引弯道变道，驻车 P 挡自动无感交接手机步行微镜头。
               </p>
             </div>
 
-            <div className="mt-5 rounded-control bg-paper/90 p-4 border border-ink/[0.08] shadow-level-static">
-              <div className="flex items-center justify-between border-b border-ink/[0.06] pb-2 text-xs">
-                <span className="font-semibold text-ink"><span className="font-mono tabular-nums">342</span> 张合照时空足迹分析</span>
-                <span className="text-jade font-bold">100% 本地运算</span>
+            <div className="mt-5 rounded-lg bg-[#241E20] text-white p-3 space-y-2 text-xs font-mono">
+              <div className="flex justify-between items-center text-white/70">
+                <span>NOA 巡航引导</span>
+                <span className="text-emerald-400 font-bold">82 km/h</span>
               </div>
-              <div className="mt-3 flex items-center gap-2.5">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-control bg-blue-50 text-blue-600">
-                  <CameraIcon className="h-4 w-4" />
-                </span>
-                <div className="min-w-0 flex-1 text-xs text-ink-soft">
-                  <p className="font-semibold text-ink truncate">国家地质公园 · <span className="font-mono tabular-nums">19:42</span> 湖畔落日</p>
-                  <p className="text-xs">根据 GPS 经纬度与时间戳自动对齐到路书 D4 节点</p>
+              <div className="flex items-center gap-2 text-[11px] text-amber-400">
+                <span>✦</span>
+                <span>距限高涵洞 1.2km，已提前执行右车道驶出</span>
+              </div>
+              <div className="text-[10px] text-white/40 pt-1 border-t border-white/10 flex justify-between">
+                <span>腾势 D9 顶视自车感知</span>
+                <span>高精 RTK 校验</span>
+              </div>
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-[#241E20]/[0.06] flex flex-wrap gap-1.5 text-[11px]">
+              <span className="unify-pill-badge !text-[10px] !py-0.5">车机大屏定制</span>
+              <span className="unify-pill-badge !text-[10px] !py-0.5">驻车步行接力</span>
+            </div>
+          </div>
+
+          {/* Card 5: Zero-Build Deliverability & Offline Safe Cabin */}
+          <div className="unify-card p-6 flex flex-col justify-between">
+            <div>
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#FE3C01] block">
+                ZERO-BUILD DELIVERABILITY
+              </span>
+              <h4 className="mt-2 font-serif text-xl font-normal text-[#241E20]">
+                零构建离线单文件安全舱
+              </h4>
+              <p className="mt-2 text-xs leading-relaxed text-[#6E6A67]">
+                单文件自包含 HTML，零外部网络拉取。进入阿里/理塘无人区即使断网数日，路书依旧双击秒开，三级降级防御白屏。
+              </p>
+            </div>
+
+            <div className="mt-5 rounded-lg bg-[#FFFFF9] p-3 border border-[#241E20]/[0.06]">
+              <div className="flex items-center justify-between text-xs mb-2">
+                <span className="text-[#6E6A67]">网络状态模拟器:</span>
+                <button
+                  type="button"
+                  onClick={() => setIsOffline(!isOffline)}
+                  className={`px-2.5 py-1 rounded text-xs font-mono font-medium transition-colors ${
+                    isOffline ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'
+                  }`}
+                >
+                  {isOffline ? '已模拟无人区断网 ✖' : '当前在线 4G/5G ✓'}
+                </button>
+              </div>
+              <div className="text-[11px] leading-tight">
+                {isOffline ? (
+                  <span className="text-amber-700 font-semibold">
+                    [三级降级激活] 地图瓦片已切换离线 SVG 矢量拓扑，毫秒响应零白屏！
+                  </span>
+                ) : (
+                  <span className="text-[#6E6A67]">
+                    在线状态下实时同步天气预警与多人微信变更，自动持久化至 IndexedDB。
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-[#241E20]/[0.06] flex flex-wrap gap-1.5 text-[11px]">
+              <span className="unify-pill-badge !text-[10px] !py-0.5">零外部运行时依赖</span>
+              <span className="unify-pill-badge !text-[10px] !py-0.5">三级降级防白屏</span>
+            </div>
+          </div>
+
+          {/* Card 6: Multi-Dimensional Post-Trip Reporting */}
+          <div className="unify-card p-6 flex flex-col justify-between">
+            <div>
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-[#FE3C01] block">
+                POST-TRIP INSIGHTS & AA
+              </span>
+              <h4 className="mt-2 font-serif text-xl font-normal text-[#241E20]">
+                行程履约看板与智能平账
+              </h4>
+              <p className="mt-2 text-xs leading-relaxed text-[#6E6A67]">
+                旅途结束后自动生成足迹热力图与耗电耗油复盘，多人费用支出通过最优平账算法一键结算。
+              </p>
+            </div>
+
+            <div className="mt-5 rounded-lg bg-[#FFFFF9] p-3 border border-[#241E20]/[0.06] text-xs">
+              <div className="flex justify-between items-center mb-1.5">
+                <span className="text-[#6E6A67]">全车同行人数:</span>
+                <div className="flex gap-1.5">
+                  {[3, 4, 5, 7].map((num) => (
+                    <button
+                      key={num}
+                      type="button"
+                      onClick={() => setMemberCount(num)}
+                      className={`h-5 w-5 rounded text-[10px] font-mono ${
+                        memberCount === num ? 'bg-[#241E20] text-white font-bold' : 'bg-white border text-[#6E6A67]'
+                      }`}
+                    >
+                      {num}
+                    </button>
+                  ))}
                 </div>
               </div>
-              <div className="mt-3 text-xs text-ink-soft flex items-center gap-1.5">
-                <CheckIcon className="h-3.5 w-3.5 text-jade shrink-0" />
-                <span>用户相册照片绝不上云 · 遵守个人信息保护法与 GDPR</span>
+              <div className="flex justify-between items-center pt-1 text-[11px] font-mono text-[#241E20]">
+                <span>总支出 ¥8,450 (油电+餐饮+门票)</span>
+                <span className="text-[#FE3C01] font-bold">人均 ¥{(8450 / memberCount).toFixed(0)}</span>
               </div>
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-[#241E20]/[0.06] flex flex-wrap gap-1.5 text-[11px]">
+              <span className="unify-pill-badge !text-[10px] !py-0.5">最优分账矩阵</span>
+              <span className="unify-pill-badge !text-[10px] !py-0.5">足迹轨迹回放</span>
             </div>
           </div>
         </div>

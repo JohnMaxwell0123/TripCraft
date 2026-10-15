@@ -249,42 +249,44 @@ export function TechFoundation() {
 
       <div className="relative mx-auto max-w-[1240px] px-4 sm:px-8">
         {/* Section Header */}
-        <div className="text-center">
-          <p className="eyebrow text-blue-900 font-semibold">ENGINEERING FOUNDATION & PHILOSOPHY · 技术底座与工程哲学</p>
-          <h2 className="mt-3 font-sans text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-ink leading-[1.3]">
-            支撑旅艺的硬核技术底座
+        <div className="text-center max-w-3xl mx-auto">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#FE3C01]">
+            ENGINEERING FOUNDATION · 架构哲学与四大支柱
+          </p>
+          <h2 className="mt-3 font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#241E20] leading-[1.15]">
+            支撑旅艺的硬核技术底座与工程铁律
           </h2>
-          <p className="mt-3 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed text-ink-soft">
+          <p className="mt-4 text-sm sm:text-base leading-relaxed text-[#6E6A67]">
             不盲从云端黑盒，不妥协荒野白屏。以 Local-First 本地主权、严谨 DSL 形式化契约与防幻觉物理断言，构筑坚不可摧的自驾协同中枢。
           </p>
         </div>
 
         {/* Engineering Hard Benchmarks Bar */}
-        <div className="mt-8 sm:mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-          <div className="glass rounded-card p-3.5 sm:p-5 text-center transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08]">
-            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-blue-900">≤ 1.8 MB</p>
-            <p className="mt-1 text-xs font-semibold text-ink">出游容灾舱体积</p>
-            <p className="text-xs text-ink-soft">含全量矢量图与子集字体</p>
+        <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+          <div className="unify-card p-4 sm:p-5 text-center">
+            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#241E20]">≤ 1.8 MB</p>
+            <p className="mt-1 text-xs font-semibold text-[#241E20]">出游容灾舱体积</p>
+            <p className="text-[11px] text-[#6E6A67]">含全量矢量图与子集字体</p>
           </div>
-          <div className="glass rounded-card p-3.5 sm:p-5 text-center transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08]">
-            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-blue-900">&lt; 300 ms</p>
-            <p className="mt-1 text-xs font-semibold text-ink">离线双击秒开耗时</p>
-            <p className="text-xs text-ink-soft">零网络冷启动首屏</p>
+          <div className="unify-card p-4 sm:p-5 text-center">
+            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#241E20]">&lt; 300 ms</p>
+            <p className="mt-1 text-xs font-semibold text-[#241E20]">离线双击秒开耗时</p>
+            <p className="text-[11px] text-[#6E6A67]">零网络冷启动首屏</p>
           </div>
-          <div className="glass rounded-card p-3.5 sm:p-5 text-center transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08]">
-            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-blue-900">25 道</p>
-            <p className="mt-1 text-xs font-semibold text-ink">物理规则刚性防御墙</p>
-            <p className="text-xs text-ink-soft">BR-001~025 彻底杜绝幻觉</p>
+          <div className="unify-card p-4 sm:p-5 text-center">
+            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#FE3C01]">25 道</p>
+            <p className="mt-1 text-xs font-semibold text-[#241E20]">物理规则刚性防御墙</p>
+            <p className="text-[11px] text-[#6E6A67]">BR-001~025 彻底杜绝幻觉</p>
           </div>
-          <div className="glass rounded-card p-3.5 sm:p-5 text-center transition-all duration-300 shadow-level-static hover:shadow-level-hover border border-ink/[0.08]">
-            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-blue-900">Tier 0</p>
-            <p className="mt-1 text-xs font-semibold text-ink">极简座舱互联协议</p>
-            <p className="text-xs text-ink-soft">零前装准入深度唤醒</p>
+          <div className="unify-card p-4 sm:p-5 text-center">
+            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#241E20]">Tier 0</p>
+            <p className="mt-1 text-xs font-semibold text-[#241E20]">极简座舱互联协议</p>
+            <p className="text-[11px] text-[#6E6A67]">零前装准入深度唤醒</p>
           </div>
         </div>
 
         {/* 4 Pillars Interactive Tab Selector */}
-        <div className="mt-8 sm:mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4" role="tablist" aria-label="技术底座四大支柱">
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4" role="tablist" aria-label="技术底座四大支柱">
           {PILLARS.map((pillar) => {
             const isSelected = activePillar.id === pillar.id;
             return (
@@ -299,30 +301,30 @@ export function TechFoundation() {
                   setActivePillar(pillar);
                   setGuardrailTested(false);
                 }}
-                className={`relative rounded-card p-3.5 sm:p-4 text-left transition-all duration-300 flex flex-col justify-between shadow-level-static active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
+                className={`relative rounded-[10px] p-4 text-left transition-all duration-200 flex flex-col justify-between active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01] ${
                   isSelected
-                    ? 'glass-strong ring-2 ring-blue-600/70 shadow-level-hover border-blue-600/40 -translate-y-0.5'
-                    : 'bg-paper/70 hover:bg-paper/95 border border-ink/[0.08] hover:border-ink/20'
+                    ? 'bg-white border-2 border-[#241E20] shadow-[0_4px_20px_rgba(36,30,32,0.08)] -translate-y-0.5'
+                    : 'bg-white/70 hover:bg-white border border-[#241E20]/[0.08] hover:border-[#241E20]/20'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between">
                     <span
-                      className={`font-mono text-lg font-bold tabular-nums ${
-                        isSelected ? 'text-blue-900' : 'text-ink-soft'
+                      className={`font-mono text-base font-bold tabular-nums ${
+                        isSelected ? 'text-[#FE3C01]' : 'text-[#6E6A67]'
                       }`}
                     >
                       {pillar.number}
                     </span>
-                    <span className="chip rounded-pill py-0 text-xs bg-ink/5 text-ink-soft">
+                    <span className="unify-pill-badge !text-[10px] !py-0.5">
                       {pillar.tag.split('·')[0].trim()}
                     </span>
                   </div>
-                  <span className="block mt-2 font-sans text-sm font-bold text-ink sm:text-base leading-snug">
+                  <span className="block mt-2 font-serif text-sm sm:text-base font-semibold text-[#241E20] leading-snug">
                     {pillar.shortTitle}
                   </span>
                 </div>
-                <p className="mt-3 text-xs text-ink-soft line-clamp-1">
+                <p className="mt-2 text-[11px] text-[#6E6A67] line-clamp-1 font-mono">
                   {pillar.enTitle}
                 </p>
               </button>
@@ -331,7 +333,7 @@ export function TechFoundation() {
         </div>
 
         {/* Main Interactive Stage for Selected Pillar */}
-        <div className="mt-8 grid gap-8 lg:grid-cols-12 lg:items-start">
+        <div className="mt-8 grid gap-8 lg:grid-cols-12 lg:items-start text-left">
           {/* Left Column: Philosophy Description & Highlights */}
           <div
             className="space-y-6 lg:col-span-6 min-w-0"
@@ -346,36 +348,36 @@ export function TechFoundation() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 16 }}
                 transition={{ duration: 0.25 }}
-                className="glass-strong rounded-container p-6 sm:p-8 shadow-level-static border border-ink/[0.08]"
+                className="unify-card p-6 sm:p-8"
               >
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-ink/[0.06] pb-4">
-                  <span className="font-mono text-2xl font-bold tabular-nums text-blue-900">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#241E20]/[0.06] pb-4">
+                  <span className="font-mono text-xl font-bold tabular-nums text-[#241E20]">
                     PILLAR {activePillar.number}
                   </span>
-                  <span className="chip rounded-pill bg-blue-50 text-blue-900 font-semibold text-xs ring-1 ring-blue-200/60">
+                  <span className="unify-pill-badge text-[#FE3C01] font-mono">
                     {activePillar.contractBadge}
                   </span>
                 </div>
 
-                <h3 className="mt-5 font-sans text-xl sm:text-2xl font-bold text-ink leading-snug">
+                <h3 className="mt-5 font-serif text-2xl font-normal text-[#241E20] leading-snug">
                   {activePillar.title}
                 </h3>
-                <p className="mt-1 text-xs font-mono uppercase tracking-wider text-ink-soft">
+                <p className="mt-1 text-xs font-mono uppercase tracking-wider text-[#6E6A67]">
                   {activePillar.enTitle}
                 </p>
 
-                {/* Engineering philosophical quote */}
-                <blockquote className="mt-5 rounded-control bg-blue-50/70 border-l-4 border-blue-800 p-4 text-xs font-sans italic text-ink sm:text-sm leading-relaxed">
+                {/* Engineering philosophical quote (Unify quote style) */}
+                <div className="mt-5 rounded-[8px] bg-[#FFFFF9] border border-[#241E20]/[0.06] p-4 text-sm font-serif italic text-[#241E20] leading-relaxed unify-quote">
                   {activePillar.quote}
-                </blockquote>
+                </div>
 
-                <p className="mt-5 text-xs text-ink-soft leading-relaxed sm:text-sm">
+                <p className="mt-5 text-xs text-[#6E6A67] leading-relaxed sm:text-sm">
                   {activePillar.summary}
                 </p>
 
                 {/* Key Technical Highlights */}
                 <div className="mt-6 space-y-3">
-                  <p className="text-xs font-bold uppercase tracking-wider text-ink">
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#241E20]">
                     工程落地要点：
                   </p>
                   {activePillar.highlights.map((item, idx) => (

@@ -8,21 +8,21 @@
  * 「沉，不是亮」——氧化金箔、青金石、沙色暖白、赭石红、暖褐黑（不用纯黑）
  * ======================================================================== */
 :root {
-  --tc-sand: 248 250 252;       /* #F8FAFC 现代中性清爽冷白 (Slate 50) */
+  --tc-sand: 255 255 249;       /* #FFFFF9 Unify 顶级温润象牙暖白 (Warm Ivory) */
   --tc-paper: 255 255 255;      /* #FFFFFF 纯白高光卡片 (Pure White) */
-  --tc-ink: 15 23 42;           /* #0F172A 现代极深石板黑 (Slate 900) */
-  --tc-ink-soft: 71 85 105;     /* #475569 次级文字 (Slate 600，高对比度) */
-  --tc-gold: 184 134 59;        /* #B8863B 敦煌氧化金箔（舞台内特色/大字） */
-  --tc-gold-ink: 122 85 32;     /* #7A5520 氧化金文字（沉稳金墨） */
-  --tc-lapis: 30 58 138;        /* #1E3A8A 现代极客深蓝 / 青金石蓝 (Blue 900) */
-  --tc-lapis-deep: 15 23 42;    /* #0F172A 戈壁夜空/深色底蕴 (Slate 900) */
-  --tc-ochre: 140 58 43;        /* #8C3A2B 赭石红 */
-  --tc-jade: 14 134 116;        /* #0E8674 青甘碧（通行 / 成功） */
-  --tc-amber: 217 119 6;        /* #D97706 琥珀（提醒） */
-  --tc-dusk: 201 138 90;        /* #C98A5A 鸣沙山落日 */
-  --tc-accent: var(--tc-lapis); /* 外部主行动使用深蓝，白标换肤可覆盖 */
+  --tc-ink: 36 30 32;           /* #241E20 Unify 高对比度炭黑 (Deep Charcoal) */
+  --tc-ink-soft: 110 106 103;   /* #6E6A67 Unify 次级文字灰 (Muted Charcoal) */
+  --tc-gold: 212 160 78;        /* #D4A04E 沉稳暗金 */
+  --tc-gold-ink: 122 85 32;     /* #7A5520 金墨 */
+  --tc-lapis: 36 30 32;         /* Unify 主色调对齐炭黑 */
+  --tc-lapis-deep: 26 21 23;    /* #1A1517 极深炭黑底色 */
+  --tc-ochre: 254 60 1;         /* #FE3C01 Unify 核心 Supercharge 红橙 */
+  --tc-jade: 16 185 129;        /* #10B981 通行绿色 */
+  --tc-amber: 245 158 11;       /* #F59E0B 预警琥珀色 */
+  --tc-dusk: 254 60 1;          /* #FE3C01 极光橙 */
+  --tc-accent: 254 60 1;        /* #FE3C01 核心高光强调色 */
 
-  --tc-glass-bg: 255 255 255;   /* 现代高透玻璃基底 */
+  --tc-glass-bg: 255 255 249;   /* Unify 暖白半透玻璃基底 */
   --tc-ease-dust: cubic-bezier(0.22, 0.8, 0.24, 1);
 
   color-scheme: light;
@@ -33,27 +33,28 @@ html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: auto;
   scroll-padding-top: 5rem;
+  background-color: #FFFFF9;
 }
 
 body {
-  background: rgb(var(--tc-sand));
-  color: rgb(var(--tc-ink));
-  font-feature-settings: 'palt' 1;
+  background: #FFFFF9;
+  color: #241E20;
+  font-feature-settings: 'palt' 1, 'kern' 1;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow-x: clip;
   max-width: 100vw;
 }
 
 ::selection {
-  background: rgb(var(--tc-lapis) / 0.18);
-  color: rgb(var(--tc-ink));
+  background: #241E20;
+  color: #FFFFF9;
 }
 
 :focus-visible {
-  outline: 2px solid rgb(var(--tc-lapis));
+  outline: 2px solid #FE3C01;
   outline-offset: 2px;
-  border-radius: 6px;
 }
 
 @layer components {
@@ -116,29 +117,76 @@ body {
     background-position: 0 0;
   }
 
-  .eyebrow {
-    @apply text-xs font-semibold uppercase tracking-[0.24em] text-blue-900;
+  /* Unify 顶级设计语言专属组件 */
+  .supercharge {
+    position: relative;
+    display: inline-block;
+    color: #FE3C01;
+    font-style: italic;
+    font-kerning: normal;
+    text-shadow: 0 0 20px rgba(254, 60, 1, 0.45);
   }
 
-  .chip {
-    @apply inline-flex items-center gap-1.5 rounded-pill px-3 py-1 text-xs font-medium leading-none;
+  .unify-btn-primary {
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[6px] px-5 py-2.5 text-sm font-medium transition-all duration-200 select-none;
+    background-color: #241E20;
+    color: #FFFFF9;
+    border: 1px solid #241E20;
+    box-shadow: 0 1px 3px rgba(36, 30, 32, 0.1);
+  }
+  .unify-btn-primary:hover {
+    background-color: rgba(36, 30, 32, 0.88);
+    transform: translateY(-0.5px);
+  }
+  .unify-btn-primary:active {
+    transform: translateY(0);
   }
 
-  /* 现代专业软件深蓝色主行动按钮：极客深蓝/青金石渐变 + 精密微光反射 + 优雅弥散阴影 */
-  .btn-primary {
-    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-pill px-6 text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 active:scale-95;
-    background: linear-gradient(180deg, #1e3a8a 0%, #0f172a 100%);
-    color: #ffffff;
-    border: 1px solid rgb(255 255 255 / 0.16);
-    box-shadow: 0 8px 24px -4px rgba(30, 58, 138, 0.38), 0 2px 6px -1px rgba(15, 23, 42, 0.25), inset 0 1px 0 rgba(255 255 255 / 0.25);
+  .unify-btn-secondary {
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[6px] px-5 py-2.5 text-sm font-medium transition-all duration-200 select-none;
+    background-color: transparent;
+    color: #241E20;
+    border: 1px solid rgba(36, 30, 32, 0.15);
   }
-  .btn-primary:hover {
-    background: linear-gradient(180deg, #2563eb 0%, #1e3a8a 100%);
-    box-shadow: 0 12px 28px -4px rgba(30, 58, 138, 0.48), 0 4px 10px -2px rgba(15, 23, 42, 0.25), inset 0 1px 0 rgba(255 255 255 / 0.35);
-    transform: translateY(-1px);
+  .unify-btn-secondary:hover {
+    background-color: rgba(36, 30, 32, 0.04);
+    border-color: rgba(36, 30, 32, 0.3);
   }
-  .btn-ghost {
-    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-pill border border-slate-200/90 bg-white/85 px-6 text-sm font-semibold text-slate-800 transition-all duration-200 hover:bg-white hover:border-slate-300 hover:text-slate-900 hover:shadow-level-static focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 active:scale-95;
+
+  .unify-card {
+    background: #FFFFFF;
+    border: 1px solid rgba(36, 30, 32, 0.08);
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(36, 30, 32, 0.04);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .unify-card:hover {
+    border-color: rgba(36, 30, 32, 0.16);
+    box-shadow: 0 12px 32px rgba(36, 30, 32, 0.08);
+  }
+
+  .unify-pill-badge {
+    @apply inline-flex items-center gap-2 rounded-full px-3.5 py-1 text-xs font-medium;
+    background: #FFFFFF;
+    border: 1px solid rgba(36, 30, 32, 0.1);
+    color: #241E20;
+    box-shadow: 0 1px 3px rgba(36, 30, 32, 0.04);
+  }
+
+  .unify-quote {
+    position: relative;
+    padding-left: 1.25rem;
+  }
+  .unify-quote::before {
+    content: '“';
+    position: absolute;
+    left: 0;
+    top: -0.3rem;
+    font-size: 2.2rem;
+    line-height: 1;
+    color: #FE3C01;
+    font-family: Georgia, serif;
+    opacity: 0.75;
   }
 
   .mask-fade-b {
