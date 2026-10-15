@@ -89,17 +89,17 @@ export const T = {
   chatOut: [0.198, 0.222],
 
   /* ── 02 生成 ─────────────────────────────── */
-  sidebarIn: [0.21, 0.236],
-  timelineIn: [0.218, 0.24],
-  dayCardsStart: 0.234,
+  sidebarIn: [0.20, 0.22],
+  timelineIn: [0.205, 0.22],
+  dayCardsStart: 0.22,
   dayCardStep: 0.0058,
   dayCardDur: 0.012,
-  mapIn: [0.224, 0.25],
-  camera: [0.236, 0.3],
-  routeDraw: [0.29, 0.362],
-  elevIn: [0.352, 0.372],
-  elevDraw: [0.36, 0.392],
-  badges: [0.384, 0.394, 0.404],
+  mapIn: [0.205, 0.22],
+  camera: [0.225, 0.29],
+  routeDraw: [0.235, 0.362],
+  elevIn: [0.30, 0.33],
+  elevDraw: [0.32, 0.38],
+  badges: [0.35, 0.365, 0.38, 0.395],
 
   /* ── 03 共创 ─────────────────────────────── */
   shareCursor: [0.418, 0.43],

@@ -267,6 +267,7 @@ function textWidth(s: string, size: number) {
 const BADGES = [
   { stop: 'wsl', text: '✓ G30 连霍高速 · 乌鞘岭长下坡防刹车过热', tone: 'jade' as const, dx: 26, dy: -36, w: textWidth('✓ G30 连霍高速 · 乌鞘岭长下坡防刹车过热', 15) + 24 },
   { stop: 'dx', text: '✓ 丹霞平缓步道 · 7座 MPV 车位充裕', tone: 'jade' as const, dx: -150, dy: 46, w: textWidth('✓ 丹霞平缓步道 · 7座 MPV 车位充裕', 15) + 24 },
+  { stop: 'gz', text: '✓ 瓜州服务区 · 13:00 幼儿午休专属车位', tone: 'amber' as const, dx: -40, dy: -36, w: textWidth('✓ 瓜州服务区 · 13:00 幼儿午休专属车位', 15) + 24 },
   { stop: 'dh', text: '✓ 莫高窟预约无障碍摆渡 · 平层大窟', tone: 'jade' as const, dx: -20, dy: 62, w: textWidth('✓ 莫高窟预约无障碍摆渡 · 平层大窟', 15) + 24 },
 ];
 

@@ -63,17 +63,17 @@ export interface RouteStop {
 }
 
 export const STOPS: RouteStop[] = [
-  { id: 'lz', name: '兰州', sub: '集结', day: 'D0', lon: 103.82, lat: 36.06, elev: 1520, kind: 'city', labelSide: 'left' },
-  { id: 'wsl', name: '乌鞘岭', sub: '2980m', day: 'D1', lon: 102.87, lat: 37.2, elev: 2980, kind: 'pass', labelSide: 'left' },
-  { id: 'ww', name: '武威', day: 'D1', lon: 102.64, lat: 37.93, elev: 1530, kind: 'via', labelSide: 'right' },
-  { id: 'zy', name: '张掖', day: 'D1', lon: 100.45, lat: 38.93, elev: 1480, kind: 'city', labelSide: 'right' },
-  { id: 'dx', name: '七彩丹霞', day: 'D2', lon: 100.0, lat: 38.92, elev: 1750, kind: 'sight', labelSide: 'bottom' },
-  { id: 'jyg', name: '嘉峪关', day: 'D2', lon: 98.29, lat: 39.77, elev: 1700, kind: 'city', labelSide: 'bottom' },
-  { id: 'gz', name: '瓜州', day: 'D3', lon: 95.78, lat: 40.52, elev: 1180, kind: 'via', labelSide: 'top' },
+  { id: 'lz', name: '兰州', sub: '中川机场集结', day: 'D0', lon: 103.82, lat: 36.06, elev: 1520, kind: 'city', labelSide: 'left' },
+  { id: 'wsl', name: '乌鞘岭', sub: '2980m 特长隧道', day: 'D1', lon: 102.87, lat: 37.2, elev: 2980, kind: 'pass', labelSide: 'left' },
+  { id: 'ww', name: '武威', sub: '天马故乡', day: 'D1', lon: 102.64, lat: 37.93, elev: 1530, kind: 'via', labelSide: 'right' },
+  { id: 'zy', name: '张掖', sub: '甘州府', day: 'D1', lon: 100.45, lat: 38.93, elev: 1480, kind: 'city', labelSide: 'right' },
+  { id: 'dx', name: '七彩丹霞', sub: '17:40 晚霞机位', day: 'D2', lon: 100.0, lat: 38.92, elev: 1750, kind: 'sight', labelSide: 'bottom' },
+  { id: 'jyg', name: '嘉峪关', sub: '天下第一雄关', day: 'D2', lon: 98.29, lat: 39.77, elev: 1700, kind: 'city', labelSide: 'bottom' },
+  { id: 'gz', name: '瓜州', sub: '服务区午休', day: 'D3', lon: 95.78, lat: 40.52, elev: 1180, kind: 'via', labelSide: 'top' },
   { id: 'dh', name: '敦煌', sub: '莫高窟 · 鸣沙山', day: 'D3–D5', lon: 94.72, lat: 40.1, elev: 1140, kind: 'city', labelSide: 'bottom' },
-  { id: 'yg', name: '阳关', day: 'D6', lon: 94.06, lat: 39.93, elev: 1250, kind: 'sight', labelSide: 'bottom' },
-  { id: 'ymg', name: '玉门关', day: 'D6', lon: 93.86, lat: 40.35, elev: 1050, kind: 'sight', labelSide: 'left' },
-  { id: 'yd', name: '雅丹', day: 'D7', lon: 93.08, lat: 40.55, elev: 930, kind: 'sight', labelSide: 'top' },
+  { id: 'yg', name: '阳关', sub: '劝君更尽一杯酒', day: 'D6', lon: 94.06, lat: 39.93, elev: 1250, kind: 'sight', labelSide: 'bottom' },
+  { id: 'ymg', name: '玉门关', sub: '春风不度玉门关', day: 'D6', lon: 93.86, lat: 40.35, elev: 1050, kind: 'sight', labelSide: 'left' },
+  { id: 'yd', name: '雅丹', sub: '魔鬼城星空', day: 'D7', lon: 93.08, lat: 40.55, elev: 930, kind: 'sight', labelSide: 'top' },
   { id: 'dh2', name: '敦煌', day: 'D8', lon: 94.8, lat: 40.2, elev: 1140, kind: 'via' },
 ];
 

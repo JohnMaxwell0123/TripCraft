@@ -209,8 +209,8 @@ export function ScrollyStage() {
       <div className="relative mx-auto max-w-[1640px] px-6 sm:px-10 lg:px-12 xl:px-16">
         {/* 左右分栏交互容器：左侧大标题+5个垂直Tab，右侧浮动应用视窗+背景艺术画报 (完全对齐 Unify 图2) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 xl:gap-14 items-center">
-          {/* 左侧栏 (lg:col-span-5 xl:col-span-5)：顶部大标题 + 5个垂直指示条 Tab */}
-          <div className="lg:col-span-5 xl:col-span-5 flex flex-col justify-center text-left" role="tablist">
+          {/* 左侧栏 (lg:col-span-4 xl:col-span-4)：顶部大标题 + 5个垂直指示条 Tab */}
+          <div className="lg:col-span-4 xl:col-span-4 flex flex-col justify-center text-left" role="tablist">
             {/* 顶部标题区 (对齐 Unify 图2: 左对齐 + 优雅大字号 + 橙红斜体强调词) */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -286,88 +286,14 @@ export function ScrollyStage() {
             </div>
           </div>
 
-          {/* 右侧栏 (lg:col-span-7 xl:col-span-7)：Unify 标志性右侧背景艺术卡片 + 前景悬浮应用视窗 */}
-          <div className="lg:col-span-7 xl:col-span-7 w-full relative flex items-center justify-end min-h-[600px] sm:min-h-[660px] xl:min-h-[720px]">
-            {/* Unify 标志性右侧大漠晚霞流动艺术画报 (紧贴右边缘，纵深延展，极具电影感) */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 w-[340px] lg:w-[420px] xl:w-[480px] h-[95%] rounded-[28px] overflow-hidden hidden lg:block shadow-2xl z-0 border border-black/10"
-            >
-              <div className="w-full h-full bg-[#18110D] relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#2a140a] via-[#481c10] to-[#120a06]" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_25%,rgba(254,60,1,0.65),transparent_60%)] blur-2xl" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_85%,rgba(212,160,78,0.45),transparent_55%)] blur-2xl" />
-                <div className="absolute inset-y-0 right-0 w-3/4 bg-gradient-to-l from-[#FE3C01]/30 to-transparent" />
-                <div className="absolute inset-0 opacity-40 mix-blend-overlay bg-[repeating-linear-gradient(45deg,transparent,transparent_20px,rgba(255,255,255,0.06)_20px,rgba(255,255,255,0.06)_40px)]" />
-                <div className="absolute bottom-6 right-6 text-right select-none">
-                  <div className="text-[11px] font-mono tracking-widest text-white/50 uppercase">TripCraft Pioneer</div>
-                  <div className="text-xs font-serif text-white/80 font-medium">荒野自驾巡航 · 丝路穿越</div>
-                </div>
-              </div>
-            </div>
-
-            {/* 核心应用高保真母体视窗 (浮动在前面，大阴影，向左偏移露出右侧艺术卡片) */}
-            <div className="relative z-10 w-full lg:w-[calc(100%-100px)] xl:w-[calc(100%-140px)] lg:mr-[100px] xl:mr-[140px] rounded-2xl bg-white border border-[#241E20]/[0.08] shadow-[0_28px_80px_rgba(0,0,0,0.16)] overflow-hidden">
-              {/* 拟物外壳顶栏控制条 */}
-              <div className="h-10 px-4 bg-[#FAF8F5] border-b border-[#241E20]/[0.08] flex items-center justify-between text-[#241E20] select-none">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-4 h-4 rounded bg-[#FE3C01] flex items-center justify-center text-white text-[10px]">
-                    <SparklesIcon className="w-2.5 h-2.5" />
-                  </div>
-                  <span className="text-xs font-semibold text-[#241E20] tracking-tight">
-                    TripCraft Studio · 川西甘青大环线中枢
-                  </span>
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 font-medium">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    自运行沙盒
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-3 text-xs">
-                  <button
-                    onClick={togglePause}
-                    className="flex items-center gap-1 text-[11px] text-[#241E20]/60 hover:text-[#241E20] transition-colors px-2 py-0.5 rounded bg-black/5 hover:bg-black/10"
-                    title={isPaused ? '继续播放' : '暂停演示'}
-                  >
-                    {isPaused ? <PlayIcon className="w-2.5 h-2.5" /> : <PauseIcon className="w-2.5 h-2.5" />}
-                    <span>{isPaused ? '继续' : '暂停'}</span>
-                  </button>
-
-                  <div className="flex items-center gap-1 font-mono text-[#241E20]/50 text-[11px]">
-                    <span className="text-[#241E20] font-bold">0{activeTab + 1}</span>
-                    <span>/ 05</span>
-                  </div>
-
-                  <div className="flex items-center gap-1 text-[#241E20]/40">
-                    <button
-                      onClick={handlePrev}
-                      className="p-1 hover:text-[#241E20] transition-colors"
-                      title="上一幕"
-                    >
-                      ←
-                    </button>
-                    <button
-                      onClick={handleNext}
-                      className="p-1 hover:text-[#241E20] transition-colors"
-                      title="下一幕"
-                    >
-                      →
-                    </button>
-                  </div>
-
-                  {/* macOS 经典微型控制点 */}
-                  <div className="hidden sm:flex items-center gap-1 text-[#241E20]/30 text-xs ml-1">
-                    <span>—</span>
-                    <span>▢</span>
-                    <span>✕</span>
-                  </div>
-                </div>
-              </div>
-
+          {/* 右侧栏 (lg:col-span-8 xl:col-span-8)：全宽原生应用视窗 (向右完全展开，彻底移除红色背景卡片) */}
+          <div className="lg:col-span-8 xl:col-span-8 w-full relative flex items-center min-h-[620px] sm:min-h-[680px] xl:min-h-[740px]">
+            {/* 核心应用高保真母体视窗 (单层真实应用外壳，无双层顶栏冗余) */}
+            <div className="relative z-10 w-full rounded-2xl bg-white border border-[#241E20]/[0.08] shadow-[0_28px_80px_rgba(0,0,0,0.14)] overflow-hidden">
               {/* 视窗内容主体：高保真母体画布 (注入 virtualProgress 上下文) */}
               <ProgressContext.Provider value={virtualProgress}>
                 <LayoutContext.Provider value={{ desktop, wide }}>
-                  <div className="macos-window relative flex h-[600px] sm:h-[640px] lg:h-[680px] w-full flex-col overflow-hidden bg-[#FAF8F5]/98 text-left">
+                  <div className="macos-window relative flex h-[620px] sm:h-[660px] lg:h-[700px] w-full flex-col overflow-hidden bg-[#FAF8F5]/98 text-left">
                     <Topbar />
                     <div className="relative min-h-0 flex-1 overflow-hidden">
                       <ChatScene />
@@ -385,6 +311,39 @@ export function ScrollyStage() {
                   </div>
                 </LayoutContext.Provider>
               </ProgressContext.Provider>
+
+              {/* 独立悬浮导览控制器 (赋予用户随时暂停/步进控制权，绝不污染真实桌面软件界面) */}
+              <div className="absolute right-4 bottom-10 z-40 hidden sm:flex items-center gap-2 rounded-full border border-black/10 bg-white/95 backdrop-blur-md px-3.5 py-1.5 shadow-level-float text-xs font-sans select-none">
+                <button
+                  onClick={togglePause}
+                  className="flex items-center gap-1.5 font-medium text-black/75 hover:text-black transition-colors"
+                  title={isPaused ? '继续播放' : '暂停演进'}
+                >
+                  {isPaused ? <PlayIcon className="w-3.5 h-3.5 text-[#FE3C01]" /> : <PauseIcon className="w-3.5 h-3.5 text-[#FE3C01]" />}
+                  <span>{isPaused ? '继续' : '暂停'}</span>
+                </button>
+                <span className="w-px h-3.5 bg-black/10" />
+                <span className="font-mono text-black/50 text-[11px]">
+                  0{activeTab + 1} / 0{TABS.length}
+                </span>
+                <span className="w-px h-3.5 bg-black/10" />
+                <div className="flex items-center gap-0.5 text-black/60">
+                  <button
+                    onClick={handlePrev}
+                    className="p-1 rounded hover:bg-black/5 hover:text-black transition-colors"
+                    title="上一幕"
+                  >
+                    ←
+                  </button>
+                  <button
+                    onClick={handleNext}
+                    className="p-1 rounded hover:bg-black/5 hover:text-black transition-colors"
+                    title="下一幕"
+                  >
+                    →
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

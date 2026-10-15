@@ -26,23 +26,24 @@ import {
 export function Workspace() {
   const p = useProgress();
   const inTimeline = useFade(p, T.timelineIn[0], T.timelineIn[1]);
-  // 在车机大屏激活期间，母体工作台优雅后移微虚化 (scale: 0.95, opacity: 0.32)，凸显前台车机中控
+  // 在车机大屏激活期间 (Ch4) 与离线交付期间 (Ch5)，母体工作台优雅淡出 / 隐藏，彻底消除幽灵多图层透叠
   const cockpitDim = useRange(
     p,
     [T.cockpitIn[0], T.cockpitIn[1], T.cockpitOut[0], T.cockpitOut[1]],
-    [1, 0.32, 0.32, 1],
+    [1, 0, 0, 1],
   );
+  const deliverDim = useRange(p, [0.93, 0.945], [1, 0]);
   const scale = useRange(
     p,
     [T.cockpitIn[0], T.cockpitIn[1], T.cockpitOut[0], T.cockpitOut[1]],
-    [1, 0.95, 0.95, 1],
+    [1, 0.96, 0.96, 1],
     { rest: 1 },
   );
   const opacity = useTransform(
-    [inTimeline, cockpitDim],
-    ([tl, dim]) => (tl as number) * (dim as number),
+    [inTimeline, cockpitDim, deliverDim],
+    ([tl, cDim, dDim]) => (tl as number) * (cDim as number) * (dDim as number),
   );
-  const visibility = useVisibility(p, T.timelineIn[0] - 0.01, 1.0);
+  const visibility = useVisibility(p, T.timelineIn[0] - 0.01, 0.942);
 
   return (
     <motion.div
@@ -73,7 +74,7 @@ function Sidebar() {
 
   return (
     <motion.aside
-      className="glass-strong hidden w-[220px] shrink-0 flex-col gap-3 rounded-card border border-ink/[0.08] p-3.5 shadow-level-static xl:flex gpu-layer"
+      className="glass-strong hidden w-[195px] xl:w-[205px] shrink-0 flex-col gap-2.5 rounded-card border border-ink/[0.08] p-3 shadow-level-static xl:flex gpu-layer"
       style={{ opacity, x }}
     >
       {/* 行程概要信息卡 */}
@@ -186,7 +187,7 @@ function TimelineColumn() {
   return (
     <motion.section
       aria-label="九天日程时序编排"
-      className="glass-strong order-2 flex min-h-0 flex-1 flex-col rounded-card border border-ink/[0.08] p-2.5 sm:p-3 shadow-level-static md:order-none md:w-[310px] md:flex-none lg:w-[330px] gpu-layer"
+      className="glass-strong order-2 flex min-h-0 flex-1 flex-col rounded-card border border-ink/[0.08] p-2.5 sm:p-3 shadow-level-static md:order-none md:w-[250px] md:flex-none lg:w-[270px] gpu-layer"
       style={{ opacity }}
     >
       {/* 顶部标题与里程概览 */}
@@ -452,13 +453,14 @@ function MapPanel() {
       <RouteMap />
 
       {/* 地图沙盘左上角：沙盘标题微标 */}
-      <div className="pointer-events-none absolute left-2.5 top-2.5 flex flex-col gap-1 z-20">
-        <span className="chip rounded-pill glass-strong border border-ink/[0.08] px-2 py-0.5 text-[11px] tabular-nums text-ink shadow-level-static inline-flex items-center gap-1">
-          <CompassIcon className="h-3 w-3 text-gold" />
-          <span>河西走廊 3D 拓扑沙盘 · 12 站</span>
+      <div className="pointer-events-none absolute left-3 top-3 flex flex-col gap-1.5 z-20">
+        <span className="chip rounded-pill glass-strong border border-ink/[0.08] px-2.5 py-1 text-xs tabular-nums text-ink shadow-level-static inline-flex items-center gap-1.5">
+          <CompassIcon className="h-3.5 w-3.5 text-gold" />
+          <span className="font-semibold">河西走廊 3D 拓扑沙盘 · 12 站全地形标定</span>
         </span>
-        <span className="chip rounded-pill hidden bg-paper/85 border border-ink/[0.08] px-2 py-0.2 text-[10px] text-ink-soft md:inline-flex">
-          矢量高保真沙盘 · 毫秒级拓扑渲染
+        <span className="chip rounded-pill hidden bg-paper/90 border border-ink/[0.08] px-2.5 py-0.5 text-[10px] text-ink-soft md:inline-flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span>长辈平缓动线 · 腾势 D9 2.28m 限高刚性规避</span>
         </span>
       </div>
 
@@ -466,11 +468,15 @@ function MapPanel() {
       <InAppMapControls />
 
       {/* 地图沙盘右下角：比例尺与经纬度状态 HUD */}
-      <div className="pointer-events-none absolute bottom-2 right-2.5 hidden sm:flex items-center gap-2 rounded-control bg-paper/75 px-2 py-0.5 border border-ink/[0.06] text-[10px] font-mono text-ink-soft z-20">
-        <span>38.05°N, 102.64°E</span>
+      <div className="pointer-events-none absolute bottom-2.5 right-3 hidden sm:flex items-center gap-2 rounded-control bg-paper/85 px-2.5 py-1 border border-ink/[0.08] text-[10px] font-mono text-ink-soft z-20 shadow-sm backdrop-blur-md">
+        <span className="text-ink font-semibold">38.05°N, 102.64°E</span>
+        <span className="text-ink/20">|</span>
+        <span className="text-emerald-700 font-medium">G30 连霍高速 · 晴 18℃</span>
         <span className="text-ink/20">|</span>
         <span>100 km</span>
-        <span className="inline-block h-1 w-6 bg-ink/40" />
+        <span className="inline-block h-1 w-6 bg-ink/40 rounded-full" />
+        <span className="text-ink/20">|</span>
+        <span className="text-gold-ink font-semibold">离线包 48.6 MB</span>
       </div>
 
       <ElevationCard />
@@ -486,24 +492,25 @@ function MapPanel() {
 /* ── 专业 GIS 地图控制按钮挂件 (Layer switcher + Compass + Zoom) ── */
 function InAppMapControls() {
   return (
-    <div className="pointer-events-none absolute right-2.5 top-2.5 flex flex-col items-end gap-1.5 z-20">
+    <div className="pointer-events-none absolute right-3 top-3 flex flex-col items-end gap-1.5 z-20">
       {/* 图层切换器 */}
-      <div className="hidden xs:flex items-center rounded-pill bg-paper/90 p-0.5 border border-ink/[0.08] shadow-level-static text-[10px] text-ink-soft">
-        <span className="flex items-center gap-1 rounded-pill bg-blue-900 px-2 py-0.5 text-white font-medium">
+      <div className="hidden xs:flex items-center rounded-pill bg-paper/95 p-0.5 border border-ink/[0.08] shadow-level-static text-[10px] text-ink-soft backdrop-blur-md">
+        <span className="flex items-center gap-1 rounded-pill bg-[#1F4E79] px-2 py-0.5 text-white font-medium shadow-sm">
           <LayersIcon className="h-2.5 w-2.5 text-gold" />
           <span>地形高程</span>
         </span>
-        <span className="px-1.5 py-0.5 text-ink-soft hover:text-ink">卫星</span>
-        <span className="px-1.5 py-0.5 text-ink-soft hover:text-ink">限高图层</span>
+        <span className="px-2 py-0.5 text-ink-soft hover:text-ink transition-colors cursor-pointer">卫星遥感</span>
+        <span className="px-2 py-0.5 text-ink-soft hover:text-ink transition-colors cursor-pointer">2.15m 限高</span>
+        <span className="px-2 py-0.5 text-ink-soft hover:text-ink transition-colors cursor-pointer hidden md:inline">充电桩</span>
       </div>
 
       {/* 缩放与指北按钮群 */}
-      <div className="flex flex-col rounded-control bg-paper/90 border border-ink/[0.08] shadow-level-static overflow-hidden">
-        <button type="button" aria-label="放大地图" className="flex h-6 w-6 items-center justify-center text-ink hover:bg-ink/[0.05]">
+      <div className="flex flex-col rounded-control bg-paper/95 border border-ink/[0.08] shadow-level-static overflow-hidden backdrop-blur-md">
+        <button type="button" aria-label="放大地图" className="flex h-6 w-6 items-center justify-center text-ink hover:bg-ink/[0.05] transition-colors">
           <PlusIcon className="h-3 w-3" />
         </button>
         <div className="h-px w-full bg-ink/[0.06]" />
-        <button type="button" aria-label="缩小地图" className="flex h-6 w-6 items-center justify-center text-ink hover:bg-ink/[0.05]">
+        <button type="button" aria-label="缩小地图" className="flex h-6 w-6 items-center justify-center text-ink hover:bg-ink/[0.05] transition-colors">
           <MinusIcon className="h-3 w-3" />
         </button>
       </div>

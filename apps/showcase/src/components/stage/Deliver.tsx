@@ -33,36 +33,36 @@ export function DeliverScene() {
 
   return (
     <motion.div
-      className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex flex-col justify-end overflow-hidden pb-1 sm:pb-2.5 px-1.5 sm:px-4 md:px-6 gpu-layer [contain:layout_paint]"
+      className="pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center overflow-hidden p-3 sm:p-5 md:p-6 gpu-layer [contain:layout_paint]"
       style={{ visibility }}
       role="region"
       aria-label="多端同频与智能座舱流转演示"
     >
       <motion.div
-        className="pointer-events-auto flex flex-col items-center w-full max-w-[1080px] mx-auto glass-strong rounded-container border border-ink/[0.08] p-2 sm:p-3 shadow-level-float backdrop-blur-2xl"
+        className="pointer-events-auto flex flex-col items-center w-full max-w-[1040px] mx-auto glass-strong rounded-2xl border border-ink/[0.08] p-3 sm:p-5 shadow-level-float backdrop-blur-2xl"
         style={{ opacity: deckOpacity, scale: deckScale, y: deckY }}
       >
         {/* 多端实时同频流转连接条 */}
         <SyncFlowBar />
 
         {/* 多设备并列场景：副驾手机端 + 座舱车机中控 + 出游容灾安全舱 */}
-        <div className="flex items-stretch justify-center gap-1.5 sm:gap-3 md:gap-4 w-full">
+        <div className="flex items-stretch justify-center gap-2 sm:gap-4 md:gap-5 w-full mt-2">
           <PhoneCompanionDevice />
           <CockpitCompanionDevice />
           <DisasterRecoveryCard />
         </div>
 
         {/* 底部升华标语 */}
-        <Reveal at={[T.tagline[0], T.tagline[1]]} y={4} className="mt-1 sm:mt-2 text-center px-2">
-          <p className="font-serif text-[11px] sm:text-sm md:text-base font-bold text-ink">
+        <Reveal at={[T.tagline[0], T.tagline[1]]} y={4} className="mt-3 sm:mt-4 text-center px-2">
+          <p className="font-serif text-xs sm:text-base md:text-lg font-bold text-ink">
             从桌面掌控到座舱流转，
             <span className="text-gold-ink">
               多端同频 · 全团同行
             </span>
             。
           </p>
-          <p className="text-[9px] sm:text-xs text-ink-soft mt-0.5">
-            线上多端实时协同，无人区无感保活守护。
+          <p className="text-[10px] sm:text-xs text-ink-soft mt-1">
+            线上多端实时协同，无人区无感保活守护 · 零构建单文件 HTML 自包含即开。
           </p>
         </Reveal>
       </motion.div>

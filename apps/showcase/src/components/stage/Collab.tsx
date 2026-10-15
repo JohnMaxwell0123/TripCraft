@@ -20,6 +20,10 @@ import {
   ShareIcon,
   SmartphoneIcon,
   CarIcon,
+  PlayIcon,
+  PauseIcon,
+  LayersIcon,
+  FileTextIcon,
 } from '@/components/common/Icons';
 
 const QR = qrPath();
@@ -86,117 +90,102 @@ export function MacTrafficLights() {
   );
 }
 
-/* ═════════════════════ App 原生界面顶栏 (In-App Master Header) ═════════════════════ */
+export interface TourControls {
+  activeTab: number;
+  totalTabs: number;
+  isPaused: boolean;
+  onTogglePause: () => void;
+  onPrev: () => void;
+  onNext: () => void;
+}
+
+/* ═════════════════════ App 原生界面顶栏 (单层真实桌面应用主标题栏) ═════════════════════ */
 export function Topbar() {
   const p = useProgress();
-  const named = useFade(p, T.timelineIn[0], T.timelineIn[1]);
-  const draft = useRange(p, [T.timelineIn[0], T.timelineIn[1]], [1, 0]);
   const shareGlow = useFade(p, T.shareCursor[0], T.shareClick, T.shareSheet[2], T.shareSheet[3]);
   const sharePress = useRange(p, [T.shareClick - 0.003, T.shareClick, T.shareClick + 0.003], [1, 0.9, 1]);
 
   return (
-    <header className="relative z-30 flex h-12 shrink-0 items-center justify-between gap-1.5 sm:gap-2.5 border-b border-ink/[0.08] bg-paper/70 backdrop-blur-md px-2.5 sm:px-4 md:h-13">
+    <header className="relative z-30 flex h-11 shrink-0 items-center justify-between gap-3 border-b border-ink/[0.08] bg-[#FAF8F5] px-3 sm:px-4 select-none">
       {/* 顶部微高光反光层 */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/90 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white to-transparent" />
 
-      {/* 左侧：macOS 交通灯 + TripCraft 原生 App 标识与面包屑路径 (shrink-0 刚性锁定，绝不挤压) */}
-      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+      {/* 左侧：macOS 交通灯 + TripCraft Studio + 项目标题 + 本地持久化状态 */}
+      <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 min-w-0">
         <MacTrafficLights />
-        <div className="flex items-center gap-1.5 pl-1 pr-1.5 sm:pr-2 border-r border-ink/10">
-          <span className="flex h-5 w-5 sm:h-6 sm:w-6 shrink-0 items-center justify-center rounded-control bg-gradient-to-br from-gold via-gold-ink to-ink font-serif text-[11px] sm:text-xs font-bold text-paper shadow-level-static ring-1 ring-gold/40">
+
+        <div className="flex items-center gap-1.5 pl-1 pr-2.5 border-r border-ink/10">
+          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-[#FE3C01] text-[11px] font-bold text-white shadow-sm">
             旅
           </span>
-          <span className="font-serif font-bold text-xs tracking-tight text-ink hidden xs:inline">TripCraft</span>
+          <span className="font-semibold text-xs tracking-tight text-[#241E20] hidden sm:inline whitespace-nowrap">
+            TripCraft Studio
+          </span>
         </div>
 
-        {/* 动态项目导航面包屑 */}
-        <div className="relative h-5 w-24 overflow-hidden text-xs font-medium text-ink flex items-center">
-          <motion.div className="truncate flex items-center gap-1" style={{ opacity: draft }}>
-            <span className="font-semibold text-ink text-[11px]">新旅行</span>
-            <span className="chip rounded-pill bg-gold/15 text-gold-ink text-[9px] px-1 py-0 font-medium">规划中</span>
-          </motion.div>
-          <motion.div className="absolute inset-0 truncate flex items-center gap-1" style={{ opacity: named }}>
-            <span className="font-semibold text-ink text-[11px]">西行计划</span>
-            <span className="text-ink-soft text-[10px]">· 9D</span>
-          </motion.div>
+        {/* 真实文档标题 + 本地存储状态 */}
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="font-bold text-xs text-[#241E20] whitespace-nowrap">
+            西行计划 · 9D 深度自驾
+          </span>
+          <span className="hidden md:inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] bg-emerald-500/10 text-emerald-700 font-mono font-medium border border-emerald-500/20 shrink-0 whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span>本地已保存 (IndexedDB)</span>
+          </span>
         </div>
       </div>
 
-      {/* 中间：App 内部业务模式切换器（随剧情进度高亮对应模块，体现真实 App 操作台质感） */}
-      <InAppModuleSwitcher />
+      {/* 中间：真实桌面软件视图切换器 (路书编排 / GIS沙盘 / 全景工作台) + 快捷搜索 (⌘K) */}
+      <div className="hidden lg:flex items-center gap-2 shrink-0">
+        <div className="flex items-center rounded-lg bg-black/[0.04] p-0.5 text-xs font-medium text-ink-soft border border-black/[0.04]">
+          <span className="flex items-center gap-1.5 rounded-md bg-white px-2.5 py-1 text-ink font-semibold shadow-sm whitespace-nowrap">
+            <CompassIcon className="w-3.5 h-3.5 text-[#FE3C01]" />
+            <span>路书沙盘工作台</span>
+          </span>
+          <span className="flex items-center gap-1.5 px-2.5 py-1 text-ink-soft hover:text-ink transition-colors cursor-pointer whitespace-nowrap">
+            <LayersIcon className="w-3.5 h-3.5 text-ink-soft" />
+            <span>日程全景</span>
+          </span>
+        </div>
 
-      {/* 右侧：多端同频、版本、协作成员与邀请按钮 */}
-      <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-        <MultiDeviceSyncBadge />
-        <VersionBadge />
+        <span
+          title="全局检索 (⌘K)"
+          className="hidden xl:inline-flex items-center gap-1.5 rounded-lg border border-ink/[0.08] bg-black/[0.02] px-2.5 py-1 text-[11px] text-ink-soft hover:bg-black/[0.05] transition-colors cursor-pointer whitespace-nowrap"
+        >
+          <SearchIcon className="h-3 w-3" />
+          <span>搜索景点、限高桩号</span>
+          <kbd className="font-mono text-[9px] bg-black/[0.06] px-1 py-0.2 rounded text-ink/70">⌘K</kbd>
+        </span>
+      </div>
 
+      {/* 右侧：在线协作者头像栈 + 邀请按钮 + 离线单文件导出 */}
+      <div className="flex items-center gap-2 shrink-0">
         <AvatarStack />
 
         {/* 邀请好友加入按钮 */}
         <motion.button
           type="button"
           aria-label="邀请同行人加入协作"
-          className="btn-primary relative flex h-7 sm:h-8 items-center gap-1 sm:gap-1.5 rounded-pill px-2.5 sm:px-3 text-xs font-semibold shadow-level-static hover:shadow-level-hover"
+          className="btn-primary relative flex h-7 items-center gap-1.5 rounded-full px-3 text-xs font-semibold shadow-sm hover:shadow whitespace-nowrap"
           style={{ scale: sharePress }}
         >
-          <motion.span className="absolute inset-0 rounded-pill shadow-glow" style={{ opacity: shareGlow }} />
-          <ShareIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-          <span className="relative hidden sm:inline">邀请</span>
+          <motion.span className="absolute inset-0 rounded-full shadow-glow" style={{ opacity: shareGlow }} />
+          <ShareIcon className="h-3 w-3" />
+          <span className="relative">邀请同行</span>
         </motion.button>
         <FakeCursor times={[T.shareCursor[0], T.shareCursor[1]]} xs={[78, 95]} ys={[260, 55]} clickAt={T.shareClick} />
+
+        {/* 离线单文件导出按钮 */}
+        <button
+          type="button"
+          title="导出零构建自包含离线路书 (.html)"
+          className="hidden sm:flex h-7 items-center gap-1.5 rounded-full border border-ink/[0.12] bg-white px-3 text-xs font-semibold text-ink hover:bg-ink/[0.04] transition-colors shadow-sm whitespace-nowrap"
+        >
+          <FileTextIcon className="h-3 w-3 text-gold-ink" />
+          <span>导出单文件</span>
+        </button>
       </div>
     </header>
-  );
-}
-
-/* ── App 原生模式切换胶囊（智能规划 / 路线沙盘 / 愿望池 / 智驾流转） ── */
-function InAppModuleSwitcher() {
-  const p = useProgress();
-  // 0=智能规划(Ch1), 1=路线沙盘(Ch2), 2=愿望池共创(Ch3), 3=路线编排(Ch4), 4=多端同频(Ch5)
-  const activeStep = useStep(p, [0.20, 0.42, 0.62, 0.78]);
-
-  const tabs = [
-    { id: 'chat', label: '智能规划', icon: SparklesIcon, activeIn: [0] },
-    { id: 'route', label: '路线沙盘', icon: CompassIcon, activeIn: [1, 3] },
-    { id: 'pool', label: '愿望池', icon: FlameIcon, activeIn: [2] },
-    { id: 'cockpit', label: '多端同频', icon: RadioIcon, activeIn: [4] },
-  ];
-
-  const currentTab = tabs.find((t) => t.activeIn.includes(activeStep)) || tabs[0];
-  const CurrentIcon = currentTab.icon;
-
-  return (
-    <>
-      {/* 桌面端：完整四模块胶囊切换器 */}
-      <nav
-        aria-label="TripCraft 模块导航"
-        className="hidden md:flex items-center rounded-pill bg-ink/[0.04] p-0.5 border border-ink/[0.06] text-xs font-medium whitespace-nowrap shrink-0"
-      >
-        {tabs.map((tab) => {
-          const isActive = tab.activeIn.includes(activeStep);
-          const Icon = tab.icon;
-          return (
-            <span
-              key={tab.id}
-              className={`flex items-center gap-1 rounded-pill px-2 py-0.5 text-[11px] whitespace-nowrap shrink-0 transition-all duration-300 ${
-                isActive
-                  ? 'bg-paper text-ink font-semibold shadow-level-static ring-1 ring-ink/10'
-                  : 'text-ink-soft hover:text-ink'
-              }`}
-            >
-              <Icon className={`h-3 w-3 shrink-0 ${isActive ? 'text-gold' : 'text-ink-soft'}`} />
-              <span className="whitespace-nowrap">{tab.label}</span>
-            </span>
-          );
-        })}
-      </nav>
-
-      {/* 移动端：根据剧情自动流转的紧凑模式徽标 */}
-      <div className="flex md:hidden items-center gap-1 rounded-pill bg-paper px-2 py-0.5 border border-ink/[0.08] shadow-level-static text-[10px] font-semibold text-ink">
-        <CurrentIcon className="h-2.5 w-2.5 text-gold shrink-0" />
-        <span className="truncate max-w-[68px]">{currentTab.label}</span>
-      </div>
-    </>
   );
 }
 
