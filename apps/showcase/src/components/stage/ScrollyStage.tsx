@@ -44,51 +44,53 @@ const TABS: StoryTab[] = [
     id: 'intent-parsing',
     title: '自然语言意图提炼',
     desc: '不用面对冷冰冰的繁琐表单。说出出行人员、车型配置与在意事项，AI 架构师毫秒级抽取长辈步行限制、幼儿作息与 2.15m 限高等刚性规则。',
-    duration: 7500,
+    duration: 11000,
   },
   {
     id: 'outline-topology',
     title: '九日路书与航线拓扑',
     desc: '一句话瞬间长成一本看得见的专业路书。九天日程时序、矢量拓扑航线、海拔爬升剖面与 7 座 MPV 地面车位几秒内依次就位。',
-    duration: 7500,
+    duration: 11000,
   },
   {
     id: 'wechat-collab',
     title: '微信免登愿望池协同',
     desc: '同行亲友微信扫码即写，免注册免装 App。全团愿望实时上屏投票，算法毫秒级评估顺路度与绕行代价，一人领队全团同频。',
-    duration: 8000,
+    duration: 14000,
   },
   {
     id: 'cockpit-pilot',
     title: '车道级领航与限高拦截',
     desc: '深邃钛黑车规大屏，3D 车道级虚拟光毯、实时车速 HUD 与老城 2.0m 涵洞物理拦截，全车在无人区脱网途中依然尽在掌握。',
-    duration: 7500,
+    duration: 12000,
   },
   {
     id: 'zero-build-offline',
     title: '多端同频与离线安全舱',
     desc: '多端同频无缝流转，一键将全套交互式路书编译为自包含单 HTML 文件。双击秒开，断网飞行模式全量功能可查，数据主权永存本地。',
-    duration: 7000,
+    duration: 11500,
   },
 ];
 
-/** 每个 Tab 对应的全局时间轴进度跨度 (映射至 timeline.ts) */
+/** 每个 Tab 对应的全局时间轴进度跨度 (映射至 timeline.ts，留出充足静止驻留阅读欣赏时间) */
 const TAB_RANGES: [number, number][] = [
-  [0.00, 0.198],   // Tab 0: 倾诉与反问
-  [0.22, 0.41],    // Tab 1: 路线大纲与高程
-  [0.42, 0.77],    // Tab 2: 微信协同与推荐决策
-  [0.795, 0.92],   // Tab 3: 车机原生座舱与限高拦截
-  [0.94, 0.998],   // Tab 4: 多端同频与离线交付
+  [0.00, 0.198],   // Tab 0: 倾诉与规则推演 (0.18 完成，0.18-0.198 静态驻留)
+  [0.20, 0.415],   // Tab 1: 路线大纲与拓扑沙盘 (0.395 完成，0.395-0.415 静态驻留)
+  [0.42, 0.775],   // Tab 2: 微信协同与推荐决策 (0.75 完成，0.75-0.775 静态驻留)
+  [0.785, 0.925],  // Tab 3: 车机原生座舱与限高拦截 (0.91 完成停稳，0.91-0.925 静态驻留)
+  [0.93, 0.998],   // Tab 4: 零构建自包含离线交付安全舱 (0.93-0.998 全景交互)
 ];
 
 export function ScrollyStage() {
   const [activeTab, setActiveTab] = useState(0);
-  const [progress, setProgress] = useState(0); // 0 -> 1
   const [isPaused, setIsPaused] = useState(false);
   const [isInView, setIsInView] = useState(true);
 
-  // 虚拟全局时间轴进度 (MotionValue)，驱动内部所有自运行场景
+  // 虚拟全局时间轴进度 (MotionValue)，驱动内部所有自运行场景 (0 React 重渲染)
   const virtualProgress = useMotionValue(0);
+
+  // 单 Tab 局部进度 (MotionValue)，驱动左侧流光指示条 (GPU 合成，0 React 重渲染，彻底消除卡顿与跳帧加速)
+  const tabProgress = useMotionValue(0);
 
   const desktop = useMediaQuery('(min-width: 768px)');
   const wide = useMediaQuery('(min-width: 1280px)');
@@ -125,7 +127,7 @@ export function ScrollyStage() {
     return () => observer.disconnect();
   }, []);
 
-  // 自运行沙盒时钟引擎 (RAF 独立平滑推进，上下滚动绝不打断)
+  // 自运行沙盒时钟引擎 (纯 MotionValue 驱动，丝滑 60/120fps，绝无 React 频繁调度卡顿与加速抢播)
   useEffect(() => {
     let rafId: number;
 
@@ -138,10 +140,10 @@ export function ScrollyStage() {
 
         const elapsed = now - startTimeRef.current;
         const currentProgress = Math.min(1, elapsed / curTabDuration);
-        setProgress(currentProgress);
+        tabProgress.set(currentProgress);
         pausedProgressRef.current = currentProgress;
 
-        // 计算当前阶段在全局时间轴上的映射值，写入 virtualProgress
+        // 计算当前阶段在全局时间轴上的映射值，写入 virtualProgress (纯 MotionValue，0 重渲染)
         const [rangeStart, rangeEnd] = TAB_RANGES[activeTabRef.current];
         const globalVal = rangeStart + currentProgress * (rangeEnd - rangeStart);
         virtualProgress.set(globalVal);
@@ -149,9 +151,10 @@ export function ScrollyStage() {
         if (currentProgress >= 1) {
           // 步进到下一幕
           const nextTab = (activeTabRef.current + 1) % TABS.length;
+          activeTabRef.current = nextTab;
           setActiveTab(nextTab);
           startTimeRef.current = now;
-          setProgress(0);
+          tabProgress.set(0);
           pausedProgressRef.current = 0;
           virtualProgress.set(TAB_RANGES[nextTab][0]);
         }
@@ -164,20 +167,22 @@ export function ScrollyStage() {
 
     rafId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafId);
-  }, [virtualProgress]);
+  }, [tabProgress, virtualProgress]);
 
   // 用户点击左侧 Tab 手动切入
   const handleSelectTab = useCallback((index: number) => {
+    activeTabRef.current = index;
     setActiveTab(index);
-    setProgress(0);
+    tabProgress.set(0);
     pausedProgressRef.current = 0;
     virtualProgress.set(TAB_RANGES[index][0]);
     startTimeRef.current = performance.now();
-  }, [virtualProgress]);
+  }, [tabProgress, virtualProgress]);
 
   const togglePause = useCallback(() => {
     setIsPaused((prev) => {
       const next = !prev;
+      isPausedRef.current = next;
       if (!next) {
         startTimeRef.current = performance.now() - pausedProgressRef.current * TABS[activeTabRef.current].duration;
       }
@@ -245,12 +250,12 @@ export function ScrollyStage() {
                     tabIndex={0}
                     className="relative pl-6 py-1 cursor-pointer transition-all duration-300 text-left w-full group outline-none"
                   >
-                    {/* 左侧垂直轨道与流光进度条 */}
+                    {/* 左侧垂直轨道与流光进度条 (GPU 硬件加速，0 React 重渲染) */}
                     <div className="absolute left-0 top-0 bottom-0 w-[2.5px] bg-black/10 rounded-full overflow-hidden">
                       {isActive && (
-                        <div
-                          className="w-full bg-[#FE3C01] rounded-full transition-all duration-75"
-                          style={{ height: `${progress * 100}%` }}
+                        <motion.div
+                          className="w-full bg-[#FE3C01] rounded-full origin-top"
+                          style={{ scaleY: tabProgress, height: '100%' }}
                         />
                       )}
                     </div>

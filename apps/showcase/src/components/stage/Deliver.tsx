@@ -1,344 +1,448 @@
 'use client';
 
-import { motion, useTransform } from 'framer-motion';
-import { ease, useFade, useRange, useStep, useVisibility } from '@/lib/motion';
+import { motion } from 'framer-motion';
+import { useFade, useRange, useStep, useVisibility } from '@/lib/motion';
 import { T } from './timeline';
-import { Avatar, Reveal, useProgress } from './primitives';
+import { useProgress } from './primitives';
 import {
   CarIcon,
   CheckIcon,
   ShieldIcon,
   AlertTriangleIcon,
-  UtensilsIcon,
   RadioIcon,
   SmartphoneIcon,
   MonitorIcon,
+  CompassIcon,
 } from '@/components/common/Icons';
 
+function PrinterIcon({ className = 'w-4 h-4' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <polyline points="6 9 6 2 18 2 18 9" />
+      <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+      <rect x="6" y="14" width="12" height="8" />
+    </svg>
+  );
+}
+
+function CalendarIcon({ className = 'w-4 h-4' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+      <line x1="16" y1="2" x2="16" y2="6" />
+      <line x1="8" y1="2" x2="8" y2="6" />
+      <line x1="3" y1="10" x2="21" y2="10" />
+    </svg>
+  );
+}
+
+function DownloadIcon({ className = 'w-4 h-4' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
+  );
+}
+
 /**
- * 05 章：多端同频 · 全团同行（SHOWCASE §4 终态闭环）
+ * 05 幕：零构建自包含离线交付与无人区安全舱 (SHOWCASE §4 终态闭环)
  *
- * 核心设计原则：
- * 1. 桌面三栏工作台作为母体保持清晰可见（不淡出、不缩小隐藏）。
- * 2. 前台下层以 Continuity 连续互联质感浮动底座，优雅呼应副驾随身手机、座舱车机大屏与出游容灾安全舱，展现多端实时流转。
- * 3. 展现从“手端/协同端决策，到车机无缝流转，再到智驾系统巡航导航与限高避险”的完整闭环。
- * 4. 常驻强调“线上实时多端协同，无人区无感保活守护”。
+ * 核心设计原则 (对齐设计铁律 #1 & #3)：
+ * 1. 彻底移除小玩具卡片与多余白边，占满整个工作台主视窗，与前四幕保持 1:1 纯正原生应用高保真质感。
+ * 2. 真实呈现 TripCraft 核心交付产物——《西行计划·9D深度自驾.html》自包含单文件。
+ * 3. 黄金三栏架构：
+ *    - 左栏 (28%)：离线 9 日行程全量节点与无人区应急保供专线 (交警 12122 / 中石油补能站 / 北斗坐标)
+ *    - 中栏 (44%)：离线矢量拓扑沙盘 (0 外部瓦片拉取) 与 乌鞘岭 2980m 高程剖面安全包线
+ *    - 右栏 (28%)：3 端同频在线状态 (领队端/手机端/腾势D9车机) 与 零构建单文件一键编译打包流水线
  */
 export function DeliverScene() {
   const p = useProgress();
-  const visibility = useVisibility(p, T.syncStart[0] - 0.01, 1.0);
-  const deckOpacity = useFade(p, T.devicesIn[0], T.devicesIn[1]);
-  const deckScale = useRange(p, [T.devicesIn[0], T.devicesIn[1]], [0.95, 1], { easing: ease.back, rest: 1 });
-  const deckY = useRange(p, [T.devicesIn[0], T.devicesIn[1]], [36, 0], { easing: ease.out, rest: 0 });
+  // 在 Tab 4 阶段 (0.925 -> 1.0) 优雅淡入并占满主视窗
+  const visibility = useVisibility(p, 0.925, 1.0);
+  const opacity = useFade(p, 0.926, 0.930);
 
   return (
     <motion.div
-      className="pointer-events-none absolute inset-0 z-30 flex flex-col items-center justify-center overflow-hidden p-3 sm:p-5 md:p-6 gpu-layer [contain:layout_paint]"
-      style={{ visibility }}
+      className="pointer-events-auto absolute inset-0 z-40 flex flex-col bg-[#FAF8F5] text-[#1E2024] overflow-hidden select-none"
+      style={{ visibility, opacity }}
       role="region"
-      aria-label="多端同频与智能座舱流转演示"
+      aria-label="TripCraft 零构建自包含离线路书与无人区安全舱演示"
     >
-      <motion.div
-        className="pointer-events-auto flex flex-col items-center w-full max-w-[1040px] mx-auto glass-strong rounded-2xl border border-ink/[0.08] p-3 sm:p-5 shadow-level-float backdrop-blur-2xl"
-        style={{ opacity: deckOpacity, scale: deckScale, y: deckY }}
-      >
-        {/* 多端实时同频流转连接条 */}
-        <SyncFlowBar />
+      {/* 1. 离线安全舱自包含顶栏 */}
+      <DeliverHeader />
 
-        {/* 多设备并列场景：副驾手机端 + 座舱车机中控 + 出游容灾安全舱 */}
-        <div className="flex items-stretch justify-center gap-2 sm:gap-4 md:gap-5 w-full mt-2">
-          <PhoneCompanionDevice />
-          <CockpitCompanionDevice />
-          <DisasterRecoveryCard />
-        </div>
+      {/* 2. 离线工作台主体：三栏黄金比例 */}
+      <div className="flex-1 min-h-0 flex flex-col lg:flex-row gap-2 sm:gap-2.5 p-2 sm:p-3 overflow-hidden">
+        {/* 左栏：离线 9 日日程与无人区生命线 */}
+        <OfflineItineraryColumn />
 
-        {/* 底部升华标语 */}
-        <Reveal at={[T.tagline[0], T.tagline[1]]} y={4} className="mt-3 sm:mt-4 text-center px-2">
-          <p className="font-serif text-xs sm:text-base md:text-lg font-bold text-ink">
-            从桌面掌控到座舱流转，
-            <span className="text-gold-ink">
-              多端同频 · 全团同行
-            </span>
-            。
-          </p>
-          <p className="text-[10px] sm:text-xs text-ink-soft mt-1">
-            线上多端实时协同，无人区无感保活守护 · 零构建单文件 HTML 自包含即开。
-          </p>
-        </Reveal>
-      </motion.div>
+        {/* 中栏：离线矢量拓扑沙盘与高程剖面 HUD */}
+        <OfflineSandTableColumn />
+
+        {/* 右栏：3端同频在线状态与单文件编译打包引擎 */}
+        <ZeroBuildPackagerColumn />
+      </div>
+
+      {/* 3. 底栏状态与设计契约承诺 */}
+      <DeliverFooter />
     </motion.div>
   );
 }
 
-/* ── 顶部数据流转指示条（动态呈现数据流在多设备间的广播跃迁） ── */
-function SyncFlowBar() {
-  const p = useProgress();
-  // 流转步进：0=未激活，1=桌面母体广播，2=手机收到更新，3=座舱巡航就绪，4=容灾舱就绪
-  const s0 = T.streamSync[0];
-  const step = useStep(p, [s0, s0 + 0.005, s0 + 0.01, s0 + 0.015]);
-
+/* ═════════════════════ 1. 离线安全舱顶栏 ═════════════════════ */
+function DeliverHeader() {
   return (
-    <div
-      className="mb-1.5 sm:mb-2 flex w-full max-w-2xl items-center justify-between rounded-pill border border-ink/[0.08] bg-paper/95 px-2 py-0.5 sm:px-4 sm:py-1 shadow-level-static backdrop-blur-xl"
-      aria-label="多端同频广播流流转状态"
-    >
-      <div className="flex items-center gap-1.5 text-xs font-semibold text-ink">
-        <RadioIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold animate-pulse shrink-0" aria-hidden="true" />
-        <span className="text-[10px] sm:text-xs">多端同频广播流</span>
-        <span
-          className={`font-mono text-[8px] sm:text-[10px] px-1 sm:px-1.5 py-0.2 rounded-pill font-semibold transition-colors duration-300 ${
-            step >= 4
-              ? 'bg-jade/15 text-jade border border-jade/30'
-              : step >= 2
-                ? 'bg-gold/15 text-gold-ink border border-gold/30'
-                : 'bg-ink/[0.05] text-ink-soft'
-          }`}
-        >
-          {step >= 4 ? '18ms 极速对齐' : step >= 2 ? '流转同步中' : '就绪'}
+    <header className="h-10 shrink-0 border-b border-black/[0.08] bg-white/90 px-3 sm:px-4 flex items-center justify-between backdrop-blur-md text-xs">
+      {/* 左侧：自包含离线单文件标题 */}
+      <div className="flex items-center gap-2.5 min-w-0">
+        <span className="flex h-5 w-5 items-center justify-center rounded bg-[#FE3C01] text-white font-bold text-[10px]">
+          旅
         </span>
-      </div>
-
-      <div className="flex items-center gap-1 sm:gap-1.5 text-[9px] sm:text-[11px] text-ink-soft font-mono">
-        <span
-          className={`inline-flex items-center gap-0.5 font-medium transition-colors duration-200 ${
-            step >= 1 ? 'text-gold-ink font-semibold' : 'text-ink-soft'
-          }`}
-        >
-          <MonitorIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-gold" aria-hidden="true" />
-          <span className="hidden xs:inline">桌面</span>
-        </span>
-        <span className="text-ink/20">➔</span>
-        <span
-          className={`inline-flex items-center gap-0.5 font-medium transition-colors duration-200 ${
-            step >= 2 ? 'text-jade font-semibold' : 'text-ink-soft'
-          }`}
-        >
-          <SmartphoneIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-jade" aria-hidden="true" />
-          <span>手机</span>
-        </span>
-        <span className="text-ink/20">➔</span>
-        <span
-          className={`inline-flex items-center gap-0.5 font-medium transition-colors duration-200 ${
-            step >= 3 ? 'text-lapis font-semibold' : 'text-ink-soft'
-          }`}
-        >
-          <CarIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-lapis" aria-hidden="true" />
-          <span>车机</span>
-        </span>
-        <span className="text-ink/20 hidden sm:inline">➔</span>
-        <span
-          className={`hidden sm:inline-flex items-center gap-0.5 font-medium transition-colors duration-200 ${
-            step >= 4 ? 'text-gold-ink font-semibold' : 'text-ink-soft'
-          }`}
-        >
-          <ShieldIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-gold-ink" aria-hidden="true" />
-          <span>容灾舱</span>
-        </span>
-      </div>
-    </div>
-  );
-}
-
-/* ── 设备 1：副驾随身手机端（实时感知最新行程与多人状态） ──── */
-function PhoneCompanionDevice() {
-  const p = useProgress();
-  const s0 = T.streamSync[0];
-  const step = useStep(p, [s0]);
-  const syncGlow = useRange(p, [s0, s0 + 0.008, T.streamSync[1]], [0, 1, 0.25]);
-  const cardBorder = useTransform(syncGlow, (v) => `rgba(184, 134, 59, ${0.3 + v * 0.4})`);
-  const cardShadow = useTransform(syncGlow, (v) => `0 0 ${v * 12}px rgba(184, 134, 59, ${v * 0.3})`);
-
-  return (
-    <div
-      className="relative h-[190px] sm:h-[215px] w-[112px] xs:w-[130px] sm:w-[155px] shrink-0 rounded-[22px] sm:rounded-[28px] bg-[#16181d] p-[4px] sm:p-[5px] shadow-level-float ring-1 ring-white/10 overflow-hidden"
-      role="region"
-      aria-label="副驾手机协同端"
-    >
-      <div className="relative flex h-full flex-col overflow-hidden rounded-[18px] sm:rounded-[23px] bg-paper text-ink">
-        {/* 顶部灵动岛与状态栏 */}
-        <div className="relative flex h-4 sm:h-5 items-center justify-between px-2 pt-0.5 text-[8px] sm:text-[9px] font-mono font-semibold text-ink">
-          <span>20:00</span>
-          <div className="absolute left-1/2 top-1 h-2 w-8 sm:w-12 -translate-x-1/2 rounded-full bg-black" />
-          <span className="hidden xs:inline">5G 98%</span>
-        </div>
-
-        {/* 手机 App 顶栏 */}
-        <div className="flex items-center gap-1 border-b border-ink/[0.08] px-1.5 sm:px-2 py-0.5 sm:py-1">
-          <Avatar name="小雨" tone="lapis" size={14} />
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-[9px] sm:text-[11px] font-bold text-ink">副驾小雨</p>
-          </div>
-          <span className="flex items-center gap-0.5 text-[8px] sm:text-[9px] font-semibold text-jade">
-            <span className="h-1 w-1 animate-breathe rounded-full bg-jade" />
-            {step >= 1 ? '已同频' : '同步'}
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="font-bold text-xs text-[#1E2024] truncate">
+            西行计划 · 9D 深度自驾
           </span>
-        </div>
-
-        {/* 实时同步的 D0 晚间最新行程卡 */}
-        <div className="p-1 sm:p-2 space-y-1 flex-1 overflow-hidden">
-          <motion.div
-            className="rounded-control bg-gold/10 p-1 sm:p-1.5 border"
-            style={{ borderColor: cardBorder, boxShadow: cardShadow }}
-          >
-            <div className="flex items-center justify-between">
-              <span className="font-serif text-[9px] sm:text-[10px] font-bold text-gold-ink truncate">D0 晚间已同步</span>
-              <span className="chip rounded-pill bg-jade/20 text-jade text-[7px] sm:text-[8px] px-1 font-mono font-bold">v1.1</span>
-            </div>
-            <p className="mt-0.5 flex items-center gap-1 text-[9px] sm:text-[11px] font-bold text-ink truncate">
-              <UtensilsIcon className="h-2.5 w-2.5 text-gold-ink shrink-0" aria-hidden="true" />
-              <span>正宁路夜市</span>
-            </p>
-            <p className="text-[8px] sm:text-[9px] text-ink-soft truncate font-mono">赵记牛奶鸡蛋醪糟</p>
-          </motion.div>
-
-          <div className="rounded-control bg-paper/90 p-1 sm:p-1.5 border border-ink/[0.08] text-[8px] sm:text-[9px] space-y-0.5">
-            <div className="flex items-center justify-between text-ink-soft">
-              <span>漫步</span>
-              <span className="font-mono text-ink font-semibold">950m · 12m</span>
-            </div>
-            <div className="flex items-center gap-0.5 text-[8px] text-gold-ink">
-              <CheckIcon className="h-2 w-2 shrink-0" aria-hidden="true" />
-              <span className="truncate">领队已采纳并重排</span>
-            </div>
-          </div>
-        </div>
-
-        {/* 手机底部离线兜底标识 */}
-        <div className="mt-auto border-t border-ink/[0.06] bg-ink/[0.04] px-1 py-0.5 text-center text-[7px] sm:text-[8px] font-mono text-ink-soft">
-          <span className="text-jade font-semibold">● 实时同步中</span> · 无人区离线舱就绪
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── 设备 2：智能座舱车机中控大屏（巡航流转与限高避险） ─────── */
-function CockpitCompanionDevice() {
-  const p = useProgress();
-  const alertGlow = useRange(p, [T.deviceDetail[0], T.deviceDetail[0] + 0.015, T.deviceDetail[1]], [0, 1, 0.45]);
-  const alertBorder = useTransform(alertGlow, (v) => `rgba(184, 134, 59, ${0.35 + v * 0.55})`);
-  const alertShadow = useTransform(alertGlow, (v) => `0 0 ${v * 16}px rgba(184, 134, 59, ${v * 0.35})`);
-  const isDetailActive = useStep(p, [T.deviceDetail[0]]) >= 1;
-
-  return (
-    <div
-      className="relative h-[190px] sm:h-[215px] flex-1 min-w-0 max-w-[500px] shrink rounded-card bg-[#11141b] p-1.5 sm:p-2.5 shadow-level-float ring-1 ring-white/10 text-white overflow-hidden flex flex-col justify-between"
-      role="region"
-      aria-label="智能座舱巡航导航中控"
-    >
-      {/* 顶部微反光条 */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
-
-      {/* 车机顶栏状态 */}
-      <div className="flex items-center justify-between border-b border-white/10 pb-1 shrink-0">
-        <div className="flex items-center gap-1 min-w-0">
-          <CarIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-gold shrink-0" aria-hidden="true" />
-          <span className="font-serif text-[10px] sm:text-xs font-bold tracking-wide text-white truncate">
-            7座 MPV 智能座舱 · 巡航导航
+          <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] bg-black/[0.04] text-black/60 font-mono border border-black/5 shrink-0">
+            <span>西行计划_离线安全舱_v1.1.html</span>
           </span>
-        </div>
-        <div className="flex items-center gap-1 text-[8px] sm:text-[10px] font-mono text-white/70 shrink-0">
-          <span className="flex items-center gap-0.5 text-jade">
-            <span className="h-1 w-1 animate-breathe rounded-full bg-jade" />
-            <span className="hidden xs:inline">秒级</span> 流转
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] bg-emerald-50 text-emerald-700 font-mono font-bold border border-emerald-200 shrink-0">
+            <span>1.84 MB 单文件</span>
           </span>
         </div>
       </div>
 
-      {/* 车机中控主体：左侧下一站路线 + 右侧 7座 MPV 限高避险与长下坡预案 (双列并排不溢出) */}
-      <div className="my-1 grid grid-cols-2 gap-1 sm:gap-2 text-xs flex-1 overflow-hidden">
-        {/* 左栏：下一站与散步指引 */}
-        <div className="flex flex-col justify-between rounded-control bg-white/5 p-1 sm:p-2 border border-white/10">
-          <div>
-            <p className="text-[7px] sm:text-[9px] font-semibold tracking-wider text-gold">下一站到达</p>
-            <p className="font-serif text-[10px] sm:text-sm font-bold text-white mt-0.5 truncate">正宁路夜市</p>
-            <p className="text-[8px] sm:text-[10px] text-white/70 font-mono truncate">距宿点 650m · 漫步</p>
-          </div>
-          <div className="mt-0.5 pt-0.5 border-t border-white/10 text-[7px] sm:text-[9px] text-white/80 leading-tight truncate">
-            <span className="text-gold font-semibold">泊车：</span>
-            <span>MPV 地面车位 (2.15m)</span>
-          </div>
-        </div>
+      {/* 中间：无网离线运行标识 */}
+      <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-800 text-[10px] font-semibold border border-emerald-500/20">
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+        <span>⚡ 飞行模式 / 离线全功能自包含 · 零外部网络依赖</span>
+      </div>
 
-        {/* 右栏：智驾系统限高警报与避险措施 */}
-        <motion.div
-          className="flex flex-col justify-between rounded-control bg-gold/10 p-1 sm:p-2 border"
-          style={{ borderColor: alertBorder, boxShadow: alertShadow }}
+      {/* 右侧：离线导出快捷工具 */}
+      <div className="flex items-center gap-1.5 shrink-0">
+        <button
+          type="button"
+          title="打印排版与 PDF 生成"
+          className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-md bg-black/[0.03] hover:bg-black/[0.06] text-black/70 text-[10px] font-medium transition-colors border border-black/[0.06]"
         >
-          <div>
-            <div className="flex items-center gap-0.5 sm:gap-1 text-[8px] sm:text-[11px] font-bold text-gold">
-              <AlertTriangleIcon className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-gold shrink-0 animate-bounce" aria-hidden="true" />
-              <span className="truncate">2.15m 限高警报</span>
-            </div>
-            <p className="text-[7px] sm:text-[9px] text-white/85 leading-tight mt-0.5 line-clamp-2">
-              夜市地库限高 2.0m！已下发地面泊车方案。
-            </p>
-          </div>
-          <div
-            className={`mt-0.5 pt-0.5 border-t border-gold/20 text-[7px] sm:text-[8px] font-mono leading-tight truncate transition-colors duration-300 ${
-              isDetailActive ? 'text-gold font-medium' : 'text-gold/60'
-            }`}
-          >
-            D1 乌鞘岭下坡巡航预案已就绪
-          </div>
-        </motion.div>
+          <PrinterIcon className="h-3 w-3 text-black/60" />
+          <span>打印排版</span>
+        </button>
+        <button
+          type="button"
+          title="导出系统日历 (.ics)"
+          className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-md bg-black/[0.03] hover:bg-black/[0.06] text-black/70 text-[10px] font-medium transition-colors border border-black/[0.06]"
+        >
+          <CalendarIcon className="h-3 w-3 text-black/60" />
+          <span>日历导出</span>
+        </button>
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FE3C01] text-white text-[10px] font-semibold shadow-xs">
+          <DownloadIcon className="h-3 w-3 text-white" />
+          <span>自包含离线包已就绪</span>
+        </span>
       </div>
-
-      {/* 车机底栏：途经点序列 */}
-      <div className="flex items-center justify-between text-[8px] sm:text-[9px] font-mono text-white/60 shrink-0 pt-0.5 border-t border-white/10">
-        <span className="truncate">12 个途经点已下发智能座舱</span>
-        <span className="text-gold font-semibold hidden xs:inline">智驾协同 · 毫秒级流转</span>
-      </div>
-    </div>
+    </header>
   );
 }
 
-/* ── 设备 3：随身出游容灾舱（无人区断网无感守护） ── */
-function DisasterRecoveryCard() {
-  const p = useProgress();
-  const step = useStep(p, [T.streamSync[1]]);
+/* ═════════════════════ 2. 左栏：离线 9 日行程与无人区生命线 ═════════════════════ */
+function OfflineItineraryColumn() {
+  const NODES = [
+    {
+      day: 'D0',
+      title: '兰州 · 丝路集结夜',
+      desc: '水岸云上酒店 · MPV 地面专属位 (2.28m 通行已核验)',
+      sub: '晚 20:00 正宁路夜市 (牛奶鸡蛋醪糟) · 漫步 950m',
+      status: '离线已缓',
+    },
+    {
+      day: 'D1',
+      title: '兰州 → 张掖 (翻越乌鞘岭)',
+      desc: '505 km · 双司轮换预案 · 乌鞘岭 2980m (防高反提示已载入)',
+      sub: '夜宿张掖国芳酒店 · 7座大车位充足',
+      status: '离线已缓',
+    },
+    {
+      day: 'D2',
+      title: '七彩丹霞 → 嘉峪关',
+      desc: '丹霞日落 17:40 黄金窗口 · 景区环保车无障碍通道',
+      sub: '嘉峪关悬壁长城 · 老人平地轮椅慢步道',
+      status: '离线已缓',
+    },
+    {
+      day: 'D4',
+      title: '莫高窟 · 特窟慢游',
+      desc: '接驳车预约 · 4 个平层无阶梯特窟凭证已离线',
+      sub: '下午避暑午休 · 鸣沙山 19:30 黄金落日机位',
+      status: '离线已缓',
+    },
+  ];
 
   return (
-    <div
-      className="hidden lg:flex h-[190px] sm:h-[215px] w-[145px] sm:w-[165px] shrink-0 flex-col rounded-card border border-gold/35 bg-paper/95 p-2 sm:p-2.5 shadow-level-float backdrop-blur-xl justify-between"
-      role="region"
-      aria-label="无人区离线容灾安全舱"
-    >
+    <div className="w-full lg:w-[28%] shrink-0 flex flex-col justify-between rounded-xl bg-white border border-black/[0.08] p-2.5 shadow-xs overflow-hidden">
       <div>
-        <div className="flex items-center justify-between">
-          <span className="flex items-center gap-1 text-[11px] sm:text-xs font-bold text-gold-ink">
-            <ShieldIcon className="h-3.5 w-3.5 text-gold" aria-hidden="true" />
-            <span>出游容灾舱</span>
+        <div className="flex items-center justify-between pb-1.5 border-b border-black/[0.06]">
+          <span className="font-bold text-xs text-[#1E2024] flex items-center gap-1.5">
+            <CompassIcon className="h-3.5 w-3.5 text-[#FE3C01]" />
+            <span>离线行程节点 (全量自包含)</span>
           </span>
-          <span className="chip rounded-pill bg-jade/15 text-jade text-[8px] sm:text-[9px] font-mono font-bold px-1.5 py-0">
-            双向保活
+          <span className="font-mono text-[9px] text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
+            9天 12节点
           </span>
         </div>
-        <p className="mt-0.5 text-[9px] sm:text-[10px] text-ink-soft truncate font-mono">无人区离线舱已就绪</p>
 
-        <ul className="mt-1.5 space-y-1 text-[9px] sm:text-[10px] text-ink">
-          <li className="flex items-center gap-1">
-            <CheckIcon className="h-3 w-3 text-jade shrink-0" aria-hidden="true" />
-            <span>多端同频实时互联</span>
-          </li>
-          <li className="flex items-center gap-1">
-            <CheckIcon className="h-3 w-3 text-jade shrink-0" aria-hidden="true" />
-            <span>无人区无感保活切换</span>
-          </li>
-          <li className="flex items-center gap-1">
-            <CheckIcon className="h-3 w-3 text-jade shrink-0" aria-hidden="true" />
-            <span>出网增量差量对齐</span>
-          </li>
-        </ul>
+        {/* 节点卡片列表 */}
+        <div className="mt-2 space-y-1.5">
+          {NODES.map((node) => (
+            <div
+              key={node.day}
+              className="rounded-lg bg-black/[0.02] p-2 border border-black/[0.04] text-[10px]"
+            >
+              <div className="flex items-center justify-between">
+                <span className="font-mono font-bold text-[#FE3C01]">{node.day}</span>
+                <span className="font-semibold text-[#1E2024] truncate flex-1 ml-1.5">
+                  {node.title}
+                </span>
+                <span className="font-mono text-[8px] bg-emerald-100/60 text-emerald-800 px-1 py-0.2 rounded shrink-0">
+                  {node.status}
+                </span>
+              </div>
+              <p className="text-black/60 text-[9px] mt-0.5 truncate">{node.desc}</p>
+              <p className="text-black/45 text-[8px] mt-0.5 truncate font-mono">{node.sub}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div
-        className={`rounded-control p-1 text-center text-[8px] sm:text-[9px] font-semibold transition-colors duration-300 ${
-          step >= 1 ? 'bg-jade/15 text-jade border border-jade/30' : 'bg-gold/10 text-gold-ink'
-        }`}
-      >
-        {step >= 1 ? '✓ 无人区离线舱已就绪' : '多端云同频 · 无人区无感守护'}
+      {/* 无人区应急保障生命线卡片 (甘肃交警 / 连霍保供油站) */}
+      <div className="mt-2 rounded-lg bg-rose-50/70 p-2 border border-rose-200/80 text-[9px]">
+        <div className="flex items-center gap-1 text-rose-800 font-bold">
+          <AlertTriangleIcon className="h-3 w-3 text-rose-600 shrink-0" />
+          <span>无人区应急生命线 (脱网一键直拨)</span>
+        </div>
+        <div className="mt-1 space-y-0.5 text-rose-900/80 font-mono text-[8.5px]">
+          <p>🚨 甘肃交警救援专线: <span className="font-bold text-rose-700">12122</span></p>
+          <p>⛽ G30 无人区应急补能: <span className="font-bold text-rose-700">K1840 保供站</span></p>
+          <p>🛰️ 北斗卫星 SOS 坐标: <span className="font-bold text-rose-700">38.05°N, 102.64°E</span></p>
+        </div>
       </div>
     </div>
+  );
+}
+
+/* ═════════════════════ 3. 中栏：离线矢量拓扑沙盘与高程剖面 HUD ═════════════════════ */
+function OfflineSandTableColumn() {
+  return (
+    <div className="flex-1 min-w-0 flex flex-col justify-between rounded-xl bg-white border border-black/[0.08] p-2.5 shadow-xs overflow-hidden">
+      {/* 顶部指示条 */}
+      <div className="flex items-center justify-between pb-1.5 border-b border-black/[0.06] text-xs">
+        <div className="flex items-center gap-1.5 font-bold text-[#1E2024]">
+          <span className="h-2 w-2 rounded-full bg-emerald-500" />
+          <span>离线矢量拓扑沙盘 (0 外部瓦片拉取)</span>
+        </div>
+        <div className="flex items-center gap-2 text-[10px] font-mono text-black/50">
+          <span>G30 连霍走廊</span>
+          <span>·</span>
+          <span>1,980 km 全程矢量</span>
+        </div>
+      </div>
+
+      {/* 核心离线矢量地图渲染 */}
+      <div className="relative flex-1 min-h-[190px] my-1.5 rounded-lg bg-[#FAF8F5] border border-black/[0.06] overflow-hidden">
+        <svg viewBox="0 0 540 280" className="w-full h-full object-cover">
+          <defs>
+            <linearGradient id="offline-route" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0%" stopColor="#FE3C01" />
+              <stop offset="50%" stopColor="#F59E0B" />
+              <stop offset="100%" stopColor="#10B981" />
+            </linearGradient>
+          </defs>
+
+          {/* 地貌底色与微网格 */}
+          <rect width="540" height="280" fill="#FAF8F5" />
+          <path d="M 0 50 L 540 50 M 0 120 L 540 120 M 0 190 L 540 190" stroke="#000000" strokeWidth="1" strokeOpacity="0.03" />
+
+          {/* 黄河水系与祁连山脉矢量轮廓 */}
+          <path d="M 10 240 C 90 220, 140 250, 220 230" stroke="#BFDBFE" strokeWidth="16" fill="none" strokeLinecap="round" opacity="0.6" />
+          <text x="80" y="245" fontSize="10" fontWeight="bold" fill="#3B82F6" opacity="0.5">黄河</text>
+
+          {/* 祁连山余脉阴影 */}
+          <path d="M 80 180 Q 180 150 280 170 T 480 130" stroke="#D1D5DB" strokeWidth="24" strokeLinecap="round" fill="none" opacity="0.4" />
+          <text x="260" y="155" fontSize="10" fontWeight="bold" fill="#6B7280" opacity="0.6">祁连山脉 · 缓坡走廊</text>
+
+          {/* G30 连霍高速主干线拓扑 */}
+          <path
+            d="M 50 240 L 140 190 L 250 160 L 370 120 L 490 80"
+            stroke="url(#offline-route)"
+            strokeWidth="5"
+            fill="none"
+            strokeLinecap="round"
+          />
+
+          {/* 节点打卡标记 */}
+          {[
+            { x: 50, y: 240, label: '兰州 (D0)' },
+            { x: 140, y: 190, label: '乌鞘岭 2980m (D1)' },
+            { x: 250, y: 160, label: '七彩丹霞 (D2)' },
+            { x: 370, y: 120, label: '嘉峪关 (D3)' },
+            { x: 490, y: 80, label: '莫高窟·鸣沙山 (D4-D5)' },
+          ].map((pt) => (
+            <g key={pt.label} transform={`translate(${pt.x}, ${pt.y})`}>
+              <circle r="6" fill="#FFFFFF" stroke="#FE3C01" strokeWidth="2" />
+              <circle r="2.5" fill="#FE3C01" />
+              <rect x="-35" y="-22" width="70" height="15" rx="3" fill="#1E293B" fillOpacity="0.85" />
+              <text x="0" y="-11" fontSize="7.5" fontWeight="bold" textAnchor="middle" fill="#FFFFFF" fontFamily="sans-serif">
+                {pt.label}
+              </text>
+            </g>
+          ))}
+        </svg>
+
+        {/* 离线浮动微标签 */}
+        <div className="absolute top-2 left-2 flex items-center gap-1 bg-white/90 px-2 py-0.5 rounded border border-black/10 text-[9px] font-semibold text-slate-700 shadow-xs backdrop-blur-xs">
+          <span>⚡ 12 个离线航点全部校核 · 无外部拉取依赖</span>
+        </div>
+      </div>
+
+      {/* 底部高程剖面 HUD (乌鞘岭 2980m 刚性安全包线) */}
+      <div className="rounded-lg bg-black/[0.02] p-2 border border-black/[0.05] flex items-center justify-between text-[9px]">
+        <div className="flex items-center gap-3">
+          <span className="font-bold text-[#1E2024] flex items-center gap-1 font-mono">
+            <span className="text-[#FE3C01]">▲</span>
+            <span>最高海拔: 乌鞘岭 2,980m</span>
+          </span>
+          <span className="text-emerald-700 font-semibold font-mono">
+            ✓ 远低于 70 岁长辈 3,600m 适老安全上限
+          </span>
+        </div>
+        <span className="text-black/50 font-mono hidden sm:inline">
+          全长 1,980km · 累计爬升 3,420m
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ═════════════════════ 4. 右栏：3端同频网络与单文件编译打包引擎 ═════════════════════ */
+function ZeroBuildPackagerColumn() {
+  const p = useProgress();
+  const step = useStep(p, [0.94, 0.952, 0.965, 0.978]);
+
+  return (
+    <div className="w-full lg:w-[28%] shrink-0 flex flex-col justify-between rounded-xl bg-white border border-black/[0.08] p-2.5 shadow-xs overflow-hidden">
+      <div>
+        {/* 卡片 1: 3端协同网实时在线状态 */}
+        <div className="pb-1.5 border-b border-black/[0.06]">
+          <div className="flex items-center justify-between">
+            <span className="font-bold text-xs text-[#1E2024] flex items-center gap-1.5">
+              <RadioIcon className="h-3.5 w-3.5 text-emerald-600 animate-pulse" />
+              <span>3 端连续互联 (Continuity)</span>
+            </span>
+            <span className="font-mono text-[9px] text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded font-bold">
+              18ms 同频
+            </span>
+          </div>
+
+          <div className="mt-2 space-y-1.5 text-[9.5px]">
+            <div className="flex items-center justify-between p-1.5 rounded-lg bg-black/[0.02] border border-black/[0.04]">
+              <span className="flex items-center gap-1 font-medium text-slate-800">
+                <MonitorIcon className="h-3 w-3 text-slate-700" />
+                <span>领队桌面端</span>
+              </span>
+              <span className="font-mono text-emerald-700 font-semibold text-[8.5px]">
+                主控就绪 · 本地已存
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between p-1.5 rounded-lg bg-black/[0.02] border border-black/[0.04]">
+              <span className="flex items-center gap-1 font-medium text-slate-800">
+                <SmartphoneIcon className="h-3 w-3 text-emerald-600" />
+                <span>副驾阿杰手机</span>
+              </span>
+              <span className="font-mono text-emerald-700 font-semibold text-[8.5px]">
+                微信免登快照已缓
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between p-1.5 rounded-lg bg-black/[0.02] border border-black/[0.04]">
+              <span className="flex items-center gap-1 font-medium text-slate-800">
+                <CarIcon className="h-3 w-3 text-[#0284C7]" />
+                <span>腾势 D9 车机</span>
+              </span>
+              <span className="font-mono text-emerald-700 font-semibold text-[8.5px]">
+                巡航与限高包已推
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* 卡片 2: 零构建单文件编译流水线 */}
+        <div className="mt-2 pt-1 border-t border-black/[0.06]">
+          <span className="font-bold text-xs text-[#1E2024] flex items-center gap-1.5">
+            <ShieldIcon className="h-3.5 w-3.5 text-[#FE3C01]" />
+            <span>零构建自包含打包流水线</span>
+          </span>
+
+          <div className="mt-1.5 space-y-1 text-[9px]">
+            {[
+              { label: 'DSL AST 契约校验 (spec/trip.schema.json)', done: step >= 0 },
+              { label: '离线高精矢量航线与等高线内联压缩', done: step >= 1 },
+              { label: '70岁长辈慢节奏与 2.28m MPV 限高刚性锁死', done: step >= 2 },
+              { label: '自包含单文件 HTML 编译生成 (1.84 MB)', done: step >= 3 },
+            ].map((task) => (
+              <div key={task.label} className="flex items-center gap-1.5 text-black/75">
+                <span
+                  className={`flex h-3.5 w-3.5 items-center justify-center rounded-full text-[8px] font-bold ${
+                    task.done
+                      ? 'bg-emerald-500 text-white'
+                      : 'bg-black/10 text-black/40'
+                  }`}
+                >
+                  ✓
+                </span>
+                <span className="truncate">{task.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 底部大按钮：一键下载自包含离线路书 */}
+      <div className="mt-2 pt-2 border-t border-black/[0.06]">
+        <button
+          type="button"
+          className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg bg-[#FE3C01] hover:bg-[#E03500] text-white text-xs font-bold shadow-sm transition-all"
+        >
+          <DownloadIcon className="h-3.5 w-3.5 text-white" />
+          <span>下载自包含离线路书 (.html)</span>
+        </button>
+        <p className="mt-1 text-center font-mono text-[8px] text-black/45">
+          双击即开 · 无网可用 · 严禁运行时外部拉取
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ═════════════════════ 5. 底栏状态与设计契约承诺 ═════════════════════ */
+function DeliverFooter() {
+  return (
+    <footer className="h-7 shrink-0 border-t border-black/[0.08] bg-[#FAF8F5] px-3 sm:px-4 flex items-center justify-between text-[9px] sm:text-[10px] font-mono text-black/60 select-none">
+      <div className="flex items-center gap-2">
+        <span className="flex items-center gap-1 font-semibold text-emerald-700">
+          <CheckIcon className="h-3 w-3 text-emerald-600" />
+          <span>十大设计铁律 #1 零构建交付已达成</span>
+        </span>
+        <span className="text-black/20">|</span>
+        <span className="hidden sm:inline">数据主权完全本地化 · 无网乐观保活</span>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <span>SHA-256: 8f9b4c2a</span>
+        <span className="text-black/20">|</span>
+        <span className="font-bold text-[#FE3C01]">TripCraft v1.1 离线舱</span>
+      </div>
+    </footer>
   );
 }

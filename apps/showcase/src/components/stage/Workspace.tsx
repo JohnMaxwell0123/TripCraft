@@ -32,7 +32,7 @@ export function Workspace() {
     [T.cockpitIn[0], T.cockpitIn[1], T.cockpitOut[0], T.cockpitOut[1]],
     [1, 0, 0, 1],
   );
-  const deliverDim = useRange(p, [0.93, 0.945], [1, 0]);
+  const deliverDim = useRange(p, [0.922, 0.928], [1, 0]);
   const scale = useRange(
     p,
     [T.cockpitIn[0], T.cockpitIn[1], T.cockpitOut[0], T.cockpitOut[1]],
@@ -43,7 +43,7 @@ export function Workspace() {
     [inTimeline, cockpitDim, deliverDim],
     ([tl, cDim, dDim]) => (tl as number) * (cDim as number) * (dDim as number),
   );
-  const visibility = useVisibility(p, T.timelineIn[0] - 0.01, 0.942);
+  const visibility = useVisibility(p, T.timelineIn[0] - 0.01, 0.928);
 
   return (
     <motion.div

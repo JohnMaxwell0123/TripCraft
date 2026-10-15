@@ -30,18 +30,18 @@ import {
  */
 export function CockpitScene() {
   const p = useProgress();
-  const visibility = useVisibility(p, T.cockpitIn[0] - 0.008, T.cockpitOut[1] + 0.008);
+  const visibility = useVisibility(p, T.cockpitIn[0] - 0.008, 0.925);
 
-  const opacity = useFade(p, T.cockpitIn[0], T.cockpitIn[1], T.cockpitOut[0], T.cockpitOut[1]);
+  const opacity = useFade(p, T.cockpitIn[0], T.cockpitIn[1], 0.908, 0.924);
   const scale = useRange(
     p,
-    [T.cockpitIn[0], T.cockpitIn[1], T.cockpitOut[0], T.cockpitOut[1]],
+    [T.cockpitIn[0], T.cockpitIn[1], 0.908, 0.924],
     [0.94, 1, 1, 0.96],
     { easing: ease.back, rest: 1 },
   );
   const y = useRange(
     p,
-    [T.cockpitIn[0], T.cockpitIn[1], T.cockpitOut[0], T.cockpitOut[1]],
+    [T.cockpitIn[0], T.cockpitIn[1], 0.908, 0.924],
     [32, 0, 0, -20],
     { easing: ease.out, rest: 0 },
   );
