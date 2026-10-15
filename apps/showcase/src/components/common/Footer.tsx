@@ -15,7 +15,7 @@ export function Footer() {
 
   return (
     <footer className="relative bg-[#FFFFF9] border-t border-[#241E20]/[0.08] pt-12 pb-10 sm:pt-20 sm:pb-14 text-left">
-      <div className="mx-auto max-w-[1240px] px-4 sm:px-8">
+      <div className="mx-auto max-w-[1640px] px-6 sm:px-10 lg:px-12 xl:px-16">
         {/* Top Call-to-action Banner (Unify 'From prompt to pipeline' style) */}
         <div className="relative overflow-hidden rounded-[16px] bg-[#241E20] text-[#FFFFF9] p-8 sm:p-14 text-center shadow-2xl">
           {/* Subtle Orange Glow in bottom-right corner (Unify signature aura) */}

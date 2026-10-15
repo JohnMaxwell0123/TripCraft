@@ -99,8 +99,8 @@ export function Topbar() {
       {/* 顶部微高光反光层 */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/90 to-transparent" />
 
-      {/* 左侧：macOS 交通灯 + TripCraft 原生 App 标识与面包屑路径 */}
-      <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+      {/* 左侧：macOS 交通灯 + TripCraft 原生 App 标识与面包屑路径 (shrink-0 刚性锁定，绝不挤压) */}
+      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
         <MacTrafficLights />
         <div className="flex items-center gap-1.5 pl-1 pr-1.5 sm:pr-2 border-r border-ink/10">
           <span className="flex h-5 w-5 sm:h-6 sm:w-6 shrink-0 items-center justify-center rounded-control bg-gradient-to-br from-gold via-gold-ink to-ink font-serif text-[11px] sm:text-xs font-bold text-paper shadow-level-static ring-1 ring-gold/40">
@@ -110,14 +110,14 @@ export function Topbar() {
         </div>
 
         {/* 动态项目导航面包屑 */}
-        <div className="relative h-5 min-w-0 flex-1 overflow-hidden text-xs font-medium text-ink flex items-center">
+        <div className="relative h-5 w-24 overflow-hidden text-xs font-medium text-ink flex items-center">
           <motion.div className="truncate flex items-center gap-1" style={{ opacity: draft }}>
-            <span className="font-semibold text-ink">新的旅行</span>
-            <span className="chip rounded-pill bg-gold/15 text-gold-ink text-[10px] px-1.5 py-0 font-medium">规划中</span>
+            <span className="font-semibold text-ink text-[11px]">新旅行</span>
+            <span className="chip rounded-pill bg-gold/15 text-gold-ink text-[9px] px-1 py-0 font-medium">规划中</span>
           </motion.div>
           <motion.div className="absolute inset-0 truncate flex items-center gap-1" style={{ opacity: named }}>
-            <span className="font-semibold text-ink">西行计划</span>
-            <span className="hidden lg:inline text-ink-soft text-[11px]">· 9D 丝路自驾 (腾势 D9)</span>
+            <span className="font-semibold text-ink text-[11px]">西行计划</span>
+            <span className="text-ink-soft text-[10px]">· 9D</span>
           </motion.div>
         </div>
       </div>
@@ -125,11 +125,9 @@ export function Topbar() {
       {/* 中间：App 内部业务模式切换器（随剧情进度高亮对应模块，体现真实 App 操作台质感） */}
       <InAppModuleSwitcher />
 
-      {/* 右侧：多端同频、离线容灾状态、版本、协作成员与邀请按钮 */}
-      <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-        <CommandPaletteBadge />
+      {/* 右侧：多端同频、版本、协作成员与邀请按钮 */}
+      <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
         <MultiDeviceSyncBadge />
-        <DisasterRecoveryBadge />
         <VersionBadge />
 
         <AvatarStack />
@@ -172,7 +170,7 @@ function InAppModuleSwitcher() {
       {/* 桌面端：完整四模块胶囊切换器 */}
       <nav
         aria-label="TripCraft 模块导航"
-        className="hidden md:flex items-center rounded-pill bg-ink/[0.04] p-0.5 border border-ink/[0.06] text-xs font-medium"
+        className="hidden md:flex items-center rounded-pill bg-ink/[0.04] p-0.5 border border-ink/[0.06] text-xs font-medium whitespace-nowrap shrink-0"
       >
         {tabs.map((tab) => {
           const isActive = tab.activeIn.includes(activeStep);
@@ -180,14 +178,14 @@ function InAppModuleSwitcher() {
           return (
             <span
               key={tab.id}
-              className={`flex items-center gap-1 rounded-pill px-2.5 py-1 text-[11px] transition-all duration-300 ${
+              className={`flex items-center gap-1 rounded-pill px-2 py-0.5 text-[11px] whitespace-nowrap shrink-0 transition-all duration-300 ${
                 isActive
                   ? 'bg-paper text-ink font-semibold shadow-level-static ring-1 ring-ink/10'
                   : 'text-ink-soft hover:text-ink'
               }`}
             >
-              <Icon className={`h-3 w-3 ${isActive ? 'text-gold' : 'text-ink-soft'}`} />
-              <span>{tab.label}</span>
+              <Icon className={`h-3 w-3 shrink-0 ${isActive ? 'text-gold' : 'text-ink-soft'}`} />
+              <span className="whitespace-nowrap">{tab.label}</span>
             </span>
           );
         })}

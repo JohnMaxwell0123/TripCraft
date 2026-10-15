@@ -121,7 +121,7 @@ export function Hero() {
         className="pointer-events-none absolute top-1/2 right-0 h-[480px] w-[480px] rounded-full bg-[radial-gradient(circle,rgba(212,160,78,0.035),transparent_70%)] blur-3xl"
       />
 
-      <div className="relative mx-auto max-w-[1240px] px-4 sm:px-8 flex flex-col items-center text-center">
+      <div className="relative mx-auto max-w-[1640px] px-6 sm:px-10 lg:px-12 xl:px-16 flex flex-col items-center text-center">
         {/* 1. 顶部纯中文胶囊标牌 */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -217,7 +217,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.4 }}
-          className="mt-10 w-full max-w-5xl rounded-[16px] bg-[#FFFFFF] border border-[#241E20]/10 p-3 sm:p-5 shadow-[0_20px_50px_rgba(36,30,32,0.08)] overflow-hidden"
+          className="mt-10 w-full max-w-7xl xl:max-w-[1380px] rounded-[16px] bg-[#FFFFFF] border border-[#241E20]/10 p-3 sm:p-5 shadow-[0_20px_50px_rgba(36,30,32,0.08)] overflow-hidden"
         >
           {/* 顶栏：模式切换与状态 */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3.5 mb-3 border-b border-[#241E20]/[0.06] gap-2.5">

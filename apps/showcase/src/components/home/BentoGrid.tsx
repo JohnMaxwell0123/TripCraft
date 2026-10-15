@@ -24,7 +24,7 @@ export function BentoGrid() {
 
   return (
     <section id="bento" className="relative overflow-hidden py-16 sm:py-24 bg-[#FFFFF9] scroll-mt-20">
-      <div className="relative mx-auto max-w-[1240px] px-4 sm:px-8">
+      <div className="relative mx-auto max-w-[1640px] px-6 sm:px-10 lg:px-12 xl:px-16">
         {/* Section Header (Unify style: Eyebrow + Serif Headline) */}
         <div className="text-center max-w-3xl mx-auto">
           <p className="text-xs font-semibold tracking-wider text-[#FE3C01]">

@@ -247,7 +247,7 @@ export function TechFoundation() {
         className="pointer-events-none absolute bottom-12 right-1/4 h-96 w-96 translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(184,134,59,0.05),transparent_70%)] blur-3xl"
       />
 
-      <div className="relative mx-auto max-w-[1240px] px-4 sm:px-8">
+      <div className="relative mx-auto max-w-[1640px] px-6 sm:px-10 lg:px-12 xl:px-16">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#FE3C01]">

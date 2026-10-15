@@ -98,7 +98,7 @@ export function Navbar() {
             : 'bg-[#FFFFF9]/80 backdrop-blur-sm border-b border-[#241E20]/[0.05] py-3.5'
         }`}
       >
-        <div className="mx-auto flex max-w-[1240px] items-center justify-between px-4 sm:px-8">
+        <div className="mx-auto flex max-w-[1640px] items-center justify-between px-6 sm:px-10 lg:px-12 xl:px-16">
           {/* Brand Wordmark */}
           <a
             href="#"

@@ -30,7 +30,7 @@ export function CustomerStories() {
 
   return (
     <section className="relative overflow-hidden py-16 sm:py-24 bg-[#FFFFF9] border-t border-[#241E20]/[0.06]">
-      <div className="relative mx-auto max-w-[1240px] px-4 sm:px-8">
+      <div className="relative mx-auto max-w-[1640px] px-6 sm:px-10 lg:px-12 xl:px-16">
         {/* Section Header (Unify Hanging Quote Section Style) */}
         <div className="text-center max-w-2xl mx-auto mb-12">
           <p className="text-xs font-semibold tracking-wider text-[#FE3C01]">
