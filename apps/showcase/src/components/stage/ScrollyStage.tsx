@@ -1,696 +1,833 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence, useReducedMotion, useScroll, useSpring, useTransform, type MotionValue } from 'framer-motion';
-import { ReducedMotionContext, ease, useFade, useMediaQuery, useRange, useStep } from '@/lib/motion';
-import { CHAPTERS, STAGE_VH, T, type Chapter } from './timeline';
-import { LayoutContext, ProgressContext, useProgress } from './primitives';
-import { ChatScene } from './ChatScene';
-import { Workspace } from './Workspace';
-import { CollabDrawer, PhoneMock, ShareSheet, Topbar } from './Collab';
-import { Backdrop, RecommendModal, StageToasts } from './Recommend';
-import { CockpitScene } from './CockpitScene';
-import { DeliverScene } from './Deliver';
-import { PlayIcon, PauseIcon, RotateCcwIcon, TerminalIcon, DatabaseIcon, ShieldIcon } from '@/components/common/Icons';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  CarIcon,
+  CheckIcon,
+  ShieldIcon,
+  AlertTriangleIcon,
+  CompassIcon,
+  ClockIcon,
+  SparklesIcon,
+  PlayIcon,
+  PauseIcon,
+  RotateCcwIcon,
+  ElderIcon,
+  BabyIcon,
+  PinIcon,
+  SignalSlashIcon,
+  ChevronRightIcon,
+} from '@/components/common/Icons';
 
 /**
- * 核心视差滚动演示区（SHOWCASE §4）
- * 外层高 STAGE_VH vh 提供滚动行程，内层 sticky 视口固钉，
- * 所有场景订阅同一个 scrollProgress（经轻量弹簧平滑）。
- * 支持下滑进入后自动演进播放，用户滚动鼠标可随时无缝接管与恢复。
+ * Unify 风格交互式导览沙盒 (Autonomous Stories Stage)
+ * 
+ * 核心架构机理：
+ * 1. 【时钟解耦】：摒弃传统将动画强制绑定在页面滚轮高度 (Scroll Hijacking) 的做法，
+ *    采用独立的自运行沙盒时钟 (RAF / Timer)。用户在页面上下自由滑动翻看，
+ *    右侧演示丝滑推进，绝不卡顿或倒退。
+ * 2. 【垂直流光进度步进器】：左侧 5 个阶段垂直排列，激活项由橙红进度条 (#FE3C01)
+ *    自上而下匀速填充，填满后平滑切换至下一幕；用户亦可随时点击任意项即刻切入。
+ * 3. 【极简拟物视窗与氛围底板】：右侧在深色奢华极光渐变背板上漂浮应用视窗，
+ *    内部自运行展示 5 大自驾核心业务闭环。
  */
+
+interface StoryTab {
+  id: string;
+  eyebrow: string;
+  title: string;
+  desc: string;
+  duration: number; // 持续时长 (ms)
+}
+
+const TABS: StoryTab[] = [
+  {
+    id: 'intent-parsing',
+    eyebrow: '01 · 零表单倾诉',
+    title: '自然语言意图提炼',
+    desc: '不用面对冷冰冰的繁琐表单。说出出行人员、车型配置与在意事项，AI 毫秒级抽取长辈步行限制、幼儿作息与 2.15m 限高等刚性规则。',
+    duration: 7000,
+  },
+  {
+    id: 'wechat-collab',
+    eyebrow: '02 · 零门槛共创',
+    title: '微信免登愿望池协同',
+    desc: '同行亲友微信扫码即写，免注册免装 App。全团愿望实时上屏投票，算法毫秒级评估顺路度与绕行代价，一人领队全团同频。',
+    duration: 7000,
+  },
+  {
+    id: 'risk-interceptor',
+    eyebrow: '03 · 实时物理风控',
+    title: '2.15m 限高与险路拦截',
+    desc: '针对自驾车顶行李箱（腾势 D9 达 2.28m）、暗冰非铺装与施工涵洞实施毫秒级碰撞与净空计算。提前 50km 智能规避，安全隐患归零。',
+    duration: 7500,
+  },
+  {
+    id: 'cockpit-pilot',
+    eyebrow: '04 · 车机原生座舱',
+    title: 'C-CABIN 车道级 NOA 领航',
+    desc: '深邃钛黑车机专属大屏，3D 车道级虚拟光毯、海拔爬升剖面与连续发卡弯预警，全车在无人区脱网途中依然尽在掌握。',
+    duration: 7500,
+  },
+  {
+    id: 'zero-build-offline',
+    eyebrow: '05 · 本地优先主权',
+    title: '零构建单文件离线交付',
+    desc: '一键将全套交互式路书编译为自包含单 HTML 文件。双击秒开，断网飞行模式全量功能可查，数据主权永存本地。',
+    duration: 7000,
+  },
+];
+
 export function ScrollyStage() {
-  const ref = useRef<HTMLElement>(null);
-  const reducedPref = useReducedMotion();
-  const reduced = reducedPref ?? false;
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end end'] });
-  const smooth = useSpring(scrollYProgress, { stiffness: 160, damping: 32, mass: 0.35, restDelta: 0.0001 });
-  const progress = reduced ? scrollYProgress : smooth;
-  const desktop = useMediaQuery('(min-width: 768px)');
-  const wide = useMediaQuery('(min-width: 1280px)');
+  const [activeTab, setActiveTab] = useState(0);
+  const [progress, setProgress] = useState(0); // 0 -> 1
+  const [isPaused, setIsPaused] = useState(false);
+  const [isInView, setIsInView] = useState(true);
 
-  // 自动播放与交互状态
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isInteracting, setIsInteracting] = useState(false);
-  const [isAtEnd, setIsAtEnd] = useState(false);
-  const [speed, setSpeed] = useState<number>(0.9);
-  const [isInsideStage, setIsInsideStage] = useState(false);
+  const containerRef = useRef<HTMLElement>(null);
+  const startTimeRef = useRef<number | null>(null);
+  const pausedProgressRef = useRef(0);
+  const activeTabRef = useRef(0);
+  const isPausedRef = useRef(false);
+  const isInViewRef = useRef(true);
 
-  const isPlayingRef = useRef(false);
-  const isInteractingRef = useRef(false);
-  const isJumpingRef = useRef(false);
-  const userPausedRef = useRef(false);
-  const speedRef = useRef(0.9);
-  const lastAutoScrollYRef = useRef(0);
-  const lastAutoScrollTimeRef = useRef(0);
-  const isAutoScrollingRef = useRef(false);
-  const lastTimeRef = useRef<number | null>(null);
-  const userScrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const rafIdRef = useRef<number | null>(null);
+  activeTabRef.current = activeTab;
+  isPausedRef.current = isPaused;
+  isInViewRef.current = isInView;
 
-  // 检测舞台在视口中的状态：进入吸顶区域后自动激活演示
-  const updateStageStatus = useCallback(() => {
-    const el = ref.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const travel = el.offsetHeight - window.innerHeight;
-    const stageTop = rect.top + window.scrollY;
-    const currentRelY = window.scrollY - stageTop;
-
-    // 当舞台顶部到达视口顶部且尚未完全滚出时，判定为在舞台内
-    const inside = rect.top <= 20 && rect.bottom >= window.innerHeight - 20;
-    setIsInsideStage(inside);
-
-    if (inside) {
-      if (currentRelY >= travel - 4) {
-        setIsAtEnd(true);
-        isPlayingRef.current = false;
-        setIsPlaying(false);
-      } else {
-        setIsAtEnd(false);
-        // 如果用户未主动点击暂停，且非跳转中，进入舞台后自动激活演示
-        if (!userPausedRef.current && !isJumpingRef.current && !reduced) {
-          if (!isPlayingRef.current) {
-            isPlayingRef.current = true;
-            setIsPlaying(true);
-            lastAutoScrollYRef.current = window.scrollY;
-            lastAutoScrollTimeRef.current = performance.now();
-          }
-        }
-      }
-    } else {
-      // 离开舞台（滚回顶部 Hero 或滚入 Bento 矩阵）
-      if (isPlayingRef.current) {
-        isPlayingRef.current = false;
-        setIsPlaying(false);
-      }
-      // 若滚回舞台上方，重置手动暂停标记，便于用户再次向下滑入时能再次自启动
-      if (rect.top > 20) {
-        userPausedRef.current = false;
-      }
-    }
-  }, [reduced]);
-
-  // 用户手动交互监听（滚轮、触摸、键盘、滚动条拖拽），让出 100% 滚动主导权
-  const onUserInteraction = useCallback(() => {
-    isInteractingRef.current = true;
-    setIsInteracting(true);
-
-    if (userScrollTimeoutRef.current) {
-      clearTimeout(userScrollTimeoutRef.current);
-    }
-    userScrollTimeoutRef.current = setTimeout(() => {
-      isInteractingRef.current = false;
-      setIsInteracting(false);
-      userScrollTimeoutRef.current = null;
-      lastAutoScrollYRef.current = window.scrollY;
-      lastAutoScrollTimeRef.current = performance.now();
-      // 停顿后刷新舞台状态，平滑续播
-      updateStageStatus();
-    }, 900);
-  }, [updateStageStatus]);
-
-  // 核心逐帧平滑推进循环
+  // 视口感知：脱离视口时挂起时钟省电，滑入视口时平滑续播
   useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        const visible = entry.isIntersecting;
+        setIsInView(visible);
+        if (visible) {
+          startTimeRef.current = performance.now() - pausedProgressRef.current * TABS[activeTabRef.current].duration;
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // 自运行沙盒时钟引擎 (RAF 独立平滑推进，上下滚动绝不打断)
+  useEffect(() => {
+    let rafId: number;
+
     const tick = (now: number) => {
-      if (lastTimeRef.current === null) {
-        lastTimeRef.current = now;
-      }
-      const dt = Math.min((now - lastTimeRef.current) / 1000, 0.1);
-      lastTimeRef.current = now;
-
-      const el = ref.current;
-      if (
-        el &&
-        isPlayingRef.current &&
-        !isInteractingRef.current &&
-        !isJumpingRef.current &&
-        !reduced
-      ) {
-        const stageTop = el.getBoundingClientRect().top + window.scrollY;
-        const travel = el.offsetHeight - window.innerHeight;
-        const currentRelY = window.scrollY - stageTop;
-
-        if (currentRelY >= -20 && currentRelY < travel) {
-          // 全剧情标准时长：48 秒完整演进 5 大章节
-          const baseDuration = 48;
-          const speedPxPerSec = (travel / baseDuration) * speedRef.current;
-          const delta = speedPxPerSec * dt;
-          const nextY = Math.max(stageTop, window.scrollY + delta);
-          const targetY = Math.min(stageTop + travel, nextY);
-
-          isAutoScrollingRef.current = true;
-          lastAutoScrollYRef.current = targetY;
-          lastAutoScrollTimeRef.current = performance.now();
-          window.scrollTo({ top: targetY, behavior: 'instant' });
-
-          if (targetY >= stageTop + travel - 2) {
-            isPlayingRef.current = false;
-            setIsPlaying(false);
-            setIsAtEnd(true);
-          }
-        } else if (currentRelY >= travel) {
-          isPlayingRef.current = false;
-          setIsPlaying(false);
-          setIsAtEnd(true);
+      if (!isPausedRef.current && isInViewRef.current) {
+        const curTabDuration = TABS[activeTabRef.current].duration;
+        if (startTimeRef.current === null) {
+          startTimeRef.current = now;
         }
-      }
 
-      rafIdRef.current = requestAnimationFrame(tick);
-    };
+        const elapsed = now - startTimeRef.current;
+        const currentProgress = Math.min(1, elapsed / curTabDuration);
+        setProgress(currentProgress);
+        pausedProgressRef.current = currentProgress;
 
-    lastTimeRef.current = performance.now();
-    rafIdRef.current = requestAnimationFrame(tick);
-
-    return () => {
-      if (rafIdRef.current !== null) {
-        cancelAnimationFrame(rafIdRef.current);
-      }
-      if (userScrollTimeoutRef.current) {
-        clearTimeout(userScrollTimeoutRef.current);
-      }
-    };
-  }, [reduced]);
-
-  // 从头重播
-  const replay = useCallback(() => {
-    const el = ref.current;
-    if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY;
-    isJumpingRef.current = true;
-    lastAutoScrollYRef.current = top;
-    lastAutoScrollTimeRef.current = performance.now();
-    window.scrollTo({ top, behavior: 'smooth' });
-
-    setTimeout(() => {
-      isJumpingRef.current = false;
-      userPausedRef.current = false;
-      isInteractingRef.current = false;
-      setIsInteracting(false);
-      setIsAtEnd(false);
-      isPlayingRef.current = true;
-      setIsPlaying(true);
-      lastAutoScrollYRef.current = window.scrollY;
-      lastAutoScrollTimeRef.current = performance.now();
-    }, 750);
-  }, []);
-
-  // 切换播放 / 暂停
-  const togglePlay = useCallback(() => {
-    if (isAtEnd) {
-      replay();
-      return;
-    }
-    if (isPlayingRef.current) {
-      userPausedRef.current = true;
-      isPlayingRef.current = false;
-      setIsPlaying(false);
-    } else {
-      userPausedRef.current = false;
-      isInteractingRef.current = false;
-      setIsInteracting(false);
-      isPlayingRef.current = true;
-      setIsPlaying(true);
-      lastAutoScrollYRef.current = window.scrollY;
-      lastAutoScrollTimeRef.current = performance.now();
-    }
-  }, [isAtEnd, replay]);
-
-  // 切换播放倍速 (0.9x -> 1.0x -> 1.5x -> 2.0x -> 0.9x)
-  const cycleSpeed = useCallback(() => {
-    const speeds = [0.9, 1.0, 1.5, 2.0];
-    const currentIndex = speeds.indexOf(speedRef.current);
-    const nextSpeed = currentIndex === -1 ? speeds[0] : speeds[(currentIndex + 1) % speeds.length];
-    setSpeed(nextSpeed);
-    speedRef.current = nextSpeed;
-  }, []);
-
-  // 点击章节导轨跳转
-  const jumpTo = useCallback((chapter: Chapter) => {
-    const el = ref.current;
-    if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY;
-    const travel = el.offsetHeight - window.innerHeight;
-    const target = top + travel * Math.min(1, chapter.start + (chapter.start === 0 ? 0 : 0.012));
-
-    isJumpingRef.current = true;
-    lastAutoScrollYRef.current = target;
-    lastAutoScrollTimeRef.current = performance.now();
-    window.scrollTo({ top: target, behavior: reduced ? 'auto' : 'smooth' });
-
-    setTimeout(() => {
-      isJumpingRef.current = false;
-      isInteractingRef.current = false;
-      setIsInteracting(false);
-      lastAutoScrollYRef.current = window.scrollY;
-      lastAutoScrollTimeRef.current = performance.now();
-      if (!userPausedRef.current && !reduced) {
-        isPlayingRef.current = true;
-        setIsPlaying(true);
-        setIsAtEnd(false);
-      }
-    }, 850);
-  }, [reduced]);
-
-  // 滚动监听与高速滚动降级处理
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | null = null;
-    let isFastScrolling = false;
-
-    const onScroll = () => {
-      const now = performance.now();
-      const isProgrammatic =
-        isAutoScrollingRef.current ||
-        (now - lastAutoScrollTimeRef.current < 60 &&
-          Math.abs(window.scrollY - lastAutoScrollYRef.current) < 50);
-
-      isAutoScrollingRef.current = false;
-
-      // 若滚动非由自动播放器驱动（例如用户拖拽原生滚动条）
-      if (!isProgrammatic) {
-        onUserInteraction();
-      }
-
-      updateStageStatus();
-
-      // 仅在用户高速手动滚动时降级模糊，自动演示平滑状态下保持全额液态玻璃质感
-      if (isInteractingRef.current) {
-        if (!isFastScrolling) {
-          isFastScrolling = true;
-          document.documentElement.setAttribute('data-scrolling', 'true');
+        if (currentProgress >= 1) {
+          // 步进到下一幕
+          const nextTab = (activeTabRef.current + 1) % TABS.length;
+          setActiveTab(nextTab);
+          startTimeRef.current = now;
+          setProgress(0);
+          pausedProgressRef.current = 0;
         }
-        if (timer) clearTimeout(timer);
-        timer = setTimeout(() => {
-          isFastScrolling = false;
-          document.documentElement.removeAttribute('data-scrolling');
-          timer = null;
-        }, 120);
-      }
-    };
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    updateStageStatus();
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      if (timer) clearTimeout(timer);
-      document.documentElement.removeAttribute('data-scrolling');
-    };
-  }, [onUserInteraction, updateStageStatus]);
-
-  // 用户物理输入监听（鼠标滚轮、触摸手势、键盘翻页按键与空格播放切换）
-  useEffect(() => {
-    const handleWheel = () => onUserInteraction();
-    const handleTouch = () => onUserInteraction();
-    const handlePointerDown = (e: PointerEvent) => {
-      const target = e.target as HTMLElement | null;
-      if (target?.closest('button') || target?.closest('a') || target?.closest('input')) {
-        return;
-      }
-      onUserInteraction();
-    };
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End'].includes(e.key)) {
-        onUserInteraction();
-      }
-      if (e.code === 'Space') {
-        const activeEl = document.activeElement as HTMLElement | null;
-        if (
-          activeEl?.tagName === 'INPUT' ||
-          activeEl?.tagName === 'TEXTAREA' ||
-          activeEl?.tagName === 'BUTTON'
-        ) {
-          return;
-        }
-        const el = ref.current;
-        if (!el) return;
-        const rect = el.getBoundingClientRect();
-        if (rect.top <= 20 && rect.bottom >= window.innerHeight - 20) {
-          e.preventDefault();
-          togglePlay();
-        }
-      }
-    };
-
-    window.addEventListener('wheel', handleWheel, { passive: true });
-    window.addEventListener('touchstart', handleTouch, { passive: true });
-    window.addEventListener('touchmove', handleTouch, { passive: true });
-    window.addEventListener('pointerdown', handlePointerDown, { passive: true });
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('touchstart', handleTouch);
-      window.removeEventListener('touchmove', handleTouch);
-      window.removeEventListener('pointerdown', handlePointerDown);
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [onUserInteraction, togglePlay]);
-
-  // 浏览器标签页切换挂起保护
-  useEffect(() => {
-    const onVisibilityChange = () => {
-      if (document.hidden) {
-        lastTimeRef.current = null;
       } else {
-        lastTimeRef.current = performance.now();
-        lastAutoScrollYRef.current = window.scrollY;
+        startTimeRef.current = null;
       }
+
+      rafId = requestAnimationFrame(tick);
     };
-    document.addEventListener('visibilitychange', onVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', onVisibilityChange);
+
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
   }, []);
 
-  return (
-    <ReducedMotionContext.Provider value={reduced}>
-      <ProgressContext.Provider value={progress}>
-        <LayoutContext.Provider value={{ desktop, wide }}>
-          <section ref={ref} id="demo" aria-label="TripCraft 路书诞生全过程演示" className="relative" style={{ height: `${STAGE_VH}vh` }}>
-            <div className="sticky top-0 h-[100svh] overflow-hidden">
-              <StageBackdrop />
-              <MobileProgress />
-              <div className="relative mx-auto flex h-full max-w-[1240px] flex-col px-3 pb-4 pt-[4.25rem] md:px-8 md:pb-6 md:pt-[4.75rem]">
-                <Captions />
-                <div className="relative min-h-0 flex-1">
-                  <StageWindow />
-                  <PhoneMock />
-                  <CockpitScene />
-                  <DeliverScene />
-                </div>
-              </div>
-              <ChapterRail onJump={jumpTo} />
-              <AnimatePresence>
-                {isInsideStage && (
-                  <AutoPlayController
-                    isPlaying={isPlaying}
-                    isInteracting={isInteracting}
-                    isAtEnd={isAtEnd}
-                    speed={speed}
-                    onToggle={togglePlay}
-                    onCycleSpeed={cycleSpeed}
-                    onReplay={replay}
-                  />
-                )}
-              </AnimatePresence>
-            </div>
-          </section>
-        </LayoutContext.Provider>
-      </ProgressContext.Provider>
-    </ReducedMotionContext.Provider>
-  );
-}
+  // 用户点击左侧 Tab 手动切入
+  const handleSelectTab = useCallback((index: number) => {
+    setActiveTab(index);
+    setProgress(0);
+    pausedProgressRef.current = 0;
+    startTimeRef.current = performance.now();
+  }, []);
 
-/* ── 自动播放控制胶囊（Apple 风格液态玻璃底座） ───────────── */
-interface AutoPlayControllerProps {
-  isPlaying: boolean;
-  isInteracting: boolean;
-  isAtEnd: boolean;
-  speed: number;
-  onToggle: () => void;
-  onCycleSpeed: () => void;
-  onReplay: () => void;
-}
+  const togglePause = useCallback(() => {
+    setIsPaused((prev) => {
+      const next = !prev;
+      if (!next) {
+        startTimeRef.current = performance.now() - pausedProgressRef.current * TABS[activeTabRef.current].duration;
+      }
+      return next;
+    });
+  }, []);
 
-function AutoPlayController({
-  isPlaying,
-  isInteracting,
-  isAtEnd,
-  speed,
-  onToggle,
-  onCycleSpeed,
-  onReplay,
-}: AutoPlayControllerProps) {
+  const handleNext = useCallback(() => {
+    handleSelectTab((activeTab + 1) % TABS.length);
+  }, [activeTab, handleSelectTab]);
+
+  const handlePrev = useCallback(() => {
+    handleSelectTab((activeTab - 1 + TABS.length) % TABS.length);
+  }, [activeTab, handleSelectTab]);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 16 }}
-      transition={{ duration: 0.3 }}
-      className="absolute bottom-3 right-3 z-40 max-w-[calc(100vw-1.5rem)] sm:bottom-6 sm:right-8"
-      role="region"
-      aria-label="路书故事流播放控制"
+    <section
+      ref={containerRef}
+      id="demo"
+      className="py-20 md:py-28 bg-[#FFFFF9] text-[#241E20] relative overflow-hidden"
+      aria-label="TripCraft 智能旅行协同中枢全功能导览"
     >
-      <div className="glass-strong glass-sheen flex items-center gap-2 rounded-pill border border-ink/[0.08] px-3 py-1.5 shadow-level-float backdrop-blur-xl sm:gap-3 sm:px-4 sm:py-2">
-        {/* 状态指示 */}
-        <div className="flex items-center gap-1.5 text-xs">
-          {isAtEnd ? (
-            <>
-              <span className="h-2 w-2 rounded-full bg-jade" />
-              <span className="font-medium text-ink">演示完毕</span>
-            </>
-          ) : isInteracting ? (
-            <>
-              <span className="h-2 w-2 rounded-full bg-ochre animate-pulse" />
-              <span className="font-medium text-ink">手动接管中</span>
-              <span className="hidden text-xs text-ink-soft sm:inline">· 停顿后继续</span>
-            </>
-          ) : isPlaying ? (
-            <>
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-600 opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-600" />
-              </span>
-              <span className="font-medium text-ink">自动演进中</span>
-              <span className="hidden text-xs text-ink-soft md:inline">· 滚动可随时接管</span>
-            </>
-          ) : (
-            <>
-              <span className="h-2 w-2 rounded-full bg-ink/30" />
-              <span className="font-medium text-ink-soft">已暂停</span>
-            </>
-          )}
+      {/* 极简背景微光网格 */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(#241E20_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.035]"
+      />
+
+      <div className="relative mx-auto max-w-[1360px] px-6 sm:px-10 lg:px-12">
+        {/* 顶部标题区 (对齐 Unify 大字号 + 橙红高亮词) */}
+        <div className="max-w-4xl mb-14 md:mb-20">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif tracking-tight leading-[1.2] text-[#241E20]">
+              告别碎片路书与导航死角，<br className="hidden sm:inline" />
+              一体化协同中枢涵盖 <span className="text-[#FE3C01]">意图解析</span>、
+              <span className="text-[#FE3C01]">心愿协同</span>、
+              <span className="text-[#FE3C01]">风控拦截</span> 与{' '}
+              <span className="text-[#FE3C01]">车道级 NOA 领航</span>。
+            </h2>
+            <p className="mt-4 text-base sm:text-lg text-black/60 max-w-2xl font-sans">
+              五大核心场景自运行演进。上下翻阅页面绝不打断右侧沙盒演示，点击左侧卡片随时切入查看。
+            </p>
+          </motion.div>
         </div>
 
-        <div className="h-3.5 w-px bg-ink/15" />
+        {/* 左右分栏交互容器：左侧 5 个垂直指示条 Tab，右侧自运行应用视窗 */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+          {/* 左侧：5 个垂直流光步进指示器 */}
+          <div className="lg:col-span-5 flex flex-col space-y-6 sm:space-y-8" role="tablist">
+            {TABS.map((tab, idx) => {
+              const isActive = activeTab === idx;
+              return (
+                <div
+                  key={tab.id}
+                  onClick={() => handleSelectTab(idx)}
+                  role="tab"
+                  aria-selected={isActive}
+                  tabIndex={0}
+                  className="relative pl-6 py-1 cursor-pointer transition-all duration-300 text-left w-full group outline-none"
+                >
+                  {/* 左侧垂直轨道与流光进度条 */}
+                  <div className="absolute left-0 top-0 bottom-0 w-[2.5px] bg-black/10 rounded-full overflow-hidden">
+                    {isActive && (
+                      <div
+                        className="w-full bg-[#FE3C01] rounded-full transition-all duration-75"
+                        style={{ height: `${progress * 100}%` }}
+                      />
+                    )}
+                  </div>
 
-        {/* 控制按钮 */}
-        {isAtEnd ? (
-          <button
-            type="button"
-            onClick={onReplay}
-            title="重新播放全流程演示"
-            className="btn-primary flex min-h-[40px] items-center gap-1.5 rounded-pill px-4 py-1.5 text-xs font-semibold shadow-level-static hover:scale-105 active:scale-95 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
-          >
-            <RotateCcwIcon className="h-3.5 w-3.5" />
-            <span>重播</span>
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={onToggle}
-            title={isPlaying ? '暂停自动播放演示 (快捷键: 空格)' : '继续自动播放演示 (快捷键: 空格)'}
-            className={`flex min-h-[40px] items-center gap-1.5 rounded-pill px-4 py-1.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
-              isPlaying
-                ? 'bg-ink/10 text-ink hover:bg-ink/20 active:scale-95'
-                : 'btn-primary shadow-level-static hover:scale-105 active:scale-95'
+                  {/* 标题 */}
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`text-lg sm:text-xl transition-colors duration-200 ${
+                        isActive
+                          ? 'font-medium text-[#241E20]'
+                          : 'font-normal text-black/40 group-hover:text-black/75'
+                      }`}
+                    >
+                      {tab.title}
+                    </span>
+                  </div>
+
+                  {/* 激活项展开详情与描述 (对齐 Unify) */}
+                  {isActive && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden"
+                    >
+                      <p className="text-sm sm:text-[15px] text-black/65 leading-relaxed mt-2.5 max-w-md font-sans">
+                        {tab.desc}
+                      </p>
+                    </motion.div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* 右侧：深色极光氛围背板 + 拟物应用视窗 */}
+          <div className="lg:col-span-7 w-full">
+            <div className="rounded-3xl bg-gradient-to-tr from-[#161211] via-[#241714] to-[#120f0e] border border-[#382b26] p-3 sm:p-5 md:p-7 relative shadow-[0_32px_80px_rgba(0,0,0,0.4)] overflow-hidden">
+              {/* 氛围暖橙与琥珀散光微斑 (Unify 极光氛围) */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -top-24 -right-24 w-80 h-80 rounded-full bg-[#FE3C01]/12 blur-3xl"
+              />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-[#D4A04E]/10 blur-3xl"
+              />
+
+              {/* 拟物应用视窗 (Window Chrome) */}
+              <div className="w-full h-[470px] sm:h-[510px] md:h-[530px] rounded-2xl bg-[#0f1117] border border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.65)] flex flex-col overflow-hidden relative">
+                {/* 视窗标题栏 */}
+                <div className="h-11 px-4 bg-[#161922] border-b border-white/[0.08] flex items-center justify-between shrink-0 select-none">
+                  {/* 左侧应用标识与标题 */}
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-[#FE3C01] flex items-center justify-center text-white shadow-sm">
+                      <SparklesIcon className="w-3 h-3 text-white" />
+                    </div>
+                    <span className="text-xs sm:text-sm font-medium text-white/90 tracking-tight">
+                      TripCraft Studio · 川西甘青大环线中枢
+                    </span>
+                    <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] bg-white/[0.06] text-white/60 border border-white/5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      自运行沙盒
+                    </span>
+                  </div>
+
+                  {/* 右侧窗口三原点控制器与播放暂停胶囊 */}
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={togglePause}
+                      className="flex items-center gap-1 text-[11px] text-white/50 hover:text-white transition-colors px-2 py-0.5 rounded bg-white/5 hover:bg-white/10"
+                      title={isPaused ? '继续播放' : '暂停演示'}
+                    >
+                      {isPaused ? <PlayIcon className="w-2.5 h-2.5" /> : <PauseIcon className="w-2.5 h-2.5" />}
+                      <span className="hidden sm:inline">{isPaused ? '继续' : '暂停'}</span>
+                    </button>
+                    <div className="flex items-center gap-1.5 text-white/30 text-xs">
+                      <span>—</span>
+                      <span>▢</span>
+                      <span>✕</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 视窗内容主体：5 幕独立场景沙盒 */}
+                <div className="relative flex-1 p-4 sm:p-6 overflow-hidden flex flex-col justify-center">
+                  <AnimatePresence mode="wait">
+                    {activeTab === 0 && <SceneIntent key="intent" progress={progress} />}
+                    {activeTab === 1 && <SceneCollab key="collab" progress={progress} />}
+                    {activeTab === 2 && <SceneRisk key="risk" progress={progress} />}
+                    {activeTab === 3 && <SceneCockpit key="cockpit" progress={progress} />}
+                    {activeTab === 4 && <SceneDeliver key="deliver" progress={progress} />}
+                  </AnimatePresence>
+                </div>
+
+                {/* 底部微型控制器 */}
+                <div className="h-9 px-4 bg-[#12141c] border-t border-white/[0.06] flex items-center justify-between text-xs text-white/40">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-white/70">0{activeTab + 1}</span>
+                    <span>/ 05</span>
+                    <span className="text-white/20">|</span>
+                    <span className="text-white/60 truncate max-w-[200px] sm:max-w-none">
+                      {TABS[activeTab].title}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={handlePrev}
+                      className="p-1 hover:text-white transition-colors"
+                      title="上一幕"
+                    >
+                      ←
+                    </button>
+                    <button
+                      onClick={handleNext}
+                      className="p-1 hover:text-white transition-colors"
+                      title="下一幕"
+                    >
+                      →
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────
+   场景 01: 自然语言意图提炼 (Intent Parsing)
+   ───────────────────────────────────────────────────────────── */
+function SceneIntent({ progress }: { progress: number }) {
+  // 打字进度与卡片弹出时刻
+  const text = '全家5口，70岁爷爷做过膝盖手术，开腾势D9带车顶行李箱，去甘肃大环线';
+  const charCount = Math.min(text.length, Math.floor(progress * text.length * 2.2));
+  const showResult = progress > 0.42;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -12 }}
+      transition={{ duration: 0.35 }}
+      className="flex flex-col h-full justify-between gap-4"
+    >
+      {/* 顶部模拟输入框 */}
+      <div className="rounded-xl bg-[#1b1e2a] border border-white/10 p-3.5 shadow-inner">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1">
+            <span className="text-xs text-white/40 block mb-1">自然语言愿望输入：</span>
+            <div className="text-sm text-white/90 font-mono tracking-tight min-h-[44px] leading-relaxed">
+              {text.slice(0, charCount)}
+              {progress < 0.42 && <span className="inline-block w-2 h-4 bg-[#FE3C01] ml-0.5 animate-pulse align-middle" />}
+            </div>
+          </div>
+          <div
+            className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+              progress > 0.38 ? 'bg-[#FE3C01] text-white scale-95 shadow-md shadow-[#FE3C01]/30' : 'bg-white/10 text-white/40'
             }`}
           >
-            {isPlaying ? <PauseIcon className="h-3.5 w-3.5" /> : <PlayIcon className="h-3.5 w-3.5" />}
-            <span>{isPlaying ? '暂停' : '继续'}</span>
-          </button>
-        )}
+            <SparklesIcon className="w-4 h-4" />
+          </div>
+        </div>
+      </div>
 
-        {/* 速度切换 */}
-        {!isAtEnd && (
-          <button
-            type="button"
-            onClick={onCycleSpeed}
-            title={`点击切换播放倍速 (当前: ${speed.toFixed(1)}x)`}
-            aria-label={`当前播放倍速 ${speed.toFixed(1)}x，点击切换`}
-            className="chip min-h-[36px] px-3 py-1 font-mono text-xs tabular-nums font-semibold text-ink-soft transition-all active:scale-95 hover:bg-paper/90 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+      {/* AI 思考中与意图规则卡片 */}
+      <div className="flex-1 flex flex-col justify-center gap-2.5">
+        <div className="flex items-center gap-2 text-xs text-white/60">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+          <span>TripCraft 规则引擎毫秒级提炼约束 AST：</span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {/* 规则 1 */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: showResult ? 1 : 0.2, scale: showResult ? 1 : 0.98 }}
+            className="rounded-lg bg-[#141722] border border-white/8 p-2.5 flex items-center gap-2.5"
           >
-            {speed.toFixed(1)}x
-          </button>
-        )}
+            <div className="w-8 h-8 rounded bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0">
+              <ElderIcon className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-xs font-medium text-white/90 truncate">长辈膝关节保护</div>
+              <div className="text-[11px] text-white/50 truncate">单次步行≤500m · 规避高阶梯</div>
+            </div>
+          </motion.div>
+
+          {/* 规则 2 */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: showResult ? 1 : 0.2, scale: showResult ? 1 : 0.98 }}
+            transition={{ delay: 0.05 }}
+            className="rounded-lg bg-[#141722] border border-white/8 p-2.5 flex items-center gap-2.5"
+          >
+            <div className="w-8 h-8 rounded bg-blue-500/10 text-blue-400 flex items-center justify-center shrink-0">
+              <CarIcon className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-xs font-medium text-white/90 truncate">腾势 D9 物理轮廓</div>
+              <div className="text-[11px] text-white/50 truncate">车顶行李箱 · 综合高 2.28m</div>
+            </div>
+          </motion.div>
+
+          {/* 规则 3 */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: showResult ? 1 : 0.2, scale: showResult ? 1 : 0.98 }}
+            transition={{ delay: 0.1 }}
+            className="rounded-lg bg-[#141722] border border-white/8 p-2.5 flex items-center gap-2.5"
+          >
+            <div className="w-8 h-8 rounded bg-rose-500/10 text-rose-400 flex items-center justify-center shrink-0">
+              <BabyIcon className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-xs font-medium text-white/90 truncate">幼儿作息防中暑</div>
+              <div className="text-[11px] text-white/50 truncate">13:00-14:30 午休静止期</div>
+            </div>
+          </motion.div>
+
+          {/* 规则 4 */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: showResult ? 1 : 0.2, scale: showResult ? 1 : 0.98 }}
+            transition={{ delay: 0.15 }}
+            className="rounded-lg bg-[#141722] border border-white/8 p-2.5 flex items-center gap-2.5"
+          >
+            <div className="w-8 h-8 rounded bg-purple-500/10 text-purple-400 flex items-center justify-center shrink-0">
+              <CompassIcon className="w-4 h-4" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-xs font-medium text-white/90 truncate">甘肃青海大环线</div>
+              <div className="text-[11px] text-white/50 truncate">9天慢节奏 · 避开暗冰垭口</div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* 底部生成完成状态条 */}
+      <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-2 flex items-center justify-between text-xs text-emerald-400">
+        <span className="flex items-center gap-1.5 font-medium">
+          <CheckIcon className="w-3.5 h-3.5" /> 结构化路书 DSL AST 解析完毕
+        </span>
+        <span className="text-[10px] text-emerald-400/70 font-mono">耗时 320ms · AJV 严格校验通过</span>
       </div>
     </motion.div>
   );
 }
 
-/* ── 舞台背景：沙色纸面 + 随章节流转的暖光 ─────────────────── */
-function StageBackdrop() {
-  const p = useProgress();
-  const glowX = useRange(p, [0, 0.42, 0.62, 1], [70, 30, 75, 50], { rest: 50 });
-  const glowHue = useRange(p, [0, 0.42, 0.62, 0.84, 1], [0, 1, 0, 1, 0]);
-  const glowTransform = useTransform(glowX, (n) => `${n}vw`);
-  return (
-    <div aria-hidden className="paper-texture absolute inset-0">
-      <motion.div
-        className="stage-glow absolute -top-1/3 left-0 h-[90vh] w-[90vh] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(184,134,59,0.08),transparent_65%)] blur-2xl will-change-transform gpu-layer"
-        style={{ x: glowTransform }}
-      />
-      <motion.div
-        className="stage-glow absolute -bottom-1/3 right-0 h-[80vh] w-[80vh] rounded-full bg-[radial-gradient(circle,rgba(122,85,32,0.06),transparent_65%)] blur-2xl will-change-transform gpu-layer"
-        style={{ opacity: glowHue }}
-      />
-    </div>
-  );
-}
-
-/* ── 章节标题（Apple 式大字幕） ───────────────────────────── */
-function Captions() {
-  return (
-    <div className="relative h-[4.75rem] shrink-0 sm:h-[6rem] md:h-[8.25rem]">
-      {CHAPTERS.map((c, i) => (
-        <Caption key={c.id} chapter={c} first={i === 0} last={i === CHAPTERS.length - 1} />
-      ))}
-    </div>
-  );
-}
-
-function Caption({ chapter, first, last }: { chapter: Chapter; first: boolean; last: boolean }) {
-  const p = useProgress();
-  const { start, end } = chapter;
-  const f = 0.014;
-  const input = first ? [end - f, end] : last ? [start, start + f] : [start, start + f, end - f, end];
-  const output = first ? [1, 0] : last ? [0, 1] : [0, 1, 1, 0];
-  const yOut = first ? [0, -18] : last ? [22, 0] : [22, 0, 0, -18];
-  const opacity = useRange(p, input, output);
-  const y = useRange(p, input, yOut, { rest: 0, easing: ease.out });
-  const visibility = useTransform(p, (v) => {
-    if (first) return v <= end + 0.005 ? 'visible' : 'hidden';
-    if (last) return v >= start - 0.005 ? 'visible' : 'hidden';
-    return v >= start - 0.005 && v <= end + 0.005 ? 'visible' : 'hidden';
-  });
+/* ─────────────────────────────────────────────────────────────
+   场景 02: 微信免登愿望池协同 (WeChat Live Collab)
+   ───────────────────────────────────────────────────────────── */
+function SceneCollab({ progress }: { progress: number }) {
+  const showCard1 = progress > 0.15;
+  const showCard2 = progress > 0.4;
+  const showCard3 = progress > 0.65;
 
   return (
     <motion.div
-      className="absolute inset-0 flex flex-col items-center text-center will-change-transform gpu-layer [contain:layout_paint]"
-      style={{ opacity, y, visibility }}
-      aria-hidden={false}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -12 }}
+      transition={{ duration: 0.35 }}
+      className="flex flex-col h-full justify-between gap-3"
     >
-      <p className="eyebrow text-blue-900 font-semibold">{chapter.eyebrow}</p>
-      <h2 className="mt-1 sm:mt-2 text-balance font-sans text-xl sm:text-2xl md:text-3xl lg:text-[2.5rem] font-bold leading-[1.25] sm:leading-[1.3] text-ink">{chapter.title}</h2>
-      <p className="mt-1 sm:mt-2 max-w-2xl text-pretty text-[11px] sm:text-xs md:text-sm leading-tight sm:leading-relaxed text-ink-soft line-clamp-2 md:line-clamp-none">{chapter.desc}</p>
+      {/* 协同头栏 */}
+      <div className="flex items-center justify-between px-1">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-400" />
+          <span className="text-xs font-medium text-white/90">全团愿望池 · 微信免登协同</span>
+        </div>
+        <span className="text-[11px] px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-white/60">
+          3 位成员实时在线
+        </span>
+      </div>
+
+      {/* 协同卡片流动瀑布 */}
+      <div className="flex-1 flex flex-col justify-center space-y-2.5">
+        {/* 卡片 1 */}
+        <motion.div
+          animate={{ opacity: showCard1 ? 1 : 0.2, x: showCard1 ? 0 : -8 }}
+          className="rounded-xl bg-[#171a25] border border-white/10 p-3 flex items-center justify-between"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-pink-500/20 text-pink-300 font-medium text-xs flex items-center justify-center shrink-0 border border-pink-500/30">
+              妈妈
+            </div>
+            <div>
+              <div className="text-xs text-white/90 font-medium">投送愿望：鸣沙山月牙泉看日落驼队</div>
+              <div className="text-[11px] text-white/40">微信对话直连 · 免下载 App</div>
+            </div>
+          </div>
+          <span className="text-[11px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono">
+            +2 赞同 · 顺路
+          </span>
+        </motion.div>
+
+        {/* 卡片 2 */}
+        <motion.div
+          animate={{ opacity: showCard2 ? 1 : 0.2, x: showCard2 ? 0 : -8 }}
+          className="rounded-xl bg-[#171a25] border border-white/10 p-3 flex items-center justify-between"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-blue-500/20 text-blue-300 font-medium text-xs flex items-center justify-center shrink-0 border border-blue-500/30">
+              爸爸
+            </div>
+            <div>
+              <div className="text-xs text-white/90 font-medium">投送愿望：大柴旦翡翠湖航拍 + 供氧温泉酒店</div>
+              <div className="text-[11px] text-white/40">硬件需求自动绑定到当日日程</div>
+            </div>
+          </div>
+          <span className="text-[11px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono">
+            已采纳 · 排入 D4
+          </span>
+        </motion.div>
+
+        {/* 卡片 3 */}
+        <motion.div
+          animate={{ opacity: showCard3 ? 1 : 0.2, x: showCard3 ? 0 : -8 }}
+          className="rounded-xl bg-[#171a25] border border-white/10 p-3 flex items-center justify-between"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-amber-500/20 text-amber-300 font-medium text-xs flex items-center justify-center shrink-0 border border-amber-500/30">
+              小姨
+            </div>
+            <div>
+              <div className="text-xs text-white/90 font-medium">投送愿望：莫高窟数字展示中心 A类特窟</div>
+              <div className="text-[11px] text-white/40">门票预约库存已智能预警锁定</div>
+            </div>
+          </div>
+          <span className="text-[11px] px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-mono">
+            全团通过
+          </span>
+        </motion.div>
+      </div>
+
+      {/* 协同算法结算 */}
+      <div className="rounded-lg bg-[#141620] border border-white/10 p-2.5 flex items-center justify-between text-xs">
+        <div className="flex items-center gap-2 text-white/80">
+          <SparklesIcon className="w-4 h-4 text-[#FE3C01]" />
+          <span>算法动态重排：全团顺路度 <span className="text-emerald-400 font-mono font-medium">98.4%</span></span>
+        </div>
+        <span className="text-[11px] text-white/50">新增绕行仅 +14km</span>
+      </div>
     </motion.div>
   );
 }
 
-/* ── 演示窗口外壳（主工作台作为母体保持清晰可见） ─────── */
-function StageWindow() {
-  const p = useProgress();
-  const scale = useRange(p, [T.windowIn[0], T.windowIn[1]], [0.94, 1], { rest: 1 });
-  const opacity = useFade(p, T.windowIn[0], T.windowIn[1]);
+/* ─────────────────────────────────────────────────────────────
+   场景 03: 2.15m 限高风控拦截 (2.15m Risk Interceptor)
+   ───────────────────────────────────────────────────────────── */
+function SceneRisk({ progress }: { progress: number }) {
+  const isAlert = progress > 0.25;
+  const isResolved = progress > 0.65;
 
   return (
     <motion.div
-      className="glass-strong glass-sheen macos-window absolute inset-x-0 top-0 mx-auto flex h-full max-h-[720px] w-full max-w-[1180px] flex-col overflow-hidden rounded-xl sm:rounded-container shadow-level-float gpu-layer [contain:layout_paint] bg-[#FAF8F5]/98"
-      style={{ scale, opacity }}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -12 }}
+      transition={{ duration: 0.35 }}
+      className="flex flex-col h-full justify-between gap-3"
     >
-      <Topbar />
-      <div className="relative min-h-0 flex-1">
-        <ChatScene />
-        <Workspace />
-        <CollabDrawer />
-        <ShareSheet />
-        <Backdrop />
-        <RecommendModal />
-        <StageToasts />
+      {/* 顶部风控雷达扫描条 */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <ShieldIcon className="w-4 h-4 text-[#FE3C01]" />
+          <span className="text-xs font-medium text-white/90">车辆物理模型与道路净空实时对撞检测</span>
+        </div>
+        <span className="text-[11px] font-mono text-white/50">G315 国道桩号 K142+500</span>
       </div>
-      <InAppStatusBar />
+
+      {/* 核心风控警示卡片 */}
+      <div className="flex-1 flex flex-col justify-center gap-3">
+        {/* 碰撞检测面板 */}
+        <div className="rounded-xl bg-[#191c28] border border-white/10 p-3.5 flex items-center justify-between">
+          <div>
+            <div className="text-xs text-white/50 mb-1">当前车组全高剖面：</div>
+            <div className="text-sm font-medium text-white flex items-center gap-2">
+              <CarIcon className="w-4 h-4 text-white/70" />
+              <span>腾势 D9 (1.96m) + 车顶行李箱 (0.32m)</span>
+            </div>
+          </div>
+          <div className="text-right">
+            <span className="text-xs text-white/50 block">总通过高度</span>
+            <span className="text-base font-mono font-bold text-amber-400">2.28 m</span>
+          </div>
+        </div>
+
+        {/* 拦截状态 */}
+        <div
+          className={`rounded-xl border p-3.5 transition-all duration-500 ${
+            isResolved
+              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+              : isAlert
+              ? 'bg-rose-500/15 border-rose-500/40 text-rose-300 animate-pulse'
+              : 'bg-white/5 border-white/10 text-white/60'
+          }`}
+        >
+          <div className="flex items-start gap-3">
+            <div
+              className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                isResolved
+                  ? 'bg-emerald-500/20 text-emerald-400'
+                  : isAlert
+                  ? 'bg-rose-500/20 text-rose-400'
+                  : 'bg-white/10 text-white/40'
+              }`}
+            >
+              <AlertTriangleIcon className="w-4 h-4" />
+            </div>
+            <div className="flex-1">
+              <div className="text-xs font-bold tracking-tight">
+                {isResolved
+                  ? '✓ 避险走廊重规划完成 · 风险彻底消解'
+                  : isAlert
+                  ? '⛔ 触发物理限高刚性拦截：前方涵洞施工 2.15m'
+                  : '正在对撞沿线 80 处涵洞与地库净空...'}
+              </div>
+              <div className="text-[11px] opacity-80 mt-1 leading-relaxed">
+                {isResolved
+                  ? '已自动切换 S434 走廊（净空 3.8m），增加耗时仅 7 分钟，副驾微信与车载中控已无感同步。'
+                  : isAlert
+                  ? '计算差值: 2.15m - 2.28m = -13cm 刮顶险情！系统已自动阻断原路径通行。'
+                  : '车辆物理限界 2.28m 已装载入调度器。'}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 底部风控状态标牌 */}
+      <div className="rounded-lg bg-[#12151e] border border-white/8 px-3 py-2 flex items-center justify-between text-[11px]">
+        <span className="text-white/60">自驾风控评级：<span className="text-emerald-400 font-medium">A+ 绝对安全</span></span>
+        <span className="text-white/40 font-mono">提前 50km 预警并规避</span>
+      </div>
     </motion.div>
   );
 }
 
-/* ── App 原生底栏遥测状态栏 (In-App Master Footer Telemetry Bar) ── */
-function InAppStatusBar() {
-  const p = useProgress();
-  const chapterStep = useStep(p, [0.20, 0.42, 0.62, 0.78]);
-  const isV11 = useStep(p, [T.version]) === 1;
-  const isDelivery = chapterStep === 4;
-
-  const telemetry = [
-    { text: '智能语义解析: 提取 5 人自驾意图 · 适老适幼与 MPV 规则契约锁死', badge: 'AI 规则引擎' },
-    { text: 'GIS 拓扑沙盘: 38.05°N, 102.64°E · G30 连霍高速 (1,980km 贯通)', badge: '拓扑沙盘' },
-    { text: '团队实时协同网: 3 端同频在线 · 微信免登免密极速入队 · 愿望池广播', badge: '多端同频' },
-    { text: '协同重排调度引擎: 顺路度 98% · 领队一键确认 · 全团毫秒广播', badge: '共创决策' },
-    { text: '车路云协同流转: 腾势 D9 巡航导航与 2.15m 限高预案已推车机 · 无人区离线舱就绪', badge: '车机流转' },
-  ][chapterStep] || { text: '云协同网络已就绪 · 全团毫秒同频', badge: '云协同' };
-
+/* ─────────────────────────────────────────────────────────────
+   场景 04: C-CABIN 车道级 NOA 领航 (Cockpit Lane Navigation)
+   ───────────────────────────────────────────────────────────── */
+function SceneCockpit({ progress }: { progress: number }) {
   return (
-    <footer className="relative z-30 flex h-6 sm:h-7 shrink-0 items-center justify-between border-t border-ink/[0.08] bg-paper/85 px-2.5 sm:px-4 text-[9px] sm:text-[10px] font-mono text-ink-soft select-none backdrop-blur-md">
-      {/* 左侧：云协同网络已连接 + 弱网/无人区离线乐观保活 + 版本分支 */}
-      <div className="flex items-center gap-1.5 sm:gap-2.5">
-        <span className="flex items-center gap-1 font-semibold text-jade">
-          <span className="h-1.5 w-1.5 animate-breathe rounded-full bg-jade" />
-          <span className="hidden xs:inline">云协同网络已连接</span>
-          <span className="xs:hidden">云协同已连</span>
-          <span className="text-ink-soft font-normal text-[9px] hidden lg:inline">(双向加密 · 18ms)</span>
-        </span>
-        <span className="text-ink/20 hidden xs:inline">|</span>
-        <span className="text-gold-ink font-medium hidden sm:inline-flex items-center gap-0.5">
-          <span>{isDelivery ? '⚡ 离线无感切换' : '⚡ 离线乐观保活'}</span>
-        </span>
-        <span className="text-ink/20">|</span>
-        <span className="font-medium text-ink flex items-center gap-1">
-          <span className="text-gold-ink font-bold">git:</span>
-          <span>{isV11 ? '西行计划-v1.1' : '西行计划-v1.0'}</span>
-        </span>
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -12 }}
+      transition={{ duration: 0.35 }}
+      className="flex flex-col h-full justify-between gap-3 text-white"
+    >
+      {/* 车规座舱顶栏 */}
+      <div className="flex items-center justify-between text-xs px-1 border-b border-white/10 pb-2">
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-emerald-400 font-bold tracking-wider">DENZA NOA</span>
+          <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 text-[10px]">
+            领航中
+          </span>
+        </div>
+        <div className="flex items-center gap-3 text-[11px] text-white/60 font-mono">
+          <span>海拔 3180m</span>
+          <span>室外 18°C</span>
+          <span>4G/卫星</span>
+        </div>
       </div>
 
-      {/* 中间：根据当前章节动态遥测的主控状态 */}
-      <div className="hidden md:flex items-center gap-1.5 text-ink">
-        <TerminalIcon className="h-2.5 w-2.5 text-gold-ink shrink-0" />
-        <span className="truncate max-w-[380px] lg:max-w-[480px]">{telemetry.text}</span>
-        <span className="chip rounded-pill bg-ink/[0.05] text-ink-soft text-[8px] px-1 py-0">{telemetry.badge}</span>
+      {/* 3D 虚拟车道透视沙盘 */}
+      <div className="relative flex-1 rounded-xl bg-gradient-to-b from-[#0d1017] to-[#171b26] border border-white/10 overflow-hidden flex items-center justify-center">
+        {/* 3D 透视车道 */}
+        <div className="absolute inset-0 flex items-center justify-center [perspective:400px]">
+          <div className="w-56 h-full border-x border-white/20 [transform:rotateX(60deg)] relative flex justify-center">
+            {/* 绿色领航光毯 */}
+            <div className="absolute inset-y-0 w-24 bg-gradient-to-t from-emerald-500/30 via-emerald-500/10 to-transparent" />
+            {/* 车道虚线 */}
+            <div className="w-[2px] h-full bg-[repeating-linear-gradient(to_bottom,white_0,white_14px,transparent_14px,transparent_28px)] opacity-40 animate-pulse" />
+          </div>
+        </div>
+
+        {/* 腾势 D9 顶视流线车身 */}
+        <div className="relative z-10 flex flex-col items-center">
+          <div className="w-14 h-24 rounded-2xl bg-gradient-to-b from-[#252a38] to-[#151922] border border-white/30 shadow-[0_12px_28px_rgba(0,0,0,0.8)] flex flex-col items-center justify-between p-1.5">
+            <div className="w-10 h-3 rounded bg-sky-400/30 border border-sky-400/40" />
+            <div className="text-[9px] font-mono text-white/50 tracking-tighter">D9 领航版</div>
+            <div className="w-10 h-2 rounded bg-red-500/40" />
+          </div>
+        </div>
+
+        {/* 悬浮车速 HUD */}
+        <div className="absolute left-4 top-4 z-20">
+          <div className="text-3xl font-mono font-bold tracking-tight text-white drop-shadow">
+            78 <span className="text-xs font-normal text-white/50">km/h</span>
+          </div>
+          <div className="text-[11px] text-emerald-400 flex items-center gap-1 mt-0.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> 车道居中保持中
+          </div>
+        </div>
+
+        {/* 前方路况微提醒 */}
+        <div className="absolute right-4 bottom-4 z-20 rounded-lg bg-black/60 backdrop-blur-md border border-white/10 px-3 py-1.5 text-right">
+          <div className="text-[11px] text-white/50">前方 800m 连续弯道</div>
+          <div className="text-xs font-medium text-amber-300">建议降速至 45 km/h</div>
+        </div>
       </div>
 
-      {/* 右侧：无人区离线舱/容灾包 + 契约校验 + 视图比例 */}
-      <div className="flex items-center gap-1.5 sm:gap-2">
-        <span className="text-gold-ink font-semibold flex items-center gap-0.5">
-          <ShieldIcon className="h-2.5 w-2.5 text-gold-ink" />
-          <span>无人区离线舱已就绪</span>
+      {/* 座舱底栏状态 */}
+      <div className="rounded-lg bg-[#141722] border border-white/8 px-3 py-1.5 flex items-center justify-between text-xs text-white/70">
+        <span className="flex items-center gap-2">
+          <CompassIcon className="w-3.5 h-3.5 text-white/50" /> 下一出口：G315 大柴旦收费站 (距 18km)
         </span>
-        <span className="text-ink/20 hidden sm:inline">|</span>
-        <span className="text-jade font-semibold hidden sm:inline-flex items-center gap-0.5">
-          <span>契约校验对齐</span>
-        </span>
-        <span className="text-ink/20 hidden xs:inline">|</span>
-        <span className="hidden xs:inline text-ink-soft">100%</span>
+        <span className="text-emerald-400 text-[11px] font-mono">全程无网络自包含运行</span>
       </div>
-    </footer>
+    </motion.div>
   );
 }
 
-/* ── 章节导轨（xl 桌面）：可点击跳转 ───────────────────── */
-function ChapterRail({ onJump }: { onJump: (c: Chapter) => void }) {
-  const p = useProgress();
-  const active = useStep(p, CHAPTERS.slice(1).map((c) => c.start));
-  const fill = useRange(p, [0, 1], [0, 1], { easing: ease.linear });
-  return (
-    <nav aria-label="演示章节" className="absolute left-5 top-1/2 hidden -translate-y-1/2 2xl:block">
-      <div className="relative flex flex-col gap-6 pl-5">
-        <span className="absolute bottom-1 left-[5px] top-1 w-px bg-ink/15" />
-        <motion.span className="absolute left-[5px] top-1 h-[calc(100%-0.5rem)] w-px origin-top bg-blue-600" style={{ scaleY: fill }} />
-        {CHAPTERS.map((c, i) => (
-          <button
-            key={c.id}
-            type="button"
-            onClick={() => onJump(c)}
-            className={`group relative flex min-h-[36px] items-center gap-2 text-left text-xs transition-colors rounded-pill px-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${i === active ? 'text-blue-900 font-bold' : 'text-ink-soft hover:text-ink'}`}
-            aria-current={i === active ? 'step' : undefined}
-          >
-            <span
-              className={`absolute -left-[19px] h-[11px] w-[11px] rounded-full border-2 transition-all duration-300 ${
-                i <= active ? 'border-blue-600 bg-blue-600' : 'border-ink/25 bg-sand'
-              } ${i === active ? 'scale-125 shadow-sm ring-2 ring-blue-600/40' : ''}`}
-            />
-            <span className="font-mono font-semibold tabular-nums">{c.no}</span>
-            <span>{c.label}</span>
-          </button>
-        ))}
-      </div>
-    </nav>
-  );
-}
+/* ─────────────────────────────────────────────────────────────
+   场景 05: 零构建单文件离线交付 (Zero-Build Offline Delivery)
+   ───────────────────────────────────────────────────────────── */
+function SceneDeliver({ progress }: { progress: number }) {
+  const isOffline = progress > 0.35;
 
-/* ── 移动端顶部进度条 ─────────────────────────────────── */
-function MobileProgress() {
-  const p = useProgress();
-  const fill = useRange(p, [0, 1], [0, 1], { easing: ease.linear });
   return (
-    <div aria-hidden className="absolute inset-x-0 top-[3.5rem] z-10 h-0.5 bg-ink/10 2xl:hidden">
-      <motion.div className="h-full origin-left bg-gradient-to-r from-blue-700 via-blue-900 to-indigo-600" style={{ scaleX: fill }} />
-    </div>
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -12 }}
+      transition={{ duration: 0.35 }}
+      className="flex flex-col h-full justify-between gap-3 text-white"
+    >
+      {/* 离线交付头栏 */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <SignalSlashIcon className={`w-4 h-4 ${isOffline ? 'text-amber-400' : 'text-white/40'}`} />
+          <span className="text-xs font-medium text-white/90">
+            单文件离线沙盒自验证 (断网测试)
+          </span>
+        </div>
+        <div
+          className={`text-[11px] px-2.5 py-0.5 rounded-full border font-mono transition-colors ${
+            isOffline
+              ? 'bg-amber-500/20 border-amber-500/30 text-amber-300'
+              : 'bg-emerald-500/20 border-emerald-500/30 text-emerald-300'
+          }`}
+        >
+          {isOffline ? '● 飞行模式 (完全脱网)' : '● 正在打包产物'}
+        </div>
+      </div>
+
+      {/* 离线单文件展示卡 */}
+      <div className="flex-1 flex flex-col justify-center space-y-3">
+        {/* 打包规格卡 */}
+        <div className="rounded-xl bg-[#161a26] border border-white/10 p-3.5 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center shrink-0">
+              <CheckIcon className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="text-xs font-medium text-white/90">tripcraft-gansu-qinghai.html</div>
+              <div className="text-[11px] text-white/40">1.2 MB 自包含单文件 · 双击秒开</div>
+            </div>
+          </div>
+          <span className="text-xs font-mono text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/10">
+            零运行时依赖
+          </span>
+        </div>
+
+        {/* 性能与主权监控器 */}
+        <div className="grid grid-cols-2 gap-2.5">
+          <div className="rounded-xl bg-[#141620] border border-white/8 p-3">
+            <div className="text-[11px] text-white/40 mb-1">脱网网络请求包：</div>
+            <div className="text-xl font-mono font-bold text-emerald-400">0 KB</div>
+            <div className="text-[10px] text-white/40 mt-1">杜绝运行时外部 CDN 拉取</div>
+          </div>
+          <div className="rounded-xl bg-[#141620] border border-white/8 p-3">
+            <div className="text-[11px] text-white/40 mb-1">离线地图与交互帧率：</div>
+            <div className="text-xl font-mono font-bold text-sky-400">60 FPS</div>
+            <div className="text-[10px] text-white/40 mt-1">本地 IndexedDB 秒级加载</div>
+          </div>
+        </div>
+      </div>
+
+      {/* 铁律 1 达成徽章 */}
+      <div className="rounded-lg bg-gradient-to-r from-amber-500/10 via-[#FE3C01]/10 to-amber-500/10 border border-amber-500/20 p-2.5 flex items-center justify-between text-xs text-amber-300">
+        <span className="flex items-center gap-1.5 font-medium">
+          <SparklesIcon className="w-4 h-4 text-amber-400" />
+          遵循铁律 1：零构建交付 · 降级不白屏 · 数据主权永存本地
+        </span>
+        <span className="text-[10px] text-amber-400/80 font-mono">100% 离线可用</span>
+      </div>
+    </motion.div>
   );
 }
