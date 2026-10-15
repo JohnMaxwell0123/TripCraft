@@ -175,15 +175,14 @@ export function Topbar() {
         </motion.button>
         <FakeCursor times={[T.shareCursor[0], T.shareCursor[1]]} xs={[78, 95]} ys={[260, 55]} clickAt={T.shareClick} />
 
-        {/* 离线单文件导出按钮 */}
-        <button
-          type="button"
-          title="导出零构建自包含离线路书 (.html)"
-          className="hidden sm:flex h-7 items-center gap-1.5 rounded-full border border-ink/[0.12] bg-white px-3 text-xs font-semibold text-ink hover:bg-ink/[0.04] transition-colors shadow-sm whitespace-nowrap"
+        {/* 全自动离线守护就绪指示 */}
+        <div
+          title="全自动离线守护已就绪：本地自动持久化，无人区脱网 0 秒无感接管"
+          className="hidden sm:flex h-7 items-center gap-1.5 rounded-full border border-emerald-500/25 bg-emerald-50/80 px-2.5 text-xs font-semibold text-emerald-800 transition-colors shadow-2xs whitespace-nowrap"
         >
-          <FileTextIcon className="h-3 w-3 text-gold-ink" />
-          <span>导出单文件</span>
-        </button>
+          <ShieldIcon className="h-3 w-3 text-emerald-600" />
+          <span>离线守护已常驻</span>
+        </div>
       </div>
     </header>
   );
