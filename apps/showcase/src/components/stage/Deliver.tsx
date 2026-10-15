@@ -74,7 +74,8 @@ export function DeliverScene() {
 function SyncFlowBar() {
   const p = useProgress();
   // 流转步进：0=未激活，1=桌面母体广播，2=手机收到更新，3=座舱巡航就绪，4=容灾舱就绪
-  const step = useStep(p, [T.streamSync[0], 0.892, 0.904, 0.914]);
+  const s0 = T.streamSync[0];
+  const step = useStep(p, [s0, s0 + 0.005, s0 + 0.01, s0 + 0.015]);
 
   return (
     <div
@@ -141,8 +142,9 @@ function SyncFlowBar() {
 /* ── 设备 1：副驾随身手机端（实时感知最新行程与多人状态） ──── */
 function PhoneCompanionDevice() {
   const p = useProgress();
-  const step = useStep(p, [0.892]);
-  const syncGlow = useRange(p, [0.892, 0.902, 0.916], [0, 1, 0.25]);
+  const s0 = T.streamSync[0];
+  const step = useStep(p, [s0]);
+  const syncGlow = useRange(p, [s0, s0 + 0.008, T.streamSync[1]], [0, 1, 0.25]);
   const cardBorder = useTransform(syncGlow, (v) => `rgba(184, 134, 59, ${0.3 + v * 0.4})`);
   const cardShadow = useTransform(syncGlow, (v) => `0 0 ${v * 12}px rgba(184, 134, 59, ${v * 0.3})`);
 
@@ -294,7 +296,7 @@ function CockpitCompanionDevice() {
 /* ── 设备 3：随身出游容灾舱（无人区断网无感守护） ── */
 function DisasterRecoveryCard() {
   const p = useProgress();
-  const step = useStep(p, [0.914]);
+  const step = useStep(p, [T.streamSync[1]]);
 
   return (
     <div

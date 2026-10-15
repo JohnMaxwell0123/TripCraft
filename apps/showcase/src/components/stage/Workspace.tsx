@@ -25,12 +25,29 @@ import {
 
 export function Workspace() {
   const p = useProgress();
-  const opacity = useFade(p, T.timelineIn[0], T.timelineIn[1]);
+  const inTimeline = useFade(p, T.timelineIn[0], T.timelineIn[1]);
+  // 在车机大屏激活期间，母体工作台优雅后移微虚化 (scale: 0.95, opacity: 0.32)，凸显前台车机中控
+  const cockpitDim = useRange(
+    p,
+    [T.cockpitIn[0], T.cockpitIn[1], T.cockpitOut[0], T.cockpitOut[1]],
+    [1, 0.32, 0.32, 1],
+  );
+  const scale = useRange(
+    p,
+    [T.cockpitIn[0], T.cockpitIn[1], T.cockpitOut[0], T.cockpitOut[1]],
+    [1, 0.95, 0.95, 1],
+    { rest: 1 },
+  );
+  const opacity = useTransform(
+    [inTimeline, cockpitDim],
+    ([tl, dim]) => (tl as number) * (dim as number),
+  );
   const visibility = useVisibility(p, T.timelineIn[0] - 0.01, 1.0);
+
   return (
     <motion.div
       className="absolute inset-0 flex flex-col gap-2 p-2 sm:gap-3 sm:p-3 md:flex-row md:p-4 gpu-layer [contain:layout_paint] [container-type:size]"
-      style={{ opacity, visibility }}
+      style={{ opacity, scale, visibility }}
     >
       <Sidebar />
       <TimelineColumn />
@@ -593,7 +610,8 @@ function ComputingPill() {
 function WalkLens() {
   const p = useProgress();
   const { desktop } = useLayout();
-  const opacity = useFade(p, T.lensIn[0], T.lensIn[1]);
+  const opacity = useFade(p, T.lensIn[0], T.lensIn[1], T.syncStart[0], T.syncStart[1]);
+  const visibility = useVisibility(p, T.lensIn[0] - 0.005, T.syncStart[1] + 0.005);
   const scale = useRange(p, [T.lensIn[0], T.lensIn[1]], [0.6, 1], { easing: ease.back, rest: 1 });
   const walk = useRange(p, [T.walkDraw[0], T.walkDraw[1]], [0, 1]);
   const ripple = useRange(p, [T.walkDraw[1], T.walkDraw[1] + 0.016], [0.5, 3], { easing: ease.out });
@@ -604,7 +622,7 @@ function WalkLens() {
   return (
     <motion.div
       className="glass-strong absolute right-2.5 top-1/2 overflow-hidden rounded-full border border-ink/[0.08] shadow-level-float md:right-5 gpu-layer z-25"
-      style={{ opacity, scale, width: size, height: size, marginTop: -size / 2 }}
+      style={{ opacity, scale, visibility, width: size, height: size, marginTop: -size / 2 }}
       aria-label="兰州街区放大：酒店步行 950 米至正宁路夜市"
     >
       <svg viewBox="0 0 200 200" className="h-full w-full">

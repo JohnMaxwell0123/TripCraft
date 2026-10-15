@@ -2,7 +2,7 @@
 
 import { motion, useTransform, type MotionValue } from 'framer-motion';
 import { qrPath } from '@/data/trip';
-import { ease, useFade, useRange, useScrollTypewriter, useStep, useVisibility } from '@/lib/motion';
+import { ease, interp, useFade, useRange, useScrollTypewriter, useStep, useVisibility } from '@/lib/motion';
 import { T } from './timeline';
 import { Avatar, FakeCursor, Reveal, useLayout, useProgress } from './primitives';
 import {
@@ -19,6 +19,7 @@ import {
   CommandIcon,
   ShareIcon,
   SmartphoneIcon,
+  CarIcon,
 } from '@/components/common/Icons';
 
 const QR = qrPath();
@@ -154,7 +155,7 @@ export function Topbar() {
 function InAppModuleSwitcher() {
   const p = useProgress();
   // 0=智能规划(Ch1), 1=路线沙盘(Ch2), 2=愿望池共创(Ch3), 3=路线编排(Ch4), 4=多端同频(Ch5)
-  const activeStep = useStep(p, [0.20, 0.42, 0.62, 0.84]);
+  const activeStep = useStep(p, [0.20, 0.42, 0.62, 0.78]);
 
   const tabs = [
     { id: 'chat', label: '智能规划', icon: SparklesIcon, activeIn: [0] },
@@ -350,17 +351,49 @@ export function ShareSheet() {
 export function PhoneMock() {
   const p = useProgress();
   const [a, b, c, d] = T.phoneIn;
-  const visibility = useVisibility(p, a - 0.005, d + 0.005);
-  const opacity = useFade(p, a, b, c, d);
-  const y = useRange(p, [a, b, c, d], [120, 0, 0, 80], { easing: ease.out, rest: 0 });
+  const hA = T.phoneHandoff[0] - 0.008;
+  const hB = T.phoneHandoff[0];
+  const hC = T.cockpitIn[1];
+  const hD = T.cockpitIn[1] + 0.012;
+
+  // 手机模拟器在共创扫码阶段与采纳后手车流转阶段平滑现身
+  const visibility = useTransform(p, (v) => {
+    if ((v >= a - 0.005 && v <= d + 0.005) || (v >= hA - 0.005 && v <= hD + 0.005)) {
+      return 'visible';
+    }
+    return 'hidden';
+  });
+
+  const opacity = useTransform(p, (v) => {
+    if (v >= a - 0.005 && v <= d + 0.005) {
+      return interp(v, [a, b, c, d], [0, 1, 1, 0]);
+    }
+    if (v >= hA - 0.005 && v <= hD + 0.005) {
+      return interp(v, [hA, hB, hC, hD], [0, 1, 1, 0]);
+    }
+    return 0;
+  });
+
+  const y = useTransform(p, (v) => {
+    if (v >= hA - 0.005 && v <= hD + 0.005) {
+      return interp(v, [hA, hB, hC, hD], [80, 0, 0, 60], ease.out);
+    }
+    return interp(v, [a, b, c, d], [120, 0, 0, 80], ease.out);
+  });
+
   const rotate = useRange(p, [a, b], [8, -3], { rest: -3 });
   const tap = useRange(p, [T.phoneSteps[2] - 0.002, T.phoneSteps[2], T.phoneSteps[2] + 0.008], [0, 0.8, 0]);
   const tapScale = useRange(p, [T.phoneSteps[2], T.phoneSteps[2] + 0.008], [0.4, 1.8]);
 
+  // 镜头 1 投车按钮按压
+  const handoffPress = useRange(p, [T.streamFly[0] - 0.003, T.streamFly[0], T.streamFly[0] + 0.004], [1, 0.92, 1]);
+  const handoffGlow = useRange(p, [T.streamFly[0] - 0.004, T.streamFly[0], T.streamFly[0] + 0.008], [0, 1, 0]);
+
   // 纯 MotionValue 状态切换
   const screen1Opacity = useRange(p, [T.phoneSteps[1] - 0.002, T.phoneSteps[1] + 0.002], [1, 0]);
   const screen2Opacity = useRange(p, [T.phoneSteps[1] - 0.002, T.phoneSteps[1] + 0.002, T.phoneSteps[3] - 0.002, T.phoneSteps[3] + 0.002], [0, 1, 1, 0]);
-  const screen3Opacity = useRange(p, [T.phoneSteps[3] - 0.002, T.phoneSteps[3] + 0.002], [0, 1]);
+  const screen3Opacity = useRange(p, [T.phoneSteps[3] - 0.002, T.phoneSteps[3] + 0.002, hA, hA + 0.004], [0, 1, 1, 0]);
+  const screen4Opacity = useRange(p, [hA, hA + 0.004], [0, 1]);
 
   return (
     <motion.div
@@ -453,6 +486,57 @@ export function PhoneMock() {
               {/* 移动端底栏指示 */}
               <div className="rounded-control bg-ink/[0.04] p-1 text-center text-[8px] font-mono text-ink-soft">
                 ⚡ 多端云协同实时同频 · 微信免登
+              </div>
+            </div>
+          </motion.div>
+
+          {/* 状态 4: 镜头 1 副驾手机端一键投车 (Companion Handoff) */}
+          <motion.div className="absolute inset-0 flex flex-col bg-[#111319] text-white pointer-events-none" style={{ opacity: screen4Opacity }}>
+            {/* 移动端 App 顶栏 */}
+            <div className="flex items-center justify-between border-b border-white/10 bg-[#161a24] px-3 pt-8 pb-1.5">
+              <div className="flex items-center gap-1.5">
+                <span className="h-4 w-4 rounded bg-gold text-paper flex items-center justify-center text-[9px] font-bold">旅</span>
+                <span className="text-[11px] font-bold text-white">随身协同 · 阿杰</span>
+              </div>
+              <span className="chip rounded-pill bg-jade/20 text-jade text-[8px] font-mono font-bold px-1.5">
+                v1.1 已对齐
+              </span>
+            </div>
+
+            <div className="p-2 space-y-1.5 flex-1 overflow-hidden flex flex-col justify-between">
+              <div className="rounded-control bg-gold/15 p-2 border border-gold/40">
+                <p className="text-[10px] font-bold text-gold flex items-center gap-1">
+                  <SparklesIcon className="h-3 w-3" />
+                  <span>领队已确认新路线</span>
+                </p>
+                <p className="text-[9px] text-white/70 mt-0.5">检测到车载座舱在线 · 推荐流转</p>
+              </div>
+
+              <div className="rounded-control bg-white/5 p-2 border border-white/10 text-[9px]">
+                <div className="flex items-center justify-between text-white/80">
+                  <span className="font-bold text-white truncate">正宁路夜市 (加点)</span>
+                  <span className="text-jade font-mono font-bold">已并入</span>
+                </div>
+                <p className="text-white/50 text-[8px] mt-0.5 font-mono">目标车机: 腾势 D9 C-CABIN</p>
+              </div>
+
+              {/* 一键投车高光交互按钮 */}
+              <div className="relative mt-auto pb-1">
+                <motion.div
+                  className="relative flex h-9 items-center justify-center gap-1 rounded-control text-xs font-bold text-paper bg-gradient-to-r from-gold to-ochre shadow-[0_0_16px_rgba(212,160,78,0.6)]"
+                  style={{ scale: handoffPress }}
+                >
+                  <CarIcon className="h-3.5 w-3.5 text-paper" />
+                  <span>一键流转至车机</span>
+                </motion.div>
+                <motion.span
+                  className="absolute inset-0 rounded-control bg-white/40 pointer-events-none"
+                  style={{ opacity: handoffGlow }}
+                />
+              </div>
+
+              <div className="text-center font-mono text-[7px] text-white/50">
+                ⚡ 车路云协同网络 · 18ms 秒级同步
               </div>
             </div>
           </motion.div>

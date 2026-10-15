@@ -52,7 +52,7 @@ export const CHAPTERS: Chapter[] = [
     no: '04',
     label: '编排',
     start: 0.62,
-    end: 0.84,
+    end: 0.78,
     eyebrow: '04 · 编排',
     title: '每添一处心愿，路线自己重新想一遍',
     desc: '调度算法毫秒级评估顺路度与代价，给出推荐，由领队一键确认即全团同步。',
@@ -61,7 +61,7 @@ export const CHAPTERS: Chapter[] = [
     id: 'deliver',
     no: '05',
     label: '同行',
-    start: 0.84,
+    start: 0.78,
     end: 1,
     eyebrow: '05 · 车路云协同',
     title: '多端同频 · 全团同行',
@@ -132,29 +132,49 @@ export const T = {
   score: [0.684, 0.704],
   cursorApply: [0.708, 0.734],
   clickApply: 0.74,
-  modalOut: [0.75, 0.772],
-  insertRow: [0.764, 0.782],
-  stamp: 0.782,
-  poolResolve: 0.77,
-  poolResolveOut: [0.79, 0.802],
-  lensIn: [0.772, 0.788],
-  walkDraw: [0.788, 0.812],
-  version: 0.8,
-  toastSync: [0.804, 0.812, 0.838, 0.846],
+  modalOut: [0.75, 0.77],
+  insertRow: [0.756, 0.772],
+  stamp: 0.772,
+  poolResolve: 0.76,
+  poolResolveOut: [0.77, 0.782],
+  version: 0.775,
+  toastSync: [0.776, 0.784, 0.806, 0.814],
+
+  /* ── 04.5 车机座舱智驾 (五幕长镜头) ──────────── */
+  // 镜头 1: 副驾手机端一键投车 (Companion Handoff)
+  phoneHandoff: [0.775, 0.796],
+  streamFly: [0.788, 0.804],
+
+  // 镜头 2: 车载大屏唤醒与日程重排 (Cockpit Awakening & Schedule Reorder)
+  cockpitIn: [0.795, 0.818],
+  cockpitSchedule: [0.812, 0.828],
+
+  // 镜头 3: 车道级 3D 导航与智驾领航开启 (Autonomous Cruise & NOA)
+  cockpitNav: [0.825, 0.87],
+  cockpitHud: [0.832, 0.87],
+
+  // 镜头 4: 自驾车型物理规则拦截与智能改道 (Clearance Rule Assertion & Parking)
+  heightAlert: [0.865, 0.878, 0.898, 0.908],
+
+  // 镜头 5: 驻车接力与下车步行雷达 (Off-car Handoff to Walk Lens)
+  parkEngage: [0.898, 0.916],
+  cockpitOut: [0.912, 0.932],
+  lensIn: [0.912, 0.926],
+  walkDraw: [0.922, 0.942],
 
   /* ── 05 多端同频 · 全团同行 ─────────────────── */
-  syncStart: [0.842, 0.862],
-  devicesIn: [0.852, 0.884],
-  streamSync: [0.884, 0.918],
-  deviceDetail: [0.918, 0.958],
-  tagline: [0.958, 0.988],
+  syncStart: [0.94, 0.954],
+  devicesIn: [0.946, 0.966],
+  streamSync: [0.962, 0.982],
+  deviceDetail: [0.975, 0.99],
+  tagline: [0.985, 1.0],
 
   // 兼容别名与平滑过渡：工作台作为母体保持清晰可见，不再提前隐藏
   windowOut: [0.999, 1.0],
-  fileIn: [0.852, 0.884],
-  compileSteps: [0.886, 0.894, 0.902, 0.91],
-  fileUp: [0.914, 0.934],
-  devices: [0.852, 0.884],
+  fileIn: [0.946, 0.966],
+  compileSteps: [0.962, 0.97, 0.978, 0.986],
+  fileUp: [0.98, 0.992],
+  devices: [0.946, 0.966],
 } as const;
 
 /** 舞台总滚动高度（相对视口高度的倍数） */

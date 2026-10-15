@@ -9,6 +9,7 @@ import { ChatScene } from './ChatScene';
 import { Workspace } from './Workspace';
 import { CollabDrawer, PhoneMock, ShareSheet, Topbar } from './Collab';
 import { Backdrop, RecommendModal, StageToasts } from './Recommend';
+import { CockpitScene } from './CockpitScene';
 import { DeliverScene } from './Deliver';
 import { PlayIcon, PauseIcon, RotateCcwIcon, TerminalIcon, DatabaseIcon, ShieldIcon } from '@/components/common/Icons';
 
@@ -373,6 +374,7 @@ export function ScrollyStage() {
                 <div className="relative min-h-0 flex-1">
                   <StageWindow />
                   <PhoneMock />
+                  <CockpitScene />
                   <DeliverScene />
                 </div>
               </div>
@@ -593,7 +595,7 @@ function StageWindow() {
 /* ── App 原生底栏遥测状态栏 (In-App Master Footer Telemetry Bar) ── */
 function InAppStatusBar() {
   const p = useProgress();
-  const chapterStep = useStep(p, [0.20, 0.42, 0.62, 0.84]);
+  const chapterStep = useStep(p, [0.20, 0.42, 0.62, 0.78]);
   const isV11 = useStep(p, [T.version]) === 1;
   const isDelivery = chapterStep === 4;
 
