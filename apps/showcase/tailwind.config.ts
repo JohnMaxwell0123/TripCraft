@@ -43,7 +43,7 @@ const config: Config = {
         },
       },
       fontFamily: {
-        serif: ['"Feature Text"', 'Georgia', 'Cambria', '"Times New Roman"', '"Noto Serif SC"', 'serif'],
+        serif: ['"Noto Serif SC"', '"Songti SC"', '"STSong"', 'Georgia', 'Cambria', 'serif'],
         sans: [
           'Saans',
           '-apple-system',

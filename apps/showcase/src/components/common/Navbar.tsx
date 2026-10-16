@@ -48,17 +48,17 @@ export function Navbar() {
   <div class="card">
     <div class="badge">✓ TripCraft 出游容灾舱 · 自包含离线保活样例</div>
     <h1>川西大环线 · 7日全地形自驾路书</h1>
-    <p style="color: #6E6A67; font-size: 14px;">9 天 1,280 km · 2.15m 限高与高程刚性防御引擎 · AST 状态已封存</p>
+    <p style="color: #6E6A67; font-size: 14px;">7 天 1,280 km · 2.28m 车高与高程安全守护 · 离线状态已封存</p>
     <div class="day">
       <strong>D1 · 成都 ➔ 康定 ➔ 折多山垭口</strong><br>
-      <small style="color: #6E6A67;">全车整备 ➔ 2.15m 限高规避 ➔ 4,298m 海拔供氧提醒</small>
+      <small style="color: #6E6A67;">全车整备 ➔ 2.0m 老城地库限高规避 ➔ 4,298m 海拔供氧提醒</small>
     </div>
     <div class="day">
       <strong>D2 · 塔公草原 ➔ 墨石公园 ➔ 八美镇</strong><br>
       <small style="color: #6E6A67;">微信愿望池置顶打卡点 ➔ 暗冰路段雷达预警 ➔ 驻车步行接力</small>
     </div>
     <div class="tip">
-      <strong>[风控防御] BR-025 物理规则引擎：</strong>已核验车型外廓与老城地库限高，确保全地形探索安全无虞。
+      <strong>[安全守护] 车辆物理规则核验：</strong>已核验腾势 D9 顶箱总高 2.28m 与沿线老城地库限高，确保全地形探索安全无虞。
     </div>
   </div>
 </body>
@@ -171,8 +171,8 @@ export function Navbar() {
                       onClick={() => scrollToSection('demo')}
                       className="flex flex-col items-start p-2 rounded hover:bg-[#241E20]/[0.04] transition-colors text-left"
                     >
-                      <span className="text-xs font-bold text-[#241E20]">2.15m 限高刚性风控</span>
-                      <span className="text-[11px] text-[#6E6A67]">MPV/SUV 带行李箱地库物理规则拦截</span>
+                      <span className="text-xs font-bold text-[#241E20]">2.28m 车高限高守护</span>
+                      <span className="text-[11px] text-[#6E6A67]">MPV/SUV 加装车顶箱地库限高智能拦截</span>
                     </button>
                     <button
                       type="button"

@@ -71,8 +71,8 @@ export const STOPS: RouteStop[] = [
   { id: 'jyg', name: '嘉峪关', sub: '天下第一雄关', day: 'D2', lon: 98.29, lat: 39.77, elev: 1700, kind: 'city', labelSide: 'bottom' },
   { id: 'gz', name: '瓜州', sub: '服务区午休', day: 'D3', lon: 95.78, lat: 40.52, elev: 1180, kind: 'via', labelSide: 'top' },
   { id: 'dh', name: '敦煌', sub: '莫高窟 · 鸣沙山', day: 'D3–D5', lon: 94.72, lat: 40.1, elev: 1140, kind: 'city', labelSide: 'bottom' },
-  { id: 'yg', name: '阳关', sub: '劝君更尽一杯酒', day: 'D6', lon: 94.06, lat: 39.93, elev: 1250, kind: 'sight', labelSide: 'bottom' },
-  { id: 'ymg', name: '玉门关', sub: '春风不度玉门关', day: 'D6', lon: 93.86, lat: 40.35, elev: 1050, kind: 'sight', labelSide: 'left' },
+  { id: 'yg', name: '阳关', sub: '丝路南道故址', day: 'D6', lon: 94.06, lat: 39.93, elev: 1250, kind: 'sight', labelSide: 'bottom' },
+  { id: 'ymg', name: '玉门关', sub: '汉长城遗址', day: 'D6', lon: 93.86, lat: 40.35, elev: 1050, kind: 'sight', labelSide: 'right' },
   { id: 'yd', name: '雅丹', sub: '魔鬼城星空', day: 'D7', lon: 93.08, lat: 40.55, elev: 930, kind: 'sight', labelSide: 'top' },
   { id: 'dh2', name: '敦煌', day: 'D8', lon: 94.8, lat: 40.2, elev: 1140, kind: 'via' },
 ];

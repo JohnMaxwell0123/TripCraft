@@ -173,6 +173,34 @@ body {
     box-shadow: 0 1px 3px rgba(36, 30, 32, 0.04);
   }
 
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-control px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 select-none;
+    background-color: #241E20;
+    color: #FFFFF9;
+    border: 1px solid rgba(36, 30, 32, 0.9);
+    box-shadow: 0 2px 6px rgba(36, 30, 32, 0.14);
+  }
+  .btn-primary:hover {
+    background-color: #FE3C01;
+    border-color: #FE3C01;
+    color: #FFFFFF;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-control px-3.5 py-1.5 text-xs font-semibold transition-colors duration-200 select-none;
+    background-color: rgba(255, 255, 255, 0.85);
+    color: #6E6A67;
+    border: 1px solid rgba(36, 30, 32, 0.12);
+  }
+  .btn-ghost:hover {
+    background-color: rgba(36, 30, 32, 0.05);
+    color: #241E20;
+  }
+
+  .chip {
+    @apply inline-flex items-center justify-center gap-1 rounded-pill px-2 py-0.5 text-xs font-medium select-none whitespace-nowrap;
+  }
+
   .unify-quote {
     position: relative;
     padding-left: 1.25rem;

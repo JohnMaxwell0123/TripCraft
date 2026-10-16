@@ -13,8 +13,8 @@ import {
 } from '@/components/common/Icons';
 
 export function BentoGrid() {
-  // Card 3 State: Vehicle Clearance Simulator
-  const [vehicleHeight, setVehicleHeight] = useState(2.15);
+  // Card 3 State: Vehicle Clearance Simulator (aligned with 2.28m Denza D9 + roof box)
+  const [vehicleHeight, setVehicleHeight] = useState(2.28);
 
   // Card 5 State: Offline network simulator
   const [isOffline, setIsOffline] = useState(false);
@@ -30,11 +30,11 @@ export function BentoGrid() {
           <p className="text-xs font-semibold tracking-wider text-[#FE3C01]">
             全地形能力矩阵 · 工业级工程基准
           </p>
-          <h2 className="mt-3 font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#241E20] leading-[1.15]">
-            一套协同中枢，驾驭全场景自驾工具链
+          <h2 className="mt-3 font-serif text-3xl sm:text-4xl lg:text-[42px] font-normal tracking-tight text-[#241E20] leading-[1.2] text-balance">
+            一套协同中枢，驾驭全场景自驾出行
           </h2>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-[#6E6A67]">
-            拒绝华而不实的玩具模型。从老城地库 2.15m 限高物理截断，到无人区断网秒开的离线单文件容灾舱，每项能力皆针对荒野自驾真实痛点工程化落地。
+            拒绝华而不实的玩具模型。从 2.28m 车高老城地库物理截断，到无人区断网秒开的离线单文件容灾舱，每项能力皆针对荒野自驾真实痛点工程化落地。
           </p>
         </div>
 
@@ -140,17 +140,17 @@ export function BentoGrid() {
             </div>
           </div>
 
-          {/* Card 3: 2.15m Height Clearance Simulator */}
+          {/* Card 3: 2.28m Height Clearance Simulator */}
           <div className="unify-card p-6 flex flex-col justify-between">
             <div>
               <span className="text-[11px] font-semibold tracking-wider text-[#FE3C01] block">
                 刚性物理风控
               </span>
               <h4 className="mt-2 font-serif text-xl font-normal text-[#241E20]">
-                2.15m 限高刚性风控
+                2.28m 车高与限高刚性风控
               </h4>
               <p className="mt-2 text-xs leading-relaxed text-[#6E6A67]">
-                7座 MPV 加装车顶行李箱后高度达 2.28m。系统在路线规划与车机领航中全程物理拦截老城限高地库与涵洞。
+                7座 MPV 加装车顶行李箱后总高 2.28m。系统在路线规划与车机领航中全程物理拦截 2.0m 老城限高地库与涵洞。
               </p>
             </div>
 

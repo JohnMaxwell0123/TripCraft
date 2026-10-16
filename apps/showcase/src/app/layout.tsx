@@ -20,10 +20,13 @@ export const metadata: Metadata = {
     '无人区离线舱',
   ],
   authors: [{ name: 'TripCraft Team' }],
+  icons: {
+    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="%23241E20"/><text x="16" y="22.5" font-size="18" font-family="serif" font-weight="bold" text-anchor="middle" fill="%23FFFFF9">旅</text></svg>',
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: '#F8FAFC',
+  themeColor: '#FFFFF9',
   width: 'device-width',
   initialScale: 1,
 };
@@ -35,14 +38,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700;900&display=swap"
-          rel="stylesheet"
-        />
-      </head>
       <body className="font-sans antialiased selection:bg-lapis/15 selection:text-ink">
         {children}
       </body>

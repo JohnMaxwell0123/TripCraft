@@ -61,7 +61,7 @@ export function Workspace() {
 const SIDEBAR_CONSTRAINTS = [
   { Icon: ElderIcon, label: '少台阶 · 慢节奏', color: 'text-gold-ink' },
   { Icon: BabyIcon, label: '幼儿午休 13:00', color: 'text-ochre' },
-  { Icon: CarIcon, label: '车高 2.15m 限高', color: 'text-lapis' },
+  { Icon: CarIcon, label: '车高 2.28m 限高', color: 'text-lapis' },
   { Icon: SunsetIcon, label: '鸣沙山 19:30 日落', color: 'text-rose-600' },
 ];
 
@@ -74,17 +74,17 @@ function Sidebar() {
 
   return (
     <motion.aside
-      className="glass-strong hidden w-[175px] xl:w-[185px] shrink-0 flex-col gap-2 rounded-card border border-ink/[0.08] p-2.5 shadow-level-static xl:flex gpu-layer"
+      className="glass-strong hidden w-[180px] xl:w-[190px] shrink-0 flex-col gap-2 rounded-card border border-ink/[0.08] p-2.5 shadow-level-static xl:flex gpu-layer"
       style={{ opacity, x }}
     >
       {/* 行程概要信息卡 */}
       <div>
-        <p className="eyebrow text-gold-ink font-semibold">行程概览</p>
-        <div className="mt-1.5 rounded-control border border-ink/[0.08] bg-paper/85 p-2.5 text-xs shadow-level-static">
+        <p className="eyebrow text-gold-ink font-semibold text-xs">行程概览</p>
+        <div className="mt-1 rounded-control border border-ink/[0.08] bg-paper/85 p-2 text-xs shadow-level-static">
           <p className="font-semibold text-ink">河西走廊 9D 深度自驾</p>
-          <p className="text-[11px] text-ink-soft mt-0.5">全家 5 口 · 腾势 D9 (7座豪华MPV)</p>
-          <span className="mt-1.5 inline-flex items-center gap-1 rounded-pill bg-jade/10 px-1.5 py-0.2 text-[10px] font-semibold text-jade">
-            <CheckIcon className="h-3 w-3" />
+          <p className="text-[10.5px] text-ink-soft mt-0.5 whitespace-nowrap">全家 5 口 · 腾势 D9 (2.28m)</p>
+          <span className="mt-1.5 inline-flex items-center gap-1 rounded-pill bg-jade/10 px-1.5 py-0.5 text-[10px] font-semibold text-jade whitespace-nowrap">
+            <CheckIcon className="h-3 w-3 shrink-0" />
             <span>长辈无障碍慢游已锁定</span>
           </span>
         </div>
@@ -93,10 +93,10 @@ function Sidebar() {
       {/* 4 组风控规则 */}
       <div>
         <div className="flex items-center justify-between">
-          <p className="eyebrow text-gold-ink font-semibold">排程风控 · 4</p>
-          <span className="text-[10px] text-ink-soft font-mono">刚性规则集</span>
+          <p className="eyebrow text-gold-ink font-semibold text-xs">出行保障 · 4</p>
+          <span className="text-[10px] text-ink-soft font-sans">全程生效</span>
         </div>
-        <div className="mt-1.5 flex flex-col gap-1">
+        <div className="mt-1 flex flex-col gap-1">
           {SIDEBAR_CONSTRAINTS.map((c) => (
             <div
               key={c.label}
@@ -112,39 +112,38 @@ function Sidebar() {
       {/* 实时在网协作成员 */}
       <div>
         <div className="flex items-center justify-between">
-          <p className="eyebrow text-gold-ink font-semibold">{isCh5 ? '全团协同 · 多端同频' : '团队协同'}</p>
-          <span className="chip rounded-pill bg-jade/10 text-jade text-[9px] px-1.5 py-0 font-medium">3 端实时同频</span>
+          <p className="eyebrow text-gold-ink font-semibold text-xs whitespace-nowrap">{isCh5 ? '多端同频' : '团队协同'}</p>
+          <span className="chip rounded-pill bg-jade/10 text-jade text-[9px] px-1.5 py-0 font-medium">3 端在线</span>
         </div>
         <ul className="mt-1.5 flex flex-col gap-1.5 text-xs">
-          <li className="flex items-center gap-1.5">
-            <Avatar name="我" tone="gold" size={22} />
-            <span className="font-medium text-ink text-xs">我</span>
+          <li className="flex items-center gap-1.5 whitespace-nowrap">
+            <Avatar name="我" tone="gold" size={20} />
+            <span className="font-medium text-ink text-[11px] shrink-0">我</span>
             <span
-              className={`chip rounded-pill text-[9px] px-1 py-0 font-mono transition-colors duration-300 ${
+              className={`chip rounded-pill text-[9px] px-1.5 py-0 font-sans transition-colors duration-300 ${
                 isCh5 ? 'bg-gold/15 text-gold-ink font-semibold' : 'bg-ink/[0.05] text-ink-soft'
               }`}
             >
-              💻 桌面掌控
+              桌面主控
             </span>
-            <span className="ml-auto text-[10px] text-gold-ink font-medium">领队确认</span>
+            <span className="ml-auto text-[10px] text-gold-ink font-medium shrink-0">领队</span>
           </li>
-          <MemberRow name="阿杰" tone="jade" at={T.joinAJie[0]} device="📱 微信协同" active={isCh5} />
-          <MemberRow name="小雨" tone="lapis" at={T.joinXiaoyu[0]} device="📱 手机 · 🚗 车机" active={isCh5} />
+          <MemberRow name="阿杰" tone="jade" at={T.joinAJie[0]} device="微信协同" active={isCh5} />
+          <MemberRow name="小雨" tone="lapis" at={T.joinXiaoyu[0]} device="车机互联" active={isCh5} />
         </ul>
       </div>
 
       {/* 无人区离线容灾安全舱 */}
       <div className="mt-auto rounded-control bg-ink/[0.04] p-2 text-xs leading-relaxed text-ink-soft border border-ink/[0.08]">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between whitespace-nowrap">
           <span className="font-semibold text-jade flex items-center gap-1 text-[11px]">
-            <span className="h-1.5 w-1.5 animate-breathe rounded-full bg-jade" />
-            无人区离线容灾舱
+            <span className="h-1.5 w-1.5 animate-breathe rounded-full bg-jade shrink-0" />
+            <span>无人区离线守护</span>
           </span>
           <span className="chip rounded-pill bg-jade/10 text-jade font-mono text-[9px] px-1 py-0 font-bold">已就绪</span>
         </div>
         <p className="mt-1 text-[10px] text-ink-soft leading-tight">
-          多端云同频实时互联<br />
-          <span className="text-gold-ink font-medium">无信号区域自动无感保活</span>
+          多端实时同步 · <span className="text-gold-ink font-medium">脱网自动接管</span>
         </p>
       </div>
     </motion.aside>
@@ -154,12 +153,12 @@ function Sidebar() {
 function MemberRow({ name, tone, at, device, active }: { name: string; tone: 'jade' | 'lapis'; at: number; device?: string; active?: boolean }) {
   return (
     <Reveal at={[at, at + 0.008]} y={4}>
-      <li className="flex items-center gap-1.5">
-        <Avatar name={name} tone={tone} size={22} />
-        <span className="font-medium text-ink text-xs">{name}</span>
+      <li className="flex items-center gap-1.5 whitespace-nowrap">
+        <Avatar name={name} tone={tone} size={20} />
+        <span className="font-medium text-ink text-[11px] shrink-0">{name}</span>
         {device ? (
           <span
-            className={`chip rounded-pill px-1 py-0 text-[9px] font-mono transition-colors duration-300 ${
+            className={`chip rounded-pill px-1.5 py-0 text-[9px] font-sans transition-colors duration-300 ${
               active
                 ? tone === 'jade'
                   ? 'bg-jade/15 text-jade font-semibold'
@@ -170,8 +169,9 @@ function MemberRow({ name, tone, at, device, active }: { name: string; tone: 'ja
             {device}
           </span>
         ) : null}
-        <span className="ml-auto flex items-center gap-0.5 text-[10px] text-jade">
-          <span className="h-1 w-1 animate-breathe rounded-full bg-jade" /> 在线
+        <span className="ml-auto flex items-center gap-1 text-[10px] text-jade shrink-0">
+          <span className="h-1.5 w-1.5 animate-breathe rounded-full bg-jade shrink-0" />
+          <span>在线</span>
         </span>
       </li>
     </Reveal>
@@ -202,10 +202,10 @@ function TimelineColumn() {
       </div>
 
       {desktop ? (
-        /* 桌面端：完整的 9 天日程时间线瀑布流 */
-        <div className="mask-fade-b flex min-h-0 flex-1 flex-col gap-1.5 overflow-hidden pt-2">
-          <ol className="flex min-h-0 flex-1 flex-col gap-1.5 overflow-hidden">
-            {DAYS.map((d, i) => (
+        /* 桌面端：紧凑清晰的日程时间线 + 底部愿望池，零截断 */
+        <div className="flex min-h-0 flex-1 flex-col justify-between gap-1 overflow-hidden pt-1.5">
+          <ol className="flex min-h-0 flex-1 flex-col gap-1 overflow-hidden">
+            {DAYS.slice(0, 7).map((d, i) => (
               <DayCard key={d.tag} day={d} index={i} />
             ))}
           </ol>
@@ -222,12 +222,6 @@ function TimelineColumn() {
 /* ── 移动端专属自适应当日焦点卡片 ───────────────────────────── */
 function MobileActiveDayView() {
   const p = useProgress();
-  // 随剧情进度自动聚焦关键天：
-  // 0: D0 (0~0.30, 兰州初排)
-  // 1: D1 (0.30~0.36, 乌鞘岭下坡风控)
-  // 2: D2 (0.36~0.42, 张掖丹霞)
-  // 3: D4 (0.42~0.50, 莫高窟预约)
-  // 4: D0 (0.50+, 回归兰州主线：愿望池提名 ➔ 算法重排采纳 ➔ D0 晚间节点弹性撑开 ➔ 多端同频)
   const step = useStep(p, [0.30, 0.36, 0.42, 0.50]);
   const currentDay = [DAYS[0], DAYS[1], DAYS[2], DAYS[4], DAYS[0]][step] || DAYS[0];
   const isD0 = currentDay.tag === 'D0';
@@ -298,7 +292,7 @@ function DayCard({ day, index }: { day: DayPlan; index: number }) {
   const p = useProgress();
   const at = T.dayCardsStart + index * T.dayCardStep;
   const opacity = useRange(p, [at, at + T.dayCardDur * 0.6], [0, 1]);
-  const y = useRange(p, [at, at + T.dayCardDur], [28, 0], { easing: ease.back, rest: 0 });
+  const y = useRange(p, [at, at + T.dayCardDur], [22, 0], { easing: ease.back, rest: 0 });
   const bar = useRange(p, [at + T.dayCardDur * 0.4, at + T.dayCardDur * 1.4], [0, 1]);
 
   // 纯 MotionValue 高亮
@@ -309,20 +303,20 @@ function DayCard({ day, index }: { day: DayPlan; index: number }) {
 
   return (
     <motion.li style={{ opacity, y }} className="shrink-0 will-change-transform">
-      <div className="relative overflow-hidden rounded-control border border-ink/[0.08] bg-paper/80 px-2.5 py-1.5 shadow-level-static">
+      <div className="relative overflow-hidden rounded-control border border-ink/[0.08] bg-paper/85 px-2 py-1 shadow-level-static">
         {/* 活跃状态高亮图层 */}
         <motion.div aria-hidden className="pointer-events-none absolute inset-0 rounded-control bg-paper shadow-glow" style={{ opacity: activeHighlight }} />
         <motion.span className="absolute inset-y-0 left-0 w-1 origin-top bg-gradient-to-b from-gold to-ochre z-10" style={{ scaleY: bar }} />
         <div className="relative z-10 flex items-center gap-1.5">
-          <span className="w-6 font-serif text-xs font-bold text-gold-ink">{day.tag}</span>
-          <span className="min-w-0 flex-1 truncate text-xs font-semibold text-ink">{day.title}</span>
-          <span className="text-[11px] tabular-nums font-mono text-ink-soft">{day.date}</span>
+          <span className="w-5 font-serif text-[11px] font-bold text-gold-ink">{day.tag}</span>
+          <span className="min-w-0 flex-1 truncate text-[11.5px] font-semibold text-ink">{day.title}</span>
+          <span className="text-[10px] tabular-nums font-mono text-ink-soft">{day.date}</span>
         </div>
-        <div className="relative z-10 flex items-center gap-1.5 pl-7">
-          <span className="min-w-0 truncate text-[11px] text-ink-soft tabular-nums">{day.meta}</span>
+        <div className="relative z-10 flex items-center gap-1 pl-6">
+          <span className="min-w-0 truncate text-[10px] text-ink-soft tabular-nums">{day.meta}</span>
           {day.badge && BADGE_AT[day.tag] !== undefined ? (
             <Pop at={BADGE_AT[day.tag]} className="ml-auto shrink-0">
-              <span className={`chip rounded-pill px-1.5 py-0 text-[10px] border border-transparent ${badgeTone[day.badge.tone]}`}>
+              <span className={`chip rounded-pill px-1.5 py-0 text-[9px] border border-transparent ${badgeTone[day.badge.tone]}`}>
                 {day.badge.text}
               </span>
             </Pop>
@@ -334,27 +328,23 @@ function DayCard({ day, index }: { day: DayPlan; index: number }) {
   );
 }
 
-/** D0 晚间插入的新节点（采纳推荐后弹性撑开） */
+/** D0 晚间插入的新节点（采纳推荐后弹性撑开，单行无折字） */
 function InsertedNode() {
   const p = useProgress();
-  const height = useRange(p, [T.insertRow[0], T.insertRow[1]], [0, 42]);
-  const opacity = useFade(p, T.insertRow[0] + 0.006, T.insertRow[1]);
-  const x = useRange(p, [T.insertRow[0] + 0.006, T.insertRow[1]], [-16, 0], { rest: 0 });
-  const syncTagOpacity = useFade(p, 0.84, 0.854);
+  const height = useRange(p, [T.insertRow[0], T.insertRow[1]], [0, 34]);
+  const opacity = useFade(p, T.insertRow[0] + 0.004, T.insertRow[1]);
+  const x = useRange(p, [T.insertRow[0] + 0.004, T.insertRow[1]], [-12, 0], { rest: 0 });
   return (
     <motion.div style={{ height }} className="overflow-hidden">
-      <motion.div style={{ opacity, x }} className="mt-1 flex items-center gap-1.5 rounded-control border border-dashed border-gold/70 bg-gold/10 py-1 pl-2 pr-1.5">
-        <span className="text-[11px] font-bold tabular-nums font-mono text-gold-ink">20:00</span>
-        <span className="min-w-0 flex-1 truncate text-xs font-semibold text-ink inline-flex items-center gap-1">
-          <UtensilsIcon className="h-3.5 w-3.5 text-gold-ink shrink-0" />
-          <span>正宁路夜市 · 牛奶鸡蛋醪糟</span>
+      <motion.div style={{ opacity, x }} className="mt-1 flex items-center gap-1 rounded-control border border-dashed border-gold/70 bg-gold/10 py-0.5 pl-1.5 pr-1 whitespace-nowrap">
+        <span className="text-[10px] font-bold tabular-nums font-mono text-gold-ink shrink-0">20:00</span>
+        <UtensilsIcon className="h-3 w-3 text-gold-ink shrink-0" />
+        <span className="min-w-0 flex-1 truncate text-[10.5px] font-semibold text-ink">
+          正宁路夜市 · 鸡蛋醪糟
         </span>
-        <motion.span style={{ opacity: syncTagOpacity }} className="hidden sm:inline-flex chip rounded-pill bg-jade/15 text-jade border border-jade/30 text-[9px] px-1 py-0 font-mono font-medium">
-          ⚡ 3端同频
-        </motion.span>
         <Pop at={T.stamp}>
-          <span className="flex h-5 w-5 rotate-[-12deg] items-center justify-center rounded-full border border-gold text-[10px] font-bold text-gold-ink">
-            打卡
+          <span className="inline-flex shrink-0 items-center justify-center rounded-full bg-gold/20 border border-gold/60 px-1.5 py-0 text-[9px] font-bold text-gold-ink whitespace-nowrap">
+            已加点
           </span>
         </Pop>
       </motion.div>
@@ -367,9 +357,9 @@ function WishPool() {
   const p = useProgress();
   const opacity = useFade(p, T.poolIn[0], T.poolIn[1]);
   return (
-    <motion.div className="mt-1.5 rounded-control border border-dashed border-ink/20 bg-sand/60 p-1.5 sm:p-2" style={{ opacity }}>
+    <motion.div className="mt-1 rounded-control border border-dashed border-ink/20 bg-sand/60 p-1.5" style={{ opacity }}>
       <div className="flex items-center justify-between px-1 pb-1">
-        <span className="text-[11px] sm:text-xs font-semibold text-ink inline-flex items-center gap-1">
+        <span className="text-[11px] font-semibold text-ink inline-flex items-center gap-1">
           <FlameIcon className="h-3 w-3 text-gold" />
           <span>待决愿望池</span>
         </span>
@@ -396,7 +386,7 @@ function PoolLanding() {
   const p = useProgress();
   const opacity = useRange(p, [T.poolLand[0], T.poolLand[1], T.poolResolveOut[0], T.poolResolveOut[1]], [0, 1, 1, 0]);
   const scale = useRange(p, [T.poolLand[0], T.poolLand[1]], [0.8, 1], { easing: ease.back, rest: 1 });
-  const height = useRange(p, [T.poolResolveOut[0], T.poolResolveOut[1]], [32, 0]);
+  const height = useRange(p, [T.poolResolveOut[0], T.poolResolveOut[1]], [30, 0]);
   return (
     <motion.div style={{ opacity, scale, height }}>
       <ResolvedWishItem />
@@ -415,12 +405,12 @@ function ResolvedWishItem() {
       title="赵记牛奶鸡蛋醪糟"
       status={
         resolved ? (
-          <span className="inline-flex items-center gap-0.5 text-[10px]">
+          <span className="inline-flex items-center gap-0.5 text-[9.5px] whitespace-nowrap">
             <CheckIcon className="h-2.5 w-2.5" />
-            <span>已排入 D0 20:00</span>
+            <span>已排入 D0</span>
           </span>
         ) : (
-          <span className="text-[10px]">待编排</span>
+          <span className="text-[9.5px] whitespace-nowrap">待编排</span>
         )
       }
       resolved={resolved}
@@ -430,11 +420,11 @@ function ResolvedWishItem() {
 
 function WishItem({ who, tone, icon, title, status, resolved }: { who: string; tone: 'jade' | 'lapis'; icon: ReactNode; title: string; status?: ReactNode; resolved?: boolean }) {
   return (
-    <div className="flex h-8 items-center gap-1.5 rounded-control bg-paper/90 px-2 border border-ink/[0.08] shadow-level-static">
+    <div className="flex h-7 items-center gap-1.5 rounded-control bg-paper/90 px-2 border border-ink/[0.08] shadow-level-static">
       <span className="flex h-4 w-4 shrink-0 items-center justify-center">{icon}</span>
       <span className="min-w-0 flex-1 truncate text-[11px] font-medium text-ink">{title}</span>
       {status ? <span className={`shrink-0 font-semibold ${resolved ? 'text-jade' : 'text-gold-ink'}`}>{status}</span> : null}
-      <Avatar name={who} tone={tone} size={18} />
+      <Avatar name={who} tone={tone} size={17} />
     </div>
   );
 }
@@ -452,30 +442,30 @@ function MapPanel() {
     >
       <RouteMap />
 
-      {/* 地图沙盘左上角：沙盘标题微标 */}
-      <div className="pointer-events-none absolute left-3 top-3 flex flex-col gap-1.5 z-20">
-        <span className="chip rounded-pill glass-strong border border-ink/[0.08] px-2.5 py-1 text-xs tabular-nums text-ink shadow-level-static inline-flex items-center gap-1.5">
-          <CompassIcon className="h-3.5 w-3.5 text-gold" />
-          <span className="font-semibold">河西走廊 3D 拓扑沙盘 · 12 站全地形标定</span>
+      {/* 地图顶栏：左标题胶囊 + 右图层切换器，flex-between 彻底消除碰撞重叠 */}
+      <div className="pointer-events-none absolute inset-x-2.5 top-2.5 flex items-center justify-between gap-1.5 z-20">
+        <span className="chip rounded-pill glass-strong border border-ink/[0.08] px-2.5 py-1 text-[11px] tabular-nums text-ink shadow-level-static inline-flex items-center gap-1 shrink-0 whitespace-nowrap">
+          <CompassIcon className="h-3 w-3 text-gold shrink-0" />
+          <span className="font-semibold">河西走廊沙盘</span>
         </span>
-        <span className="chip rounded-pill hidden bg-paper/90 border border-ink/[0.08] px-2.5 py-0.5 text-[10px] text-ink-soft md:inline-flex items-center gap-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span>长辈平缓动线 · 腾势 D9 2.28m 限高刚性规避</span>
-        </span>
+
+        {/* 图层切换器 */}
+        <div className="pointer-events-auto hidden xs:flex items-center rounded-pill bg-paper/95 p-0.5 border border-ink/[0.08] shadow-level-static text-[10px] text-ink-soft backdrop-blur-md shrink-0 whitespace-nowrap">
+          <span className="flex items-center gap-1 rounded-pill bg-[#1F4E79] px-2 py-0.5 text-white font-medium shadow-sm">
+            <LayersIcon className="h-2.5 w-2.5 text-gold" />
+            <span>地形高程</span>
+          </span>
+          <span className="px-1.5 py-0.5 text-ink-soft hover:text-ink transition-colors cursor-pointer">卫星</span>
+          <span className="px-1.5 py-0.5 text-ink-soft hover:text-ink transition-colors cursor-pointer">2.28m限高</span>
+        </div>
       </div>
 
-      {/* 地图沙盘右上角：专业 GIS 地图控制器群 (图层切换 / 指北针 / 缩放) */}
+      {/* 地图右上缩放控制挂件（独立位于顶栏下方，互不遮挡） */}
       <InAppMapControls />
 
-      {/* 地图沙盘右下角：比例尺与经纬度状态 HUD */}
-      <div className="pointer-events-none absolute bottom-2.5 right-3 hidden sm:flex items-center gap-2 rounded-control bg-paper/85 px-2.5 py-1 border border-ink/[0.08] text-[10px] font-mono text-ink-soft z-20 shadow-sm backdrop-blur-md">
-        <span className="text-ink font-semibold">38.05°N, 102.64°E</span>
-        <span className="text-ink/20">|</span>
-        <span className="text-emerald-700 font-medium">G30 连霍高速 · 晴 18℃</span>
-        <span className="text-ink/20">|</span>
-        <span>100 km</span>
-        <span className="inline-block h-1 w-6 bg-ink/40 rounded-full" />
-        <span className="text-ink/20">|</span>
+      {/* 地图沙盘右下角：紧凑离线状态 HUD（与左侧高程卡留足间距，零重叠） */}
+      <div className="pointer-events-none absolute bottom-2.5 right-2.5 hidden sm:flex items-center gap-1 rounded-control bg-paper/95 px-2 py-1 border border-ink/[0.08] text-[9.5px] font-mono text-ink-soft z-20 shadow-sm backdrop-blur-md whitespace-nowrap">
+        <span className="h-1.5 w-1.5 rounded-full bg-jade shrink-0" />
         <span className="text-gold-ink font-semibold">离线包 48.6 MB</span>
       </div>
 
@@ -489,22 +479,10 @@ function MapPanel() {
   );
 }
 
-/* ── 专业 GIS 地图控制按钮挂件 (Layer switcher + Compass + Zoom) ── */
+/* ── 专业 GIS 地图缩放挂件 ── */
 function InAppMapControls() {
   return (
-    <div className="pointer-events-none absolute right-3 top-3 flex flex-col items-end gap-1.5 z-20">
-      {/* 图层切换器 */}
-      <div className="hidden xs:flex items-center rounded-pill bg-paper/95 p-0.5 border border-ink/[0.08] shadow-level-static text-[10px] text-ink-soft backdrop-blur-md">
-        <span className="flex items-center gap-1 rounded-pill bg-[#1F4E79] px-2 py-0.5 text-white font-medium shadow-sm">
-          <LayersIcon className="h-2.5 w-2.5 text-gold" />
-          <span>地形高程</span>
-        </span>
-        <span className="px-2 py-0.5 text-ink-soft hover:text-ink transition-colors cursor-pointer">卫星遥感</span>
-        <span className="px-2 py-0.5 text-ink-soft hover:text-ink transition-colors cursor-pointer">2.15m 限高</span>
-        <span className="px-2 py-0.5 text-ink-soft hover:text-ink transition-colors cursor-pointer hidden md:inline">充电桩</span>
-      </div>
-
-      {/* 缩放与指北按钮群 */}
+    <div className="pointer-events-auto absolute right-2.5 top-11 flex flex-col items-end gap-1.5 z-20">
       <div className="flex flex-col rounded-control bg-paper/95 border border-ink/[0.08] shadow-level-static overflow-hidden backdrop-blur-md">
         <button type="button" aria-label="放大地图" className="flex h-6 w-6 items-center justify-center text-ink hover:bg-ink/[0.05] transition-colors">
           <PlusIcon className="h-3 w-3" />
@@ -519,8 +497,8 @@ function InAppMapControls() {
 }
 
 /* ── 高程剖面 ─────────────────────────────── */
-const EW = 260;
-const EH = 64;
+const EW = 230;
+const EH = 56;
 const ELEV = elevationPath(EW, EH);
 
 function ElevationCard() {
@@ -532,17 +510,17 @@ function ElevationCard() {
   const peak = useFade(p, T.elevDraw[1] - 0.008, T.elevDraw[1]);
   return (
     <motion.div
-      className="glass-strong absolute bottom-2.5 left-2.5 hidden w-[270px] rounded-control border border-ink/[0.08] p-2.5 shadow-level-float sm:block gpu-layer z-20"
+      className="glass-strong absolute bottom-2.5 left-2.5 hidden w-[190px] xl:w-[205px] rounded-control border border-ink/[0.08] p-2 shadow-level-float sm:block gpu-layer z-20"
       style={{ opacity, y }}
     >
-      <div className="flex items-baseline justify-between">
-        <span className="text-[11px] font-semibold text-ink">全程海拔剖面 HUD</span>
-        <span className="text-[10px] font-mono tabular-nums text-jade inline-flex items-center gap-0.5">
-          <span>&lt; 长辈上限 3600m</span>
-          <CheckIcon className="h-3 w-3" />
+      <div className="flex items-baseline justify-between whitespace-nowrap">
+        <span className="text-[10px] font-semibold text-ink">全程海拔剖面</span>
+        <span className="text-[9px] font-mono tabular-nums text-jade inline-flex items-center gap-0.5">
+          <span>&lt;3600m 舒适</span>
+          <CheckIcon className="h-2.5 w-2.5" />
         </span>
       </div>
-      <svg viewBox={`0 -14 ${EW} ${EH + 16}`} className="mt-0.5 h-[62px] w-full overflow-visible">
+      <svg viewBox={`0 -14 ${EW} ${EH + 16}`} className="mt-0.5 h-[48px] w-full overflow-visible">
         <defs>
           <linearGradient id="elev-fill" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="rgb(184 134 59)" stopOpacity="0.45" />
@@ -553,7 +531,7 @@ function ElevationCard() {
         <motion.path d={ELEV.line} fill="none" stroke="rgb(140 58 43)" strokeWidth={1.8} style={{ pathLength: draw }} />
         <motion.g style={{ opacity: peak }}>
           <circle cx={ELEV.peak[0]} cy={ELEV.peak[1]} r={3.5} fill="rgb(140 58 43)" />
-          <text x={ELEV.peak[0] + 5} y={ELEV.peak[1] - 2} fontSize={11} fill="rgb(58 46 31)" fontWeight={600}>
+          <text x={ELEV.peak[0] + 5} y={ELEV.peak[1] - 2} fontSize={10.5} fill="rgb(58 46 31)" fontWeight={600}>
             乌鞘岭 2980m
           </text>
         </motion.g>
@@ -604,7 +582,7 @@ function ComputingPill() {
   const opacity = useFade(p, T.computing[0], T.computing[1], T.computing[2], T.computing[3]);
   const y = useRange(p, [T.computing[0], T.computing[1]], [-12, 0], { rest: 0 });
   return (
-    <motion.div className="pointer-events-none absolute inset-x-0 top-3 flex justify-center z-30" style={{ opacity, y }}>
+    <motion.div className="pointer-events-none absolute inset-x-0 top-12 flex justify-center z-30" style={{ opacity, y }}>
       <span className="chip rounded-pill glass-strong border border-ink/[0.08] shadow-level-float gap-1.5 px-3 py-1 text-xs text-ink">
         <span className="h-2.5 w-2.5 animate-radar rounded-full border-2 border-gold border-t-transparent" />
         排程引擎毫秒计算 · 3 组候选方案 · <b className="tabular-nums font-mono text-gold-ink">42ms</b>
@@ -613,66 +591,76 @@ function ComputingPill() {
   );
 }
 
-/* ── 街区放大镜：酒店 → 夜市 步行虚线 ─────────────────── */
+/* ── 街区放大镜：酒店 → 夜市 步行虚线 (居中悬浮于地图中央，零裁切) ─────────────────── */
 function WalkLens() {
   const p = useProgress();
   const { desktop } = useLayout();
-  const opacity = useFade(p, T.lensIn[0], T.lensIn[1], T.syncStart[0], T.syncStart[1]);
-  const visibility = useVisibility(p, T.lensIn[0] - 0.005, T.syncStart[1] + 0.005);
+  const opacity = useFade(p, T.lensIn[0], T.lensIn[1], T.cockpitIn[0], T.cockpitIn[1]);
+  const visibility = useVisibility(p, T.lensIn[0] - 0.005, T.cockpitIn[1] + 0.005);
   const scale = useRange(p, [T.lensIn[0], T.lensIn[1]], [0.6, 1], { easing: ease.back, rest: 1 });
   const walk = useRange(p, [T.walkDraw[0], T.walkDraw[1]], [0, 1]);
-  const ripple = useRange(p, [T.walkDraw[1], T.walkDraw[1] + 0.016], [0.5, 3], { easing: ease.out });
+  const ripple = useRange(p, [T.walkDraw[1], T.walkDraw[1] + 0.016], [0.5, 2.6], { easing: ease.out });
   const rippleO = useRange(p, [T.walkDraw[1] - 0.001, T.walkDraw[1], T.walkDraw[1] + 0.016], [0, 0.8, 0]);
   const marketPin = useRange(p, [T.walkDraw[1] - 0.004, T.walkDraw[1] + 0.004], [0, 1], { easing: ease.back });
-  const size = desktop ? 220 : 140;
+  const size = desktop ? 228 : 156;
 
   return (
-    <motion.div
-      className="glass-strong absolute right-2.5 top-1/2 overflow-hidden rounded-full border border-ink/[0.08] shadow-level-float md:right-5 gpu-layer z-25"
-      style={{ opacity, scale, visibility, width: size, height: size, marginTop: -size / 2 }}
-      aria-label="兰州街区放大：酒店步行 950 米至正宁路夜市"
-    >
-      <svg viewBox="0 0 200 200" className="h-full w-full">
-        <rect width="200" height="200" fill="#f3ead9" />
-        <g stroke="#d9c9a8" strokeWidth="6" strokeLinecap="round">
-          <path d="M-10 60 L210 52" />
-          <path d="M-10 128 L210 120" />
-          <path d="M48 -10 L56 210" />
-          <path d="M118 -10 L126 210" />
-          <path d="M168 -10 L176 210" />
-        </g>
-        <path d="M-10 30 C 50 18, 120 34, 210 14" stroke="#8fb3cf" strokeWidth="16" fill="none" strokeLinecap="round" />
-        <text x="150" y="20" fontSize="12" fontWeight="600" fill="#3f6f96">黄河</text>
-        <motion.path d="M 62 96 C 80 110, 92 124, 120 128 S 150 150, 150 160" fill="none" stroke="rgb(184 134 59)" strokeWidth="4" strokeLinecap="round" strokeDasharray="0.01 9" style={{ pathLength: walk }} />
-        <g transform="translate(62 96)">
-          <circle r="9" fill="rgb(31 78 121)" stroke="#fff" strokeWidth="2.5" />
-          <text y="3.5" fontSize="10" textAnchor="middle" fill="#fff" fontWeight="700">宿</text>
-          <text x="-2" y="-14" fontSize="12" textAnchor="middle" fill="rgb(58 46 31)" fontWeight="600">水岸云上酒店</text>
-          <g transform="translate(-30 14)">
-            <rect x="-11" y="-8" width="22" height="16" rx="4" fill="rgb(31 78 121)" />
-            <text y="4" fontSize="10" textAnchor="middle" fill="#fff" fontWeight="700">P</text>
-            <text y="21" fontSize="11" textAnchor="middle" fill="rgb(58 46 31)" fontWeight="600">MPV地面车位</text>
+    <div className="pointer-events-none absolute inset-0 z-25 flex items-center justify-center pt-4">
+      <motion.div
+        className="glass-strong relative overflow-hidden rounded-full border-2 border-gold/60 shadow-level-float gpu-layer"
+        style={{ opacity, scale, visibility, width: size, height: size }}
+        aria-label="兰州街区放大：酒店步行 950 米至正宁路夜市"
+      >
+        <svg viewBox="0 0 200 200" className="h-full w-full">
+          <rect width="200" height="200" fill="#f3ead9" />
+          <g stroke="#d9c9a8" strokeWidth="6" strokeLinecap="round">
+            <path d="M-10 56 L210 48" />
+            <path d="M-10 120 L210 112" />
+            <path d="M48 -10 L56 210" />
+            <path d="M118 -10 L126 210" />
+            <path d="M168 -10 L176 210" />
           </g>
-        </g>
-        <g transform="translate(150 160)">
-          <motion.circle r="10" fill="none" stroke="rgb(184 134 59)" strokeWidth="2" style={{ scale: ripple, opacity: rippleO }} />
-          <motion.g style={{ scale: marketPin }}>
-            <circle r="10" fill="rgb(184 134 59)" stroke="#fff" strokeWidth="2.5" />
-            <g transform="translate(-5, -5) scale(0.42)" stroke="#fff" fill="none" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M18 2v6a3 3 0 0 1-3 3 3 3 0 0 1-3-3V2" />
-              <path d="M15 2v18" />
-              <path d="M6 2v20" />
-              <path d="M4 2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4" />
+          <path d="M-10 28 C 50 16, 120 32, 210 14" stroke="#8fb3cf" strokeWidth="15" fill="none" strokeLinecap="round" />
+          <text x="142" y="22" fontSize="11" fontWeight="600" fill="#3f6f96">黄河</text>
+          <motion.path
+            d="M 68 82 C 84 96, 98 110, 118 116 S 138 130, 138 140"
+            fill="none"
+            stroke="rgb(184 134 59)"
+            strokeWidth="4"
+            strokeLinecap="round"
+            strokeDasharray="0.01 9"
+            style={{ pathLength: walk }}
+          />
+          <g transform="translate(68 82)">
+            <circle r="8.5" fill="rgb(31 78 121)" stroke="#fff" strokeWidth="2.2" />
+            <text y="3.5" fontSize="9.5" textAnchor="middle" fill="#fff" fontWeight="700">宿</text>
+            <text x="2" y="-13" fontSize="11" textAnchor="middle" fill="rgb(58 46 31)" fontWeight="700">水岸云上酒店</text>
+            <g transform="translate(-8 15)">
+              <rect x="-10" y="-7" width="20" height="14" rx="3.5" fill="rgb(31 78 121)" />
+              <text y="3.5" fontSize="9.5" textAnchor="middle" fill="#fff" fontWeight="700">P</text>
+              <text x="4" y="19" fontSize="10" textAnchor="middle" fill="rgb(58 46 31)" fontWeight="600">MPV地面车位</text>
             </g>
-          </motion.g>
-          <text x="-4" y="24" fontSize="12" textAnchor="middle" fill="rgb(58 46 31)" fontWeight="700">正宁路夜市</text>
-        </g>
-        <g transform="translate(100 186)">
-          <rect x="-56" y="-11" width="112" height="22" rx="11" fill="rgb(255 252 246)" stroke="rgb(184 134 59)" strokeOpacity="0.6" />
-          <text y="4" fontSize="11" textAnchor="middle" fill="rgb(122 85 32)" fontWeight="700">步行 950m · 12 分钟</text>
-        </g>
-      </svg>
-    </motion.div>
+          </g>
+          <g transform="translate(138 140)">
+            <motion.circle r="9" fill="none" stroke="rgb(184 134 59)" strokeWidth="2" style={{ scale: ripple, opacity: rippleO }} />
+            <motion.g style={{ scale: marketPin }}>
+              <circle r="9.5" fill="rgb(184 134 59)" stroke="#fff" strokeWidth="2.2" />
+              <g transform="translate(-4.5, -4.5) scale(0.4)" stroke="#fff" fill="none" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 2v6a3 3 0 0 1-3 3 3 3 0 0 1-3-3V2" />
+                <path d="M15 2v18" />
+                <path d="M6 2v20" />
+                <path d="M4 2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H4" />
+              </g>
+            </motion.g>
+            <text x="-8" y="21" fontSize="11" textAnchor="middle" fill="rgb(58 46 31)" fontWeight="700">正宁路夜市</text>
+          </g>
+          <g transform="translate(100 182)">
+            <rect x="-52" y="-10" width="104" height="20" rx="10" fill="rgb(255 252 246)" stroke="rgb(184 134 59)" strokeOpacity="0.6" />
+            <text y="3.5" fontSize="10" textAnchor="middle" fill="rgb(122 85 32)" fontWeight="700">步行 950m · 12 分钟</text>
+          </g>
+        </svg>
+      </motion.div>
+    </div>
   );
 }
 

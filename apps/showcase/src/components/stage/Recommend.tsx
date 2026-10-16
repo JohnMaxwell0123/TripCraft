@@ -106,7 +106,7 @@ export function RecommendModal() {
           <div className="flex items-start gap-1.5 sm:gap-2 rounded-control bg-gold/10 p-2 sm:p-2.5 text-[10px] sm:text-xs leading-relaxed text-ink border border-gold/30">
             <CarIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-gold shrink-0 mt-0.5" />
             <p className="text-[10px] sm:text-[11px]">
-              <b className="text-gold-ink">7座 MPV 车顶箱 2.15m 限高避障：</b>夜市街区地库限高 2.0m；智驾已下发方案：MPV 停泊酒店地面车位，全家漫步 950m 前往。
+              <b className="text-gold-ink">7座 MPV 车顶箱 2.28m 限高避障：</b>夜市街区地库限高 2.0m；已下发方案：MPV 停泊酒店地面车位，全家漫步 950m 前往。
             </p>
           </div>
         </Reveal>
@@ -119,7 +119,7 @@ export function RecommendModal() {
           <RecommendApplyButton />
         </Reveal>
 
-        <FakeCursor times={[T.cursorApply[0], T.cursorApply[1]]} xs={[60, 84]} ys={[130, 90]} clickAt={T.clickApply} hideAt={T.modalOut[0]} />
+        <FakeCursor times={[T.cursorApply[0], T.cursorApply[1]]} xs={[60, 82]} ys={[96, 88]} clickAt={T.clickApply} hideAt={T.modalOut[0]} />
       </motion.div>
     </div>
   );

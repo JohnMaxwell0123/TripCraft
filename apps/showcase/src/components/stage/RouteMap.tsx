@@ -10,10 +10,10 @@ import { useProgress } from './primitives';
 /* 相机关键帧：中国尺度 → 河西走廊全景 (适配工作台视窗，100% 完整展现 9 日全线) → 兰州街区 */
 const LZ = PROJECTED[0];
 const VB_WIDE = [-700, -448, 2400, 1536];
-// 优化纵向工作台全景视口：涵盖兰州(D0)到乌鞘岭、张掖、嘉峪关、敦煌、雅丹(D7)的完整1980km自驾走廊，拒绝贴脸过度放大与裁切
-const VB_CORRIDOR = [-140, -320, 1200, 1260];
-const ZW = 440;
-const VB_LANZHOU = [LZ.x - ZW / 2, LZ.y - (ZW * 1260) / 1200 / 2, ZW, (ZW * 1260) / 1200];
+// 完整收拢河西走廊 (雅丹 x=77 至 兰州 x=915)，横向 0 裁切
+const VB_CORRIDOR = [-10, -90, 1000, 820];
+const ZW = 420;
+const VB_LANZHOU = [LZ.x - ZW / 2, LZ.y - (ZW * 820) / 1000 / 2, ZW, (ZW * 820) / 1000];
 
 function viewBoxAt(v: number, reduced: boolean): string {
   const cam = reduced ? 1 : local(v, T.camera[0], T.camera[1]);
@@ -96,7 +96,7 @@ export function RouteMap() {
     <svg
       ref={svgRef}
       viewBox={VB_WIDE.join(' ')}
-      preserveAspectRatio="xMidYMid slice"
+      preserveAspectRatio="xMidYMid meet"
       className="absolute inset-0 h-full w-full gpu-layer"
       role="img"
       aria-label="河西走廊九天路线图：兰州、乌鞘岭、张掖、七彩丹霞、嘉峪关、敦煌、阳关、玉门关、雅丹"
@@ -187,12 +187,12 @@ export function RouteMap() {
         </g>
         {/* 车标随车微标签：车速与车高限高合规 */}
         <g transform="translate(18, -12)">
-          <rect x="0" y="0" width="88" height="24" rx="6" fill="rgb(255 252 246)" fillOpacity={0.92} stroke="rgb(31 78 121)" strokeWidth={1} />
+          <rect x="0" y="0" width="90" height="24" rx="6" fill="rgb(255 252 246)" fillOpacity={0.92} stroke="rgb(31 78 121)" strokeWidth={1} />
           <text x="6" y="11" fontSize="9" fontWeight={700} fill="rgb(31 78 121)" fontFamily="sans-serif">
             腾势 D9 · 85km/h
           </text>
           <text x="6" y="20" fontSize="8" fontWeight={500} fill="rgb(122 85 32)" fontFamily="sans-serif">
-            限高2.15m 巡航中
+            车高2.28m 巡航中
           </text>
         </g>
       </motion.g>
@@ -215,8 +215,8 @@ function Pin({ stop, labels }: { stop: ProjectedStop; labels: MotionValue<number
   const keep = stop.id === 'lz';
 
   const side = stop.labelSide ?? 'right';
-  const dx = side === 'left' ? -18 : side === 'right' ? 18 : 0;
-  const dy = side === 'top' ? -20 : side === 'bottom' ? 30 : 5;
+  const dx = side === 'left' ? -16 : side === 'right' ? 16 : 0;
+  const dy = side === 'top' ? -18 : side === 'bottom' ? 28 : 5;
   const anchor = side === 'left' ? 'end' : side === 'right' ? 'start' : 'middle';
   const isPass = stop.kind === 'pass';
   const r = stop.kind === 'city' ? 9 : 7;
@@ -239,7 +239,7 @@ function Pin({ stop, labels }: { stop: ProjectedStop; labels: MotionValue<number
             x={dx}
             y={dy}
             textAnchor={anchor}
-            fontSize={17}
+            fontSize={16}
             fontWeight={600}
             fill="rgb(58 46 31)"
             stroke="rgb(250 245 235)"
@@ -247,9 +247,9 @@ function Pin({ stop, labels }: { stop: ProjectedStop; labels: MotionValue<number
             paintOrder="stroke"
             fontFamily="serif"
           >
-            {stop.name}
-            <tspan fontSize={12} fontWeight={500} fill="rgb(122 85 32)" dx={5}>
-              {stop.sub ? `${stop.day} · ${stop.sub}` : stop.day}
+            {stop.name}{' '}
+            <tspan fontSize={12} fontWeight={500} fill="rgb(122 85 32)">
+              {stop.sub ? `${stop.day}·${stop.sub}` : stop.day}
             </tspan>
           </text>
         </motion.g>
@@ -266,10 +266,10 @@ function textWidth(s: string, size: number) {
 }
 
 const BADGES = [
-  { stop: 'wsl', text: '✓ G30 连霍高速 · 乌鞘岭长下坡防刹车过热', tone: 'jade' as const, dx: 26, dy: -36, w: textWidth('✓ G30 连霍高速 · 乌鞘岭长下坡防刹车过热', 15) + 24 },
-  { stop: 'dx', text: '✓ 丹霞平缓步道 · 7座 MPV 车位充裕', tone: 'jade' as const, dx: -150, dy: 46, w: textWidth('✓ 丹霞平缓步道 · 7座 MPV 车位充裕', 15) + 24 },
-  { stop: 'gz', text: '✓ 瓜州服务区 · 13:00 幼儿午休专属车位', tone: 'amber' as const, dx: -40, dy: -36, w: textWidth('✓ 瓜州服务区 · 13:00 幼儿午休专属车位', 15) + 24 },
-  { stop: 'dh', text: '✓ 莫高窟预约无障碍摆渡 · 平层大窟', tone: 'jade' as const, dx: -20, dy: 62, w: textWidth('✓ 莫高窟预约无障碍摆渡 · 平层大窟', 15) + 24 },
+  { stop: 'wsl', text: '✓ 乌鞘岭长下坡 · 防刹车热衰减', tone: 'jade' as const, dx: -260, dy: 42, w: textWidth('✓ 乌鞘岭长下坡 · 防刹车热衰减', 14) + 22 },
+  { stop: 'dx', text: '✓ 丹霞平缓步道 · 7座 MPV 车位充裕', tone: 'jade' as const, dx: -120, dy: 48, w: textWidth('✓ 丹霞平缓步道 · 7座 MPV 车位充裕', 14) + 22 },
+  { stop: 'gz', text: '✓ 瓜州服务区 · 13:00 幼儿午休专属位', tone: 'amber' as const, dx: -30, dy: -36, w: textWidth('✓ 瓜州服务区 · 13:00 幼儿午休专属位', 14) + 22 },
+  { stop: 'dh', text: '✓ 莫高窟无障碍摆渡 · 4处平层大窟', tone: 'jade' as const, dx: -10, dy: 58, w: textWidth('✓ 莫高窟无障碍摆渡 · 4处平层大窟', 14) + 22 },
 ];
 
 function VehicleBadges() {
@@ -288,14 +288,14 @@ function Badge({ x, y, anchorX, anchorY, text, tone, w, at }: { x: number; y: nu
   const p = useProgress();
   const scale = useRange(p, [at, at + 0.008], [0.5, 1], { easing: ease.back, rest: 1 });
   const opacity = useRange(p, [at, at + 0.004, T.zoomLanzhou[0], T.zoomLanzhou[0] + 0.01], [0, 1, 1, 0]);
-  const size = 15;
-  const h = 30;
+  const size = 14;
+  const h = 28;
   const color = tone === 'jade' ? 'rgb(14 134 116)' : 'rgb(184 134 59)';
   return (
     <motion.g style={{ opacity, scale }} className="will-change-transform">
-      <line x1={anchorX} y1={anchorY} x2={x + 10} y2={y} stroke={color} strokeWidth={1.4} strokeDasharray="3 3" />
+      <line x1={anchorX} y1={anchorY} x2={x + w / 2} y2={y} stroke={color} strokeWidth={1.4} strokeDasharray="3 3" />
       <rect x={x} y={y - h / 2} width={w} height={h} rx={h / 2} fill="rgb(255 252 246)" fillOpacity={0.94} stroke={color} strokeOpacity={0.5} />
-      <text x={x + 12} y={y + 5.5} fontSize={size} fontWeight={600} fill={color}>
+      <text x={x + 11} y={y + 5} fontSize={size} fontWeight={600} fill={color}>
         {text}
       </text>
     </motion.g>

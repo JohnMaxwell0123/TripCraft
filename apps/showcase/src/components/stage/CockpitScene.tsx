@@ -30,40 +30,34 @@ import {
  */
 export function CockpitScene() {
   const p = useProgress();
-  const visibility = useVisibility(p, T.cockpitIn[0] - 0.008, 0.925);
+  const visibility = useVisibility(p, T.cockpitIn[0] - 0.008, T.cockpitOut[1] + 0.004);
 
-  const opacity = useFade(p, T.cockpitIn[0], T.cockpitIn[1], 0.908, 0.924);
+  const opacity = useFade(p, T.cockpitIn[0], T.cockpitIn[1], T.cockpitOut[0], T.cockpitOut[1]);
   const scale = useRange(
     p,
-    [T.cockpitIn[0], T.cockpitIn[1], 0.908, 0.924],
-    [0.94, 1, 1, 0.96],
-    { easing: ease.back, rest: 1 },
-  );
-  const y = useRange(
-    p,
-    [T.cockpitIn[0], T.cockpitIn[1], 0.908, 0.924],
-    [32, 0, 0, -20],
-    { easing: ease.out, rest: 0 },
+    [T.cockpitIn[0], T.cockpitIn[1], T.cockpitOut[0], T.cockpitOut[1]],
+    [0.96, 1, 1, 0.98],
+    { easing: ease.out, rest: 1 },
   );
 
   return (
     <motion.div
-      className="pointer-events-none absolute inset-0 z-40 flex items-center justify-center p-2 sm:p-3 md:p-4 gpu-layer"
-      style={{ visibility }}
+      className="pointer-events-none absolute inset-0 z-50 flex items-center justify-center rounded-2xl bg-[#07090E] p-1.5 sm:p-2 gpu-layer"
+      style={{ visibility, opacity }}
       role="region"
       aria-label="TripCraft 车载座舱与自动驾驶领航导航演示"
     >
       {/* 手机投车飞向中控的高光脉冲 */}
       <PhoneToCockpitPulse />
 
-      {/* 车载横向中控大屏外壳 (完全对齐小米 SU7 极简奢华车规形态) */}
+      {/* 车载横向中控大屏外壳 (全画幅原生车规座舱，告别窗口套窗口) */}
       <motion.div
-        className="pointer-events-auto relative flex flex-col w-full max-w-[1040px] h-[min(530px,96%)] rounded-[26px] sm:rounded-[32px] bg-[#0E1118] border border-white/20 p-2 sm:p-2.5 shadow-[0_36px_100px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.2)] text-white overflow-hidden backdrop-blur-3xl"
-        style={{ opacity, scale, y }}
+        className="pointer-events-auto relative flex flex-col w-full h-full rounded-[20px] sm:rounded-[24px] bg-[#0E1118] border border-white/15 p-2 sm:p-2.5 shadow-[0_24px_80px_rgba(0,0,0,0.75),inset_0_1px_0_rgba(255,255,255,0.18)] text-white overflow-hidden"
+        style={{ scale }}
       >
         {/* 顶部微高光反光层 */}
         <div className="pointer-events-none absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent" />
-        <div className="pointer-events-none absolute inset-0 rounded-[26px] sm:rounded-[32px] ring-1 ring-inset ring-white/10" />
+        <div className="pointer-events-none absolute inset-0 rounded-[20px] sm:rounded-[24px] ring-1 ring-inset ring-white/10" />
 
         {/* 1. 车规顶栏 (PRND 档位、429km 续航、5G、RTK) */}
         <CockpitHeader />
@@ -71,7 +65,7 @@ export function CockpitScene() {
         {/* 2. 团队路书实时流转系统通知 */}
         <CockpitSyncNotification />
 
-        {/* 3. 中控主体分屏：左侧 3D NOA 智驾感知区 + 右侧高精路线导航卡片 (对齐实机图3) */}
+        {/* 3. 中控主体分屏：左侧 3D NOA 智驾感知区 + 右侧高精路线导航卡片 */}
         <div className="relative flex-1 min-h-0 flex flex-col md:flex-row gap-2 sm:gap-2.5 mt-1.5 overflow-hidden">
           <CockpitPerceptionView />
           <CockpitNavigationCard />
@@ -91,7 +85,7 @@ function CockpitHeader() {
 
   return (
     <header className="relative flex h-8 shrink-0 items-center justify-between border-b border-white/[0.08] px-2.5 select-none text-xs">
-      {/* 左侧：PRND 挡位 + 429km 电池续航 (完全对齐图3) */}
+      {/* 左侧：PRND 挡位 + 429km 电池续航 */}
       <div className="flex items-center gap-3 min-w-0">
         {/* 挡位控制器 */}
         <div className="flex items-center gap-1 rounded-full bg-black/40 px-2 py-0.5 border border-white/10 font-mono text-[11px]">
@@ -135,7 +129,7 @@ function CockpitHeader() {
         </span>
       </div>
 
-      {/* 右侧：RTK高精定位、5G网络信标、时间与室外温度 (完全对齐图3) */}
+      {/* 右侧：RTK高精定位、5G网络信标、时间与室外温度 */}
       <div className="flex items-center gap-2 sm:gap-2.5 font-mono text-[10px] sm:text-[11px] text-white/70">
         <span className="hidden sm:inline-flex items-center gap-1 text-emerald-400">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -154,21 +148,21 @@ function CockpitHeader() {
   );
 }
 
-/* ═════════════════════ 2. 团队路书实时流转系统通知 ═════════════════════ */
+/* ═════════════════════ 2. 团队路书实时流转系统通知 (置于底栏上方居中，不遮挡导航转向标题) ═════════════════════ */
 function CockpitSyncNotification() {
   const p = useProgress();
   const notifOpacity = useFade(
     p,
     T.cockpitIn[1],
     T.cockpitIn[1] + 0.006,
-    T.cockpitSchedule[1] + 0.012,
-    T.cockpitSchedule[1] + 0.018,
+    T.heightAlert[0] - 0.008,
+    T.heightAlert[0] - 0.002,
   );
-  const notifY = useRange(p, [T.cockpitIn[1], T.cockpitIn[1] + 0.006], [-10, 0], { rest: 0 });
+  const notifY = useRange(p, [T.cockpitIn[1], T.cockpitIn[1] + 0.006], [10, 0], { rest: 0 });
 
   return (
     <motion.div
-      className="pointer-events-none absolute inset-x-0 top-10 sm:top-11 z-30 flex justify-center px-3"
+      className="pointer-events-none absolute inset-x-0 bottom-12 z-30 flex justify-center px-3"
       style={{ opacity: notifOpacity, y: notifY }}
     >
       <div className="flex items-center gap-2 rounded-full bg-[#181C28]/95 px-3.5 py-1 border border-cyan-500/40 shadow-xl backdrop-blur-xl text-[11px] sm:text-xs">
@@ -183,12 +177,24 @@ function CockpitSyncNotification() {
   );
 }
 
-/* ═════════════════════ 3. 左侧：3D NOA 智驾感知视界 (55% 宽度，完全对齐图3) ════════════════════ */
+/* ═════════════════════ 3. 左侧：3D NOA 智驾感知视界 (55% 宽度) ════════════════════ */
 function CockpitPerceptionView() {
   const p = useProgress();
 
-  // 动态车速读数：巡航时 82 km/h，限高改道后减速至泊车 0 km/h
-  const speed = useScrollCounter(p, 82, 0, T.parkEngage[0], T.parkEngage[1], 0);
+  // 真实城区车速演进：城区巡航 56 km/h -> 限高改道减速至 24 km/h -> 抵达地面车位驻车 0 km/h
+  const speedText = useTransform(p, (v) => {
+    if (v < T.heightAlert[0]) return '56';
+    if (v < T.heightAlert[1]) {
+      const t = (v - T.heightAlert[0]) / (T.heightAlert[1] - T.heightAlert[0]);
+      return String(Math.round(56 - t * 32));
+    }
+    if (v < T.parkEngage[0]) return '24';
+    if (v < T.parkEngage[1]) {
+      const t = (v - T.parkEngage[0]) / (T.parkEngage[1] - T.parkEngage[0]);
+      return String(Math.max(0, Math.round(24 * (1 - t))));
+    }
+    return '0';
+  });
 
   // 道路标线平滑流动
   const laneOffset = useRange(p, [T.cockpitNav[0], T.cockpitNav[1]], [0, 80]);
@@ -200,37 +206,35 @@ function CockpitPerceptionView() {
 
   return (
     <div className="relative flex-1 md:w-[54%] lg:w-[56%] shrink-0 rounded-2xl bg-gradient-to-b from-[#DCE3EB] via-[#E8EFF6] to-[#F1F5F9] border border-black/10 overflow-hidden flex flex-col justify-between text-slate-800 shadow-sm">
-      {/* 顶部速度仪表盘与智驾状态 (大字号 82 km/h + 红圈限速 80 + NOA 绿标，完全对齐图3) */}
+      {/* 顶部速度仪表盘与智驾状态 (城区巡航 56 km/h + 限速 60 + NOA 绿标) */}
       <div className="relative z-20 flex items-center justify-between p-3 select-none">
-        {/* 左侧车速读数 (动态滚动计数器通过 ref 驱动 DOM，零 React 重渲染) */}
         <div className="flex items-baseline gap-2">
           <div className="flex items-baseline">
-            <span
-              ref={speed}
-              className="text-4xl sm:text-5xl font-bold font-sans tracking-tight text-slate-900 leading-none"
-            >
-              82
-            </span>
+            <motion.span className="text-4xl sm:text-5xl font-bold font-sans tabular-nums tracking-tight text-slate-900 leading-none">
+              {speedText}
+            </motion.span>
             <span className="text-xs font-semibold text-slate-500 ml-1 font-mono">km/h</span>
           </div>
 
-          {/* 红圈限速标识 (图3中的 100 / 80 限速圈) */}
+          {/* 城区红圈限速 60 标识 */}
           <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-rose-500 bg-white shadow-sm font-mono text-[10px] font-bold text-slate-800">
-            80
+            60
           </div>
         </div>
 
-        {/* 右侧智驾领航状态 (对齐图3绿色 NOA 状态胶囊) */}
+        {/* 右侧智驾领航状态 */}
         <div className="flex items-center gap-1.5">
           <span className="flex items-center gap-1 rounded-full bg-emerald-600 px-2.5 py-0.5 text-white text-[11px] font-semibold shadow-sm">
             <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
             <span>{isParked ? 'P 挡已驻车' : 'NOA 领航辅助'}</span>
           </span>
-          <span className="text-[10px] font-mono text-slate-500 hidden sm:inline">车道居中 · 绿波畅行</span>
+          <span className="text-[10px] font-mono text-slate-500 hidden sm:inline">
+            {isParked ? '地面专属车位已泊入' : '车道居中 · 绿波畅行'}
+          </span>
         </div>
       </div>
 
-      {/* 核心 3D 透视车道沙盘 (高精矢量渲染：蓝色彩车前车感知、蓝色导引光毯、自车 MPV，完全对齐图3) */}
+      {/* 核心 3D 透视车道沙盘 (无遮挡展示天际线、前车 35m、导引光毯与自车 MPV) */}
       <div className="relative flex-1 min-h-0 flex items-center justify-center overflow-hidden">
         <svg
           viewBox="0 0 500 320"
@@ -238,14 +242,14 @@ function CockpitPerceptionView() {
           preserveAspectRatio="xMidYMid slice"
         >
           <defs>
-            {/* 蓝色引导光毯渐变 (对齐图3中的前方高亮蓝色导引光毯) */}
+            {/* 蓝色引导光毯渐变 */}
             <linearGradient id="noa-blue-carpet" x1="0" y1="1" x2="0" y2="0">
               <stop offset="0%" stopColor="#0284C7" stopOpacity="0.85" />
               <stop offset="60%" stopColor="#38BDF8" stopOpacity="0.5" />
               <stop offset="100%" stopColor="#7DD3FC" stopOpacity="0.08" />
             </linearGradient>
 
-            {/* 改道地面车位引导光毯 (触发 2.15m 限高规避时变色拐向) */}
+            {/* 改道地面车位引导光毯 (触发 2.28m 限高规避时变色拐向) */}
             <linearGradient id="reroute-carpet" x1="0" y1="1" x2="1" y2="0">
               <stop offset="0%" stopColor="#FE3C01" stopOpacity="0.9" />
               <stop offset="50%" stopColor="#F59E0B" stopOpacity="0.7" />
@@ -289,132 +293,125 @@ function CockpitPerceptionView() {
             strokeOpacity="0.75"
           />
 
-          {/* 核心导引光毯 (自车前方的蓝色导引路径，完全还原图3!) */}
+          {/* 核心导引光毯 */}
           <polygon
             points={isAlerting ? "210,320 290,320 330,120 280,120" : "210,320 290,320 270,110 230,110"}
             fill={isAlerting ? "url(#reroute-carpet)" : "url(#noa-blue-carpet)"}
           />
 
-          {/* 感知前车 1：正前方的蓝色大货车/客车 (完全对齐图3实拍照中的前车模型!) */}
-          <g transform="translate(236, 125)">
-            {/* 前车外框与阴影 */}
+          {/* 感知前车 1：正前方的蓝色客车/货车 (无遮挡完整呈现) */}
+          <g transform="translate(236, 122)">
             <rect x="-14" y="-28" width="28" height="34" rx="4" fill="#0284C7" stroke="#0369A1" strokeWidth="1.5" />
             <rect x="-11" y="-25" width="22" height="12" rx="2" fill="#38BDF8" fillOpacity="0.8" />
             <rect x="-12" y="-10" width="24" height="12" rx="2" fill="#0284C7" />
-            {/* 尾灯与牌照 */}
             <circle cx="-9" cy="4" r="2" fill="#EF4444" />
             <circle cx="9" cy="4" r="2" fill="#EF4444" />
             <rect x="-4" y="2" width="8" height="3" fill="#F8FAFC" />
-            {/* 前车跟车距离微标 */}
             <g transform="translate(0, -36)">
-              <rect x="-24" y="-8" width="48" height="14" rx="3" fill="#1E293B" fillOpacity="0.85" />
+              <rect x="-24" y="-8" width="48" height="14" rx="3" fill="#1E293B" fillOpacity="0.88" />
               <text x="0" y="2.5" fontSize="8" fontWeight="600" textAnchor="middle" fill="#FFFFFF" fontFamily="sans-serif">
                 前车 35m
               </text>
             </g>
           </g>
 
-          {/* 感知侧向车辆 2：左车道白车 (对齐图3旁边车道的小白车) */}
-          <g transform="translate(140, 200)">
+          {/* 感知侧向车辆 2：左车道白车 */}
+          <g transform="translate(140, 195)">
             <rect x="-12" y="-20" width="24" height="30" rx="4" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1" />
             <rect x="-9" y="-17" width="18" height="8" rx="2" fill="#64748B" fillOpacity="0.4" />
             <circle cx="-8" cy="8" r="1.5" fill="#EF4444" />
             <circle cx="8" cy="8" r="1.5" fill="#EF4444" />
           </g>
 
-          {/* 感知侧向车辆 3：右车道白车 (对齐图3右侧车道小车) */}
-          <g transform="translate(360, 230)">
+          {/* 感知侧向车辆 3：右车道白车 */}
+          <g transform="translate(360, 218)">
             <rect x="-12" y="-20" width="24" height="30" rx="4" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1" />
             <rect x="-9" y="-17" width="18" height="8" rx="2" fill="#64748B" fillOpacity="0.4" />
             <circle cx="-8" cy="8" r="1.5" fill="#EF4444" />
             <circle cx="8" cy="8" r="1.5" fill="#EF4444" />
           </g>
 
-          {/* 自车模型：7座豪华 MPV (腾势 D9，车顶行李箱 2.28m 标定，完全对齐图3自车位置) */}
-          <g transform="translate(250, 275)">
-            {/* 车身阴影 */}
+          {/* 自车模型：7座豪华 MPV (腾势 D9，车顶行李箱 2.28m 标定) */}
+          <g transform="translate(250, 260)">
             <ellipse cx="0" cy="8" rx="24" ry="10" fill="#64748B" fillOpacity="0.3" />
-            {/* 腾势 D9 车顶轮廓 */}
             <rect x="-19" y="-34" width="38" height="46" rx="7" fill="#1E293B" stroke="#0EA5E9" strokeWidth="1.5" />
-            {/* 天窗与全景玻璃 */}
             <rect x="-14" y="-30" width="28" height="20" rx="4" fill="#38BDF8" fillOpacity="0.5" />
-            {/* 加装车顶行李箱 (刚性高度 2.28m 物理实体) */}
             <rect x="-9" y="-26" width="18" height="28" rx="3" fill="#0F172A" stroke="#F59E0B" strokeWidth="1" />
             <text x="0" y="-10" fontSize="7" fontWeight="bold" textAnchor="middle" fill="#FBBF24" fontFamily="mono">
               2.28m
             </text>
-            {/* 贯穿式尾灯 */}
             <rect x="-16" y="9" width="32" height="2.5" rx="1" fill="#EF4444" />
           </g>
         </svg>
 
-        {/* 2.15m 限高激光刚性拦截与自动改道告警浮动横幅 */}
+        {/* 2.28m 限高刚性拦截与自动改道横幅 (置于底部贴边，彻底避让前车 35m 与天际线，且零截断) */}
         {isAlerting && (
           <motion.div
-            initial={{ opacity: 0, y: -16, scale: 0.95 }}
+            initial={{ opacity: 0, y: 12, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            className="absolute inset-x-4 top-14 z-30 flex items-center justify-between rounded-xl bg-[#7F1D1D]/95 px-3 py-2 border border-rose-500 text-white shadow-2xl backdrop-blur-md"
+            className="absolute inset-x-2.5 bottom-2 z-30 flex items-center justify-between rounded-xl bg-[#181C28]/95 px-2.5 py-1.5 border border-amber-400/50 text-white shadow-xl backdrop-blur-md"
           >
-            <div className="flex items-center gap-2">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-500 text-white font-bold text-xs">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500 text-black font-bold text-[11px]">
                 !
               </span>
-              <div>
-                <p className="text-xs font-bold text-rose-100">
-                  老城地库 2.0m 限高拦截生效
+              <div className="min-w-0">
+                <p className="text-[11px] font-bold text-amber-200 whitespace-nowrap">
+                  老城地库 2.0m 限高预警 · 车高 2.28m
                 </p>
-                <p className="text-[10px] text-rose-200">
-                  车高 2.28m 触发物理硬约束 · 已自动重排至地面大车位
+                <p className="text-[9.5px] text-white/80 whitespace-nowrap">
+                  已切换至酒店地面大车位 · 步行 950m 逛夜市
                 </p>
               </div>
             </div>
-            <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-bold text-black shrink-0">
-              改道成功
+            <span className="rounded-full bg-emerald-500 px-2 py-0.5 text-[9.5px] font-bold text-black shrink-0 ml-1.5 whitespace-nowrap">
+              {isParked ? '已泊入地面位' : '已自动改道'}
             </span>
           </motion.div>
         )}
       </div>
 
       {/* 底部智驾微标 (车辆物理安全契约) */}
-      <div className="flex items-center justify-between px-3 py-1.5 border-t border-slate-200 bg-white/70 backdrop-blur-sm text-[10px] text-slate-600 select-none">
-        <span className="flex items-center gap-1 font-semibold text-slate-800">
+      <div className="flex items-center justify-between px-3 py-1.5 border-t border-slate-200 bg-white/80 backdrop-blur-sm text-[10px] text-slate-600 select-none">
+        <span className="flex items-center gap-1 font-semibold text-slate-800 whitespace-nowrap">
           <CarIcon className="h-3 w-3 text-[#0284C7]" />
-          <span>腾势 D9 顶箱 2.28m 刚性校验通过</span>
+          <span>腾势 D9 车顶箱 2.28m 限高守护中</span>
         </span>
-        <span className="text-emerald-700 font-mono font-medium">白银路 → 水岸云上酒店专属地面通道</span>
+        <span className="text-emerald-700 font-mono font-medium truncate ml-2">白银路 → 水岸云上酒店地面专属通道</span>
       </div>
     </div>
   );
 }
 
-/* ═════════════════════ 4. 右侧：高精路线导航卡片 (45% 宽度，完全对齐图3实拍) ════════════════════ */
+/* ═════════════════════ 4. 右侧：高精路线导航卡片 (45% 宽度) ════════════════════ */
 function CockpitNavigationCard() {
   const p = useProgress();
   const isAlerting = useStep(p, [T.heightAlert[0]]) >= 1;
+  const isParked = useStep(p, [T.parkEngage[0]]) >= 1;
 
   return (
     <div className="relative flex-1 md:w-[46%] lg:w-[44%] shrink-0 rounded-2xl bg-white shadow-md border border-slate-200/90 p-3 sm:p-3.5 flex flex-col justify-between overflow-hidden text-slate-900">
-      {/* 顶部转向指示栏 (完全对齐图3实拍的 ↱ 5.2公里进入 绕城高速 + 车道引导箭头) */}
+      {/* 顶部转向指示栏 */}
       <div className="flex items-start justify-between pb-2 border-b border-slate-100">
         <div>
           <div className="flex items-center gap-1.5 text-lg sm:text-xl font-bold font-sans tracking-tight text-slate-900">
-            <span className="text-emerald-600 font-bold">↱ 800m</span>
-            <span>进入专属车道</span>
+            <span className="text-emerald-600 font-bold">{isParked ? '✓ 已到达' : '↱ 800m'}</span>
+            <span>{isParked ? '地面大车位已泊入' : '驶入地面专属车位'}</span>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
-            {isAlerting ? '水岸云上酒店 · MPV 地面大巴位' : '正宁路夜市专属通道'}
+            {isAlerting ? '水岸云上酒店地面停车场 · 避开 2.0m 地下车库' : '正宁路夜市专属地面通道'}
           </p>
         </div>
 
-        {/* 车道导引箭头 (对齐图3中的 ↑ ↑ ↱ 实时高精车道示意) */}
-        <div className="flex items-center gap-1 bg-slate-100 px-2 py-1 rounded-lg border border-slate-200 text-xs font-mono">
+        {/* 车道导引箭头 */}
+        <div className="flex items-center gap-1 bg-slate-100 px-2 py-1 rounded-lg border border-slate-200 text-xs font-mono shrink-0">
           <span className="text-slate-400">↑</span>
           <span className="text-slate-400">↑</span>
           <span className="font-bold text-emerald-600 bg-white px-1 rounded shadow-xs">↱</span>
         </div>
       </div>
 
-      {/* 中间高精矢量导航地图 (黄河水系、连霍高速路线、实时绿色拥堵感知) */}
+      {/* 中间高精矢量导航地图 */}
       <div className="relative flex-1 min-h-[140px] my-2 rounded-xl bg-[#F8FAFC] border border-slate-200/80 overflow-hidden">
         <svg viewBox="0 0 320 180" className="w-full h-full object-cover">
           {/* 背景路网 */}
@@ -428,7 +425,7 @@ function CockpitNavigationCard() {
           <path d="M -10 60 C 60 40, 150 70, 330 35" stroke="#93C5FD" strokeWidth="18" fill="none" strokeLinecap="round" opacity="0.7" />
           <text x="140" y="48" fontSize="10" fontWeight="bold" fill="#2563EB" opacity="0.6">黄河</text>
 
-          {/* 实时高精领航路径 (绿色畅行高亮，完全对齐图3的实机路线!) */}
+          {/* 实时高精领航路径 */}
           <path
             d="M 90 170 C 110 120, 140 100, 180 96 S 240 70, 240 50"
             stroke="#10B981"
@@ -451,31 +448,31 @@ function CockpitNavigationCard() {
             <text x="-2" y="18" fontSize="9" textAnchor="middle" fontWeight="bold" fill="#0369A1">MPV地面位</text>
           </g>
 
-          {/* 当前车辆实时位置光标 (带脉冲波纹) */}
-          <g transform="translate(110, 130)">
+          {/* 当前车辆实时位置光标 */}
+          <g transform={isParked ? 'translate(180, 96)' : 'translate(110, 130)'}>
             <circle r="12" fill="#0284C7" fillOpacity="0.2" className="animate-ping" />
             <circle r="6" fill="#0284C7" stroke="#FFFFFF" strokeWidth="2" />
           </g>
         </svg>
 
         {/* 目的地信息微标签 */}
-        <div className="absolute top-2 left-2 flex items-center gap-1 rounded-md bg-white/90 px-2 py-0.5 border border-slate-200 text-[10px] font-medium text-slate-700 shadow-xs backdrop-blur-xs">
+        <div className="absolute top-2 left-2 flex items-center gap-1 rounded-md bg-white/95 px-2 py-0.5 border border-slate-200 text-[10px] font-medium text-slate-700 shadow-xs">
           <UtensilsIcon className="h-3 w-3 text-[#FE3C01]" />
           <span>赵记牛奶鸡蛋醪糟 · 顺路度 98%</span>
         </div>
       </div>
 
-      {/* 底部到达时间与距离 (完全对齐图3的 15:50 到达 · 34.4公里 · 33分钟) */}
+      {/* 底部到达时间与距离 */}
       <div className="pt-1 border-t border-slate-100 flex items-center justify-between text-xs">
         <div>
-          <span className="text-sm font-bold font-mono text-slate-900">20:00 到达</span>
+          <span className="text-sm font-bold font-mono text-slate-900">{isParked ? '已驻车 · 步行 950m' : '20:00 到达'}</span>
           <span className="text-slate-400 mx-1.5">·</span>
-          <span className="text-slate-600 font-mono">950m</span>
+          <span className="text-slate-600 font-mono">地面专属位</span>
           <span className="text-slate-400 mx-1.5">·</span>
-          <span className="text-slate-600">4分钟</span>
+          <span className="text-slate-600">漫步 12 分钟</span>
         </div>
 
-        <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200">
+        <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200 shrink-0">
           全车同频中
         </span>
       </div>
@@ -483,40 +480,79 @@ function CockpitNavigationCard() {
   );
 }
 
-/* ═════════════════════ 5. 底部完整车控 Dock (完全对齐图3) ═════════════════════ */
+/* ═════════════════════ 5. 底部车规级单色矢量控制坞 (Cockpit Bottom Dock) ═════════════════════ */
 function CockpitBottomDock() {
   return (
-    <footer className="h-9 sm:h-10 shrink-0 bg-[#0A0C12] border-t border-white/10 px-2 sm:px-4 flex items-center justify-between text-xs text-white/80 select-none">
-      {/* 左侧：主页按钮 + 主驾空调温度控制 (对齐图3 < 22.0° >) */}
+    <footer className="h-9 sm:h-10 shrink-0 bg-[#0A0C12] border-t border-white/10 px-2.5 sm:px-4 flex items-center justify-between text-xs text-white/80 select-none">
+      {/* 左侧：主页按钮 + 主驾空调温度控制 */}
       <div className="flex items-center gap-2 sm:gap-3">
-        <button type="button" aria-label="返回中控主页" className="p-1 hover:text-white transition-colors">
-          <span className="text-base leading-none">⌂</span>
+        <button
+          type="button"
+          aria-label="返回中控主页"
+          className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/[0.06] text-white/80 hover:bg-white/[0.12] hover:text-white transition-colors"
+        >
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.7" className="h-3.5 w-3.5">
+            <path d="M3 9.5L10 3l7 6.5V16a1 1 0 0 1-1 1h-4v-4H8v4H4a1 1 0 0 1-1-1V9.5z" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         </button>
-        <div className="flex items-center gap-1 font-mono text-white/90 text-[11px] bg-white/[0.06] px-2 py-0.5 rounded-full">
+        <div className="flex items-center gap-1.5 font-mono text-white/90 text-[11px] bg-white/[0.06] px-2.5 py-0.5 rounded-full border border-white/[0.06]">
           <span className="text-white/40 cursor-pointer">‹</span>
-          <span className="font-bold">22.0°</span>
+          <span className="font-bold">22.0°C</span>
           <span className="text-white/40 cursor-pointer">›</span>
         </div>
       </div>
 
-      {/* 中间：车机应用坞 (对齐图3底部的应用图标群：地图、环视、音乐、电话、设置) */}
-      <div className="flex items-center gap-2 sm:gap-4 text-sm sm:text-base">
-        <span title="高精导航" className="cursor-pointer hover:scale-110 transition-transform">🗺️</span>
-        <span title="360° 环视影像" className="cursor-pointer hover:scale-110 transition-transform">📸</span>
-        <span title="音乐媒体" className="cursor-pointer hover:scale-110 transition-transform">🎵</span>
-        <span title="蓝牙电话" className="cursor-pointer hover:scale-110 transition-transform hidden xs:inline">📞</span>
-        <span title="车辆设置" className="cursor-pointer hover:scale-110 transition-transform">⚙️</span>
+      {/* 中间：车规级单色线性矢量图标坞 (彻底告别彩色系统 Emoji) */}
+      <div className="flex items-center gap-1.5 sm:gap-2.5">
+        {/* 导航 (激活态) */}
+        <span
+          title="车道级导航"
+          className="flex h-7 items-center gap-1 rounded-lg bg-cyan-500/15 border border-cyan-400/30 px-2 text-[11px] font-medium text-cyan-300"
+        >
+          <CompassIcon className="h-3.5 w-3.5 text-cyan-400" />
+          <span className="hidden sm:inline">领航</span>
+        </span>
+        {/* 360 环视 */}
+        <span
+          title="360° 全景环视"
+          className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/[0.05] text-white/75 hover:bg-white/[0.1] transition-colors"
+        >
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" className="h-3.5 w-3.5">
+            <circle cx="10" cy="10" r="6.5" />
+            <circle cx="10" cy="10" r="2.2" />
+          </svg>
+        </span>
+        {/* 音乐媒体 */}
+        <span
+          title="车载音响"
+          className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/[0.05] text-white/75 hover:bg-white/[0.1] transition-colors"
+        >
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" className="h-3.5 w-3.5">
+            <path d="M7 15V5l9-2v10" strokeLinecap="round" strokeLinejoin="round" />
+            <circle cx="5" cy="15" r="2" />
+            <circle cx="14" cy="13" r="2" />
+          </svg>
+        </span>
+        {/* 车辆设定 */}
+        <span
+          title="车辆与悬挂设置"
+          className="flex h-7 items-center gap-1 rounded-lg bg-white/[0.05] px-2 text-[10px] font-mono text-white/70"
+        >
+          <CarIcon className="h-3.5 w-3.5 text-emerald-400" />
+          <span className="hidden md:inline">云辇舒适</span>
+        </span>
       </div>
 
-      {/* 右侧：媒体播放微件 + 副驾空调 (对齐图3媒体条与右侧温度) */}
+      {/* 右侧：丝路音乐微件 + 副驾空调 */}
       <div className="flex items-center gap-2 sm:gap-3">
-        <div className="hidden md:flex items-center gap-1.5 text-[10px] text-white/60 font-sans max-w-[150px] truncate">
-          <span>🎵 丝路民谣</span>
-          <span className="text-white/40 font-mono">1:42</span>
+        <div className="hidden lg:flex items-center gap-1.5 text-[10px] text-white/65 font-sans bg-white/[0.04] px-2.5 py-0.5 rounded-full border border-white/[0.06]">
+          <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
+          <span className="truncate max-w-[110px]">河西走廊 · 丝路民谣</span>
+          <span className="text-white/40 font-mono">01:42</span>
         </div>
-        <div className="flex items-center gap-1 font-mono text-white/90 text-[11px] bg-white/[0.06] px-2 py-0.5 rounded-full">
+        <div className="flex items-center gap-1.5 font-mono text-white/90 text-[11px] bg-white/[0.06] px-2.5 py-0.5 rounded-full border border-white/[0.06]">
           <span className="text-white/40 cursor-pointer">‹</span>
-          <span className="font-bold">22.0°</span>
+          <span className="font-bold">22.5°C</span>
           <span className="text-white/40 cursor-pointer">›</span>
         </div>
       </div>

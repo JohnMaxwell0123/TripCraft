@@ -82,10 +82,10 @@ export function Hero() {
   <div class="card">
     <div class="badge">✓ TripCraft 出游容灾舱 · 自包含离线保活样例</div>
     <h1>青甘大环线 · 8日全地形自驾路书</h1>
-    <p style="color: #6E6A67; font-size: 14px;">8 天 1,280 km · 2.15m 限高与高程刚性防御引擎 · 状态已封存</p>
+    <p style="color: #6E6A67; font-size: 14px;">8 天 1,280 km · 2.28m 车高与高程安全守护 · 离线状态已封存</p>
     <div class="day">
       <strong>D1 · 西宁 ➔ 日月山 ➔ 青海湖黑马河</strong><br>
-      <small style="color: #6E6A67;">全车整备 ➔ 2.15m 限高规避 ➔ 3,200m 海拔平缓适应</small>
+      <small style="color: #6E6A67;">全车整备 ➔ 2.0m 限高地库规避 ➔ 3,200m 海拔平缓适应</small>
     </div>
     <div class="day">
       <strong>D2 · 茶卡盐湖 ➔ 德令哈 ➔ 大柴旦翡翠湖</strong><br>
@@ -156,7 +156,7 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mt-6 max-w-2xl text-base sm:text-lg leading-relaxed text-[#6E6A67] font-normal"
         >
-          告别繁复碎片攻略与出行焦虑。从自然语言倾诉提取全家偏好，到万人微信免登实时协同；从车道级领航避障，到无人区零构建离线安全舱。
+          告别繁复碎片攻略与出行焦虑。从自然语言倾诉提取全家偏好，到亲友微信免登实时协同；从车道级领航避障，到无人区断网秒开的随身安全舱。
         </motion.p>
 
         {/* 4. 核心搜索与自然意图输入栏 */}
@@ -171,6 +171,8 @@ export function Hero() {
             <div className="flex items-center gap-3 px-3 py-1.5">
               <span className="text-[#FE3C01] font-serif text-lg select-none">✦</span>
               <input
+                id="hero-prompt-input"
+                name="prompt"
                 type="text"
                 aria-label="自驾规划与车道级领航诉求"
                 value={promptText}
@@ -322,7 +324,7 @@ export function Hero() {
                         <CarIcon className="w-4 h-4 text-blue-600 shrink-0" />
                         <div>
                           <div className="font-medium text-[#241E20]">物理限高避让</div>
-                          <div className="text-[11px] text-[#6E6A67]">车组全高 2.28m · 拦截 2.15m 施工涵洞</div>
+                          <div className="text-[11px] text-[#6E6A67]">整车总高 2.28m · 避让 2.0m 限高地库</div>
                         </div>
                       </div>
 
@@ -511,11 +513,11 @@ export function Hero() {
             )}
           </AnimatePresence>
 
-          {/* 底部架构铁律承诺条 */}
+          {/* 底部出行守护承诺条 */}
           <div className="mt-4 flex flex-col sm:flex-row items-center justify-between border-t border-[#241E20]/[0.06] pt-3 text-xs text-[#6E6A67] gap-2">
             <span className="flex items-center gap-1.5 text-emerald-700 font-medium">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              坚守设计铁律：零构建交付 · 降级不白屏 · 数据主权本地化
+              全链路安心守护：亲友微信免登同频 · 2.28m 车高智能避障 · 无人区断网秒开
             </span>
             <span className="text-[#6E6A67]/60">青海甘肃自驾路线标准已装载</span>
           </div>

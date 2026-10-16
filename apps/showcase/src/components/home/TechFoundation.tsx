@@ -352,7 +352,7 @@ export function TechFoundation() {
               >
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#241E20]/[0.06] pb-4">
                   <span className="font-mono text-xl font-bold tabular-nums text-[#241E20]">
-                    支柱 0{activePillar.number}
+                    支柱 {activePillar.number}
                   </span>
                   <span className="unify-pill-badge text-[#FE3C01]">
                     {activePillar.contractBadge}
@@ -459,7 +459,7 @@ export function TechFoundation() {
                         )}
                         {failoverLevel === 3 && (
                           <div className="flex items-center gap-2 text-ochre font-semibold">
-                            <span>■ 极端极端兜底：</span>
+                            <span>■ 极端环境兜底：</span>
                             <span className="text-ink">SVG 渲染受限，自动展开纯 CSS 文本拓扑卡片，杜绝白屏</span>
                           </div>
                         )}
@@ -473,12 +473,12 @@ export function TechFoundation() {
                       <div className="flex items-center justify-between text-jade font-semibold">
                         <span className="flex items-center gap-1.5">
                           <CheckIcon className="h-3.5 w-3.5 text-jade" />
-                          <span>AJV 2020-12 契约校验</span>
+                          <span>结构化契约实时校验</span>
                         </span>
                         <span className="font-mono text-xs bg-jade/10 px-2 py-0.5 rounded-pill tabular-nums">0 错误</span>
                       </div>
                       <p className="text-xs text-ink-soft">
-                        节点 AST 包含 9 天全部 28 个途经点坐标、限高标签与餐厅打卡元数据，天然具备 SHA-256 签名存证。
+                        节点数据包含 9 天全部 28 个途经点坐标、限高标签与餐厅打卡元数据，天然具备 SHA-256 签名存证。
                       </p>
                     </div>
                   )}
@@ -491,7 +491,7 @@ export function TechFoundation() {
                         onClick={() => setGuardrailTested(!guardrailTested)}
                         className="w-full min-h-[44px] rounded-control bg-ochre/10 text-ochre hover:bg-ochre/20 border border-ochre/30 py-2.5 px-3 text-xs font-semibold transition-all flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 text-center"
                       >
-                        <span>模拟大模型指令：7座 MPV (加装车顶箱 2.15m) 直接驶入 2.0m 老城地库</span>
+                        <span>模拟大模型指令：7座 MPV (加装车顶箱 2.28m) 直接驶入 2.0m 老城地库</span>
                         <span className="underline shrink-0">触发断言拦截</span>
                       </button>
                       {guardrailTested && (
@@ -504,7 +504,7 @@ export function TechFoundation() {
                             </span>
                           </p>
                           <p className="mt-1 text-xs leading-relaxed">
-                            车高 2.15m &gt; 地库限高 2.0m！已强制拦截并将车辆停放点修正为「酒店地面专用车位」，为全家规划 950m（12分钟）平缓慢步导引，避免车顶箱刮蹭损坏。
+                            车高 2.28m &gt; 地库限高 2.0m！已强制拦截并将车辆停放点修正为「酒店地面专用车位」，为全家规划 950m（12分钟）平缓慢步导引，避免车顶箱刮蹭损坏。
                           </p>
                         </div>
                       )}
