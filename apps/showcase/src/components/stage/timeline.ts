@@ -74,17 +74,17 @@ export const T = {
   windowIn: [0, 0.02],
 
   /* ── 01 倾诉 ─────────────────────────────── */
-  typeInput: [0.003, 0.050],
+  typeInput: [0.003, 0.046],
   send: 0.052,
-  userBubble: [0.003, 0.050],
+  userBubble: [0.050, 0.056],
   modelLit: [0.050, 0.062],
   thinking: [0.052, 0.066],
-  aiStream: [0.056, 0.142],
+  aiStream: [0.058, 0.144],
   chips: [0.064, 0.076, 0.096, 0.128],
   socraticIn: [0.148, 0.164],
   optionsIn: [0.162, 0.17],
-  cursorA: [0.048, 0.054],
-  clickA: 0.052,
+  cursorA: [0.046, 0.054],
+  clickA: 0.051,
   lockA: 0.055,
   chatOut: [0.198, 0.222],
 

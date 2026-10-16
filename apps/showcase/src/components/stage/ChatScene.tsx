@@ -70,16 +70,19 @@ export function ChatScene() {
       className="absolute inset-0 flex gap-4 lg:gap-6 p-3.5 sm:p-5 md:p-6 gpu-layer overflow-hidden bg-[#FAF8F5]/90 text-left select-none"
       style={{ opacity, x, scale, pointerEvents, visibility }}
     >
-      {/* 左侧主视界：Prompt 输入胶囊 + Unify 标志性层级思维链推理树 */}
-      <div className="flex min-w-0 flex-1 flex-col">
+      {/* 左侧主视界：AI 对话流 + Unify 标志性层级思维链推理树 + 底部真实输入框 */}
+      <div className="flex min-w-0 flex-1 flex-col h-full overflow-hidden">
         {/* 顶部助手引擎状态条 (无折行，清晰稳重) */}
         <AssistantStatusBar />
 
         {/* 移动端紧凑规则标签 */}
         <MobileChips />
 
-        {/* 核心推理区：顶部 Prompt 胶囊 + 下方思维链执行树 (完全对齐 Unify 图2) */}
+        {/* 核心推理区：AI 开场白 + 用户发送上屏气泡 + 思维链执行树 */}
         <ReasoningCanvas />
+
+        {/* 底部真实交互输入框：滚动驱动逐字打字与模拟点击发送 */}
+        <BottomInputBar />
       </div>
 
       {/* 右侧：路书 AST 约束规则检查器 (结构化形式化契约) */}
@@ -139,82 +142,57 @@ function MobileChips() {
   );
 }
 
-/* ── 核心推理画布：出行倾诉卡片 + 路线定制推演树 ── */
+/* ── 核心推理画布：AI 开场白 + 用户发送上屏气泡 + 路线推演树 ── */
 function ReasoningCanvas() {
   const p = useProgress();
 
-  // 首帧即有容器入场，打字机在 T.typeInput (0.003 ~ 0.050) 逐字输入
-  const promptOpacity = useRange(p, [0, 0.010], [0.85, 1]);
-  const promptY = useRange(p, [0, 0.010], [6, 0], { easing: ease.out, rest: 0 });
-
-  // 逐字输入打字机动画 (0 React 重渲染，DOM 直接写入)
-  const typedRef = useScrollTypewriter(p, USER_TEXT, T.typeInput[0], T.typeInput[1]);
-  const placeholderOpacity = useRange(p, [0, 0.003], [0.75, 0]);
-  const isSubmitted = useStep(p, [T.send]) === 1;
-
-  // 光标在打字中保持闪烁，并在提交意图后平滑淡出
-  const caretOpacity = useTransform(p, (v) => {
-    if (v < 0.001) return 1;
-    if (v >= T.send + 0.004) return 0;
-    if (v >= T.typeInput[1]) return 1 - (v - T.typeInput[1]) / (T.send + 0.004 - T.typeInput[1]);
-    return 1;
-  });
-
-  // 演示鼠标指针：在打字完成瞬间悬浮并执行模拟“提交”点击
-  const cursorScale = useRange(p, [T.cursorA[0], T.clickA, T.cursorA[1]], [1, 0.82, 1]);
+  // 用户卡片在发送后 (T.userBubble[0] ~ 0.056) 优雅滑入上浮入场
+  const cardOpacity = useRange(p, [T.userBubble[0], T.userBubble[1]], [0, 1]);
+  const cardY = useRange(p, [T.userBubble[0], T.userBubble[1]], [16, 0], { easing: ease.out, rest: 0 });
+  const cardScale = useRange(p, [T.userBubble[0], T.userBubble[1]], [0.97, 1], { rest: 1 });
+  const cardVisibility = useVisibility(p, T.userBubble[0], T.chatOut[1] + 0.005);
+  const treeVisibility = useVisibility(p, 0.052, T.chatOut[1] + 0.005);
 
   return (
-    <div className="relative min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-1 space-y-3.5">
-      {/* 1. 顶部领队倾诉卡片 (逐字输入打字交互) */}
-      <motion.div
-        className="relative ml-auto max-w-[96%] sm:max-w-[92%] rounded-2xl bg-[#F4F0E8] border border-ink/[0.08] p-3 sm:p-3.5 shadow-sm text-left transition-colors duration-300"
-        style={{ opacity: promptOpacity, y: promptY }}
-      >
-        <div className="text-[10px] text-ink-soft mb-1.5 font-sans flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <span className={`w-1.5 h-1.5 rounded-full ${isSubmitted ? 'bg-emerald-500' : 'bg-[#FE3C01] animate-pulse'}`} />
-            <span className="font-medium text-[#241E20]/80">
-              {isSubmitted ? '领队心愿已提交 · 结构化需求解析中' : '领队出行心愿倾诉 · 语音 / 文字免填表'}
-            </span>
-          </div>
-          <span className="font-mono text-[9px] text-ink-soft/70">
-            {isSubmitted ? '0.4s 快速解析' : '实时输入中'}
-          </span>
+    <div className="relative min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-1 space-y-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      {/* 1. AI 助手开场白引导卡片 (真实人机对话的自然开场) */}
+      <div className="flex items-start gap-2.5 max-w-[95%] text-left">
+        <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-gold/15 text-gold-ink text-[11px] font-bold mt-0.5 shadow-2xs">
+          AI
         </div>
-
-        {/* 稳固容器高，杜绝文本逐字增加时的页面抖动 (CLS = 0) */}
-        <div className="relative min-h-[58px] sm:min-h-[48px]">
-          <motion.p
-            className="pointer-events-none absolute inset-0 text-xs sm:text-[13px] text-ink-soft/40 leading-relaxed font-sans italic select-none"
-            style={{ opacity: placeholderOpacity }}
-          >
-            正在倾诉出行心愿：谁去、开什么车、最在意什么…
-          </motion.p>
-          <p className="text-xs sm:text-[13px] text-[#241E20] leading-relaxed font-sans font-medium">
-            <span ref={typedRef}>{USER_TEXT}</span>
-            <motion.span
-              className="inline-block w-[2px] h-3.5 ml-0.5 align-middle bg-[#FE3C01] rounded-sm animate-pulse"
-              style={{ opacity: caretOpacity }}
-            />
+        <div className="rounded-2xl rounded-tl-sm bg-[#F4F0E8]/75 border border-ink/[0.06] p-2.5 sm:p-3 text-xs text-[#241E20] leading-relaxed">
+          <span className="font-semibold text-xs text-[#241E20] block mb-0.5">私人自驾定制师</span>
+          <p className="text-ink-soft text-[11.5px] leading-relaxed font-sans">
+            请在下方告诉我们您的甘肃自驾心愿（如同行家人、车型配置与最在意的事），系统将为您实时结构化提炼刚性规则并推演 9 日路书。
           </p>
         </div>
+      </div>
 
-        {/* 演示指针 (输入完毕后模拟点击提交) */}
-        <motion.div
-          className="absolute -bottom-2 -right-1.5 pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)]"
-          style={{ scale: cursorScale }}
-        >
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="#241E20" stroke="#FAF8F5" strokeWidth="1.2">
-            <path d="M4 2.5 L19.5 12 L12.4 13.6 L9 20.5 Z" />
-          </svg>
-        </motion.div>
+      {/* 2. 用户在下方输入完毕并点击发送后，气泡升起进入对话历史 */}
+      <motion.div
+        className="relative ml-auto max-w-[96%] sm:max-w-[92%] rounded-2xl bg-[#F4F0E8] border border-ink/[0.08] p-3 sm:p-3.5 shadow-sm text-left"
+        style={{ opacity: cardOpacity, y: cardY, scale: cardScale, visibility: cardVisibility }}
+      >
+        <div className="text-[10px] text-ink-soft mb-1 font-sans flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            <span className="font-medium text-[#241E20]/80">领队出行心愿已送达 · 需求结构化抽取中</span>
+          </div>
+          <span className="font-mono text-[9px] text-ink-soft/70">0.4s · 意图锁定</span>
+        </div>
+        <p className="text-xs sm:text-[13px] text-[#241E20] leading-relaxed font-sans font-medium">
+          {USER_TEXT}
+        </p>
       </motion.div>
 
-      {/* 2. 层级路线推演树 (在逐字打字完成后依次执行并展开) */}
-      <div className="relative pl-6 space-y-3.5 pt-1 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[1.5px] before:bg-ink/15">
+      {/* 3. 层级路线推演树 (在用户提交意图后依次执行并展开) */}
+      <motion.div
+        className="relative pl-6 space-y-3 pt-1 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[1.5px] before:bg-ink/15"
+        style={{ visibility: treeVisibility }}
+      >
         
-        {/* Step 1: 意图抽取与全要素结构化 (0.056 ~ 0.078) */}
-        <Reveal at={[0.056, 0.078]} y={8} className="relative">
+        {/* Step 1: 意图抽取与全要素结构化 (0.058 ~ 0.080) */}
+        <Reveal at={[0.058, 0.080]} y={8} className="relative">
           <div className="absolute -left-[23px] top-0.5 w-4 h-4 rounded-full bg-paper border border-ink/30 flex items-center justify-center text-[9px] text-ink font-mono font-bold shadow-sm">
             1
           </div>
@@ -237,8 +215,8 @@ function ReasoningCanvas() {
           </div>
         </Reveal>
 
-        {/* Step 2: 空间时空规则交叉核验与刚性风控拦截 (0.086 ~ 0.110) */}
-        <Reveal at={[0.086, 0.110]} y={8} className="relative">
+        {/* Step 2: 空间时空规则交叉核验与刚性风控拦截 (0.088 ~ 0.112) */}
+        <Reveal at={[0.088, 0.112]} y={8} className="relative">
           <div className="absolute -left-[23px] top-0.5 w-4 h-4 rounded-full bg-[#FE3C01]/15 border border-[#FE3C01]/50 flex items-center justify-center text-[9px] text-[#FE3C01] font-mono font-bold shadow-sm">
             2
           </div>
@@ -262,8 +240,8 @@ function ReasoningCanvas() {
           </div>
         </Reveal>
 
-        {/* Step 3: 1,980km 日程就绪 (0.118 ~ 0.142) */}
-        <Reveal at={[0.118, 0.142]} y={8} className="relative">
+        {/* Step 3: 1,980km 日程就绪 (0.120 ~ 0.144) */}
+        <Reveal at={[0.120, 0.144]} y={8} className="relative">
           <div className="absolute -left-[23px] top-0.5 w-4 h-4 rounded-full bg-emerald-100 border border-emerald-400 flex items-center justify-center text-[9px] text-emerald-800 font-mono font-bold shadow-sm">
             3
           </div>
@@ -288,6 +266,110 @@ function ReasoningCanvas() {
           </div>
         </Reveal>
 
+      </motion.div>
+    </div>
+  );
+}
+
+/* ── 底部交互输入框：用户逐字打字输入并模拟点击发送 ── */
+function BottomInputBar() {
+  const p = useProgress();
+
+  // 逐字打字机动画 (T.typeInput: 0.003 ~ 0.046 字符逐个敲入)
+  const typedRef = useScrollTypewriter(p, USER_TEXT, T.typeInput[0], T.typeInput[1]);
+  const placeholderOpacity = useRange(p, [0, 0.003], [0.85, 0]);
+  const inputOpacity = useRange(p, [T.send - 0.003, T.send], [1, 0]);
+  const sentHintOpacity = useRange(p, [T.send - 0.001, T.send + 0.004], [0, 0.85]);
+
+  // 光标在打字期间闪烁，发送后熄灭
+  const caretOpacity = useTransform(p, (v) => (v >= T.send ? 0 : 1));
+
+  // 发送按钮被点击的动效
+  const sendScale = useRange(p, [T.clickA - 0.003, T.clickA, T.clickA + 0.003], [1, 0.84, 1]);
+  const sendGlow = useRange(p, [T.typeInput[1] - 0.004, T.typeInput[1], T.send + 0.004], [0, 1, 0]);
+
+  // 演示鼠标指针：从右下方滑入，精准点击发送按钮
+  const cursorOpacity = useRange(p, [0.036, 0.042, 0.058, 0.064], [0, 1, 1, 0]);
+  const cursorX = useRange(p, [0.036, 0.046], [24, 0]);
+  const cursorY = useRange(p, [0.036, 0.046], [16, 0]);
+  const cursorScale = useRange(p, [T.clickA - 0.003, T.clickA, T.clickA + 0.003], [1, 0.84, 1]);
+
+  return (
+    <div className="relative shrink-0 mt-2 pt-2 border-t border-ink/[0.06]">
+      <div className="relative flex items-center gap-2 rounded-2xl bg-white border border-ink/[0.12] p-1.5 sm:p-2 pl-3 sm:pl-3.5 shadow-xs">
+        {/* 麦克风 / 语音按钮 */}
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-sand/60 text-ink-soft" title="支持语音倾诉">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+            <line x1="12" y1="19" x2="12" y2="22" />
+          </svg>
+        </div>
+
+        {/* 文本输入区域 */}
+        <div className="relative min-h-[38px] flex-1 flex items-center text-xs sm:text-[13px] font-sans text-[#241E20] overflow-hidden">
+          {/* 未输入时的占位提示 */}
+          <motion.span
+            className="pointer-events-none absolute left-0 text-ink-soft/45 font-sans select-none truncate pr-2"
+            style={{ opacity: placeholderOpacity }}
+          >
+            说说这趟旅行：谁去、开什么车、最在意什么…
+          </motion.span>
+
+          {/* 逐字打字输入中 */}
+          <motion.p
+            className="leading-snug font-sans font-medium line-clamp-2 pr-1"
+            style={{ opacity: inputOpacity }}
+          >
+            <span ref={typedRef}>{USER_TEXT}</span>
+            <motion.span
+              className="inline-block w-[2px] h-3.5 ml-0.5 align-middle bg-[#FE3C01] rounded-sm animate-pulse"
+              style={{ opacity: caretOpacity }}
+            />
+          </motion.p>
+
+          {/* 点击发送后的状态提示 */}
+          <motion.span
+            className="pointer-events-none absolute left-0 text-ink-soft/60 text-[11px] sm:text-xs font-sans flex items-center gap-1.5 select-none"
+            style={{ opacity: sentHintOpacity }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span>出行心愿已送达自驾定制引擎，深度推演中…</span>
+          </motion.span>
+        </div>
+
+        {/* 发送按钮 */}
+        <motion.button
+          type="button"
+          tabIndex={-1}
+          aria-label="发送出行心愿"
+          className="relative flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-[#FE3C01] to-[#FF6B3D] text-white shadow-sm gpu-layer"
+          style={{ scale: sendScale }}
+        >
+          <motion.span
+            className="absolute inset-0 rounded-xl shadow-[0_0_12px_rgba(254,60,1,0.5)]"
+            style={{ opacity: sendGlow }}
+          />
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="relative translate-x-px">
+            <line x1="22" y1="2" x2="11" y2="13" />
+            <polygon points="22 2 15 22 11 13 2 9 22 2" />
+          </svg>
+        </motion.button>
+
+        {/* 演示鼠标指针：精准移向并点击发送按钮 */}
+        <motion.div
+          className="pointer-events-none absolute right-2 sm:right-3 top-2 sm:top-2.5 z-30 drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)]"
+          style={{
+            opacity: cursorOpacity,
+            x: cursorX,
+            y: cursorY,
+            scale: cursorScale,
+          }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#241E20" stroke="#FAF8F5" strokeWidth="1.2">
+            <path d="M4 2.5 L19.5 12 L12.4 13.6 L9 20.5 Z" />
+          </svg>
+        </motion.div>
       </div>
     </div>
   );
