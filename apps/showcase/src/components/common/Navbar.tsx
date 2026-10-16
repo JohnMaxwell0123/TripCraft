@@ -94,11 +94,11 @@ export function Navbar() {
       <header
         className={`w-full transition-all duration-300 ${
           scrolled || mobileMenuOpen
-            ? 'bg-[#FFFFF9]/92 backdrop-blur-md border-b border-[#241E20]/[0.08] shadow-[0_2px_16px_rgba(36,30,32,0.04)] py-3'
-            : 'bg-[#FFFFF9]/80 backdrop-blur-sm border-b border-[#241E20]/[0.05] py-3.5'
+            ? 'bg-[#FFFFF9]/92 backdrop-blur-md border-b border-[#E2E2D8] shadow-[0_2px_16px_rgba(36,30,32,0.04)] py-3'
+            : 'bg-[#FFFFF9]/80 backdrop-blur-sm border-b border-[#E2E2D8]/60 py-3.5'
         }`}
       >
-        <div className="mx-auto flex max-w-[1640px] items-center justify-between px-6 sm:px-10 lg:px-12 xl:px-16">
+        <div className="mx-auto flex max-w-[1200px] items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Brand Wordmark */}
           <a
             href="#"
@@ -107,9 +107,9 @@ export function Navbar() {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             aria-label="TripCraft 旅艺 首页"
-            className="group flex items-center gap-2.5 no-underline min-h-[40px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01] rounded px-1"
+            className="group flex items-center gap-2.5 no-underline min-h-[40px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01] rounded-[5px] px-1"
           >
-            <div className="flex h-7 w-7 items-center justify-center rounded bg-[#241E20] text-[#FFFFF9] font-serif text-sm font-bold shadow-sm transition-transform duration-200 group-hover:scale-105">
+            <div className="flex h-7 w-7 items-center justify-center rounded-[5px] bg-[#241E20] text-[#FFFFF9] font-serif text-sm font-bold shadow-sm transition-transform duration-200 group-hover:scale-105">
               旅
             </div>
             <div className="flex items-baseline gap-1.5">
@@ -149,7 +149,7 @@ export function Navbar() {
 
               {productDropdownOpen && (
                 <div className="absolute left-0 top-full pt-1.5 w-64">
-                  <div className="rounded-[8px] bg-[#FFFFFF] border border-[#241E20]/[0.08] p-2 shadow-[0_12px_32px_rgba(36,30,32,0.1)] flex flex-col gap-1">
+                  <div className="rounded-[12px] bg-[#FFFFFF] border border-[#E2E2D8] p-2 shadow-[0_12px_32px_rgba(36,30,32,0.08)] flex flex-col gap-1">
                     <button
                       type="button"
                       onClick={() => scrollToSection('demo')}
@@ -242,7 +242,7 @@ export function Navbar() {
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-expanded={mobileMenuOpen}
               aria-label={mobileMenuOpen ? '关闭导航菜单' : '打开导航菜单'}
-              className="flex h-9 w-9 items-center justify-center rounded border border-[#241E20]/15 bg-white text-[#241E20] transition-colors md:hidden"
+              className="flex h-9 w-9 items-center justify-center rounded-[5px] border border-[#E2E2D8] bg-white text-[#241E20] transition-colors md:hidden"
             >
               {mobileMenuOpen ? <XIcon className="h-4 w-4" /> : <MenuIcon className="h-4 w-4" />}
             </button>
@@ -253,7 +253,7 @@ export function Navbar() {
         {mobileMenuOpen && (
           <nav
             aria-label="移动端主导航"
-            className="mx-4 mt-2 flex flex-col gap-1 rounded-[8px] border border-[#241E20]/10 bg-white p-3 shadow-lg md:hidden"
+            className="mx-4 mt-2 flex flex-col gap-1 rounded-[12px] border border-[#E2E2D8] bg-white p-3 shadow-lg md:hidden"
           >
             <button
               type="button"

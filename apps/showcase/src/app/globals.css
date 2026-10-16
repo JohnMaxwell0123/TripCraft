@@ -8,15 +8,15 @@
  * 「沉，不是亮」——氧化金箔、青金石、沙色暖白、赭石红、暖褐黑（不用纯黑）
  * ======================================================================== */
 :root {
-  --tc-sand: 255 255 249;       /* #FFFFF9 Unify 顶级温润象牙暖白 (Warm Ivory) */
-  --tc-paper: 255 255 255;      /* #FFFFFF 纯白高光卡片 (Pure White) */
-  --tc-ink: 36 30 32;           /* #241E20 Unify 高对比度炭黑 (Deep Charcoal) */
-  --tc-ink-soft: 110 106 103;   /* #6E6A67 Unify 次级文字灰 (Muted Charcoal) */
+  --tc-sand: 255 255 249;       /* #FFFFF9 Unify 温润象牙暖纸底色 */
+  --tc-paper: 244 244 238;      /* #F4F4EE Unify 亚麻浅石灰卡片模块 */
+  --tc-ink: 36 30 32;           /* #241E20 Unify 高对比度暖炭黑 */
+  --tc-ink-soft: 98 95 97;      /* #625F61 Unify 次级文字灰 */
   --tc-gold: 212 160 78;        /* #D4A04E 沉稳暗金 */
   --tc-gold-ink: 122 85 32;     /* #7A5520 金墨 */
-  --tc-lapis: 36 30 32;         /* Unify 主色调对齐炭黑 */
+  --tc-lapis: 36 30 32;         /* 暖炭黑主色 */
   --tc-lapis-deep: 26 21 23;    /* #1A1517 极深炭黑底色 */
-  --tc-ochre: 254 60 1;         /* #FE3C01 Unify 核心 Supercharge 红橙 */
+  --tc-ochre: 254 60 1;         /* #FE3C01 Unify 核心烈焰橙红 */
   --tc-jade: 16 185 129;        /* #10B981 通行绿色 */
   --tc-amber: 245 158 11;       /* #F59E0B 预警琥珀色 */
   --tc-dusk: 254 60 1;          /* #FE3C01 极光橙 */
@@ -58,41 +58,39 @@ body {
 }
 
 @layer components {
-  /* 苹果液态玻璃：背景模糊 + 轻量透明底 + 1px 高光反射边 (描边回归「分隔」而非「装饰」) */
+  /* 苹果液态玻璃：1px 机械发丝线边框 (#E2E2D8) + 环境光弥散微阴影 */
   .glass {
-    background: rgb(var(--tc-glass-bg) / 0.78);
+    background: rgb(var(--tc-glass-bg) / 0.82);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgb(226 232 240 / 0.8);
-    box-shadow: 0 2px 8px -2px rgb(15 23 42 / 0.04), inset 0 1px 0 rgb(255 255 255 / 0.85);
+    border: 1px solid #E2E2D8;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
   }
   .glass-strong {
-    background: rgb(var(--tc-glass-bg) / 0.9);
+    background: rgb(var(--tc-glass-bg) / 0.94);
     -webkit-backdrop-filter: blur(28px) saturate(190%);
     backdrop-filter: blur(28px) saturate(190%);
-    border: 1px solid rgb(226 232 240 / 0.85);
-    box-shadow: 0 10px 28px -6px rgb(15 23 42 / 0.07), inset 0 1px 0 rgb(255 255 255 / 0.9);
+    border: 1px solid #E2E2D8;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
   }
   .glass-dark {
-    background: rgb(var(--tc-lapis-deep) / 0.85);
+    background: rgb(var(--tc-lapis-deep) / 0.88);
     -webkit-backdrop-filter: blur(20px) saturate(160%);
     backdrop-filter: blur(20px) saturate(160%);
-    border: 1px solid rgb(255 255 255 / 0.12);
-    box-shadow: 0 20px 50px rgb(0 0 0 / 0.3), inset 0 1px 0 rgb(255 255 255 / 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
   }
   /* 次级嵌套玻璃（用于 StageWindow 内部子面板） */
   .glass-sub {
-    background: rgb(var(--tc-paper) / 0.88);
-    border: 1px solid rgb(226 232 240 / 0.7);
-    box-shadow: 0 2px 8px -2px rgb(15 23 42 / 0.03), inset 0 1px 0 rgb(255 255 255 / 0.9);
+    background: #F4F4EE;
+    border: 1px solid #E2E2D8;
+    box-shadow: 0 2px 8px -2px rgba(36, 30, 32, 0.03);
   }
-  /* macOS 软件模拟窗口边框体系：高精度细边框 + 顶部内高光 + 浮层层级弥散阴影 */
+  /* macOS 软件模拟窗口边框体系：1px 精密发丝线 + 16px 圆角 */
   .macos-window {
-    border: 1px solid rgb(226 232 240 / 0.8);
-    box-shadow:
-      0 24px 50px -12px rgb(15 23 42 / 0.16),
-      0 12px 24px -6px rgb(15 23 42 / 0.08),
-      inset 0 1px 0 0 rgb(255 255 255 / 0.95);
+    border: 1px solid #E2E2D8;
+    border-radius: 16px;
+    box-shadow: 0 16px 40px rgba(36, 30, 32, 0.06);
   }
   /* 顶部微高光反光线 */
   .glass-sheen {
@@ -105,7 +103,7 @@ body {
     position: absolute;
     inset: 0 0 auto 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.9), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
     z-index: 40;
   }
 
@@ -124,11 +122,29 @@ body {
     color: #FE3C01;
     font-style: italic;
     font-kerning: normal;
-    text-shadow: 0 0 20px rgba(254, 60, 1, 0.45);
+    text-shadow: 0 0 20px rgba(254, 60, 1, 0.35);
   }
 
+  /* Unify Headline Flame Aura: 核心关键词放射微光 */
+  .unify-flame-aura {
+    position: relative;
+    display: inline-block;
+    color: #FE3C01;
+  }
+  .unify-flame-aura::after {
+    content: '';
+    position: absolute;
+    inset: -6px -10px;
+    background: radial-gradient(circle, rgba(254, 60, 1, 0.28) 0%, rgba(254, 60, 1, 0) 70%);
+    border-radius: 9999px;
+    filter: blur(8px);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* 严格 5px 机械精密圆角操作按钮 (Unify Buttons) */
   .unify-btn-primary {
-    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[6px] px-5 py-2.5 text-sm font-medium transition-all duration-200 select-none;
+    @apply inline-flex min-h-[40px] items-center justify-center gap-2 rounded-[5px] px-5 py-2 text-xs font-semibold tracking-wide transition-all duration-200 select-none;
     background-color: #241E20;
     color: #FFFFF9;
     border: 1px solid #241E20;
@@ -136,69 +152,89 @@ body {
   }
   .unify-btn-primary:hover {
     background-color: rgba(36, 30, 32, 0.88);
-    transform: translateY(-0.5px);
+    transform: translateY(-1px);
   }
   .unify-btn-primary:active {
     transform: translateY(0);
   }
 
   .unify-btn-secondary {
-    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[6px] px-5 py-2.5 text-sm font-medium transition-all duration-200 select-none;
+    @apply inline-flex min-h-[40px] items-center justify-center gap-2 rounded-[5px] px-4 py-2 text-xs font-semibold transition-all duration-200 select-none;
     background-color: transparent;
     color: #241E20;
-    border: 1px solid rgba(36, 30, 32, 0.15);
+    border: 1px solid #E2E2D8;
   }
   .unify-btn-secondary:hover {
     background-color: rgba(36, 30, 32, 0.04);
-    border-color: rgba(36, 30, 32, 0.3);
+    border-color: #241E20;
   }
 
+  /* Unify 功能卡片与模块：严格 12px 圆角 + 1px 发丝边框 */
   .unify-card {
-    background: #FFFFFF;
-    border: 1px solid rgba(36, 30, 32, 0.08);
-    border-radius: 10px;
-    box-shadow: 0 2px 12px rgba(36, 30, 32, 0.04);
+    background: #F4F4EE;
+    border: 1px solid #E2E2D8;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
     transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .unify-card:hover {
-    border-color: rgba(36, 30, 32, 0.16);
-    box-shadow: 0 12px 32px rgba(36, 30, 32, 0.08);
+    border-color: #D0D0C4;
+    box-shadow: 0 8px 24px rgba(36, 30, 32, 0.06);
   }
 
+  /* Unify 状态胶囊与步进指示器：严格 rounded-full (100px) */
   .unify-pill-badge {
-    @apply inline-flex items-center gap-2 rounded-full px-3.5 py-1 text-xs font-medium;
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-0.5 text-[11px] font-medium;
     background: #FFFFFF;
-    border: 1px solid rgba(36, 30, 32, 0.1);
+    border: 1px solid #E2E2D8;
     color: #241E20;
-    box-shadow: 0 1px 3px rgba(36, 30, 32, 0.04);
+    box-shadow: 0 1px 2px rgba(36, 30, 32, 0.03);
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-1.5 rounded-control px-3.5 py-1.5 text-xs font-semibold transition-all duration-200 select-none;
+    @apply inline-flex items-center justify-center gap-1.5 rounded-[5px] px-4 py-2 text-xs font-semibold transition-all duration-200 select-none;
     background-color: #241E20;
     color: #FFFFF9;
-    border: 1px solid rgba(36, 30, 32, 0.9);
-    box-shadow: 0 2px 6px rgba(36, 30, 32, 0.14);
+    border: 1px solid #241E20;
+    box-shadow: 0 1px 3px rgba(36, 30, 32, 0.1);
   }
   .btn-primary:hover {
     background-color: #FE3C01;
     border-color: #FE3C01;
     color: #FFFFFF;
+    transform: translateY(-1px);
+  }
+  .btn-primary:active {
+    transform: translateY(0);
   }
 
   .btn-ghost {
-    @apply inline-flex items-center justify-center gap-1.5 rounded-control px-3.5 py-1.5 text-xs font-semibold transition-colors duration-200 select-none;
-    background-color: rgba(255, 255, 255, 0.85);
-    color: #6E6A67;
-    border: 1px solid rgba(36, 30, 32, 0.12);
+    @apply inline-flex items-center justify-center gap-1.5 rounded-[5px] px-3.5 py-1.5 text-xs font-semibold transition-colors duration-200 select-none;
+    background-color: #FFFFFF;
+    color: #625F61;
+    border: 1px solid #E2E2D8;
   }
   .btn-ghost:hover {
-    background-color: rgba(36, 30, 32, 0.05);
+    background-color: rgba(36, 30, 32, 0.04);
     color: #241E20;
+    border-color: #241E20;
+  }
+
+  .btn-flame {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-[5px] px-4 py-2 text-xs font-semibold transition-all duration-200 select-none;
+    background-color: #FE3C01;
+    color: #FFFFFF;
+    border: 1px solid #FE3C01;
+    box-shadow: 0 2px 8px rgba(254, 60, 1, 0.25);
+  }
+  .btn-flame:hover {
+    background-color: #E03500;
+    border-color: #E03500;
+    transform: translateY(-1px);
   }
 
   .chip {
-    @apply inline-flex items-center justify-center gap-1 rounded-pill px-2 py-0.5 text-xs font-medium select-none whitespace-nowrap;
+    @apply inline-flex items-center justify-center gap-1 rounded-pill px-2.5 py-0.5 text-xs font-medium select-none whitespace-nowrap;
   }
 
   .unify-quote {

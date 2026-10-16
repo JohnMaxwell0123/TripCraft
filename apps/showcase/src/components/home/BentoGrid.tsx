@@ -24,30 +24,30 @@ export function BentoGrid() {
 
   return (
     <section id="bento" className="relative overflow-hidden py-16 sm:py-24 bg-[#FFFFF9] scroll-mt-20">
-      <div className="relative mx-auto max-w-[1640px] px-6 sm:px-10 lg:px-12 xl:px-16">
+      <div className="relative mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
         {/* Section Header (Unify style: Eyebrow + Serif Headline) */}
         <div className="text-center max-w-3xl mx-auto">
           <p className="text-xs font-semibold tracking-wider text-[#FE3C01]">
             全地形能力矩阵 · 工业级工程基准
           </p>
-          <h2 className="mt-3 font-serif text-3xl sm:text-4xl lg:text-[42px] font-normal tracking-tight text-[#241E20] leading-[1.2] text-balance">
+          <h2 className="mt-3 font-serif text-3xl sm:text-4xl lg:text-[42px] font-bold tracking-[-0.035em] text-[#241E20] leading-[1.15] text-balance">
             一套协同中枢，驾驭全场景自驾出行
           </h2>
-          <p className="mt-4 text-sm sm:text-base leading-relaxed text-[#6E6A67]">
+          <p className="mt-4 text-sm sm:text-base leading-relaxed text-[#625F61]">
             拒绝华而不实的玩具模型。从 2.28m 车高老城地库物理截断，到无人区断网秒开的离线单文件容灾舱，每项能力皆针对荒野自驾真实痛点工程化落地。
           </p>
         </div>
 
         {/* 1. Large Top Hero Bento Card (Unify Wide Showcase Card) */}
-        <div className="mt-12 rounded-[16px] bg-[#FFFFFF] border border-[#241E20]/10 p-6 sm:p-8 shadow-[0_4px_24px_rgba(36,30,32,0.04)] grid gap-8 lg:grid-cols-12 items-center">
+        <div className="mt-12 rounded-[16px] bg-[#FFFFFF] border border-[#E2E2D8] p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.04)] grid gap-8 lg:grid-cols-12 items-center">
           <div className="lg:col-span-6 space-y-4 text-left">
             <span className="text-xs font-semibold tracking-wider text-[#FE3C01]">
               全链路协同架构
             </span>
-            <h3 className="font-serif text-2xl sm:text-3xl font-normal text-[#241E20] leading-snug">
+            <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#241E20] leading-snug tracking-tight">
               智能体全局调度自驾全流程工具链
             </h3>
-            <p className="text-sm leading-relaxed text-[#6E6A67]">
+            <p className="text-sm leading-relaxed text-[#625F61]">
               从对话倾诉提炼诉求，到多人微信扫码博弈投票；从车道级领航避障，到离线单文件零构建交付。一个经过自驾形式化契约校验的工业级中枢。
             </p>
             <div className="pt-2 flex flex-wrap gap-2 text-xs">
@@ -58,8 +58,8 @@ export function BentoGrid() {
             </div>
           </div>
 
-          <div className="lg:col-span-6 rounded-[12px] bg-[#FFFFF9] border border-[#241E20]/[0.08] p-4 text-xs text-[#241E20]">
-            <div className="flex items-center justify-between pb-2 mb-3 border-b border-[#241E20]/[0.08]">
+          <div className="lg:col-span-6 rounded-[12px] bg-[#F4F4EE] border border-[#E2E2D8] p-4 text-xs text-[#241E20]">
+            <div className="flex items-center justify-between pb-2 mb-3 border-b border-[#E2E2D8]">
               <span className="font-bold text-[#FE3C01]">智能体协同调度流水</span>
               <span className="text-emerald-700 font-medium">执行状态：全部通过</span>
             </div>
@@ -89,18 +89,18 @@ export function BentoGrid() {
               </p>
             </div>
 
-            <div className="mt-5 rounded-lg bg-[#FFFFF9] p-3 border border-[#241E20]/[0.06] text-xs">
+            <div className="mt-5 rounded-[10px] bg-[#FFFFF9] p-3 border border-[#E2E2D8] text-xs">
               <span className="text-[#6E6A67] block text-[10px]">输入示例:</span>
               <span className="text-[#241E20] font-medium block mt-1">
                 “我们 5 个人开 MPV 走川西，老人腿脚不便，千万别安排爬山的台阶！”
               </span>
-              <div className="mt-2 pt-2 border-t border-[#241E20]/[0.06] flex items-center justify-between text-[11px] text-emerald-700 font-medium">
+              <div className="mt-2 pt-2 border-t border-[#E2E2D8] flex items-center justify-between text-[11px] text-emerald-700 font-medium">
                 <span>✓ 坡度过滤断言生效</span>
                 <span>排除陡坡步道 14 处</span>
               </div>
             </div>
 
-            <div className="mt-4 pt-3 border-t border-[#241E20]/[0.06] flex flex-wrap gap-1.5 text-[11px]">
+            <div className="mt-4 pt-3 border-t border-[#E2E2D8] flex flex-wrap gap-1.5 text-[11px]">
               <span className="unify-pill-badge !text-[10px] !py-0.5">多轮意图消歧</span>
               <span className="unify-pill-badge !text-[10px] !py-0.5">动态节奏均衡</span>
             </div>
@@ -120,7 +120,7 @@ export function BentoGrid() {
               </p>
             </div>
 
-            <div className="mt-5 rounded-lg bg-[#FFFFF9] p-3 border border-[#241E20]/[0.06] space-y-2 text-xs">
+            <div className="mt-5 rounded-[10px] bg-[#FFFFF9] p-3 border border-[#E2E2D8] space-y-2 text-xs">
               <div className="flex justify-between items-center">
                 <span className="font-medium text-[#241E20]">鱼子西星空日落</span>
                 <span className="text-[#FE3C01] font-mono text-[11px] font-semibold">4/5 票</span>
@@ -134,7 +134,7 @@ export function BentoGrid() {
               </div>
             </div>
 
-            <div className="mt-4 pt-3 border-t border-[#241E20]/[0.06] flex flex-wrap gap-1.5 text-[11px]">
+            <div className="mt-4 pt-3 border-t border-[#E2E2D8] flex flex-wrap gap-1.5 text-[11px]">
               <span className="unify-pill-badge !text-[10px] !py-0.5">免注册微信同频</span>
               <span className="unify-pill-badge !text-[10px] !py-0.5">冲突权重消解</span>
             </div>
@@ -154,7 +154,7 @@ export function BentoGrid() {
               </p>
             </div>
 
-            <div className="mt-5 rounded-lg bg-[#FFFFF9] p-3 border border-[#241E20]/[0.06]">
+            <div className="mt-5 rounded-[10px] bg-[#FFFFF9] p-3 border border-[#E2E2D8]">
               <div className="flex justify-between text-xs mb-1.5">
                 <span className="text-[#6E6A67]">当前整车高度设定:</span>
                 <span className="font-mono font-bold text-[#FE3C01]">{vehicleHeight.toFixed(2)} 米</span>
@@ -182,7 +182,7 @@ export function BentoGrid() {
               </div>
             </div>
 
-            <div className="mt-4 pt-3 border-t border-[#241E20]/[0.06] flex flex-wrap gap-1.5 text-[11px]">
+            <div className="mt-4 pt-3 border-t border-[#E2E2D8] flex flex-wrap gap-1.5 text-[11px]">
               <span className="unify-pill-badge !text-[10px] !py-0.5">物理规则断言</span>
               <span className="unify-pill-badge !text-[10px] !py-0.5">地库涵洞强防御</span>
             </div>
@@ -202,7 +202,7 @@ export function BentoGrid() {
               </p>
             </div>
 
-            <div className="mt-5 rounded-lg bg-[#241E20] text-white p-3 space-y-2 text-xs font-mono">
+            <div className="mt-5 rounded-[10px] bg-[#241E20] text-white p-3 space-y-2 text-xs font-mono">
               <div className="flex justify-between items-center text-white/70">
                 <span>车道级领航巡航</span>
                 <span className="text-emerald-400 font-bold">82 km/h</span>
@@ -217,7 +217,7 @@ export function BentoGrid() {
               </div>
             </div>
 
-            <div className="mt-4 pt-3 border-t border-[#241E20]/[0.06] flex flex-wrap gap-1.5 text-[11px]">
+            <div className="mt-4 pt-3 border-t border-[#E2E2D8] flex flex-wrap gap-1.5 text-[11px]">
               <span className="unify-pill-badge !text-[10px] !py-0.5">车机大屏定制</span>
               <span className="unify-pill-badge !text-[10px] !py-0.5">驻车步行接力</span>
             </div>
@@ -237,13 +237,13 @@ export function BentoGrid() {
               </p>
             </div>
 
-            <div className="mt-5 rounded-lg bg-[#FFFFF9] p-3 border border-[#241E20]/[0.06]">
+            <div className="mt-5 rounded-[10px] bg-[#FFFFF9] p-3 border border-[#E2E2D8]">
               <div className="flex items-center justify-between text-xs mb-2">
                 <span className="text-[#6E6A67]">网络状态模拟器:</span>
                 <button
                   type="button"
                   onClick={() => setIsOffline(!isOffline)}
-                  className={`px-2.5 py-1 rounded text-xs font-mono font-medium transition-colors ${
+                  className={`px-2.5 py-1 rounded-[5px] text-xs font-mono font-medium transition-colors ${
                     isOffline ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'
                   }`}
                 >
@@ -263,7 +263,7 @@ export function BentoGrid() {
               </div>
             </div>
 
-            <div className="mt-4 pt-3 border-t border-[#241E20]/[0.06] flex flex-wrap gap-1.5 text-[11px]">
+            <div className="mt-4 pt-3 border-t border-[#E2E2D8] flex flex-wrap gap-1.5 text-[11px]">
               <span className="unify-pill-badge !text-[10px] !py-0.5">零外部运行时依赖</span>
               <span className="unify-pill-badge !text-[10px] !py-0.5">三级降级防白屏</span>
             </div>
@@ -283,7 +283,7 @@ export function BentoGrid() {
               </p>
             </div>
 
-            <div className="mt-5 rounded-lg bg-[#FFFFF9] p-3 border border-[#241E20]/[0.06] text-xs">
+            <div className="mt-5 rounded-[10px] bg-[#FFFFF9] p-3 border border-[#E2E2D8] text-xs">
               <div className="flex justify-between items-center mb-1.5">
                 <span className="text-[#6E6A67]">全车同行人数:</span>
                 <div className="flex gap-1.5">
@@ -292,8 +292,8 @@ export function BentoGrid() {
                       key={num}
                       type="button"
                       onClick={() => setMemberCount(num)}
-                      className={`h-5 w-5 rounded text-[10px] font-mono ${
-                        memberCount === num ? 'bg-[#241E20] text-white font-bold' : 'bg-white border text-[#6E6A67]'
+                      className={`h-5 w-5 rounded-[5px] text-[10px] font-mono ${
+                        memberCount === num ? 'bg-[#241E20] text-white font-bold' : 'bg-white border border-[#E2E2D8] text-[#6E6A67]'
                       }`}
                     >
                       {num}
@@ -307,7 +307,7 @@ export function BentoGrid() {
               </div>
             </div>
 
-            <div className="mt-4 pt-3 border-t border-[#241E20]/[0.06] flex flex-wrap gap-1.5 text-[11px]">
+            <div className="mt-4 pt-3 border-t border-[#E2E2D8] flex flex-wrap gap-1.5 text-[11px]">
               <span className="unify-pill-badge !text-[10px] !py-0.5">最优分账矩阵</span>
               <span className="unify-pill-badge !text-[10px] !py-0.5">足迹轨迹回放</span>
             </div>

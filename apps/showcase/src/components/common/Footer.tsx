@@ -14,8 +14,8 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative bg-[#FFFFF9] border-t border-[#241E20]/[0.08] pt-12 pb-10 sm:pt-20 sm:pb-14 text-left">
-      <div className="mx-auto max-w-[1640px] px-6 sm:px-10 lg:px-12 xl:px-16">
+    <footer className="relative bg-[#FFFFF9] border-t border-[#E2E2D8] pt-12 pb-10 sm:pt-20 sm:pb-14 text-left">
+      <div className="mx-auto max-w-[1200px] px-6 sm:px-10 lg:px-12">
         {/* Top Call-to-action Banner (Unify 'From prompt to pipeline' style) */}
         <div className="relative overflow-hidden rounded-[16px] bg-[#241E20] text-[#FFFFF9] p-8 sm:p-14 text-center shadow-2xl">
           {/* Subtle Orange Glow in bottom-right corner (Unify signature aura) */}
@@ -27,7 +27,7 @@ export function Footer() {
           <span className="unify-pill-badge bg-white/10 border-white/20 text-white/90 text-xs font-mono">
             TripCraft · 旅艺 2.0 · 开源与本地优先
           </span>
-          <h2 className="mt-5 font-serif text-3xl sm:text-5xl font-normal tracking-tight text-white leading-tight max-w-2xl mx-auto">
+          <h2 className="mt-5 font-serif text-3xl sm:text-5xl font-normal tracking-[-0.035em] text-white leading-tight max-w-2xl mx-auto">
             从一句话诉求，到全地形自驾探险
           </h2>
           <p className="mt-4 max-w-xl mx-auto text-sm sm:text-base text-white/70 leading-relaxed font-normal">
@@ -39,7 +39,7 @@ export function Footer() {
             <button
               type="button"
               onClick={scrollToDemo}
-              className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[6px] bg-[#FFFFF9] px-6 text-sm font-semibold text-[#241E20] hover:bg-white hover:shadow-lg transition-all active:scale-95"
+              className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[5px] bg-[#FFFFF9] px-6 text-sm font-semibold text-[#241E20] hover:bg-white hover:shadow-lg transition-all active:scale-95"
             >
               <span>立即体验五幕长镜头演进</span>
               <span className="text-[#FE3C01]">✦</span>
@@ -48,7 +48,7 @@ export function Footer() {
               href="https://github.com/JohnMaxwell0123/TripCraft"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[6px] border border-white/20 bg-transparent px-6 text-sm font-medium text-white hover:bg-white/10 transition-all active:scale-95"
+              className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-[5px] border border-white/20 bg-transparent px-6 text-sm font-medium text-white hover:bg-white/10 transition-all active:scale-95"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                 <path
@@ -67,7 +67,7 @@ export function Footer() {
           {/* Column 1: Brand & Philosophy */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2">
-              <div className="flex h-7 w-7 items-center justify-center rounded bg-[#241E20] text-[#FFFFF9] font-serif text-sm font-bold shadow-sm">
+              <div className="flex h-7 w-7 items-center justify-center rounded-[5px] bg-[#241E20] text-[#FFFFF9] font-serif text-sm font-bold shadow-sm">
                 旅
               </div>
               <span className="font-sans font-bold text-base text-[#241E20]">
@@ -130,7 +130,7 @@ export function Footer() {
         </div>
 
         {/* Bottom Credits & Back to Top */}
-        <div className="mt-12 flex flex-col sm:flex-row items-center justify-between border-t border-[#241E20]/[0.08] pt-6 text-xs text-[#6E6A67] gap-4">
+        <div className="mt-12 flex flex-col sm:flex-row items-center justify-between border-t border-[#E2E2D8] pt-6 text-xs text-[#6E6A67] gap-4">
           <p>© 2026 TripCraft (旅艺) 项目团队. 严格遵循开源与本地优先工程规范.</p>
           <button
             type="button"

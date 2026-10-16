@@ -335,26 +335,26 @@ export function ScrollyStage() {
             </div>
 
             {/* 导览播放控制坞 (放置于左侧栏底部，绝不遮挡右侧产品主视窗与悬浮手机) */}
-            <div className="mt-5 pt-4 border-t border-black/[0.08] flex items-center justify-between">
+            <div className="mt-5 pt-4 border-t border-[#E2E2D8] flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <button
                   type="button"
                   onClick={togglePause}
-                  className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-black/5 hover:bg-black/10 text-black/75 hover:text-black transition-colors"
+                  className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-[5px] bg-[#241E20]/5 hover:bg-[#241E20]/10 text-[#241E20]/75 hover:text-[#241E20] transition-colors"
                   title={isPaused ? '继续播放' : '暂停演进'}
                 >
                   {isPaused ? <PlayIcon className="w-3.5 h-3.5 text-[#FE3C01]" /> : <PauseIcon className="w-3.5 h-3.5 text-[#FE3C01]" />}
                   <span>{isPaused ? '继续播放' : '暂停演进'}</span>
                 </button>
-                <span className="font-mono text-black/45 text-xs">
+                <span className="font-mono text-[#241E20]/45 text-xs">
                   0{activeTab + 1} / 0{TABS.length}
                 </span>
               </div>
-              <div className="flex items-center gap-1.5 text-black/60 text-xs">
+              <div className="flex items-center gap-1.5 text-[#241E20]/60 text-xs">
                 <button
                   type="button"
                   onClick={handlePrev}
-                  className="px-2.5 py-1 rounded-md hover:bg-black/5 hover:text-black transition-colors"
+                  className="px-2.5 py-1 rounded-[5px] hover:bg-[#241E20]/5 hover:text-[#241E20] transition-colors"
                   title="上一幕"
                 >
                   ← 上一幕
@@ -362,7 +362,7 @@ export function ScrollyStage() {
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="px-2.5 py-1 rounded-md hover:bg-black/5 hover:text-black transition-colors"
+                  className="px-2.5 py-1 rounded-[5px] hover:bg-[#241E20]/5 hover:text-[#241E20] transition-colors"
                   title="下一幕"
                 >
                   下一幕 →
@@ -378,7 +378,7 @@ export function ScrollyStage() {
                 {/* 视窗包装容器：允许子元素 (如副驾手机) 自然悬浮探出，绝不被硬裁切 */}
                 <div className="relative z-10 w-full">
                   {/* 核心应用高保真母体视窗 */}
-                  <div className="macos-window relative flex h-[600px] sm:h-[650px] lg:h-[680px] w-full flex-col overflow-hidden rounded-2xl bg-[#FAF8F5]/98 text-left border border-[#241E20]/[0.08] shadow-[0_28px_80px_rgba(0,0,0,0.14)]">
+                  <div className="macos-window relative flex h-[600px] sm:h-[650px] lg:h-[680px] w-full flex-col overflow-hidden rounded-[16px] bg-[#FAF8F5]/98 text-left border border-[#E2E2D8] shadow-[0_28px_80px_rgba(0,0,0,0.14)]">
                     <Topbar />
                     <div className="relative min-h-0 flex-1 overflow-hidden">
                       <ChatScene />

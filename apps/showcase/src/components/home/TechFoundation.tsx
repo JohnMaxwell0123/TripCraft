@@ -236,24 +236,24 @@ export function TechFoundation() {
   };
 
   return (
-    <section id="foundation" className="relative overflow-hidden py-12 sm:py-16 md:py-24 bg-sand/40 border-t border-ink/[0.08] scroll-mt-20 md:scroll-mt-24">
+    <section id="foundation" className="relative overflow-hidden py-12 sm:py-16 md:py-24 bg-[#FFFFF9] border-t border-[#E2E2D8] scroll-mt-20 md:scroll-mt-24">
       {/* Decorative ambient background glows */}
       <div
         aria-hidden
-        className="pointer-events-none absolute top-12 left-1/4 h-96 w-96 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.06),transparent_70%)] blur-3xl"
+        className="pointer-events-none absolute top-12 left-1/4 h-96 w-96 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(254,60,1,0.04),transparent_70%)] blur-3xl"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute bottom-12 right-1/4 h-96 w-96 translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(184,134,59,0.05),transparent_70%)] blur-3xl"
+        className="pointer-events-none absolute bottom-12 right-1/4 h-96 w-96 translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(36,30,32,0.03),transparent_70%)] blur-3xl"
       />
 
-      <div className="relative mx-auto max-w-[1640px] px-6 sm:px-10 lg:px-12 xl:px-16">
+      <div className="relative mx-auto max-w-[1200px] px-6 sm:px-10 lg:px-12">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#FE3C01]">
             ENGINEERING FOUNDATION · 架构哲学与四大支柱
           </p>
-          <h2 className="mt-3 font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#241E20] leading-[1.15]">
+          <h2 className="mt-3 font-serif text-3xl sm:text-5xl font-normal tracking-[-0.035em] text-[#241E20] leading-[1.15]">
             支撑旅艺的硬核技术底座与工程铁律
           </h2>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-[#6E6A67]">
@@ -301,10 +301,10 @@ export function TechFoundation() {
                   setActivePillar(pillar);
                   setGuardrailTested(false);
                 }}
-                className={`relative rounded-[10px] p-4 text-left transition-all duration-200 flex flex-col justify-between active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01] ${
+                className={`relative rounded-[12px] p-4 text-left transition-all duration-200 flex flex-col justify-between active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01] ${
                   isSelected
-                    ? 'bg-white border-2 border-[#241E20] shadow-[0_4px_20px_rgba(36,30,32,0.08)] -translate-y-0.5'
-                    : 'bg-white/70 hover:bg-white border border-[#241E20]/[0.08] hover:border-[#241E20]/20'
+                    ? 'bg-white border-2 border-[#FE3C01] shadow-[0_4px_20px_rgba(254,60,1,0.08)] -translate-y-0.5'
+                    : 'bg-[#F4F4EE] hover:bg-white border border-[#E2E2D8]'
                 }`}
               >
                 <div>
@@ -383,13 +383,13 @@ export function TechFoundation() {
                   {activePillar.highlights.map((item, idx) => (
                     <div
                       key={idx}
-                      className="rounded-control bg-paper/85 p-3.5 border border-ink/[0.08] transition-all hover:bg-paper"
+                      className="rounded-[10px] bg-white p-3.5 border border-[#E2E2D8] transition-all hover:border-[#FE3C01]/40"
                     >
-                      <p className="text-xs font-bold text-ink flex items-center gap-2">
-                        <span className="h-1.5 w-1.5 rounded-full bg-blue-800 shrink-0" />
+                      <p className="text-xs font-bold text-[#241E20] flex items-center gap-2">
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#FE3C01] shrink-0" />
                         {item.label}
                       </p>
-                      <p className="mt-1 text-xs text-ink-soft leading-relaxed">
+                      <p className="mt-1 text-xs text-[#6E6A67] leading-relaxed">
                         {item.desc}
                       </p>
                     </div>
@@ -397,13 +397,13 @@ export function TechFoundation() {
                 </div>
 
                 {/* Interactive Mini-Sandbox for Current Pillar */}
-                <div className="mt-6 rounded-card bg-sand/60 p-4 border border-ink/[0.08]">
-                  <div className="text-xs font-bold text-ink flex items-center justify-between">
+                <div className="mt-6 rounded-[12px] bg-[#FFFFF9] p-4 border border-[#E2E2D8]">
+                  <div className="text-xs font-bold text-[#241E20] flex items-center justify-between">
                     <span className="flex items-center gap-1.5">
-                      <ZapIcon className="h-3.5 w-3.5 text-blue-800" />
+                      <ZapIcon className="h-3.5 w-3.5 text-[#FE3C01]" />
                       <span>架构交互演练微沙盒：</span>
                     </span>
-                    <span className="text-xs text-ink-soft font-normal">点击即时触发</span>
+                    <span className="text-xs text-[#6E6A67] font-normal">点击即时触发</span>
                   </div>
 
                   {/* Demo 1: Failover Pipeline Toggle */}
@@ -413,10 +413,10 @@ export function TechFoundation() {
                         <button
                           type="button"
                           onClick={() => setFailoverLevel(1)}
-                          className={`flex-1 min-h-[44px] rounded-control py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
+                          className={`flex-1 min-h-[40px] rounded-[5px] py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01] ${
                             failoverLevel === 1
-                              ? 'bg-jade text-paper shadow-level-static'
-                              : 'bg-paper text-ink-soft hover:text-ink'
+                              ? 'bg-[#241E20] text-white'
+                              : 'bg-white text-[#6E6A67] border border-[#E2E2D8] hover:text-[#241E20]'
                           }`}
                         >
                           Level 1 在线瓦片
@@ -424,10 +424,10 @@ export function TechFoundation() {
                         <button
                           type="button"
                           onClick={() => setFailoverLevel(2)}
-                          className={`flex-1 min-h-[44px] rounded-control py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
+                          className={`flex-1 min-h-[40px] rounded-[5px] py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01] ${
                             failoverLevel === 2
-                              ? 'bg-blue-800 text-paper shadow-level-static'
-                              : 'bg-paper text-ink-soft hover:text-ink'
+                              ? 'bg-[#FE3C01] text-white'
+                              : 'bg-white text-[#6E6A67] border border-[#E2E2D8] hover:text-[#241E20]'
                           }`}
                         >
                           Level 2 矢量SVG
@@ -435,32 +435,32 @@ export function TechFoundation() {
                         <button
                           type="button"
                           onClick={() => setFailoverLevel(3)}
-                          className={`flex-1 min-h-[44px] rounded-control py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
+                          className={`flex-1 min-h-[40px] rounded-[5px] py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01] ${
                             failoverLevel === 3
-                              ? 'bg-ochre text-paper shadow-level-static'
-                              : 'bg-paper text-ink-soft hover:text-ink'
+                              ? 'bg-amber-700 text-white'
+                              : 'bg-white text-[#6E6A67] border border-[#E2E2D8] hover:text-[#241E20]'
                           }`}
                         >
                           Level 3 拓扑卡片
                         </button>
                       </div>
-                      <div className="rounded-control bg-paper p-3 text-xs border border-ink/[0.08]">
+                      <div className="rounded-[10px] bg-white p-3 text-xs border border-[#E2E2D8]">
                         {failoverLevel === 1 && (
-                          <div className="flex items-center gap-2 text-jade font-semibold">
+                          <div className="flex items-center gap-2 text-emerald-700 font-semibold">
                             <span>● 网络畅通：</span>
-                            <span className="text-ink">高德/百度高清矢量瓦片渲染中，帧率 <span className="font-mono tabular-nums">60fps</span></span>
+                            <span className="text-[#241E20]">高德/百度高清矢量瓦片渲染中，帧率 <span className="font-mono tabular-nums">60fps</span></span>
                           </div>
                         )}
                         {failoverLevel === 2 && (
-                          <div className="flex items-center gap-2 text-gold-ink font-semibold">
+                          <div className="flex items-center gap-2 text-[#FE3C01] font-semibold">
                             <span>▲ 触发超时降级：</span>
-                            <span className="text-ink">网络中断，无缝秒级切换至内联离线 SVG 矢量图</span>
+                            <span className="text-[#241E20]">网络中断，无缝秒级切换至内联离线 SVG 矢量图</span>
                           </div>
                         )}
                         {failoverLevel === 3 && (
-                          <div className="flex items-center gap-2 text-ochre font-semibold">
+                          <div className="flex items-center gap-2 text-amber-700 font-semibold">
                             <span>■ 极端环境兜底：</span>
-                            <span className="text-ink">SVG 渲染受限，自动展开纯 CSS 文本拓扑卡片，杜绝白屏</span>
+                            <span className="text-[#241E20]">SVG 渲染受限，自动展开纯 CSS 文本拓扑卡片，杜绝白屏</span>
                           </div>
                         )}
                       </div>
@@ -469,15 +469,15 @@ export function TechFoundation() {
 
                   {/* Demo 2: DSL AST Verification */}
                   {activePillar.interactiveDemoType === 'dsl' && (
-                    <div className="mt-3 rounded-control bg-paper p-3 text-xs border border-ink/[0.08] space-y-1.5">
-                      <div className="flex items-center justify-between text-jade font-semibold">
+                    <div className="mt-3 rounded-[10px] bg-white p-3 text-xs border border-[#E2E2D8] space-y-1.5">
+                      <div className="flex items-center justify-between text-emerald-700 font-semibold">
                         <span className="flex items-center gap-1.5">
-                          <CheckIcon className="h-3.5 w-3.5 text-jade" />
+                          <CheckIcon className="h-3.5 w-3.5 text-emerald-700" />
                           <span>结构化契约实时校验</span>
                         </span>
-                        <span className="font-mono text-xs bg-jade/10 px-2 py-0.5 rounded-pill tabular-nums">0 错误</span>
+                        <span className="font-mono text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full tabular-nums">0 错误</span>
                       </div>
-                      <p className="text-xs text-ink-soft">
+                      <p className="text-xs text-[#6E6A67]">
                         节点数据包含 9 天全部 28 个途经点坐标、限高标签与餐厅打卡元数据，天然具备 SHA-256 签名存证。
                       </p>
                     </div>
@@ -489,17 +489,17 @@ export function TechFoundation() {
                       <button
                         type="button"
                         onClick={() => setGuardrailTested(!guardrailTested)}
-                        className="w-full min-h-[44px] rounded-control bg-ochre/10 text-ochre hover:bg-ochre/20 border border-ochre/30 py-2.5 px-3 text-xs font-semibold transition-all flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 text-center"
+                        className="w-full min-h-[40px] rounded-[5px] bg-[#FE3C01]/10 text-[#FE3C01] hover:bg-[#FE3C01]/20 border border-[#FE3C01]/30 py-2.5 px-3 text-xs font-semibold transition-all flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01] text-center"
                       >
                         <span>模拟大模型指令：7座 MPV (加装车顶箱 2.28m) 直接驶入 2.0m 老城地库</span>
                         <span className="underline shrink-0">触发断言拦截</span>
                       </button>
                       {guardrailTested && (
-                        <div className="rounded-control bg-ochre/10 border border-ochre/30 p-3 text-xs text-ochre animate-fadeIn">
+                        <div className="rounded-[10px] bg-amber-50 border border-amber-300 p-3 text-xs text-amber-800 animate-fadeIn">
                           <p className="font-bold flex items-center gap-1.5">
-                            <ShieldIcon className="h-4 w-4 text-ochre shrink-0" />
+                            <ShieldIcon className="h-4 w-4 text-amber-700 shrink-0" />
                             <span>BR-025 物理断言刚性拦截：</span>
-                            <span className="font-mono text-xs bg-ochre text-paper px-2 py-0.5 rounded-pill">
+                            <span className="font-mono text-xs bg-amber-700 text-white px-2 py-0.5 rounded-full">
                               FATAL_OVERRIDE
                             </span>
                           </p>
@@ -513,16 +513,16 @@ export function TechFoundation() {
 
                   {/* Demo 4: Compiler Pipeline */}
                   {activePillar.interactiveDemoType === 'compiler' && (
-                    <div className="mt-3 rounded-control bg-paper p-3 text-xs border border-ink/[0.08] space-y-2">
+                    <div className="mt-3 rounded-[10px] bg-white p-3 text-xs border border-[#E2E2D8] space-y-2">
                       <div className="flex items-center justify-between font-mono text-xs">
-                        <span className="text-ink font-semibold">容灾舱目标: expedition-pro.v1.1.html</span>
-                        <span className="text-jade font-bold tabular-nums">1.8 MB (已压缩)</span>
+                        <span className="text-[#241E20] font-semibold">容灾舱目标: expedition-pro.v1.1.html</span>
+                        <span className="text-emerald-700 font-bold tabular-nums">1.8 MB (已压缩)</span>
                       </div>
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-ink-soft">
-                        <span className="chip rounded-pill py-0 text-xs bg-ink/5">0 外部脚本</span>
-                        <span className="chip rounded-pill py-0 text-xs bg-ink/5">字体子集化</span>
-                        <span className="chip rounded-pill py-0 text-xs bg-ink/5">内联离线SVG</span>
-                        <span className="chip rounded-pill py-0 text-xs bg-ink/5">Tier 0 深链</span>
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-[#6E6A67]">
+                        <span className="unify-pill-badge !text-[10px] !py-0.5">0 外部脚本</span>
+                        <span className="unify-pill-badge !text-[10px] !py-0.5">字体子集化</span>
+                        <span className="unify-pill-badge !text-[10px] !py-0.5">内联离线SVG</span>
+                        <span className="unify-pill-badge !text-[10px] !py-0.5">Tier 0 深链</span>
                       </div>
                     </div>
                   )}
@@ -533,27 +533,27 @@ export function TechFoundation() {
 
           {/* Right Column: Code & Formal Contract Inspector */}
           <div className="space-y-4 lg:col-span-6 lg:sticky lg:top-28 min-w-0">
-            <div className="glass-strong rounded-container p-5 sm:p-7 shadow-level-float overflow-hidden border border-ink/[0.08]">
+            <div className="unify-card rounded-[16px] p-5 sm:p-7 overflow-hidden">
               {/* Code window chrome header */}
-              <div className="flex items-center justify-between border-b border-ink/[0.06] pb-3">
+              <div className="flex items-center justify-between border-b border-[#E2E2D8] pb-3">
                 <div className="flex items-center gap-2">
                   <div className="flex gap-1.5">
-                    <span className="h-2.5 w-2.5 rounded-full bg-ochre/60" />
-                    <span className="h-2.5 w-2.5 rounded-full bg-gold/60" />
-                    <span className="h-2.5 w-2.5 rounded-full bg-jade/60" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-[#FE3C01]" />
                   </div>
-                  <span className="ml-2 font-mono text-xs font-semibold text-ink">
+                  <span className="ml-2 font-mono text-xs font-semibold text-[#241E20]">
                     {activePillar.codeSnippet.filename}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="chip rounded-pill py-0 text-xs uppercase font-mono bg-ink/5 text-ink-soft">
+                  <span className="unify-pill-badge !text-[10px] !py-0.5 uppercase font-mono">
                     {activePillar.codeSnippet.language}
                   </span>
                   <button
                     type="button"
                     onClick={handleCopyCode}
-                    className="chip rounded-pill min-h-[40px] py-1.5 px-3.5 text-xs text-blue-900 hover:text-blue-950 transition-all active:scale-95 font-semibold border border-blue-300 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+                    className="rounded-[5px] min-h-[32px] py-1 px-3 text-xs text-[#241E20] hover:text-[#FE3C01] transition-all active:scale-95 font-medium border border-[#E2E2D8] bg-white hover:bg-[#F4F4EE] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01]"
                     title="复制真实代码"
                   >
                     {copiedCode ? '已复制 ✓' : '复制代码'}
@@ -562,30 +562,30 @@ export function TechFoundation() {
               </div>
 
               {/* Code Content Box */}
-              <div className="mt-4 overflow-x-auto rounded-control bg-ink/[0.04] p-4 font-mono text-xs text-ink leading-relaxed border border-ink/[0.06]">
+              <div className="mt-4 overflow-x-auto rounded-[10px] bg-[#241E20] p-4 font-mono text-xs text-white/90 leading-relaxed border border-[#241E20]">
                 <pre>
                   <code>{activePillar.codeSnippet.code}</code>
                 </pre>
               </div>
 
               {/* Contract Metadata Footer */}
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-ink/[0.06] pt-3 text-xs text-ink-soft">
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-[#E2E2D8] pt-3 text-xs text-[#6E6A67]">
                 <span className="flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-jade" />
+                  <span className="h-2 w-2 rounded-full bg-emerald-600" />
                   <span>与核心架构契约 100% 一致</span>
                 </span>
-                <span className="font-mono text-xs text-blue-900 font-medium">
+                <span className="font-mono text-xs text-[#FE3C01] font-medium">
                   TripCraft Architecture Spec v2
                 </span>
               </div>
             </div>
 
             {/* Architecture Ecosystem Summary Card */}
-            <div className="glass rounded-card p-5 border border-ink/[0.08] text-xs shadow-level-static">
-              <p className="font-serif font-bold text-ink text-sm">
+            <div className="unify-card p-5 text-xs">
+              <p className="font-serif font-bold text-[#241E20] text-sm">
                 为什么我们坚守这些工程哲学？
               </p>
-              <p className="mt-2 text-ink-soft leading-relaxed">
+              <p className="mt-2 text-[#6E6A67] leading-relaxed">
                 自驾旅行不同于城市漫游，一旦踏入河西走廊戈壁、祁连山脉或无人区，面对的是剧烈的信号衰减、长坡限速与物理车辆限制。代码与界面终究会迭代，但对物理规律的敬畏、对用户数据的守护与对离线交付的执着，是旅艺最坚固的护城河。
               </p>
             </div>

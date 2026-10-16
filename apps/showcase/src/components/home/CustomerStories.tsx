@@ -29,14 +29,14 @@ export function CustomerStories() {
   ];
 
   return (
-    <section className="relative overflow-hidden py-16 sm:py-24 bg-[#FFFFF9] border-t border-[#241E20]/[0.06]">
-      <div className="relative mx-auto max-w-[1640px] px-6 sm:px-10 lg:px-12 xl:px-16">
+    <section className="relative overflow-hidden py-16 sm:py-24 bg-[#FFFFF9] border-t border-[#E2E2D8]">
+      <div className="relative mx-auto max-w-[1200px] px-6 sm:px-10 lg:px-12">
         {/* Section Header (Unify Hanging Quote Section Style) */}
         <div className="text-center max-w-2xl mx-auto mb-12">
           <p className="text-xs font-semibold tracking-wider text-[#FE3C01]">
             车主与领队真实见证
           </p>
-          <h2 className="mt-3 font-serif text-3xl sm:text-5xl font-normal tracking-tight text-[#241E20] leading-[1.15]">
+          <h2 className="mt-3 font-serif text-3xl sm:text-5xl font-normal tracking-[-0.035em] text-[#241E20] leading-[1.15]">
             万千自驾探索者的行路之选
           </h2>
           <p className="mt-4 text-sm sm:text-base leading-relaxed text-[#6E6A67]">
@@ -61,7 +61,7 @@ function storiesToRender(stories: Array<{ metric: string; quote: string; author:
     >
       <div>
         {/* Metric Badge */}
-        <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#241E20]/[0.06]">
+        <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#E2E2D8]">
           <span className="font-mono text-base font-bold text-[#FE3C01]">
             {s.metric}
           </span>
@@ -77,7 +77,7 @@ function storiesToRender(stories: Array<{ metric: string; quote: string; author:
       </div>
 
       {/* Author & Context Footer */}
-      <div className="mt-6 pt-4 border-t border-[#241E20]/[0.06] flex items-center justify-between">
+      <div className="mt-6 pt-4 border-t border-[#E2E2D8] flex items-center justify-between">
         <div>
           <span className="font-semibold text-xs text-[#241E20] block">
             {s.author}
