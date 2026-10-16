@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useTransform } from 'framer-motion';
-import { useFade, useRange, useVisibility, ease } from '@/lib/motion';
+import { useFade, useRange, useVisibility, useScrollTypewriter, useStep, ease } from '@/lib/motion';
 import { T } from './timeline';
 import { Pop, Reveal, useProgress } from './primitives';
 import {
@@ -143,38 +143,78 @@ function MobileChips() {
 function ReasoningCanvas() {
   const p = useProgress();
 
-  // 首帧即有内容，彻底杜绝白屏等待感 (0.00~0.015 优雅入场)
-  const promptOpacity = useRange(p, [0, 0.012], [0.8, 1]);
-  const promptY = useRange(p, [0, 0.012], [8, 0], { easing: ease.out, rest: 0 });
+  // 首帧即有容器入场，打字机在 T.typeInput (0.003 ~ 0.050) 逐字输入
+  const promptOpacity = useRange(p, [0, 0.010], [0.85, 1]);
+  const promptY = useRange(p, [0, 0.010], [6, 0], { easing: ease.out, rest: 0 });
+
+  // 逐字输入打字机动画 (0 React 重渲染，DOM 直接写入)
+  const typedRef = useScrollTypewriter(p, USER_TEXT, T.typeInput[0], T.typeInput[1]);
+  const placeholderOpacity = useRange(p, [0, 0.003], [0.75, 0]);
+  const isSubmitted = useStep(p, [T.send]) === 1;
+
+  // 光标在打字中保持闪烁，并在提交意图后平滑淡出
+  const caretOpacity = useTransform(p, (v) => {
+    if (v < 0.001) return 1;
+    if (v >= T.send + 0.004) return 0;
+    if (v >= T.typeInput[1]) return 1 - (v - T.typeInput[1]) / (T.send + 0.004 - T.typeInput[1]);
+    return 1;
+  });
+
+  // 演示鼠标指针：在打字完成瞬间悬浮并执行模拟“提交”点击
+  const cursorScale = useRange(p, [T.cursorA[0], T.clickA, T.cursorA[1]], [1, 0.82, 1]);
 
   return (
     <div className="relative min-h-0 flex-1 overflow-y-auto overflow-x-hidden pr-1 space-y-3.5">
-      {/* 1. 顶部领队倾诉卡片 */}
+      {/* 1. 顶部领队倾诉卡片 (逐字输入打字交互) */}
       <motion.div
-        className="relative ml-auto max-w-[96%] sm:max-w-[92%] rounded-2xl bg-[#F4F0E8] border border-ink/[0.08] p-3 sm:p-3.5 shadow-sm text-left"
+        className="relative ml-auto max-w-[96%] sm:max-w-[92%] rounded-2xl bg-[#F4F0E8] border border-ink/[0.08] p-3 sm:p-3.5 shadow-sm text-left transition-colors duration-300"
         style={{ opacity: promptOpacity, y: promptY }}
       >
-        <div className="text-[10px] text-ink-soft mb-1 font-sans flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#FE3C01] animate-pulse" />
-          <span>领队出行心愿倾诉 · 语音 / 文字免填表</span>
+        <div className="text-[10px] text-ink-soft mb-1.5 font-sans flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <span className={`w-1.5 h-1.5 rounded-full ${isSubmitted ? 'bg-emerald-500' : 'bg-[#FE3C01] animate-pulse'}`} />
+            <span className="font-medium text-[#241E20]/80">
+              {isSubmitted ? '领队心愿已提交 · 结构化需求解析中' : '领队出行心愿倾诉 · 语音 / 文字免填表'}
+            </span>
+          </div>
+          <span className="font-mono text-[9px] text-ink-soft/70">
+            {isSubmitted ? '0.4s 快速解析' : '实时输入中'}
+          </span>
         </div>
-        <p className="text-xs sm:text-[13px] text-[#241E20] leading-relaxed font-sans font-medium">
-          {USER_TEXT}
-        </p>
 
-        {/* 演示指针 */}
-        <div className="absolute -bottom-2 -right-1.5 pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)]">
+        {/* 稳固容器高，杜绝文本逐字增加时的页面抖动 (CLS = 0) */}
+        <div className="relative min-h-[58px] sm:min-h-[48px]">
+          <motion.p
+            className="pointer-events-none absolute inset-0 text-xs sm:text-[13px] text-ink-soft/40 leading-relaxed font-sans italic select-none"
+            style={{ opacity: placeholderOpacity }}
+          >
+            正在倾诉出行心愿：谁去、开什么车、最在意什么…
+          </motion.p>
+          <p className="text-xs sm:text-[13px] text-[#241E20] leading-relaxed font-sans font-medium">
+            <span ref={typedRef}>{USER_TEXT}</span>
+            <motion.span
+              className="inline-block w-[2px] h-3.5 ml-0.5 align-middle bg-[#FE3C01] rounded-sm animate-pulse"
+              style={{ opacity: caretOpacity }}
+            />
+          </p>
+        </div>
+
+        {/* 演示指针 (输入完毕后模拟点击提交) */}
+        <motion.div
+          className="absolute -bottom-2 -right-1.5 pointer-events-none drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)]"
+          style={{ scale: cursorScale }}
+        >
           <svg width="17" height="17" viewBox="0 0 24 24" fill="#241E20" stroke="#FAF8F5" strokeWidth="1.2">
             <path d="M4 2.5 L19.5 12 L12.4 13.6 L9 20.5 Z" />
           </svg>
-        </div>
+        </motion.div>
       </motion.div>
 
-      {/* 2. 层级路线推演树 */}
+      {/* 2. 层级路线推演树 (在逐字打字完成后依次执行并展开) */}
       <div className="relative pl-6 space-y-3.5 pt-1 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[1.5px] before:bg-ink/15">
         
-        {/* Step 1: 意图抽取与全要素结构化 (0.018 ~ 0.038) */}
-        <Reveal at={[0.018, 0.038]} y={8} className="relative">
+        {/* Step 1: 意图抽取与全要素结构化 (0.056 ~ 0.078) */}
+        <Reveal at={[0.056, 0.078]} y={8} className="relative">
           <div className="absolute -left-[23px] top-0.5 w-4 h-4 rounded-full bg-paper border border-ink/30 flex items-center justify-center text-[9px] text-ink font-mono font-bold shadow-sm">
             1
           </div>
@@ -197,8 +237,8 @@ function ReasoningCanvas() {
           </div>
         </Reveal>
 
-        {/* Step 2: 空间时空规则交叉核验与刚性风控拦截 (0.05 ~ 0.075) */}
-        <Reveal at={[0.05, 0.075]} y={8} className="relative">
+        {/* Step 2: 空间时空规则交叉核验与刚性风控拦截 (0.086 ~ 0.110) */}
+        <Reveal at={[0.086, 0.110]} y={8} className="relative">
           <div className="absolute -left-[23px] top-0.5 w-4 h-4 rounded-full bg-[#FE3C01]/15 border border-[#FE3C01]/50 flex items-center justify-center text-[9px] text-[#FE3C01] font-mono font-bold shadow-sm">
             2
           </div>
@@ -222,8 +262,8 @@ function ReasoningCanvas() {
           </div>
         </Reveal>
 
-        {/* Step 3: 1,980km 日程就绪 (0.095 ~ 0.125) */}
-        <Reveal at={[0.095, 0.125]} y={8} className="relative">
+        {/* Step 3: 1,980km 日程就绪 (0.118 ~ 0.142) */}
+        <Reveal at={[0.118, 0.142]} y={8} className="relative">
           <div className="absolute -left-[23px] top-0.5 w-4 h-4 rounded-full bg-emerald-100 border border-emerald-400 flex items-center justify-center text-[9px] text-emerald-800 font-mono font-bold shadow-sm">
             3
           </div>
@@ -259,7 +299,7 @@ function ConstraintPanel() {
   // 面板常驻呈现，随场景淡出 (彻底杜绝首帧空白)
   const panel = useRange(p, [T.chatOut[0], T.chatOut[1]], [1, 0]);
   // 四条刚性规则跟随左侧思维链 1、2、3 步依次点亮解析
-  const RULE_TIMES = [0.025, 0.055, 0.085, 0.115];
+  const RULE_TIMES = T.chips;
 
   return (
     <motion.aside className="hidden w-[38%] max-w-[330px] flex-col md:flex shrink-0" style={{ opacity: panel }}>
@@ -294,7 +334,7 @@ function ConstraintPanel() {
           ))}
         </ul>
 
-        <Reveal at={[0.13, 0.15]} y={6} className="mt-auto pt-3 border-t border-ink/[0.06]">
+        <Reveal at={[0.142, 0.158]} y={6} className="mt-auto pt-3 border-t border-ink/[0.06]">
           <div className="rounded-control bg-emerald-50/70 border border-emerald-500/20 p-2 text-[10px] leading-relaxed text-ink-soft font-sans">
             <div className="flex items-center justify-between text-emerald-800 font-semibold">
               <span className="flex items-center gap-1">
