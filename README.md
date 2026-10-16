@@ -7,9 +7,11 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Phase](https://img.shields.io/badge/Phase-2%20Arch%20Package%20v2-green.svg)](docs/delivery/DLV-01-roadmap-mvp.md)
+[![TripCraft 2.0](https://img.shields.io/badge/TripCraft-2.0%20Showcase-FE3C01.svg)](https://johnmaxwell0123.github.io/TripCraft/)
+[![Design System](https://img.shields.io/badge/Design%20System-Unify%20GTM%20(Warm%20Paper)-241E20.svg)](docs/SHOWCASE-web-design.md)
 [![Schema Contract](https://img.shields.io/badge/Schema%20Contract-v1.0.0%20Verified-success.svg)](spec/)
 [![Gate Check](https://img.shields.io/badge/Gate%20Check-Passed%20(4%20Gates)-brightgreen.svg)](tools/)
-[![Live Showcase](https://img.shields.io/badge/Live%20Showcase-GitHub%20Pages-orange.svg)](https://johnmaxwell0123.github.io/TripCraft/)
+[![Tech Stack](https://img.shields.io/badge/Tech%20Stack-Next.js%2016%20%7C%20React%2019%20%7C%20Tailwind-black.svg)](apps/showcase/)
 [![Architecture](https://img.shields.io/badge/Architecture-Local--First%20%7C%20Zero--Build-purple.svg)](docs/architecture/ARC-01-overview.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](docs/delivery/DLV-01-roadmap-mvp.md)
 
@@ -40,20 +42,21 @@
 
 ### 👉 [TripCraft · 旅艺 —— 面向自驾与深度游的智能旅行路书协同中枢](https://johnmaxwell0123.github.io/TripCraft/) 👈
 
-*西行计划 · 丝路自驾路书与官方 Universal Studio 体验中枢（RELEASE v3.6.3 · 2,400km 穿越河西走廊、张掖丹霞、嘉峪关、敦煌莫高窟、东风航天城）*
+*西行计划 · 丝路自驾路书与 2.0 智能座舱体验中枢（2,400km 穿越河西走廊、张掖丹霞、嘉峪关、敦煌莫高窟、东风航天城 · 腾势 D9 2.28m MPV 与考斯特通达实测）*
 
 </div>
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│                                 TripCraft 实战体验核心亮点                               │
+│                               TripCraft 2.0 实战体验核心亮点                             │
 │                                                                                         │
-│  🎨 苹果液态玻璃视觉系统          📱 真正多端体验矩阵             🏔️ 零依赖离线抗灾        │
-│  敦煌金 / 青甘碧 / 雪山银 /       手机随身打卡 · 平板大屏地理沙盘  高对比离线矢量地图底图   │
-│  赛博紫 / 丹霞红自适应流转        桌面 Web 工作台 · 车载大屏投递   无人区断网秒开交互       │
+│  🎨 Unify GTM 温暖纸质美学       📱 2.0 五幕长镜头演进            🏔️ 1.2MB 零依赖自包含产物  │
+│  暖纸白 / 暖炭黑 / 5px 工业圆角   01倾诉流式打字 ➔ 02河西沙盘      纯自包含单文件 HTML 交付   │
+│  火焰跃动光晕 / 社论级西文衬线    03愿望池 ➔ 04座舱 ➔ 05离线交付   祁连山与沙漠拓扑断网秒开   │
 │                                                                                         │
-│  🛡️ 三段式弹性时间熔断            🚗 智能座舱极简交付             🚌 考斯特通达性标注      │
-│  🟢 计划A ｜ 🟡 缓冲 ｜ 🔴 降级   全天 10+ 途经点一键批量推入车机  大巴限高/掉头/充电桩实测 │
+│  🛡️ 4 项家庭刚性守护清单         🚗 2.0 奢华座舱车道光毯          🚌 双车型极限通达性实测   │
+│  70岁膝关节/4岁午休/日落摄影      分屏实时 HUD 车速与 P 挡微镜     腾势 D9 2.28m 老城地库拦截 │
+│  老定制师 3 步 CoT 结构化推演     2.0m 刚性预警 (BR-025 物理断言)  考斯特 2.8m 限高与景区换乘 │
 └─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -133,12 +136,13 @@ TripCraft 直面自驾旅行“低频、重线下、非标品、极其依赖实�
 
 ## ⚡ 核心杀手级特性 (Killer Features)
 
-### 1. 🤖 苏格拉底启发式对齐引擎 (`S-GENERATE`)
-*告别繁琐打字疲劳与 AI 路线幻觉，构建懂旅行的智能启发向导。*
+### 1. 🤖 苏格拉底启发式对齐引擎与流式思维链 (`S-GENERATE`)
+*告别繁琐打字疲劳与 AI 路线幻觉，构建懂旅行、懂家庭的智能启发向导。*
 
-- **双模弹性唤醒**：支持「自由倾倒模式」（随意粘贴聊天记录或杂乱想法）与「零输入向导模式」（全流程胶囊药丸点选 Zero-Typing Pills）；
-- **四层渐进式收敛漏斗**：大骨架团队画像 ➔ 交通锚点与核心灵魂景点 ➔ 节奏与风味偏好 ➔ 优雅的待定容忍与 Plan B 熔断；
-- **待定项语义容忍 (Tentative Tolerance)**：用户回答“随便”、“还没定”时绝不反复追问卡死，自动注入行业最佳实践并标记语义，配套「🟢 计划A ｜ 🟡 弹性缓冲 ｜ 🔴 降级预案」三段式时间熔断机制；
+- **逐字流式打字与交互聚焦**：集成 `useScrollTypewriter` 逐字打字机流式输入（字符敲入 ➔ 光标呼吸 ➔ 模拟提交点击），真实再现复杂家庭出行意图录入过程；
+- **老定制师 3 步 CoT 结构化推演树**：分层展开「意图语义解析 ➔ 刚性约束提取 ➔ 行程拓扑收敛」思维链，与右侧刚性规则列表严格联动；
+- **4 项家庭出行刚性守护清单**：深度解析并固化「👴 70岁长辈膝关节手术（规避高长台阶）」「👶 4岁幼儿午休防中暑（避开正午酷热）」「🚗 腾势 D9 带车顶箱 2.28m 限高（老城地库拦截预警）」「🌅 鸣沙山 19:30 日落摄影（黄金光线窗口）」；
+- **双模弹性唤醒与待定容忍**：支持「自由倾倒模式」与「零输入胶囊药丸点选模式 (Zero-Typing Pills)」；用户回答“随便/还没定”时绝不反复逼问，自动注入行业最佳实践并标记语义，配套「🟢 计划A ｜ 🟡 弹性缓冲 ｜ 🔴 降级预案」三段式时间熔断机制；
 - **强契约防幻觉校验**：生成产物强制通过 [`spec/trip.schema.json`](spec/trip.schema.json) 工业级校验，未核实 POI 强制打标 `tentative`，彻底杜绝大模型编造虚假路线；规范依据详见 [`docs/08-socratic-interaction-design.md`](docs/08-socratic-interaction-design.md)。
 
 <div align="center">
@@ -151,13 +155,23 @@ TripCraft 直面自驾旅行“低频、重线下、非标品、极其依赖实�
 
 ---
 
-### 2. 🎨 目的地感知·苹果液态玻璃视觉系统 (Destination-Aware Liquid Glass)
-*拒绝死板灰暗的传统表格，呈现头等舱画册级杂志排版质感。*
+### 2. 🎨 Unify GTM 瑞士工程与苹果液态玻璃双融视觉系统 (Unify GTM & Liquid Glass)
+*拒绝死板灰暗的传统表格与过度圆润的低幼质感，呈现瑞士理性工程与头等舱杂志级排版美学。*
 
-- **五大预设液态玻璃主题矩阵**：敦煌金（大漠风情）、青甘碧（高原湖泊）、雪山银（冰川冷冽）、赛博紫（夜幕星空）、丹霞红（地貌奇观），界面随目的地自适应流转；
-- **极致工程级动效**：CSS Grid `0fr-1fr` 硬件加速平滑折叠，彻底杜绝 JavaScript 计算导致的页面重排与帧率卡顿；
-- **长辈关怀大字模式 (Senior Care Mode)**：内置 `<head>` 防闪烁逻辑（Zero-FOUC），满足 WCAG 2.1 AAA 严苛标准，按钮触控靶区全面扩大至 ≥ 48px × 48px；
-- **电影画幅意境 Banner**：智能匹配 16:9 电影画幅暗调意境横幅与深色高斯模糊渐变衬底，打造媲美 Apple 设计规范的高级质感；规范依据详见 [`docs/09-visual-design-system.md`](docs/09-visual-design-system.md)。
+- **Unify GTM 温暖纸质质感调色板**：
+  - 画布暖纸白（Warm Paper）：`#FFFFF9`
+  - 模块质感浅卡其（Surface Card）：`#F4F4EE`
+  - 暖炭黑主文本（Warm Charcoal）：`#241E20`
+  - 火焰跃动点缀辉光（Flame Accent / Headline Aura Glow）：`#FE3C01`（为“活路书”与主操作注入高能生命力）
+  - 极细分割发丝线（Hairline Border）：`#E2E2D8`
+- **严格几何圆角阶梯 (Radius Hierarchy)**：
+  - 交互按钮严格 `rounded-[5px]`（拒绝低幼圆角膨胀，还原工业精密质感）；
+  - 状态药丸与胶囊徽标严格 `rounded-full`（100px）；
+  - 内容卡片与模块 `rounded-[12px]`；
+  - 主展示视窗与输入容器 `rounded-[16px]`；
+- **社论级西文衬线 (Editorial Serif) 与 1200px 网格**：主副标题采用高雅西文衬线字体，搭配 `-0.035em` 紧凑字间距，规范在 `max-w-[1200px]` 瑞士工程网格中自适应流转；
+- **五大自然主题意境与液态玻璃**：敦煌金（大漠风情）、青甘碧（高原湖泊）、雪山银（冰川冷冽）、赛博紫（夜幕星空）、丹霞红（地貌奇观），配合苹果液态玻璃（`backdrop-filter: blur(20px)`）流光质感；
+- **长辈关怀大字模式 (Senior Care Mode)**：内置 `<head>` 防闪烁逻辑（Zero-FOUC），满足 WCAG 2.1 AAA 严苛标准，按钮触控靶区全面扩大至 ≥ 48px × 48px；规范依据详见 [`docs/09-visual-design-system.md`](docs/09-visual-design-system.md) 与 [`docs/SHOWCASE-web-design.md`](docs/SHOWCASE-web-design.md)。
 
 <div align="center">
 
@@ -169,7 +183,7 @@ TripCraft 直面自驾旅行“低频、重线下、非标品、极其依赖实�
 
 ---
 
-### 3. 📦 零依赖·免安装·单文件高保真离线快照 (`C-SNAPSHOT`)
+### 3. 📦 零依赖·免安装·1.2MB 高保真单文件自包含离线快照 (`C-SNAPSHOT`)
 *践行「零构建交付、单文件优先、降级不可耻、白屏才是罪」的硬核工程铁律。*
 
 ```mermaid
@@ -184,7 +198,7 @@ flowchart LR
     end
 
     subgraph Output["C-SNAPSHOT 零依赖自包含产物"]
-        HTML["单文件 HTML (自包含)<br/>• 零运行时 npm 依赖<br/>• 微信秒开 / AirDrop 秒投<br/>• 荒漠无人区毫秒级加载"]
+        HTML["单文件 HTML (自包含 1.2MB)<br/>• 零运行时 npm 依赖<br/>• 微信秒开 / AirDrop 秒投<br/>• 荒漠无人区毫秒级加载"]
     end
 
     subgraph Sync["极端弱网现场差分同步"]
@@ -198,15 +212,15 @@ flowchart LR
     HTML -.->|突发塌方/修路改道| Sync
 ```
 
-- **自包含全量编译**：将完整行程数据、高对比离线矢量地图、CSS 主题动效与离线交互逻辑编译为**单个自包含 HTML 文件**；
+- **自包含全量编译**：将完整行程数据、高对比离线矢量地图、CSS 主题动效与离线交互逻辑编译为**单个自包含 1.2MB HTML 文件**；
 - **完全免安装**：零第三方 npm 运行时依赖，微信点开即看、AirDrop 隔空秒投、本地文件双击即览；
-- **极端环境容灾**：在海拔 4000 米高原无人区、深山峡谷断网、弱网基站拥塞等恶劣条件下，保障毫秒级加载与全量离线交互；规范依据详见 [`docs/01-resilience-and-failover.md`](docs/01-resilience-and-failover.md) 与 [`docs/05-compiler-pipeline.md`](docs/05-compiler-pipeline.md)；
+- **三级离线容灾降级架构**：一级 MapLibre 矢量瓦片 ➔ 二级高对比静态 SVG 地形 ➔ 三级节点时空卡片，在海拔 4000 米高原无人区、深山峡谷断网、弱网基站拥塞等恶劣条件下，保障毫秒级加载与全量离线交互，严禁白屏；规范依据详见 [`docs/01-resilience-and-failover.md`](docs/01-resilience-and-failover.md) 与 [`docs/05-compiler-pipeline.md`](docs/05-compiler-pipeline.md)；
 - **TripPatch 点对点增量分发**：突发塌方、泥石流或修路改道时，领队生成百字节级 [`spec/patch.schema.json`](spec/patch.schema.json) 差分补丁，面对面扫码或局域网全员秒级同步。
 
 ---
 
-### 4. 🚗 智能座舱极简交付协议 (`C-CABIN`)
-*告别手机支架低头驾驶隐患，让路书真正融入车载大屏。*
+### 4. 🚗 2.0 智能座舱极简交付与车道级领航协议 (`C-CABIN`)
+*告别手机支架低头驾驶隐患，原生奢华座舱车道级光毯与物理限高拦截。*
 
 ```mermaid
 flowchart TB
@@ -220,8 +234,9 @@ flowchart TB
         AUTO["车机原生地图接管路线规划与导航引导<br/>(🚫 绝不激活 NOA，绝不触碰线控底盘)"]
     end
 
-    subgraph Radar["新能源理性补能规划雷达"]
+    subgraph Radar["新能源理性补能与限高雷达"]
         ENERGY["车型公开百公里电耗模型 + 沿途海拔爬坡落差 + 用户表显电量输入<br/>★ 纯数学离线估算，明确责任边界，杜绝虚假承诺"]
+        CLEARANCE["车型高度校验 (腾势 D9 2.28m)<br/>★ 老城地库 2.0m 限高刚性拦截警报 (BR-025 物理断言)"]
     end
 
     PA & PB & PC --> Handover
@@ -229,13 +244,15 @@ flowchart TB
 ```
 
 - **全天路线批量投递**：全天沿途打卡点、观景台、服务区一键打包推送车机，车机原生地图接管导航引导；
-- **多屏协同展卡**：同一产物自适应多屏，中控大屏呈现全局路线沙盘，副驾屏与后排屏联动显示深度人文历史解说；
+- **2.0 奢华中控大屏与 3D 车道级光毯**：分屏实时展示 HUD 车速、3D 车道级行进光毯与下一节点指引；
+- **老城地库 2.0m 限高刚性拦截预警**：实测 7 座 MPV（腾势 D9 带车顶箱总高 2.28m）老城地库通行，检测到 2.0m 限高立即触发刚性视觉拦截预警与就近露天停车场推荐（严守 BR-025 物理断言）；
+- **P 挡步行微镜接力**：车辆挂入 P 挡泊车后，车机自动向随身手机推送步行微镜通知，无缝接力最后 500 米古城街巷打卡；
 - **理性补能规划雷达**：结合车型公开百公里电耗模型、海拔爬坡落差与用户输入的表显电量做数学估算，提前预警补能区间；规范依据详见 [`docs/02-cockpit-protocol.md`](docs/02-cockpit-protocol.md)。
 
 ---
 
-### 5. 🏢 线下地接与车队 B2B 白标 SaaS (`C-CONSOLE` & `S-TENANT`)
-*专为精品地接社、自驾俱乐部与高端车队量身定制的商业化外骨骼。*
+### 5. 🏢 微信免登愿望池协同与线下地接 B2B 白标 SaaS (`Collab` & `C-CONSOLE`)
+*微信扫码免登多人愿望池协同，专为精品地接社、自驾俱乐部与高端车队量身定制的商业化外骨骼。*
 
 ```mermaid
 flowchart LR
@@ -258,6 +275,8 @@ flowchart LR
     Before ==>|TripCraft 赋能改造| After
 ```
 
+- **微信全团免登愿望池协同**：同行亲友微信扫码免登一键加入，副驾 3D 拟真手机伴侣悬浮视窗随视差滚轮平滑交互；
+- **顺路度智能拓扑重算**：提名小吃打卡（正宁路夜市·牛奶鸡蛋醪糟）后，纯前端 Web Worker 毫秒级重算 98% 顺路度对比条形图，一键合并入时间线；
 - **极速出单与品牌溢价**：原本需要耗费 4~8 小时的手写长文本，通过白标工作台 20 分钟内生成苹果头等舱质感路书；
 - **独立品牌白标体系**：支持租户专属 Logo、品牌主色调、专属域名（如 `vip.myagency.com`）与防伪定制水印；规范依据详见 [`spec/brand.schema.json`](spec/brand.schema.json)；
 - **独家特许资源库管理**：机构独家机位、大巴限高暗道、地接协议餐宿等核心资产通过行级安全隔离（RLS），防止从业者核心情报流失；
@@ -360,7 +379,7 @@ flowchart TB
 | **`spec/` 契约集** | 契约层 (L2) | **已验证** | **已实现** | [`spec/`](spec/)、[`docs/04-dsl-specification-v1.md`](docs/04-dsl-specification-v1.md) |
 | **`tools/` 门禁工具链** | 工程基础设施 | **已验证** | **已实现** | [`tools/`](tools/)、[`package.json`](package.json) |
 | **`examples/` 标杆数据** | 数据基准 | **已验证** | **已实现** | [`examples/dunhuang-silkroad-9d/trip.json`](examples/dunhuang-silkroad-9d/trip.json) |
-| **`apps/showcase` 体验站** | 交付体验 (L5) | **已验证** | **已上线** | [`apps/showcase/`](apps/showcase/)、[在线体验](https://johnmaxwell0123.github.io/TripCraft/) |
+| **`apps/showcase` 体验站** | 交付体验 (L5) | **已验证** | **2.0 已上线 (Unify GTM / 5幕长镜头)** | [`apps/showcase/`](apps/showcase/)、[在线体验](https://johnmaxwell0123.github.io/TripCraft/) |
 | **`S-EXPORT` 单文件编译器** | 编译流水线 (L3) | 已评审 | 原型验证 | [`docs/05-compiler-pipeline.md`](docs/05-compiler-pipeline.md) |
 | **`C-SNAPSHOT` 离线运行时** | 容灾运行时 (L4) | 已评审 | 原型验证 | [`docs/architecture/ARC-04-clients-channels.md`](docs/architecture/ARC-04-clients-channels.md) |
 | **`C-CABIN` 座舱交付协议** | 终端接入 (L5) | 已评审 | 协议已定 | [`docs/02-cockpit-protocol.md`](docs/02-cockpit-protocol.md) |
@@ -427,10 +446,19 @@ npm run check
 # 启动 Showcase 体验站本地开发服务 (Next.js 16 + Tailwind CSS)
 npm run showcase:dev
 
-# 或执行静态全量导出构建与类型检查
+# 执行静态全量导出构建与类型检查 (生产 SSG 构建)
 npm run showcase:typecheck
 npm run showcase:build
+
+# 预览 SSG 导出的生产静态产物
+npm run showcase:serve
 ```
+
+### 6. Git 分支结构与上线部署地图
+仓库遵循严谨的分支治理纪律，杜绝代码污染与基线漂移：
+- **`main`**：生产主分支，已同步最新的 2.0 智能座舱与高保真五幕协同成果，推送自动触发 GitHub Actions 持续部署至 GitHub Pages。
+- **`feat/showcase-cockpit-autonomous`**：2.0 核心演进特性分支，与 `main` 完全对齐，前沿优化与门禁先行在此验证。
+- **`archive/v1-classic` 与 Tag `v1.0-classic`**：**永久封存的 1.0 经典原版**（严格只读，永久保留供随时一键回滚）。
 
 ---
 
@@ -481,7 +509,7 @@ docs/
 ```text
 TripCraft/
 ├── apps/
-│   └── showcase/      # 现代化交互式官方展示站 (Next.js 16 / Tailwind / 液态玻璃 / Scrollytelling) [已实现]
+│   └── showcase/      # 现代化交互式官方展示站 (Next.js 16 / React 19 / Unify GTM / 五幕长镜头 Scrollytelling) [已实现]
 ├── spec/              # 核心 JSON Schema 工业级契约 (trip, brand, node, patch) [已实现]
 ├── docs/              # 完整文档体系 (产品 PRD、系统架构 ARC、交付 DLV、执行全书 16 章、白皮书)
 │   ├── product/       # 产品设计包 (PRD-01 ~ PRD-05) [已评审]
