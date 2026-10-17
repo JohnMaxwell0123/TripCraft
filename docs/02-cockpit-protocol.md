@@ -1,5 +1,7 @@
 # 第 2 章 · EV 智能座舱端到端协议
 
+> 📌 **与产品基线 v3 的关系（2026-10-17）**：车机投递在[产品基线](product/PRD-01-vision-positioning.md)中为**支撑能力**（`F-M07-01` 阶段 3）。本章的能力边界（不触发 NOA、不读 SOC、深链 + 投屏）继续有效。
+
 > **状态**：`Stable Draft`（含待验证项）｜ **对应维度**：深度维度 ② EV 智能座舱端到端协议
 > **铁律依据**：[责任边界线 1](00-overview-and-glossary.md#03-三条责任边界线tripcraft-不是清单)、[铁律 7 事实与建议分离](00-overview-and-glossary.md#铁律-7--事实与建议分离-fact-vs-advice)、[铁律 8 拒绝静默失败](00-overview-and-glossary.md#铁律-8--拒绝静默失败-never-fail-silently)
 > **本章要回答**：怎么把一份 9 天 40 个节点的路书，**可靠地**送进一台我们无法控制、无法测试、能力随时可能变化的车机？

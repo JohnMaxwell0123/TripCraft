@@ -1,91 +1,85 @@
 # TripCraft · 项目进度与会话交接备忘 (PROJECT_PROGRESS.md)
 
-> 本文件用于在新建 AI 对话窗口或多人协作时快速恢复项目上下文与执行进度。
+> 本文件用于在新建 AI 对话窗口或多人协作时快速恢复项目上下文与执行进度。最后更新：2026-10-17。
 
 ---
 
-## 1. 项目基本定位与当前状态
+## 1. 项目定位与当前状态
 
-- **项目定位**：面向自驾与深度游的智能旅行路书协同系统、数字化交付与 B 端白标 SaaS 平台；以「统一账号多端协同」与「零依赖高保真单文件离线快照」为双轮驱动。
-- **当前分支**：`main`（已完成 `docs/arch-package-v2` 架构包与全新首页的合入与推送，远程 `origin/main` 保持最新）。
-- **门禁状态**：`npm run check` 100% 通过（4 份 JSON Schema 元校验、Dunhuang 示例校验、1100+ 处 Markdown 交叉链接 0 失效、BR-025 防内联算路几何规则通过、14 场景/51 功能/8 决策/12 假设全链路追溯校验通过）。
+- **项目定位**（[产品基线 PRD-01 v3](docs/product/PRD-01-vision-positioning.md)）：多端同步、多人共享的 AI 旅行规划 App。用户通过 AI 对话（平台模型或自带 API）说清需求 → 追问形成需求画像 → **路径 A** AI 自主规划自驾路线，或 **路径 B** 匹配持证旅行社线路（匹配度 + 带分布图滑块的筛选页）。B 端为旅行社提供线路上架、AI 路书与路线动画、透明报价的线路工作室。
+- **口径规则**：PRD-01 是唯一基准；其它文档冲突时按 PRD-01 §0 的优先级裁决，受影响章节已在章首注明。
+- **实现状态**：仓库中只有设计文档、数据契约（`spec/`）、门禁工具（`tools/`）、样例数据（`examples/`）与演示站（`apps/showcase/`），**尚无产品代码**。
+- **门禁状态**：`npm run check` 通过——4 份 Schema 与 1 份样例校验、Markdown 跨文件链接 0 失效、BR-025、追溯校验（20 场景 / 76 功能 / 47 项 P0 / 10 ADR / 18 假设）。门禁目前只在本地运行，CI 只负责部署演示站。
 
 ---
 
-## 2. 关键文件索引与职责
+## 2. 关键文件索引
 
-| 文件路径 | 性质 | 作用与内容 |
+| 文件路径 | 性质 | 作用 |
 | :--- | :--- | :--- |
-| [`README.md`](README.md) | 核心展示页 | 项目落地首页，含全景项目定位 (About)、四大痛点破局、B2B2C 飞轮、五大核心亮点、架构图、边界与路线图。 |
-| [`CHANGELOG.md`](CHANGELOG.md) | 变更记录 | 记录架构、规范与核心修复的发布演进。 |
-| [`docs/product/`](docs/product/) | 产品架构包 | `PRD-01` ~ `PRD-05`，愿景定位、客群角色、14 个场景、51 项功能（29 个 P0 卡片）、商业模式。 |
-| [`docs/architecture/`](docs/architecture/) | 系统架构包 | `ARC-01` ~ `ARC-08`，总览与Monorepo、领域模型、离线同步、客户端矩阵、后端集成、多租户、安全隐私、部署成本。 |
-| [`docs/architecture/adr/`](docs/architecture/adr/) | 架构决策记录 | `ADR-001` ~ `ADR-008` 与 `ARC-09` 索引，涵盖跨端、同步、后端单体、存储、地图、快照、租户、AI防幻觉。 |
-| [`docs/delivery/`](docs/delivery/) | 交付规划包 | `DLV-01` ~ `DLV-03`，5 阶段演进路线图、MVP 边界、8 项核心风险登记册、全链路追溯矩阵。 |
-| [`docs/WHITEPAPER.md`](docs/WHITEPAPER.md) | 架构白皮书 | 涵盖商业逻辑、座舱协议、IP 保护指南等宏观背景。 |
-| [`docs/ASSUMPTIONS.md`](docs/ASSUMPTIONS.md) | 假设台账 | 记录 A-01 至 A-12 商业与技术未验证断言。 |
-| [`docs/ERRATA.md`](docs/ERRATA.md) | 勘误记录 | 记录历史能力边界纠偏与事实更正（NOA/SOC 边界、日历星期对齐等）。 |
-| [`spec/`](spec/) | 数据契约 | `trip.schema.json`、`brand.schema.json`、`node.schema.json`、`patch.schema.json`。 |
-| [`examples/dunhuang-silkroad-9d/`](examples/dunhuang-silkroad-9d/) | 标杆样例 | 丝路 9 天真实行程脱敏数据（`trip.json`，纯 DSL 数据）。 |
-| [`tools/`](tools/) | 自动化门禁 | `validate-schemas.js`、`check-links.mjs`、`check-br025.mjs`、`check-trace.mjs`。 |
-| [`TRIPCRAFT_FIX_PLAN.md`](TRIPCRAFT_FIX_PLAN.md) | 历史任务书 | **已全量执行完毕**的审计与修复计划（本地保留，不入库）。 |
-| [`TRIPCRAFT_ARCH_PLAN_v2.md`](TRIPCRAFT_ARCH_PLAN_v2.md) | 历史任务书 | **已全量执行完毕**的产品与系统架构包 v2 执行计划（本地保留，不入库）。 |
+| [`docs/product/PRD-01-vision-positioning.md`](docs/product/PRD-01-vision-positioning.md) | ★ 产品基线 | 定位、核心流程、能力边界、被取代的旧口径、待决策事项 D5–D10 |
+| [`docs/16-planning-paths-and-route-matching.md`](docs/16-planning-paths-and-route-matching.md) | ★ 主线专项 | 对话入口与模型选择、需求画像、路径 A、匹配度、筛选页 |
+| [`docs/17-agency-route-studio.md`](docs/17-agency-route-studio.md) | ★ 主线专项 | 旅行社线路导入与上架、透明度、AI 路书与路线动画、报价版本、客户归属 |
+| [`docs/product/`](docs/product/) | 产品包 | PRD-01 ~ PRD-05 |
+| [`docs/architecture/`](docs/architecture/) | 架构包 | ARC-01 ~ ARC-10、ADR-001 ~ ADR-010 |
+| [`docs/delivery/`](docs/delivery/) | 交付包 | DLV-01 路线图（v3）、DLV-02 风险、DLV-03 追溯矩阵 |
+| [`docs/README.md`](docs/README.md) | 执行全书总览 | 章节地图、按角色阅读路径、核查与变更记录 |
+| [`docs/ASSUMPTIONS.md`](docs/ASSUMPTIONS.md) | 假设台账 | A-01 ~ A-18 |
+| [`docs/00-overview-and-glossary.md`](docs/00-overview-and-glossary.md) | 宪法层 | 十条铁律、三条责任边界、术语表、未决事项 OI-001 ~ OI-024 |
+| [`spec/`](spec/) | 数据契约 | trip / node / brand / patch 四份 Schema |
+| [`tools/`](tools/) | 门禁 | validate-schemas、check-links、check-br025、check-trace |
+| [`apps/showcase/`](apps/showcase/) | 演示站 | Next.js 16 + React 19，推送 main 自动部署 GitHub Pages |
+| [`docs/WHITEPAPER.md`](docs/WHITEPAPER.md) | 历史文档 | 早期白皮书，不作为现行口径 |
+| [`TRIPCRAFT_ARCH_PLAN_v2.md`](TRIPCRAFT_ARCH_PLAN_v2.md)、[`tripcraft_showcase_agent_refactoring_spec.md`](tripcraft_showcase_agent_refactoring_spec.md) | 历史任务书 | 已执行完毕，已标注历史 |
+| `TripCraft 商业可行性尽调…诊断报告.md` | AI 模拟报告 | **不是真实第三方尽调**，不得对外引用 |
 
 ---
 
 ## 3. 已完成阶段
 
-### Phase 1：修复与合规化
-1. **数据清洗与隐私脱敏**：高德 Key 占位符、虚构身份证号掩码脱敏、订单与房号模板化。
-2. **能力边界与合规性纠偏**：纠正 NOA / SOC 夸大叙事，明确深链途经点投递与手机屏幕镜像。
-3. **知识产权与法律主张修正**：修正 Git SHA-1 法律存证表述，确立思想与表达二分法，维持标准 MIT 许可证。
-4. **商业断言解耦**：建立 `docs/ASSUMPTIONS.md` 假设台账（A-01~A-07）。
-5. **日历星期全面对齐**：修复自然年历星期对应。
-6. **文档分流与终审微调**：落地页精简，统一单文件编译器路径，标注在线体验站性质。
+### Phase 1：修复与合规化（2026-10-07）
+数据脱敏、NOA / SOC 能力边界纠偏、Git 存证表述修正、假设台账建立、日历星期对齐；OI-008 许可证冲突闭合（保持 MIT）。
 
-### Phase 2：产品与系统架构包 v2（分支：`docs/arch-package-v2`）
-1. **工程自动化升级**：新增 `tools/check-trace.mjs`（场景-功能-决策-假设闭环），修复 `check-links.mjs` 门禁放行缺陷并增加目录相对链接校验，纳入 `npm run check`。
-2. **产品架构体系 (`docs/product/`)**：完成 PRD-01 ~ PRD-05 与 README 索引，定义 14 个核心业务场景与 51 项功能（29 个 P0 验收卡），建立 B2B2C 商业模式与试点机制。
-3. **系统架构体系 (`docs/architecture/`)**：完成 ARC-01 ~ ARC-08、ADR-001 ~ ADR-008 与 ARC-09 索引，定义 17 大领域实体、Local-First 离线同步模型、防幻觉 AI 生成管线与 RLS 多租户白标。
-4. **交付规划体系 (`docs/delivery/`)**：完成 DLV-01 ~ DLV-03，制定 5 阶段演进路线图、MVP 范围及明确 Non-Goals、8 大风险登记册与全量追溯矩阵。
-5. **首页与元数据重构**：重做根目录 `README.md` 与 `package.json`，彻底纠正历史关于定位的错误描述（About），明确统一账号多端协同与离线快照双轮驱动体系，补齐行业四大痛点破局表、B2B2C 飞轮图与 GitHub 仓库 About 元数据配置建议；同步更新 `docs/README.md`、`docs/WHITEPAPER.md`、`docs/ASSUMPTIONS.md` 与 `CHANGELOG.md`。
+### Phase 2：产品与系统架构包 v2（2026-10-08）
+PRD-01 ~ 05、ARC-01 ~ 09、ADR-001 ~ 008、DLV-01 ~ 03；新增 `check-trace` 追溯门禁。
 
-### Phase 3：展示与交互演示官网落地（Apple Scrollytelling 视差故事流与全能力矩阵）
-1. **架构与工程解耦**：创建独立应用 `apps/showcase`（Next.js 16 + React 19 + Tailwind CSS 3.4 + Framer Motion 12 + TypeScript），采用纯静态 SSG 导出 (`output: 'export'`) 与零外部运行时依赖托管服务 `server.mjs`。
-2. **Apple Scrollytelling 电影级长镜头故事流**：
-   - **01 倾诉**：滚动打字输入自然语言诉求（5人家庭自驾+长辈幼儿+7座豪华MPV带车顶箱），AI 实体槽位瞬时抽取，苏格拉底反问卡片方案 A 自动锁定。
-   - **02 织就**：纯矢量 SVG 航拍俯冲运镜（中国 ➔ 河西走廊 ➔ 兰州），7座 MPV 车标沿 Catmull-Rom 贝塞尔轨迹循迹，乌鞘岭长下坡防刹车过热与丹霞/莫高窟适老通行胶囊联动。
-   - **03 齐心**：微信免登扫码好友模拟，愿望池抽屉开启，搜索「正宁路夜市·赵记牛奶鸡蛋醪糟」并抛物线飞入心愿池。
-   - **04 重排**：苹果液态玻璃路线重算弹窗弹出，顺路度 98% 数字滚动跳动，原计划 vs 优化后路线条形对比，7座 MPV 车顶箱 2.15m 限高与夜市地面泊车建议，一键采纳并展开街区步行虚线放大镜 (`WalkLens`)。
-   - **05 出发**：单文件 `西行计划.v1.1.html` 编译进度与清单、手机离线/车机 HUD/A5 纸质打印三端扇形展开。
-3. **沉浸式交互微沙盒与全能力 Bento**：
-   - 包含断网演练模拟开关、地接社白标实时换肤器、7座 MPV/SUV 车顶箱通过性动态滑块等 6 大核心 Bento 交互展卡。
-   - **技术底座与工程哲学深度重构 (`TechFoundation.tsx`)**：移出教条式十大铁律，升级为 4 大硬核架构支柱（Local-First 数据主权、可执行 DSL 唯一真相源、双轨防幻觉与 BR-001~025 物理断言、零构建单文件与 Tier 0 车机协议）与实时可交互代码契约检视台。
-   - **全站常驻长辈关怀模式 (`SeniorModeFab` + `data-senior`)**：支持常驻浮动控制栏与顶部一键切换，字号放大 25%、行间距加宽、对比度强化、大点击靶心与轻提示，满足 WCAG AA 适老化标准。
-4. **自动化门禁与多端验证**：
-   - 根目录集成 `showcase:dev`、`showcase:build`、`showcase:serve`、`showcase:typecheck` 脚本；
-   - Chrome DevTools 真机桌面端与移动端 (iPhone 14) 全流程渲染、控制台 0 报错验证通过。
+### Phase 3：演示站（2026-10-12 ~ 10-16）
+`apps/showcase` 五幕滚动叙事（倾诉 → 河西沙盘 → 愿望池 → 座舱 → 离线交付），Unify GTM 暖纸视觉，GitHub Pages 自动部署。
+
+### Phase 4：产品基线 v3 文档统一（2026-10-17）
+按业主定调重写 PRD-01 并建立口径优先级；新增 docs/16、docs/17、ADR-009、ADR-010；PRD / ARC / DLV 全面对齐；执行全书章首标注；新增 A-13 ~ A-18、OI-021 ~ OI-024。明细见 [CHANGELOG](CHANGELOG.md)。
 
 ---
 
-## 4. 下一步待办（Phase 3：工程落地与核心原型开发）
+## 4. 下一步
 
-- **待 Owner 决策事项**：
-  1. 评审确认 D2（MVP 切分：阶段 1 共用核心 + 3~5 家小 B 白标出单最小闭环）；
-  2. 评审确认 ADR-001 至 ADR-008 的 Proposed 选型建议；
-  3. 推进 3~5 家甘青/川西精品地接社实地访谈（验证 A-03 与 A-10 假设）。
-- **工程开工阶段**（按 `DLV-01` 阶段 1 MVP 范围）：
-  1. 初始化 Monorepo 骨架（`apps/`、`packages/`、`services/`）；
-  2. 实现 `@tripcraft/dsl-core` 核心解析与操作库；
-  3. 启动 `S-EXPORT` 单文件 HTML 编译器（`tools/compile.mjs` 原型化落地）；
-  4. 搭建 C-CONSOLE 与 C-MOBILE 最小可交互原型。
+### 4.1 待业主决策（[PRD-01 §9](docs/product/PRD-01-vision-positioning.md#9-待业主确认的决策)）
+| 编号 | 决策 | 文档默认值 |
+| :--- | :--- | :--- |
+| D5 | 平台默认模型选型与自带 API 支持范围 | 国内可合规模型；OpenAI 兼容 + Anthropic 接口 |
+| D6 | 是否在后续阶段做站内交易 | 阶段 1–2 不做 |
+| D7 | 路径 B 的收费方式 | 工作室订阅 + 线索包，不收成交佣金 |
+| D8 | MVP 切分 | 阶段 1：对话 + 路径 A + 共享同步 + 首批线路上架；阶段 2：路径 B |
+| D9 | C 端是否收费 | 基础免费，平台模型设免费额度 |
+| D10 | 产品 UI 视觉体系（docs/09 五主题 vs Unify GTM） | **无默认值** |
+
+### 4.2 外部动作
+1. **律师咨询**（一次解决 OI-016 / OI-017 / OI-021，并顺带 OI-022 / OI-023）：问题清单见 [docs/17 §17.10](docs/17-agency-route-studio.md#1710-合规要点全部待执业律师核验)。**OI-021 意见出具前路径 B 不对公众开放。**
+2. **首个区域旅行社访谈与试点签约**（建议河西走廊 / 甘青环线 3–5 家）：验证 A-14、A-17。
+
+### 4.3 工程开工（DLV-01 阶段 1）
+1. 补数据契约：`profile.schema.json`、`listing.schema.json`（OI-024），纳入 `npm run validate`。
+2. 初始化 Monorepo：`packages/dsl-core`、`packages/agent-core`、`services/` 骨架（[ARC-01 §6](docs/architecture/ARC-01-overview.md#6-规划中代码仓库组织-proposed-monorepo-layout)）。
+3. 对话 + 需求画像 + 路径 A 最小原型；行程空间与多端同步；旅行社行程单导入。
+
+### 4.4 工程卫生
+1. 演示站叙事对齐基线：补路径 B 筛选页与旅行社线路工作室，车机与离线交付降为支撑（[SHOWCASE-web-design](docs/SHOWCASE-web-design.md) 章首说明）。
+2. 把 `npm run check` 接入 GitHub Actions（当前只有部署工作流）。
 
 ---
 
-## 5. 新对话唤醒提示词（Prompt 模板）
-
-在新对话窗口中，直接输入以下内容即可无缝接续：
+## 5. 新对话唤醒提示词
 
 ```text
-/boost 请阅读项目根目录下的 PROJECT_PROGRESS.md，了解当前仓库状态与最新执行进度，继续推进项目。
+请先阅读 PROJECT_PROGRESS.md 与 docs/product/PRD-01-vision-positioning.md，了解当前产品基线与执行进度，再继续推进项目。
 ```

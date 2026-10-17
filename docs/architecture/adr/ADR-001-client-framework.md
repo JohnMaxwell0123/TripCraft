@@ -3,7 +3,8 @@
 - **status**: Proposed
 - **date**: 2026-10-08
 - **背景与约束**：
-  TripCraft 包含手机 App (C-MOBILE)、平板沙盘 (C-TABLET)、B 端工作台 (C-CONSOLE) 以及座舱投屏 (C-CABIN)。团队初期研发资源有限，需要兼顾研发效能、多端代码复用与离线 Local-First 性能。关联场景 [S-C01](../../product/PRD-03-scenarios.md#s-c01-新建行程自由倾倒与零输入向导)、[S-C04](../../product/PRD-03-scenarios.md#s-c04-断网--无人区离线使用)。
+  TripCraft 包含手机 App (C-MOBILE)、平板沙盘 (C-TABLET)、B 端工作台 (C-CONSOLE) 以及座舱投屏 (C-CABIN)。团队初期研发资源有限，需要兼顾研发效能、多端代码复用与离线 Local-First 性能。关联场景 [S-C01](../../product/PRD-03-scenarios.md#s-c01-ai-对话说清需求形成需求画像)、[S-C04](../../product/PRD-03-scenarios.md#s-c04-断网--无人区离线使用)。
+  > 2026-10-17 补充（产品基线 v3）：主线界面新增 AI 对话入口与路径 B 筛选页（分布图滑块、条件方块），桌面 Web 与移动端都需要；自带模型 API 的编排器需在客户端运行（[ADR-009](ADR-009-llm-provider-byok.md)）。本 ADR 的结论不受影响：编排器作为 TypeScript 共享包，可同时运行于 React Native 与 Web。
 
 - **选项对比**：
   - **选项 A：统一跨端混合框架（React Native / Flutter + Web 共享设计内核）**

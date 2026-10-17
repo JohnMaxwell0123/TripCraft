@@ -1,5 +1,7 @@
 # 第 4 章 · TripCraft DSL v1.0.0 数据契约规范
 
+> 📌 **与产品基线 v3 的关系（2026-10-17）**：行程 DSL 仍是唯一真相源——路径 A 草案、旅行社线路的逐日行程、成交后的白标路书都使用它。需求画像与上架信封尚无契约，登记为 [OI-024](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register)。
+
 > **状态**：`Stable Draft` ｜ **Schema 文件**：[`spec/trip.schema.json`](../spec/trip.schema.json)
 > **铁律依据**：[铁律 6 · DSL 是唯一真相源](00-overview-and-glossary.md#铁律-6--dsl-是唯一真相源-single-source-of-truth)
 > **本章目标**：定义一份"写完即可编译"的行程契约，字段语义无歧义、可机器校验、可向后兼容演进。

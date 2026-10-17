@@ -1,25 +1,26 @@
 ---
 id: ARC-04
 title: 客户端与交付渠道
-status: Draft（agent 起草，待 owner 评审）
-last_updated: 2026-10-08
-related: [PRD-01, PRD-04, ARC-01, ADR-001, ADR-006]
-sources: [docs/02-cockpit-protocol.md, docs/05-compiler-pipeline.md, docs/09-visual-design-system.md, docs/15-multi-device-and-collaboration.md]
+status: Draft v3（按产品基线 PRD-01 v3 修订，待 owner 评审）
+last_updated: 2026-10-17
+related: [PRD-01, PRD-04, ARC-01, ADR-001, ADR-006, ADR-009]
+sources: [docs/16-planning-paths-and-route-matching.md, docs/17-agency-route-studio.md, docs/02-cockpit-protocol.md, docs/05-compiler-pipeline.md, docs/09-visual-design-system.md, docs/15-multi-device-and-collaboration.md]
 ---
 
 # ARC-04 · 客户端与交付渠道
 
 ## 1. 客户端矩阵 (Client Matrix)
 
-TripCraft 采用跨端应用协同与自包含快照交付结合的终端矩阵：
+主入口是 C-MOBILE 与 C-WEB 上的 AI 对话界面；C-SNAPSHOT 与 C-CABIN 是支撑渠道：
 
 | 客户端代号 | 载体类型 | 主要服务角色 | 核心功能职责 | 离线支持能力 | 设计与实现状态 |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **C-MOBILE** | 移动端 App (iOS / Android) / PWA | R-C01, R-C02, R-B03 | 随身查看、意向倾倒、提名收集、行中打卡、深链投递 | **完全离线**（基于本地数据库缓存） | 草案 / 无（待阶段 1 开发） |
-| **C-TABLET** | 平板端应用 (iPadOS / Android Pad) | R-C01, R-C02 | 大屏沙盘推演、海拔高程剖面、全家围坐共创排程 | **完全离线** | 草案 / 无（阶段 2） |
-| **C-CONSOLE** | 桌面端 Web 管理后台 | R-B01, R-B02, R-P01 | 机构品牌配置、线路模版库、定制路书深度制作、出单结算 | **弱网降级**（需网络鉴权与云端保存） | 草案 / 无（待阶段 1 开发） |
-| **C-SNAPSHOT**| 单文件 HTML 独立离线运行时 | R-C03, R-B04, 公众 | 免登录秒开、高保真阅览、长辈关怀大字版、一键呼叫管家 | **全功能独立离线**（零外部网络依赖） | 已评审 / 原型（参考实现验证） |
-| **C-CABIN** | 座舱交付集成通道 | R-C01, R-B03, R-O01 | 全天途经点一键批量投递到高德/百度车机导航、投屏镜像 | **依赖宿主地图离线包** | 已评审 / 原型（深链调起验证） |
+| **C-MOBILE** | 移动端 App (iOS / Android) | R-C01, R-C02, R-B03 | AI 对话与需求画像、路径 A 方案、路径 B 筛选与咨询、行程空间共享、行中查看 | **已同步行程离线可读** | 草案 / 无（阶段 1） |
+| **C-WEB** | 浏览器 Web 端 | R-C01, R-C02 | 与 C-MOBILE 同一套主线功能；大屏下筛选页采用左右分栏（[docs/16 §16.7.1](../16-planning-paths-and-route-matching.md#1671-页面布局桌面)） | **弱网降级** | 草案 / 无（阶段 1） |
+| **C-TABLET** | 平板端应用 | R-C01, R-C02 | 大屏行程编排与家庭共创 | **已同步行程离线可读** | 草案 / 无（阶段 2） |
+| **C-CONSOLE** | 桌面端 Web 工作台 | R-B01, R-B02, R-P01 | 线路导入与上架、AI 路书与动画、咨询收件箱与报价、白标品牌、审核后台 | **弱网降级**（需网络鉴权与云端保存） | 草案 / 无（阶段 1：导入与上架） |
+| **C-SNAPSHOT**| 单文件 HTML 独立离线运行时 | R-C03, R-B04, 公众 | 免登录秒开、长辈大字版、一键呼叫管家 | **全功能独立离线** | 已评审 / 无（阶段 3；演示站不是其实现） |
+| **C-CABIN** | 座舱交付集成通道 | R-C01, R-B03, R-O01 | 全天途经点批量投递到车机导航、投屏镜像 | **依赖宿主地图离线包** | 已评审 / 无（阶段 3） |
 
 ---
 
@@ -56,9 +57,16 @@ flowchart TB
 
 > 站点地图与页面清单（非线框图，规范核心路由与交互树）：
 
-### C-MOBILE (移动端 App)
+### C-MOBILE / C-WEB (旅客端)
 ```text
-C-MOBILE
+C-MOBILE / C-WEB
+├── /                   ← ★ AI 对话首页（输入框 · 模型选择器 · 零输入药丸 · 附件）
+├── /chat/:id           ← ★ 对话会话与需求画像回显卡
+├── /plan/:profileId    ← ★ 路径 A：自驾方案生成与逐日草案
+├── /match/:profileId   ← ★ 路径 B：筛选页（分布图滑块 · 条件方块 · 结果列表 · 对比）
+├── /routes/:listingId  ← ★ 线路详情（AI 路书 · 路线动画 · 透明报价 · 自助调整 · 咨询）
+├── /inquiries          ← ★ 我的咨询与报价版本
+├── /settings/models    ← ★ 模型设置（平台模型额度 · 自带 API）
 ├── /home               ← 个人与在途行程总览卡片
 ├── /trip/:id           ← 行程工作区主界面
 │   ├── /itinerary      ← 每日日程、节点时序与地图沙盘视图
@@ -69,10 +77,14 @@ C-MOBILE
 └── /user/profile       ← 账号偏好设置与离线数据管理
 ```
 
-### C-CONSOLE (B 端机构工作台)
+### C-CONSOLE (旅行社工作台)
 ```text
 C-CONSOLE
-├── /dashboard          ← 机构概貌、当月出单量与配额消耗
+├── /listings           ← ★ 线路列表（状态 · 完整度 · 曝光与咨询数）
+│   ├── /import         ← ★ 导入 Word / PDF / Excel 行程单并逐字段确认
+│   └── /:id/edit       ← ★ 行程 · 上架信封 · 价格规则与可调选项 · AI 路书与动画
+├── /inquiries          ← ★ 咨询收件箱与报价版本
+├── /dashboard          ← 机构概貌、匹配漏斗、配额消耗
 ├── /trips              ← 全部路书资产列表（草案、在途、已归档）
 │   ├── /new            ← 模版复用与新建向导
 │   └── /editor/:id     ← 专业定制师双栏排程工作区

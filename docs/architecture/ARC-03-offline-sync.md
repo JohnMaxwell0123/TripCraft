@@ -9,6 +9,8 @@ sources: [docs/01-resilience-and-failover.md, docs/15-multi-device-and-collabora
 
 # ARC-03 · 离线优先与同步架构
 
+> 📌 **v3 对齐说明（2026-10-17）**：产品基线 v3 把"多端同步、多人共享"列为产品支柱，服务端增量日志同步（`F-M06-02`）与多端漫游（`F-M01-04`）提前到阶段 1。本文的同步模型（[ADR-002](adr/ADR-002-sync-conflict-model.md)）不变；新增的同步对象是**需求画像**（跨设备漫游）与**成交后进入行程空间的白标路书**。自带模型的 API Key **不参与同步**（[ADR-009](adr/ADR-009-llm-provider-byok.md)）。
+
 ## 1. 架构目标与关键场景覆盖
 
 TripCraft 的同步设计立足于川西、大西北无人区等真实自驾场景，必须承载以下核心用例：

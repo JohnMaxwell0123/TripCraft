@@ -1,5 +1,7 @@
 # TripCraft 产品与系统架构包 · 执行计划 v2（Agent 执行版）
 
+> ⚠️ **历史任务书（2026-10-17 标注）**：本计划已于 2026-10-08 执行完毕，其中的产品定位与 MVP 切分（D2）已被 [产品基线 PRD-01 v3](docs/product/PRD-01-vision-positioning.md) 与 [DLV-01 v3](docs/delivery/DLV-01-roadmap-mvp.md) 取代。仅作为过程记录保留，不作为现行依据。
+
 > 生成日期：2026-10-08 ｜ 目标仓库：`JohnMaxwell0123/TripCraft`
 >
 > **与上一份计划（`TRIPCRAFT_FIX_PLAN.md`）的关系**

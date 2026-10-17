@@ -9,6 +9,8 @@ sources: [docs/09-visual-design-system.md, docs/01-resilience-and-failover.md]
 
 # ARC-08 · 非功能需求、部署拓扑与成本
 
+> 📌 **v3 对齐说明（2026-10-17）**：产品基线 v3 下 C 端对话成为主入口，成本结构的重心变化为：**模型推理**（追问、编排、行程单抽取）与**图商走廊检索**成为最大的可变成本；用户自带 API 的会话不产生平台推理成本。成本驱动的完整表以 [PRD-05 §6](../product/PRD-05-business-model.md#6-单位经济模型骨架-unit-economics-framework) 为准。匹配服务的性能目标建议：筛选页分面计数与结果更新 P95 ≤ 300 ms（Proposed）。
+
 ## 1. 非功能性需求指标矩阵 (NFR Matrix)
 
 > 标注：本表所列目标指标均为系统演进的建议值（**Proposed**），用于研发接手与压测验收。

@@ -2,8 +2,8 @@
 id: ARC-09
 title: 架构决策记录索引 (ADR Index)
 status: Draft（agent 起草，待 owner 评审）
-last_updated: 2026-10-08
-related: [ARC-01, ARC-03, ARC-05, ARC-07, DLV-03]
+last_updated: 2026-10-17
+related: [ARC-01, ARC-03, ARC-05, ARC-07, DLV-03, ADR-009, ADR-010]
 sources: [docs/WHITEPAPER.md, docs/01-resilience-and-failover.md]
 ---
 
@@ -21,3 +21,5 @@ sources: [docs/WHITEPAPER.md, docs/01-resilience-and-failover.md]
 | **ADR-006** | 离线快照交付格式 | **零外部依赖自包含单文件 HTML (C-SNAPSHOT)** | Proposed | 突破长辈与弱网阻碍，免登录高保真秒开，自包含运行时长久不变质。 | [`ADR-006-snapshot-delivery-format.md`](adr/ADR-006-snapshot-delivery-format.md) |
 | **ADR-007** | 多租户隔离方式架构 | **共享数据库 + PostgreSQL 行级安全 (RLS)** | Proposed | 运维成本最低，引擎层强制 `tenant_id` 过滤，物理保障机构私域安全。 | [`ADR-007-multitenancy-isolation.md`](adr/ADR-007-multitenancy-isolation.md) |
 | **ADR-008** | AI 生成管线与防幻觉 | **反问澄清 + 图商硬核验 + 待定项 (Tentative) 回显** | Proposed | 杜绝大模型编造野景点与错误营业时间，把好自驾行车安全首道防线。 | [`ADR-008-ai-generation-guardrails.md`](adr/ADR-008-ai-generation-guardrails.md) |
+| **ADR-009** | 模型接入抽象与自带 API | **ModelProvider 抽象；自带 Key 只存设备、客户端直连；校验统一在服务端** | Proposed | 平台不保管用户凭证；换模型不降低质量底线。 | [`ADR-009-llm-provider-byok.md`](adr/ADR-009-llm-provider-byok.md) |
+| **ADR-010** | 旅行社线路匹配评分 | **资格硬过滤 + 维度加权评分；纯函数可复现；付费不入分** | Proposed | 匹配度必须可解释、可复现、可申诉；冷启动期没有训练数据。 | [`ADR-010-route-matching-scoring.md`](adr/ADR-010-route-matching-scoring.md) |

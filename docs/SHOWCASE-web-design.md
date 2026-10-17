@@ -1,5 +1,7 @@
 # TripCraft · 项目展示与交互演示官网技术开发设计规范 (SHOWCASE-web-design.md)
 
+> ⚠️ **与产品基线 v3 的关系（2026-10-17）**：演示站当前的五幕叙事（倾诉 → 河西沙盘 → 愿望池 → 座舱 → 离线交付）写于基线 v3 之前，**尚未展示路径 B（旅行社线路匹配与筛选页）与旅行社线路工作室**，且把车机与离线交付放在压轴位置（基线中二者为支撑能力）。叙事调整列为待办，见 [PROJECT_PROGRESS](../PROJECT_PROGRESS.md)。
+
 > **文档定位**：TripCraft 官方展示与交互演示官网（Showcase & Demonstration Landing Platform）的前端架构、视觉系统与交互动效技术实施规范。  
 > **设计目标**：指导后续前端工程开发一个面向全球访客（自驾游客、家庭定制用户、旅行社地接机构、车企伙伴与开发者）的**高质感项目展示官网**。通过**故事流视差滚动动画 (Apple Scrollytelling)** 与沉浸式微沙盒，生动展现 TripCraft 的全量功能、技术硬实力与产品哲学。  
 > **关联业务架构**：[`ARC-10 Web端系统开发设计`](architecture/ARC-10-web-system-design.md) · [`PRD-01 愿景与定位`](product/PRD-01-vision-positioning.md) · [`09 视觉设计系统`](09-visual-design-system.md)

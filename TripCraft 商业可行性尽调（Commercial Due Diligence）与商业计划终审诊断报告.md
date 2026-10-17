@@ -1,10 +1,9 @@
-I will execute the **Delegation Routine** by invoking `DeepInvestigator` to conduct a rigorous Commercial Due Diligence (CDD) and business plan analysis.
-
-Invoked subagent
-
-I have delegated the Commercial Due Diligence analysis to the `DeepInvestigator` subagent and am waiting for the findings to be returned.
-
 # TripCraft 商业可行性尽调（Commercial Due Diligence）与商业计划终审诊断报告
+
+> ⚠️ **文档性质（2026-10-17 标注）**：
+> 1. **本报告由 AI 代理模拟生成，不是任何投资机构出具的真实尽调报告。** 下文"出具方"一栏是模拟角色设定，**不得以第三方尽调的名义对外引用或提交**。
+> 2. 本报告写于 [产品基线 PRD-01 v3](docs/product/PRD-01-vision-positioning.md) 之前。其中关于"群态而非平台态""不做撮合"等判断所依据的产品口径已经变化，现行口径以 PRD-01 为准；报告指出的合规风险（资质挂靠、为无证经营引流）仍然有效，已并入 OI-016 / OI-021。
+> 3. 文中 `file:///` 开头的链接为本机绝对路径，在 GitHub 上无法打开；对应文档请在仓库内按相对路径查找。
 
 **出具方**：文旅科技与产业互联网早期投资基金 · 尽调投资委员会  
 **评估对象**：TripCraft（旅艺 / 智程路书）商业计划与架构演进系统  

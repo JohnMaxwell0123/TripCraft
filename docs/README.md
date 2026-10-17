@@ -11,31 +11,33 @@
 
 ---
 
+> 🔴 **口径声明（2026-10-17）**：产品是什么、给谁用、边界在哪，以 [产品基线 PRD-01 v3](product/PRD-01-vision-positioning.md) 为准——**多端同步、多人共享的 AI 旅行规划 App：用对话说清需求，AI 规划自驾路线，或匹配旅行社线路；同时为旅行社提供线路上架、AI 路书与透明报价工具。** 本书各章写于不同时期，与基线冲突之处已在章首标注；冲突时以基线为准（[PRD-01 §0 口径优先级](product/PRD-01-vision-positioning.md#0-文档地位与口径优先级)）。
+
 ## 这本书是什么
 
-[架构白皮书](WHITEPAPER.md)（原根目录 README 迁移至此）回答的是**「为什么做」**：产品定位、商业模式、竞争分析、IP 主张。
+[架构白皮书](WHITEPAPER.md)（原根目录 README 迁移至此）记录的是早期的**「为什么做」**：产品定位、商业模式、竞争分析、IP 主张。它是历史背景，现行口径以产品基线为准。
 
-**[产品与系统架构包 v2](#产品与系统架构包-v2)** 给出面向研发落地的统一产品、系统架构与交付蓝图（包含 PRD-01~05、ARC-01~09、DLV-01~03）。
+**[产品与系统架构包](#产品与系统架构包)** 给出面向研发落地的统一产品、系统架构与交付蓝图（PRD-01~05、ARC-01~10、ADR-001~010、DLV-01~03）。
 
-**这本书回答的是「专项细节怎么做」**，分为两轨：
+**这本书回答的是「专项细节怎么做」**，分为四轨：
 
 | 轨 | 章节 | 回答 | 检验标准 |
 | :--- | :--- | :--- | :--- |
-| **🎨 设计轨** | [8](08-socratic-interaction-design.md) · [9](09-visual-design-system.md) · [10](10-roadbook-reading-design.md) · [11](11-audience-adaptive-rendering.md) · [15](15-multi-device-and-collaboration.md) · [官网展示设计](SHOWCASE-web-design.md) | **它是什么样，以及为什么是这样** | 见下方硬规则 B |
-| **💼 商业轨** | [3](03-b2b-agency-operations.md) · [12](12-oem-partnership-design.md) · [13](13-agency-partnership-design.md) · [14](14-generic-engine-and-vertical-expansion.md) | **谁为此付钱，凭什么** | 见下方硬规则 B |
+| **🎨 设计轨** | [8](08-socratic-interaction-design.md) · [9](09-visual-design-system.md) · [10](10-roadbook-reading-design.md) · [11](11-audience-adaptive-rendering.md) · [15](15-multi-device-and-collaboration.md) · ★ [16](16-planning-paths-and-route-matching.md) · [官网展示设计](SHOWCASE-web-design.md) | **它是什么样，以及为什么是这样** | 见下方硬规则 B |
+| **💼 商业轨** | [3](03-b2b-agency-operations.md) · [12](12-oem-partnership-design.md) · [13](13-agency-partnership-design.md) · [14](14-generic-engine-and-vertical-expansion.md) · ★ [17](17-agency-route-studio.md) | **谁为此付钱，凭什么** | 见下方硬规则 B |
 | **⚙️ 工程轨** | [1](01-resilience-and-failover.md) · [2](02-cockpit-protocol.md) · [4](04-dsl-specification-v1.md) · [5](05-compiler-pipeline.md) | **怎么把它造出来** | 见下方硬规则 A |
 | **⚖️ 支撑轨** | [0](00-overview-and-glossary.md) · [6](06-memory-journal-engine.md) · [7](07-legal-and-compliance.md) | 总纲、引擎、合规 | 视章节性质适用 A 或 B |
 
 ---
 
-## 产品与系统架构包 v2
+## 产品与系统架构包
 
-为推进多端协同智能路书 App 研发落地，本项目已完成产品、系统架构与交付路线全套设计包：
+产品、系统架构与交付路线全套设计包（2026-10-17 按产品基线 v3 修订）：
 
 | 架构分包 | 目录与索引 | 核心内容 |
 | :--- | :--- | :--- |
-| **产品设计包 (PRD)** | [产品包总览](product/README.md) | 愿景定位 ([PRD-01](product/PRD-01-vision-positioning.md)) · 用户角色 ([PRD-02](product/PRD-02-personas-segments.md)) · 14 场景流程 ([PRD-03](product/PRD-03-scenarios.md)) · 51 功能与 29 项 P0 验收卡片 ([PRD-04](product/PRD-04-functional-architecture.md)) · 商业模式 ([PRD-05](product/PRD-05-business-model.md)) |
-| **系统架构包 (ARC)** | [架构包总览](architecture/README.md) | 架构概览与Monorepo ([ARC-01](architecture/ARC-01-overview.md)) · 领域模型 ([ARC-02](architecture/ARC-02-domain-data-model.md)) · 离线优先与同步 ([ARC-03](architecture/ARC-03-offline-sync.md)) · 客户端矩阵 ([ARC-04](architecture/ARC-04-clients-channels.md)) · 后端集成 ([ARC-05](architecture/ARC-05-backend-integrations.md)) · 多租户白标 ([ARC-06](architecture/ARC-06-multitenancy-whitelabel.md)) · 安全与合规 ([ARC-07](architecture/ARC-07-security-privacy-compliance.md)) · 部署与成本 ([ARC-08](architecture/ARC-08-nfr-deployment-cost.md)) · 8 项技术决策 ([ARC-09](architecture/ARC-09-adr-index.md)) · Web全功能开发设计 ([ARC-10](architecture/ARC-10-web-system-design.md)) |
+| **产品设计包 (PRD)** | [产品包总览](product/README.md) | ★ 产品基线 ([PRD-01](product/PRD-01-vision-positioning.md)) · 用户角色 ([PRD-02](product/PRD-02-personas-segments.md)) · 20 个场景 ([PRD-03](product/PRD-03-scenarios.md)) · 76 项功能与全部 P0 验收卡片 ([PRD-04](product/PRD-04-functional-architecture.md)) · 商业模式 ([PRD-05](product/PRD-05-business-model.md)) |
+| **系统架构包 (ARC)** | [架构包总览](architecture/README.md) | 架构概览与Monorepo ([ARC-01](architecture/ARC-01-overview.md)) · 领域模型 ([ARC-02](architecture/ARC-02-domain-data-model.md)) · 离线优先与同步 ([ARC-03](architecture/ARC-03-offline-sync.md)) · 客户端矩阵 ([ARC-04](architecture/ARC-04-clients-channels.md)) · 后端集成 ([ARC-05](architecture/ARC-05-backend-integrations.md)) · 多租户白标 ([ARC-06](architecture/ARC-06-multitenancy-whitelabel.md)) · 安全与合规 ([ARC-07](architecture/ARC-07-security-privacy-compliance.md)) · 部署与成本 ([ARC-08](architecture/ARC-08-nfr-deployment-cost.md)) · 10 项技术决策 ([ARC-09](architecture/ARC-09-adr-index.md)) · Web全功能开发设计 ([ARC-10](architecture/ARC-10-web-system-design.md)) |
 | **交付规划包 (DLV)** | [交付包总览](delivery/README.md) | 5 阶段路线图与 MVP ([DLV-01](delivery/DLV-01-roadmap-mvp.md)) · 风险登记册 ([DLV-02](delivery/DLV-02-risk-register.md)) · 全链路追溯矩阵 ([DLV-03](delivery/DLV-03-traceability-matrix.md)) |
 
 ### 两条硬规则
@@ -91,9 +93,11 @@ flowchart TB
         CH10["第 10 章 · 路书产物与阅读设计<br/>最终拿到的那份东西"]
         CH11["第 11 章 · 人群画像驱动呈现<br/>一车人各读各的"]
         CH15["第 15 章 · 多端形态与协作层<br/>★ 产品形态三层拆分"]
+        CH16["第 16 章 · 双路径规划与线路匹配<br/>★ 对话 · 画像 · 筛选页"]
     end
 
     subgraph BIZ["💼 商业轨 · 谁为此付钱"]
+        CH17["第 17 章 · 旅行社线路工作室<br/>★ 上架 · AI 路书 · 透明报价"]
         CH13["第 13 章 · 线下旅行社合作<br/>价值主张与资源数字化"]
         CH3["第 3 章 · B2B 运营赋能<br/>定制师与地接社"]
         CH12["第 12 章 · 车厂合作<br/>五级阶梯与舱内体验"]
@@ -127,7 +131,12 @@ flowchart TB
     CH15 -.->|"★ 三层共享同一份 DSL"| CH4
     CH15 -.->|"★ 收集在协作层，裁决在 §8.8"| CH8
     CH15 -.->|"★ 多端 App 同步 + 离线轻量导出"| CH13
+    CH8 --> CH16
+    CH16 -.->|"★ 需求画像 ↔ 上架信封"| CH17
+    CH17 --> CH13
+    CH16 --> CH15
     CH2 & CH3 & CH6 --> CH7
+    CH17 --> CH7
 
     style CH0 fill:#0c4a6e,stroke:#06b6d4,color:#e0f2fe
     style CH4 fill:#4c1d95,stroke:#a78bfa,color:#ede9fe
@@ -161,6 +170,8 @@ flowchart TB
 | 🎨 | **10** | [路书产物形态与阅读设计](10-roadbook-reading-design.md) | 最终那份东西怎么读？ | 大 |
 | 🎨 | **11** | [人群画像驱动的差异化呈现](11-audience-adaptive-rendering.md) | 一车人怎么各读各的？ | 中 |
 | 🎨 | **15** | [多端形态与协作层设计](15-multi-device-and-collaboration.md) | ★**最终交付的到底是什么？一群人的意见怎么收进来？发出去之后还是不是原来那份？** | 大 |
+| 🎨 | **16** | [双路径规划与旅行社线路匹配](16-planning-paths-and-route-matching.md) | ★ **对话怎么变成需求画像？AI 怎么规划自驾？旅行社线路怎么匹配、筛选页长什么样？** | 大 |
+| 💼 | **17** | [旅行社线路工作室：上架、AI 路书与透明报价](17-agency-route-studio.md) | ★ **旅行社怎么上架线路、怎么让客人看懂和信任、怎么按需调整报价？** | 大 |
 | 💼 | **12** | [车厂合作的产品形态与舱内体验设计](12-oem-partnership-design.md) | 凭什么和车厂谈得成？ | 大 |
 | 💼 | **13** | [线下旅行社合作的价值主张与资源数字化设计](13-agency-partnership-design.md) | 旅行社凭什么用？资源怎么进来？ | 大 |
 | 💼 | **14** | [通用引擎与垂直扩展的判据](14-generic-engine-and-vertical-expansion.md) | 能做别的行业吗？什么时候该做？ | 中 |
@@ -185,7 +196,8 @@ flowchart TB
 | **🎨 视觉设计师** | 0 §0.2 → 9 → 10 | 五主题设计方法（§9.2.1）、流派兼容矩阵（§9.1.3） |
 | **前端工程师** | 0 → **9 §9.4/§9.5** → 4 → 5 → 1 | DSL 结构、编译器、降级状态机、**景深与排版 token** |
 | **数据 / 后端工程师** | 0 → 4 → 3 → 7 | 契约、租户模型、数据合规 |
-| **产品经理** | 0 → **8 → 11** → 3 → 1 → 6 | 边界线、B2B 价值、降级体验 |
+| **★ 新加入的任何人** | **[PRD-01](product/PRD-01-vision-positioning.md) → 16 → 17** → 15 | 先读产品基线，再读两个主线专项 |
+| **产品经理** | PRD-01 → **8 → 16 → 17** → 11 → 15 | 对话与画像、双路径、筛选页、线路工作室 |
 | **💼 商务拓展 / BD** | **0 §0.3 → 13 → 12 → 3 §3.9 → 7** | **两条 B 端线的价值主张、冷启动路径、异议处理、筹码清单** |
 | **💼 车厂合作负责人** | **12 → 2 → 7 §7.4** | 五级阶梯、车厂价值主张、舱内体验、数据合规 |
 | **💼 旅行社合作负责人** | **13 → 3 → 11** | 三类社的差异、三条不越线、资源数字化工作流、★ **§13.5.4 资质红线** |
@@ -218,7 +230,7 @@ flowchart TB
 
 ```bash
 npm install        # 仅开发期依赖（ajv + ajv-formats），运行时零依赖
-npm run check      # = validate + check-links + check-br025
+npm run check      # = validate + check-links + check-br025 + check-trace
 ```
 
 ```
@@ -276,6 +288,7 @@ npm run check      # = validate + check-links + check-br025
 | OI-009 | HEIC 解析路径最终选型 | iPhone 照片落点率 | ⏳ 新增 |
 | **OI-010** | **五视角「为你」卡片的来源** | ★ **数据契约是否升版** | ⏳ **新增（设计轨）** |
 | **OI-016** | **是否构成「为无证经营提供便利」** | ★ **白标能力能否默认开启** | ⏳ **新增（法务动作）** |
+| **OI-021** | **线路匹配的平台角色与引流合规边界** | ★ **路径 B 能否对公众开放** | ⏳ **新增 2026-10-17（法务动作，与 OI-016/017 同一次咨询）** |
 
 > ⚠️ **OI-010 与其他 P0 的性质不同，值得单独说明。**
 >
@@ -508,6 +521,38 @@ npm run check      # = validate + check-links + check-br025
 
 > ⚠️ **这条规则的价值不在"多一个检查"，而在改掉一个习惯：把示例当散文写。**
 
+### 2026-10-17 产品基线 v3：对话入口、双路径与旅行社线路匹配
+
+**起因**：业主明确了产品的设计目标与主场景——
+
+> 多端同步、多人共享的旅游 App。用户通过 AI 窗口输入需求（类似 GPT 和 Claude 的输入框，也可换用自己喜欢的 API），软件以不断提问的方式引导用户明确需求、提取特征点后匹配：一是 agent 自主规划自驾路线，查找沿线景点、打卡点、美食；二是自动匹配旅行社线路并显示匹配度，用户在筛选页用价格、时间滑块（带分布图）和方块选项调节。商业化面向旅行社：上传线路、AI 生成路线动画等路书，解决传统旅行社信息不透明、信任度低、只能发 PDF、难以按需调整的问题。
+
+**这一轮与前几轮不同：它推翻了几条曾经被认真论证过的商业决策。** 完整对照见 [PRD-01 §8](product/PRD-01-vision-positioning.md#8-本次基线变更2026-10-17被取代的旧口径)，要点：
+
+| 被取代的旧口径 | 出处 | 新口径 |
+| :--- | :--- | :--- |
+| 不做 C 端账号、不接触终端游客 | [§3.2.2](03-b2b-agency-operations.md#322--关键设计决策游客没有账号)、[§13.3.3](13-agency-partnership-design.md#1333-三条不越线) | C 端账号与对话是产品主体 |
+| 不做旅行社之间的比价 / 撮合 | [§13.3.3](13-agency-partnership-design.md#1333-三条不越线) | 做线路匹配与价格筛选 |
+| "我们不是一家消费级 AI 公司" | [§13.8.6](13-agency-partnership-design.md#1386--但这个选择有代价它意味着我们不是一家消费级-ai-公司) | C 端 AI 对话是入口 |
+| 单文件快照是"一等交付形态" | 上一版 PRD-01、[ADR-006](architecture/adr/ADR-006-snapshot-delivery-format.md) | 支撑能力 |
+
+> 📌 **被推翻的是结论，不是那些论证里发现的风险。** §13.3.3 担心的"旅行社会藏价格"、§13.5.4 担心的"为无证经营引流"、§13.8.5 判断的"AI 生成只是入场券"——这些仍然成立，只是不再用"不做"来回避，而是用设计来应对：价格展示档位（[§17.5](17-agency-route-studio.md#175-透明度设计)）、只上架持证旅行社 + OI-021 律师意见前置（[§17.2](17-agency-route-studio.md#172-入驻前提)）、差异放在多人共享与本地真实供给上（[PRD-05 §7](product/PRD-05-business-model.md#7-行业竞争格局-competitive-landscape)）。
+
+#### 新增的未决项
+
+| OI | 内容 | 优先级 |
+| :--- | :--- | :--- |
+| [OI-021](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register) | 线路匹配的平台角色与引流合规边界 | **P0（法务）** |
+| [OI-022](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register) | 自带模型 API 与平台默认模型的合规口径 | P1（法务） |
+| [OI-023](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register) | AI 生成路书与路线动画的内容标识 | P1（法务） |
+| [OI-024](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register) | 需求画像与上架信封没有数据契约 | P1（**阻塞 schema**） |
+
+#### 一处必须记录的方法论教训（第五课）
+
+前四课分别是：不要把外部事实硬编码；不要把不同口径的数字相加；先看铁律约束的对象；把示例当断言跑一遍。
+
+**这一课是：文档追加多了，就需要一个说了算的地方。** 过去每一轮修订都在旧文档后面追加新结论，结果"做不做 C 端账号"在第 3 章是"不做"、在第 15 章是"做"，而两份文档都标着"已评审"。这一轮没有逐章重写，而是做了两件事：① 设立 [PRD-01 §0 口径优先级](product/PRD-01-vision-positioning.md#0-文档地位与口径优先级)；② 在每个受影响章节的章首写明它与基线的关系。
+
 ---
 
 ## 写作与维护规则
@@ -529,6 +574,12 @@ npm run check      # = validate + check-links + check-br025
 
 **🎨 设计问题（先看这一组）**
 
+- …★ 产品到底是什么？以哪份文档为准？ → [PRD-01 产品基线](product/PRD-01-vision-positioning.md)
+- …★ 对话框里能不能用我自己的模型？Key 存哪？ → [§16.2.2](16-planning-paths-and-route-matching.md#1622-自带模型-apibyok) + [ADR-009](architecture/adr/ADR-009-llm-provider-byok.md)
+- …★ 对话怎么变成可计算的需求？ → [§16.3 需求画像](16-planning-paths-and-route-matching.md#163-需求画像特征点的提取)
+- …★ AI 怎么规划自驾、沿途吃什么从哪来？ → [§16.5 路径 A](16-planning-paths-and-route-matching.md#165-路径-a--ai-自主规划自驾路线)
+- …★ 匹配度 91% 是怎么算的？ → [§16.6](16-planning-paths-and-route-matching.md#166-路径-b--旅行社线路匹配) + [ADR-010](architecture/adr/ADR-010-route-matching-scoring.md)
+- …★ 筛选页的价格分布图和方块怎么设计？ → [§16.7 筛选页](16-planning-paths-and-route-matching.md#167--筛选页设计)
 - …用户说「随便」时怎么办？ → [§8.7 模糊输入的处理设计](08-socratic-interaction-design.md#87--模糊输入的处理设计)
 - …为什么要让用户确认一遍才生成？ → [§8.5 回显确认](08-socratic-interaction-design.md#85--回显确认整个设计里最重要的一个动作)
 - …一车人需求冲突怎么办？ → [§8.8 多人意见冲突](08-socratic-interaction-design.md#88--多人意见冲突的对话设计) + [§11.4 冲突可视化](11-audience-adaptive-rendering.md#114--冲突可视化)
@@ -547,6 +598,10 @@ npm run check      # = validate + check-links + check-br025
 
 **💼 商业问题**
 
+- …★ 旅行社怎么上架线路？已有的 Word 行程单能用吗？ → [§17.3](17-agency-route-studio.md#173-线路上架三种录入方式)
+- …★ 旅行社不愿意公开价格怎么办？ → [§17.5 透明度设计](17-agency-route-studio.md#175-透明度设计)
+- …★ 做了匹配，旅行社还会担心被抢客户吗？ → [§17.8 客户归属六条规则](17-agency-route-studio.md#178-客户归属与旅行社的顾虑)
+- …★ 平台靠什么收钱？ → [PRD-05](product/PRD-05-business-model.md)
 - …为什么不能直接触发 NOA，却又说这是机会？ → [§12.1](12-oem-partnership-design.md#121-先把一个误读掰正做不到才是这门生意的起点)
 - …车厂凭什么跟我们合作？ → [§12.3](12-oem-partnership-design.md#123--车厂凭什么跟你合作)
 - …舱内体验到底该怎么做？ → [§12.4](12-oem-partnership-design.md#124--舱内体验设计)

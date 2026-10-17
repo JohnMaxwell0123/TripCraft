@@ -1,11 +1,20 @@
 # TripCraft · 旅艺 —— 智能体协作与开发指南 (AGENTS.md)
 
-欢迎来到 **TripCraft（旅艺）** 代码仓库。本项目是一套面向自驾与深度游的智能旅行路书协同系统与数字化交付中枢。
+欢迎来到 **TripCraft（旅艺）** 代码仓库。本项目是一款**多端同步、多人共享的 AI 旅行规划 App**：用户通过 AI 对话（平台模型或自带 API）说清需求，系统追问并提取需求画像，然后 **路径 A** 由 AI 自主规划自驾路线，或 **路径 B** 匹配持证旅行社的线路（匹配度 + 带分布图滑块的筛选页）；同时为旅行社提供线路上架、AI 路书与路线动画、透明报价的**线路工作室**。
+
+---
+
+## 0. 产品口径（先读这一条）
+- **产品基线**：[`docs/product/PRD-01-vision-positioning.md`](docs/product/PRD-01-vision-positioning.md)（v3，2026-10-17）是全仓库产品口径的唯一基准。文档冲突时按其 §0 的优先级裁决：PRD-01 > PRD-02~05 > ARC/ADR > DLV > 执行全书 `docs/00`~`docs/17` > WHITEPAPER 与根目录历史任务书。
+- **主线专项**：对话、需求画像、双路径与筛选页见 [`docs/16`](docs/16-planning-paths-and-route-matching.md)；旅行社线路工作室见 [`docs/17`](docs/17-agency-route-studio.md)。
+- **支撑能力**：离线单文件导出、车机投递、白标交付、旅后回忆录保留原设计，但排期在主线之后（[`DLV-01`](docs/delivery/DLV-01-roadmap-mvp.md)），不要在新代码或文案里把它们写成产品主卖点。
+- **修改产品文档时**：新增场景 / 功能 / 假设须同步 PRD-03、PRD-04、DLV-01、DLV-03、ASSUMPTIONS，并通过 `npm run check`（含 `check-trace` 追溯校验）。
+- **产品 UI 视觉体系未定（D10）**：`docs/09` 五主题 + 液态玻璃与 Unify GTM 暖纸风格二选一尚待业主决定；在此之前 Unify GTM 只约束 `apps/showcase`。
 
 ---
 
 ## 1. 核心铁律与工程基准
-所有智能体在生成与重构代码时，必须严格遵守 `docs/00-overview-and-glossary.md` 规定的十大设计铁律：
+所有智能体在生成与重构代码时，必须严格遵守 `docs/00-overview-and-glossary.md` 规定的十条设计铁律（及其 §0.2 适用边界表）。以下是与前端代码最相关的五条：
 1. **零构建交付**：离线单文件路书产物必须自包含，双击秒开，严禁依赖运行时外部拉取。
 2. **降级不可耻，白屏才是罪**：地图 SDK/网络加载失败时，必须优雅降级为静态 SVG 或节点卡片，严禁白屏。
 3. **数据主权本地化**：用户隐私轨迹、身份证信息及相册照片默认保存在浏览器端 IndexedDB，计算在 Web Worker 进行。

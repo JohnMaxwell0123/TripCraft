@@ -1,37 +1,47 @@
 ---
 id: ARC-02
 title: 领域模型与数据架构
-status: Draft（agent 起草，待 owner 评审）
-last_updated: 2026-10-08
-related: [PRD-04, ARC-01, ARC-03, ARC-06]
-sources: [spec/trip.schema.json, spec/brand.schema.json, spec/node.schema.json, spec/patch.schema.json]
+status: Draft v3（按产品基线 PRD-01 v3 修订，待 owner 评审）
+last_updated: 2026-10-17
+related: [PRD-04, ARC-01, ARC-03, ARC-06, ADR-009, ADR-010]
+sources: [spec/trip.schema.json, spec/brand.schema.json, spec/node.schema.json, spec/patch.schema.json, docs/16-planning-paths-and-route-matching.md, docs/17-agency-route-studio.md]
 ---
 
 # ARC-02 · 领域模型与数据架构
 
 ## 1. 核心实体清单 (Core Entities)
 
-系统定义 17 个核心领域实体，覆盖账号、协作、行程文档、B 端白标及计费审计：
+v3 在原 17 个实体基础上新增 8 个，覆盖对话、需求画像、旅行社线路与匹配咨询：
 
 | 实体名称 | 所属模块 | 一句话业务定义 | 存储与生命周期特征 |
 | :--- | :--- | :--- | :--- |
-| **User** | S-IDENTITY | 平台注册用户（组织者、定制师或司导） | 持久存储于主数据库，支持多设备绑定 |
-| **Device** | S-IDENTITY | 用户的物理终端凭证（手机、iPad 或车载投屏端） | 记录会话 Token 与本地离线缓存指纹 |
-| **Tenant (Org)** | S-TENANT | B 端机构租户（旅行社、自驾俱乐部或车队） | 包含企业信用代码、资质审核状态及席位数 |
-| **Role** | S-IDENTITY | 租户内用户分配的业务角色（管理员、计调、司导） | 控制多租户工作区与财务数据的 RBAC 权限 |
-| **Workspace / Trip**| S-WORKSPACE | 具体的行程空间真相源，承载行程全部要素 | 对应一个全局唯一 `tripId`，作为协作核心 |
-| **Day** | S-WORKSPACE | 行程内的日程单元（第 N 天），包含日期与主干线路 | 包含当日天气预警、限行提醒与节点序列 |
-| **Node** | S-WORKSPACE | 行程内的离散行为节点（景点、餐饮、酒店、途经点） | 核心数据单元，具有经纬度坐标与时间窗口 |
-| **Member** | S-COLLAB | 参与行程的成员（含长期用户与受邀游客） | 记录行程内昵称与偏好，行程归档后脱敏 |
-| **Brand** | S-TENANT | 机构白标品牌物料配置（Logo、标语、管家电话） | 注入导出的路书与快照，承载交付溢价 |
-| **Template / Theme**| S-TENANT / S-CONTENT | 可复用的官方线路模板或视觉样式包（CSS Token） | 支持跨租户官方共享或机构私有沉淀 |
-| **Resource** | S-TENANT | 机构私有特许资源（如特窟预约号、绿色通道专员） | 严格逻辑隔离，仅限所属租户定制师调用 |
-| **Media** | S-MEDIA | 用户上传或打卡产生的照片与轨迹文件元数据 | 原始文件存储于对象存储，本地保留脱敏缩略图 |
-| **Memory** | S-MEDIA | 行程结束后生成的旅途回忆录与精彩足迹集 | 结合节点时序与照片 EXIF 自动合成 |
-| **Subscription** | S-BILLING | 机构的 SaaS 订阅合约与当前有效期 | 控制月度基础出单配额与白标高级特性 |
-| **Order** | S-BILLING | 机构充值加量包或购买增值服务的交易订单 | 记录支付金额、流水号及结算状态 |
-| **Notification** | S-NOTIFY | 下发给用户的行中提醒、变更通知或系统公告 | 支持端内通知中心展示与系统推送 |
-| **Audit** | S-OPS | 针对敏感操作（资质审查、熔断下架）的不可篡改审计日志 | 留存操作人、时间戳与数字签名备查 |
+| **Conversation** ★ | S-GENERATE | 一次与 AI 的对话会话（消息、附件、所用模型） | 消息在发送模型前已脱敏；用户可删除 |
+| **RequirementProfile** ★ | S-GENERATE | 需求画像：特征点、硬约束、软偏好、权重，每个字段带来源标注 | 版本化；规划与匹配只读画像（[docs/16 §16.3](../16-planning-paths-and-route-matching.md#163-需求画像特征点的提取)） |
+| **RouteListing** ★ | S-CATALOG | 旅行社上架的线路 = 行程 DSL + 上架信封 | 状态：草稿 / 审核中 / 在售 / 下架；归属租户 |
+| **PriceRule / ListingOption** ★ | S-CATALOG | 价格规则（人群价、季节、阶梯、单房差）与可调选项（价格变化、互斥依赖） | 随线路版本化；成本价不存储 |
+| **MatchResult** ★ | S-MATCH | 一次匹配的结果：线路、匹配度、维度分项、规则版本号 | 可由（画像版本、线路版本、规则版本）复算 |
+| **Inquiry** ★ | S-CATALOG | 旅客对某条线路发起的咨询，含旅客授权发送的画像字段与调整项 | 仅旅客与该旅行社可见 |
+| **QuoteVersion** ★ | S-CATALOG | 旅行社给出的一版报价（分项、总价、有效期） | 只增不改；自动记录与上一版的差异 |
+| **UsageQuota** ★ | S-AI | 平台模型的额度与用量 | 按用户计；自带模型调用不计入 |
+| **User** | S-IDENTITY | 平台注册用户（旅客、定制师或司导） | 持久存储，支持多设备绑定 |
+| **Device** | S-IDENTITY | 用户的物理终端凭证 | 记录会话 Token 与本地缓存指纹 |
+| **Tenant (Org)** | S-TENANT | 旅行社 / 车队租户 | 含资质审核状态与席位数 |
+| **Role** | S-IDENTITY | 租户内的业务角色 | RBAC 权限 |
+| **Workspace / Trip** | S-WORKSPACE | 行程空间与行程真相源 | 全局唯一 `tripId`；路径 A 方案、成交白标路书都落在这里 |
+| **Day** | S-WORKSPACE | 行程内的日程单元 | 包含节点序列 |
+| **Node** | S-WORKSPACE | 景点、餐饮、住宿、途经点等离散节点 | 坐标与时间窗口；事实与建议分字段 |
+| **Member** | S-COLLAB | 行程空间成员 | 行程内昵称与偏好 |
+| **Brand** | S-TENANT | 旅行社白标品牌配置 | 用于成交后的白标路书 |
+| **Template / Theme** | S-TENANT / S-CONTENT | 可复用模板或视觉主题 | |
+| **Resource** | S-TENANT | 旅行社私有特许资源 | 严格租户隔离，不随"以线路为骨架自己开"复制 |
+| **Media** | S-MEDIA | 照片、素材与动画文件元数据 | 素材标注实拍 / 示意 / AI 生成 |
+| **Memory** | S-MEDIA | 旅后回忆录 | |
+| **Subscription** | S-BILLING | 旅行社工作室订阅与 C 端订阅 | |
+| **Order** | S-BILLING | 订阅与增值购买订单（不含团款） | |
+| **Notification** | S-NOTIFY | 提醒、变更通知、咨询与报价通知 | |
+| **Audit** | S-OPS | 资质审核、线路审核、下架、匹配申诉复算的审计日志 | 不可篡改 |
+
+> 📌 **不是实体的东西**：用户自带模型的 API Key 只存在于用户设备的加密存储中，服务端没有对应的表或字段（[ADR-009](adr/ADR-009-llm-provider-byok.md)）。
 
 ---
 
@@ -39,52 +49,66 @@ sources: [spec/trip.schema.json, spec/brand.schema.json, spec/node.schema.json, 
 
 ```mermaid
 erDiagram
+    USER ||--o{ CONVERSATION : "发起"
+    CONVERSATION ||--o{ REQUIREMENT_PROFILE : "产出版本"
+    REQUIREMENT_PROFILE ||--o{ MATCH_RESULT : "匹配"
+    REQUIREMENT_PROFILE ||--o{ TRIP : "路径 A 生成"
+    ROUTE_LISTING ||--o{ MATCH_RESULT : "被匹配"
+    ROUTE_LISTING ||--o{ PRICE_RULE : "定价"
+    ROUTE_LISTING ||--o{ INQUIRY : "被咨询"
+    USER ||--o{ INQUIRY : "发起咨询"
+    INQUIRY ||--o{ QUOTE_VERSION : "报价"
+    QUOTE_VERSION ||--o| TRIP : "成交后生成白标路书"
+
+    TENANT ||--o{ ROUTE_LISTING : "上架"
     TENANT ||--o{ USER : "拥有成员"
     TENANT ||--o{ BRAND : "配置白标"
     TENANT ||--o{ RESOURCE : "持有特许资源"
-    TENANT ||--o{ SUBSCRIPTION : "订阅计费"
-    TENANT ||--o{ TRIP : "管理行程"
+    TENANT ||--o{ SUBSCRIPTION : "订阅"
 
     USER ||--o{ DEVICE : "绑定设备"
     USER ||--o{ TRIP : "创建/管理"
-
     TRIP ||--|{ DAY : "划分日期"
     DAY ||--|{ NODE : "包含节点"
     TRIP ||--o{ MEMBER : "受邀加入"
-    TRIP ||--o{ MEDIA : "产生资产"
-    TRIP ||--o| MEMORY : "沉淀回忆"
 
-    TENANT {
-        string tenantId PK
-        string orgName
-        string licenseStatus
+    REQUIREMENT_PROFILE {
+        string profileId PK
+        int version
+        json features
+        json hard
+        json soft
+        json weights
     }
-    BRAND {
-        string brandId PK
-        string logoUrl
-        string hotline
+    ROUTE_LISTING {
+        string listingId PK
+        string tenantId FK
+        string status
+        string priceDisplayTier
+        int version
+    }
+    MATCH_RESULT {
+        string profileId FK
+        string listingId FK
+        float score
+        json breakdown
+        string rulesVersion
+    }
+    INQUIRY {
+        string inquiryId PK
+        json sharedFields
+        string state
+    }
+    QUOTE_VERSION {
+        string quoteId PK
+        int version
+        json lineItems
+        json diffFromPrev
     }
     TRIP {
         string tripId PK
-        string title
+        string origin
         int revision
-        string status
-    }
-    DAY {
-        string dayId PK
-        int dayIndex
-        date date
-    }
-    NODE {
-        string nodeId PK
-        string type
-        string name
-        boolean tentative
-    }
-    MEMBER {
-        string memberId PK
-        string nickname
-        string role
     }
 ```
 
@@ -92,19 +116,19 @@ erDiagram
 
 ## 3. 行程文档模型 (Trip Document Tree)
 
-TripCraft 将行程文档抽象为层次化树状结构：`Trip` ➔ `Day` ➔ `Node`。
+TripCraft 将行程文档抽象为层次化树状结构：`Trip` ➔ `Day` ➔ `Node`。路径 A 的草案、旅行社线路的逐日行程、成交后的白标路书，都使用这一结构。
 
 ```mermaid
 flowchart TD
     TRIP["Trip 元数据<br/>(tripId, title, party, brand, constraints)"]
-    D1["Day 1<br/>(西宁集结 ➔ 青海湖)"]
-    D2["Day 2<br/>(黑马河 ➔ 茶卡盐湖)"]
+    D1["Day 1<br/>(兰州 ➔ 张掖)"]
+    D2["Day 2<br/>(张掖丹霞)"]
     DN["Day N..."]
 
     N1["Node 1: 出发集合点 (rigid)"]
-    N2["Node 2: 沿途加油补给 (soft)"]
-    N3["Node 3: 塔尔寺参观 (soft, 理由: 长辈心愿)"]
-    N4["Node 4: 待定湖边观星点 (tentative: true)"]
+    N2["Node 2: 服务区补给 (soft)"]
+    N3["Node 3: 景点 (soft, 来源: 同行者提议)"]
+    N4["Node 4: 待定观景点 (tentative: true)"]
 
     TRIP --> D1
     TRIP --> D2
@@ -116,46 +140,47 @@ flowchart TD
 ```
 
 ### 节点类型与状态机制
-1. **节点类型 (`type`)**：`poi`（景点）、`restaurant`（餐饮）、`hotel`（住宿）、`waypoint`（途经打卡）、`transport`（长途驾驶区间）、`fuses`（应急熔断预案）。
-2. **待定标记 (`tentative`)**：
-   - 当节点处于偏好探索阶段（如未预订住宿、未确定日落机位），标为 `tentative: true` 并附带 `tentativeReason`；
-   - 待定节点在计算耗时与路网时以推荐中心点进行模糊测算，绝不阻塞整单生成；
-   - 最终出单交付前，定制师可将其一键确认（`tentative: false`）或保留为探索弹性点。
+1. **节点类型 (`type`)**：以 [`spec/node.schema.json`](../../spec/node.schema.json) 为准。
+2. **待定标记 (`tentative`)**：信息未核验或用户未决定的节点标 `tentative: true` 并附原因；不阻塞整单生成。
+3. **来源区分**：事实（图商）、系统建议（模型撰写）、同行者提议三方可区分（[docs/00 铁律 7](../00-overview-and-glossary.md#铁律-7--事实与建议分离-fact-vs-advice)；契约缺口见 OI-018）。
 
 ---
 
 ## 4. DSL 在模型中的定位与 Schema 对照
 
-TripCraft DSL 是领域模型的**外部交换标准格式与快照编译输入**。后端领域实体与 `spec/` 规范严密映射：
-
 | 领域实体 / 聚合根 | 对应 `spec/` Schema 规范 | 映射职责与用途 |
 | :--- | :--- | :--- |
-| `Trip`, `Day`, `Member` | [`spec/trip.schema.json`](../../spec/trip.schema.json) | 行程完整真相源（Single Source of Truth），包含全周期约束、成员画像与每日日程。 |
-| `Brand` | [`spec/brand.schema.json`](../../spec/brand.schema.json) | 机构白标品牌契约，定义 Logo、专属铭牌文案、客服电话与配色规范。 |
-| `Node`, `Resource` | [`spec/node.schema.json`](../../spec/node.schema.json) | 离散节点契约，规范经纬度、开闭馆时间窗口、耗时、文化展卡与特许权益。 |
-| 增量变更指令集 | [`spec/patch.schema.json`](../../spec/patch.schema.json) | 增量补丁（TripPatch）契约，定义原子操作（`ops`）与点对点分发格式。 |
+| `Trip`, `Day`, `Member` | [`spec/trip.schema.json`](../../spec/trip.schema.json) | 行程完整真相源 |
+| `Brand` | [`spec/brand.schema.json`](../../spec/brand.schema.json) | 旅行社白标品牌契约 |
+| `Node`, `Resource` | [`spec/node.schema.json`](../../spec/node.schema.json) | 离散节点契约 |
+| 增量变更指令集 | [`spec/patch.schema.json`](../../spec/patch.schema.json) | TripPatch 增量补丁契约 |
+| `RequirementProfile` | ⏳ **待定**（OI-024） | 部分字段可复用 `trip.schema.json` 的 `party` 与 `constraints` |
+| `RouteListing` 上架信封、`PriceRule`、`ListingOption` | ⏳ **待定**（OI-024） | 逐日行程复用 `trip.schema.json`；商业字段需新契约 |
+| `Inquiry`、`QuoteVersion`、`MatchResult` | 服务端内部模型 | 不作为跨层交换格式，不进入 `spec/` |
 
 ---
 
 ## 5. 数据生命周期与状态机 (Data Lifecycle)
 
+**旅客侧**：
+
 ```mermaid
 stateDiagram-v2
-    [*] --> DRAFT : 创建/灵感倾倒 (S-GENERATE)
-    DRAFT --> COLLAB : 发起协作/收齐意见 (S-COLLAB)
-    COLLAB --> CONFIRMED : 方案收敛/领队定稿
-    CONFIRMED --> IN_TRIP : 行中自驾/深链投递 (C-CABIN)
-    IN_TRIP --> IN_TRIP : 突发熔断/应用补丁 (TripPatch)
-    IN_TRIP --> ARCHIVED : 行程结束/归档
-    ARCHIVED --> MEMORY : 匹配照片/生成回忆录 (S-MEDIA)
+    [*] --> PROFILE : AI 对话与追问 (S-GENERATE)
+    PROFILE --> DRAFT : 路径 A 生成草案
+    PROFILE --> MATCHING : 路径 B 匹配与筛选 (S-MATCH)
+    MATCHING --> INQUIRY : 发起咨询 (S-CATALOG)
+    INQUIRY --> CONFIRMED : 报价被接受，成交后生成白标路书
+    DRAFT --> COLLAB : 邀请同行人 (S-COLLAB)
+    COLLAB --> CONFIRMED : 方案收敛
+    CONFIRMED --> IN_TRIP : 出发
+    IN_TRIP --> IN_TRIP : 行中变更 (TripPatch)
+    IN_TRIP --> ARCHIVED : 结束归档
+    ARCHIVED --> MEMORY : 回忆录 (S-MEDIA)
     MEMORY --> [*]
 ```
 
-1. **草案期 (Draft)**：用户自由倾倒，反问引擎建立初始约束，允许存在大量 `tentative` 点。
-2. **共创期 (Collab)**：各端成员结构化提名并附带理由，中间态数据暂存协作层，受时效保护。
-3. **交付期 (Confirmed)**：编译产出零依赖单文件 HTML 或静态只读短链，数据契约冻结。
-4. **行中态 (In-Trip)**：本地优先运行，依靠增量 `TripPatch` 演进版本（修订号递增）。
-5. **归档与回忆 (Archived & Memory)**：中间协作过程数据按期销毁，提取真实打卡轨迹生成回忆录。
+**旅行社线路侧**：`DRAFT`（导入或编辑）→ `REVIEW`（平台审核）→ `ON_SALE`（参与匹配）→ `OFF_SALE`（下架，保留历史版本供已发生的咨询与报价引用）。
 
 ---
 
@@ -165,9 +190,12 @@ stateDiagram-v2
 
 | 数据类型 | 归属主体 | 存储位置 | 访问控制与生命周期 |
 | :--- | :--- | :--- | :--- |
-| **用户核心身份与密码** | 用户个人 | 平台中心库（加密） | 用户注销时执行物理删除 |
-| **机构客户私域名单** | B 端机构 | 租户空间（逻辑隔离） | 平台严禁向该群体进行公域商业营销 |
-| **机构私有特许资源库** | B 端机构 | 机构加密存储 | 租户私有，绝不纳入通用公共模型训练 |
-| **行程协作提名与理由** | 临时团队 | 协作暂存服务 (Redis) | 行程归档后 N 天自动清理，不出平台外部 |
-| **个人原始照片与打卡轨迹** | 终端旅客 | 本地设备存储 | 仅在用户主动授权时进行本地 EXIF 匹配 |
-| **脱敏单文件快照** | 旅客与公众 | 静态 CDN / 本地离线 | 自包含静态产物，用户自主分发与长久保存 |
+| **自带模型 API Key** | 用户个人 | **仅用户设备**（加密存储） | 不同步、不上传；换设备需重新添加 |
+| **对话与需求画像** | 用户个人 | 平台主数据库 | 仅本人可见；发起咨询时由用户确认发送的字段才对该旅行社可见 |
+| **用户核心身份** | 用户个人 | 平台中心库（加密） | 注销时物理删除 |
+| **旅行社上架线路** | 旅行社 | 租户空间 | 公开部分对旅客可见；成本价不存储 |
+| **咨询与报价记录** | 旅客与该旅行社 | 租户空间 | 仅双方可见；平台仅在审计与纠纷处理时访问并留痕 |
+| **旅行社私有特许资源** | 旅行社 | 租户隔离存储 | 不纳入任何公共模型训练 |
+| **行程协作提名与理由** | 行程空间成员 | 协作服务 | 行程归档后按期清理 |
+| **个人原始照片与打卡轨迹** | 旅客 | 本地设备 | 仅在用户主动授权时本地处理 |
+| **脱敏分享版与单文件快照** | 旅客与公众 | 静态 CDN / 本地 | 自包含静态产物 |

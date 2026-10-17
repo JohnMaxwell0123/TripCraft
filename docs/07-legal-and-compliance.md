@@ -1,5 +1,7 @@
 # 第 7 章 · 法律、安全与合规护栏
 
+> ⚠️ **与产品基线 v3 的关系（2026-10-17）**：基线引入线路匹配、自带模型 API 与 AI 生成路线动画，新增合规问题 OI-021 ~ OI-023（[§0.7](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register)），向律师提问的清单见 [§17.10](17-agency-route-studio.md#1710-合规要点全部待执业律师核验)。三条责任边界线一条都不放宽（[§0.3](00-overview-and-glossary.md#03-三条责任边界线tripcraft-不是清单)）。
+
 > **状态**：`Stable Draft`（含强制核验项）｜ **对应维度**：深度维度 ⑥ 法律、安全与合规护栏
 > **铁律依据**：[责任边界线 1/2/3](00-overview-and-glossary.md#03-三条责任边界线tripcraft-不是清单)、[铁律 7 事实与建议分离](00-overview-and-glossary.md#铁律-7--事实与建议分离-fact-vs-advice)、[铁律 9 一切可存证](00-overview-and-glossary.md#铁律-9--一切可存证-everything-attestable)
 > **本章要回答**：这套东西做出来，合法吗？出了事谁负责？哪些话不能说？

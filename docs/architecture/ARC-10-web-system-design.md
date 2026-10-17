@@ -9,6 +9,13 @@ sources: [docs/00-overview-and-glossary.md, docs/09-visual-design-system.md, doc
 
 # ARC-10 · Web 全功能系统架构与技术开发设计文档
 
+> ⚠️ **v3 对齐说明（2026-10-17）**：本文写于产品基线 v3 之前，覆盖 M01–M14 共 51 项功能。按 [PRD-01 v3](../product/PRD-01-vision-positioning.md) 需补充：
+> - **新增模块 M15–M18（25 项功能）**：对话入口与模型选择、路径 A 自主规划、路径 B 匹配与筛选页、旅行社线路工作室。功能规格以 [PRD-04](../product/PRD-04-functional-architecture.md) 为准，交互设计见 [docs/16](../16-planning-paths-and-route-matching.md) 与 [docs/17](../17-agency-route-studio.md)。
+> - **新增路由**：`/`（对话首页）、`/plan/:profileId`、`/match/:profileId`（筛选页）、`/routes/:listingId`、`/inquiries`、`/settings/models`；工作台新增 `/listings`、`/inquiries`。路由清单以 [ARC-04 §3](ARC-04-clients-channels.md#3-各端信息架构-information-architecture) 为准。
+> - **阶段调整**：§10 里程碑以 [DLV-01 v3](../delivery/DLV-01-roadmap-mvp.md) 为准；单文件导出与车机投递移至阶段 3。
+>
+> 本文其余工程规格（状态管理、Local-First、设计令牌、性能预算）继续有效。
+
 > **文档性质**：系统设计与工程开发规格书（面向前端/全栈工程师开发施工）。  
 > **回答的问题**：如何以现代化 Web 网站的形式承载高质量的旅行路书展示，同时在 Web 端完整实现项目的全部 51 项功能与 14 大核心业务场景？具体的技术选型、工程架构、路由拓扑、状态机与接口契约是什么？  
 > **硬规则约束**：严格遵循工程轨硬规则 A（输入 ➔ 算法 ➔ 输出 ➔ 失败状态）与设计轨硬规则 B（决策 ➔ 为什么 ➔ 不这样做会怎样）。  
@@ -869,5 +876,5 @@ gantt
 1. **契约校验**：所有出入库数据必须通过 `npm run validate`（AJV Schema 门禁）。
 2. **跨文件链路**：所有文档与页面路由必须通过 `npm run check-links`。
 3. **红线扫描**：产物严禁包含超过 50 点的外部算路几何，必须通过 `npm run check-br025`。
-4. **追溯闭环**：全部 14 个业务场景（S-C01~S-O01）与 51 项功能点（F-M01-01~F-M14-02）必须保持 `npm run check-trace` 全绿通过。
+4. **追溯闭环**：[PRD-03](../product/PRD-03-scenarios.md) 定义的全部业务场景与 [PRD-04](../product/PRD-04-functional-architecture.md) 定义的全部功能点（v3 起为 20 个场景、76 项功能）必须保持 `npm run check-trace` 全绿通过。
 

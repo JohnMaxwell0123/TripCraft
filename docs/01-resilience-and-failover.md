@@ -1,5 +1,7 @@
 # 第 1 章 · 极端场景与容错容灾
 
+> 📌 **与产品基线 v3 的关系（2026-10-17）**：本章的降级阶梯与同步失效处理继续有效，并扩展到对话、规划与匹配服务——任一服务不可用时，其余主线功能必须可用（[§16.10](16-planning-paths-and-route-matching.md#1610-失败态汇总)）。单文件离线导出在[产品基线](product/PRD-01-vision-positioning.md)中为**支撑能力**，排期见 [DLV-01](delivery/DLV-01-roadmap-mvp.md)。
+
 > **状态**：`Stable Draft` ｜ **对应维度**：深度维度 ① 极端边界情况与故障恢复
 > **铁律依据**：[铁律 3 降级不可耻，白屏才是罪](00-overview-and-glossary.md#铁律-3--降级不可耻白屏才是罪-degrade-never-blank)、[铁律 8 拒绝静默失败](00-overview-and-glossary.md#铁律-8--拒绝静默失败-never-fail-silently)
 > **本章要回答**：当车队在当金山垭口没信号、一位长辈开始头痛呕吐、前方道路封闭时，这份路书还能做什么？

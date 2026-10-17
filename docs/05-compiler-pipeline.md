@@ -1,5 +1,7 @@
 # 第 5 章 · 单文件编译器流水线
 
+> 📌 **与产品基线 v3 的关系（2026-10-17）**：单文件编译器在[产品基线](product/PRD-01-vision-positioning.md)中为**支撑能力**（`F-M08-01` 阶段 3），本章规格继续有效。旅行社的 AI 交互路书（[§17.6](17-agency-route-studio.md#176-ai-路书与路线动画)）复用本章的渲染约束。
+
 > **状态**：`Stable Draft` ｜ **入口**：`src/compiler.js`（纯函数） + `src/cli.js`（Node I/O）⏳ 待实现（见 [§5.10 交付物清单](#511-本章交付物清单)）
 > **铁律依据**：[铁律 1 零构建](00-overview-and-glossary.md#铁律-1--零构建交付-zero-build-delivery)、[铁律 2 单文件优先](00-overview-and-glossary.md#铁律-2--单文件优先渐进增强-single-file-first-progressive-enhancement)、[铁律 3 降级不可耻](00-overview-and-glossary.md#铁律-3--降级不可耻白屏才是罪-degrade-never-blank)
 > **本章目标**：把 `trip.json` 变成一份**能扔到任何静态托管上、断网也能用**的 HTML。

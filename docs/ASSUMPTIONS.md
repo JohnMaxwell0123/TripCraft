@@ -25,3 +25,9 @@
 | A-10 | 机构愿意提供资质与资源并接受平台审核 | [ARC-06](architecture/ARC-06-multitenancy-whitelabel.md) | B 端入驻阻力大 | 3~5 家地接社意向访谈与试点签约 | | 未验证 | |
 | A-11 | AI 生成行程的 POI 准确度达到可用标准 | [ADR-008](architecture/adr/ADR-008-ai-generation-guardrails.md) | 行程草案不可用率高 | 典型大西北/川西线路抽检与真伪核查 | | 未验证 | |
 | A-12 | 用户愿意为账号与云同步迁移，而不是只用快照 | [PRD-01](product/PRD-01-vision-positioning.md) | 多端 App 活跃度不及预期 | 种子用户对比测试与行为漏斗留存分析 | | 未验证 | |
+| A-13 | 用户愿意通过对话（而非表单）描述旅行需求，并接受不超过 3 轮的追问 | [PRD-01 §2](product/PRD-01-vision-positioning.md#2-核心使用流程) | 产品入口失效，需改回表单式需求收集 | 可点击原型可用性测试；上线后看画像完成率（[docs/16 §16.11](16-planning-paths-and-route-matching.md#1611-指标与验收)） | | 未验证 | |
+| A-14 | 持证旅行社愿意上架线路、接受匹配与价格筛选，并接受 [§17.8](17-agency-route-studio.md#178-客户归属与旅行社的顾虑) 的客户归属规则 | [docs/17 §17.5](17-agency-route-studio.md#175-透明度设计) | 路径 B 没有供给；或旅行社上架但隐藏真实价格 | 首个区域 3–5 家地接社访谈与试点上架；观察价格展示档位的选择分布 | | 未验证 | 旧口径的反面论证见 [docs/13 §13.3.3](13-agency-partnership-design.md#1333-三条不越线) |
+| A-15 | 匹配度百分比能反映真实的适合程度（按匹配度分段，咨询率单调上升） | [ADR-010](architecture/adr/ADR-010-route-matching-scoring.md) | 用户不再相信匹配度，路径 B 退化为普通列表 | 路径 B 开放后按 60–70 / 70–80 / 80–90 / 90+ 分段统计咨询率 | | 未验证 | |
+| A-16 | C 端用户愿意为平台模型额度或增值功能付费，或愿意使用自带 API 分担推理成本 | [PRD-05 §1](product/PRD-05-business-model.md#1-收入来源体系-revenue-streams) | 推理成本只能由 B 端收入覆盖 | 免费额度耗尽后的转化测试；统计自带 API 会话占比 | | 未验证 | |
+| A-17 | 旅行社愿意按"工作室订阅 + 线索包"付费 | [PRD-05 §1](product/PRD-05-business-model.md#1-收入来源体系-revenue-streams) | B 端收入模型需要改为其他形式（如成交佣金，需先解决 D6） | 试点期报价测试；记录旅行社对各计费单位的反应（与 OI-014 同步收敛） | | 未验证 | |
+| A-18 | AI 路书与路线动画能提升线路的咨询率与成交率 | [docs/17 §17.6](17-agency-route-studio.md#176-ai-路书与路线动画) | B 端的生成类投入方向错误 | 同区域线路对比：有无 AI 路书 / 动画的咨询率差异 | | 未验证 | |

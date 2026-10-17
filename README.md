@@ -2,505 +2,266 @@
 
 <div align="center">
 
-<h3>新一代自驾与深度游智能路书系统 · 数字化交付与 B 端白标 SaaS 平台</h3>
-<p><b>统一账号漫游 · 本地优先多端协同 · 零依赖单文件离线快照 · 智能座舱极简投递 · 线下小 B 数字化外骨骼</b></p>
+<h3>多端同步、多人共享的 AI 旅行规划 App</h3>
+<p><b>用对话说清需求 · AI 规划自驾路线 · 匹配最合适的旅行社线路 · 全家一起看一起改</b></p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Phase](https://img.shields.io/badge/Phase-2%20Arch%20Package%20v2-green.svg)](docs/delivery/DLV-01-roadmap-mvp.md)
-[![TripCraft 2.0](https://img.shields.io/badge/TripCraft-2.0%20Showcase-FE3C01.svg)](https://johnmaxwell0123.github.io/TripCraft/)
-[![Design System](https://img.shields.io/badge/Design%20System-Unify%20GTM%20(Warm%20Paper)-241E20.svg)](docs/SHOWCASE-web-design.md)
-[![Schema Contract](https://img.shields.io/badge/Schema%20Contract-v1.0.0%20Verified-success.svg)](spec/)
-[![Gate Check](https://img.shields.io/badge/Gate%20Check-Passed%20(4%20Gates)-brightgreen.svg)](tools/)
-[![Tech Stack](https://img.shields.io/badge/Tech%20Stack-Next.js%2016%20%7C%20React%2019%20%7C%20Tailwind-black.svg)](apps/showcase/)
-[![Architecture](https://img.shields.io/badge/Architecture-Local--First%20%7C%20Zero--Build-purple.svg)](docs/architecture/ARC-01-overview.md)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](docs/delivery/DLV-01-roadmap-mvp.md)
+[![Baseline](https://img.shields.io/badge/Product%20Baseline-v3%20(2026--10--17)-FE3C01.svg)](docs/product/PRD-01-vision-positioning.md)
+[![Stage](https://img.shields.io/badge/Stage-Design%20%26%20Specs%20(no%20product%20code%20yet)-lightgrey.svg)](docs/delivery/DLV-01-roadmap-mvp.md)
+[![Schema Contract](https://img.shields.io/badge/Schema%20Contract-v1.0.0-success.svg)](spec/)
+[![Gate Check](https://img.shields.io/badge/Gate%20Check-4%20Gates-brightgreen.svg)](tools/)
+[![Showcase](https://img.shields.io/badge/Showcase-Next.js%2016%20%7C%20React%2019-black.svg)](apps/showcase/)
 
 <p align="center">
-  <a href="https://johnmaxwell0123.github.io/TripCraft/"><b>🌐 在线演示 (Live Demo)</b></a> •
-  <a href="#-标杆样例与实战体验-live-benchmark"><b>🎯 标杆体验</b></a> •
-  <a href="#-核心杀手级特性-killer-features"><b>⚡ 核心特性</b></a> •
-  <a href="#-系统架构总览-system-architecture"><b>🏛️ 系统架构</b></a> •
+  <a href="https://johnmaxwell0123.github.io/TripCraft/"><b>🌐 演示站</b></a> •
+  <a href="docs/product/PRD-01-vision-positioning.md"><b>📌 产品基线</b></a> •
+  <a href="#-核心使用流程"><b>🧭 核心流程</b></a> •
+  <a href="#-系统架构"><b>🏛️ 系统架构</b></a> •
   <a href="#-快速上手与门禁验证"><b>🚀 快速上手</b></a> •
-  <a href="docs/WHITEPAPER.md"><b>📖 架构全景白皮书</b></a> •
-  <a href="docs/README.md"><b>📚 执行全书 (16章)</b></a> •
-  <a href="spec/"><b>📦 数据契约 (Spec)</b></a>
+  <a href="docs/README.md"><b>📚 执行全书</b></a> •
+  <a href="spec/"><b>📦 数据契约</b></a>
 </p>
 
 <br/>
 
-![TripCraft 多端协同智能旅行路书 App 与中立超级中枢](docs/assets/tripcraft-hero-banner.jpg)
+![TripCraft 多端协同智能旅行规划](docs/assets/tripcraft-hero-banner.jpg)
 
 </div>
 
 ---
 
-## 🌐 标杆样例与实战体验 (Live Benchmark & Showcase)
+## 🌟 什么是 TripCraft
 
-无需配置开发环境，立即在浏览器中感受 TripCraft 的高质感交付魅力与全景交互演进：
+**TripCraft（旅艺）** 是一款面向自驾与深度游的 **AI 旅行规划 App**，同时为本地旅行社提供数字化的**线路工作室**。
 
-<div align="center">
+- **对旅客**：像使用 ChatGPT / Claude 一样输入想法（平台默认模型，或换用自己喜欢的模型 API）。系统通过追问帮你把需求想清楚，提取成一份**需求画像**，再给出两种方案：
+  - **路径 A · AI 自主规划自驾路线**：沿路线检索景点、打卡点、美食与补给，按家人的体力与作息排好每一天；
+  - **路径 B · 匹配旅行社线路**：按匹配度排序展示持证旅行社的线路，在筛选页用**带价格分布图的滑块**和**条件方块**调节，像在找房平台上找房子一样。
+- **对同行人**：方案进入**行程空间**，家人朋友通过链接加入、一起提意见；手机、平板、电脑实时同步，没信号时也能看。
+- **对旅行社**：旅游仍然高度依赖本地资源，这些资源不在小红书攻略里。旅行社可以**上架线路被匹配**，用 **AI 生成交互路书与路线动画**，把**价格与包含项透明地列出来**，并让客户**按需调整线路与报价**——取代"发一份 PDF 文字行程"的传统沟通方式。
 
-### 👉 [TripCraft · 旅艺 —— 面向自驾与深度游的智能旅行路书协同中枢](https://johnmaxwell0123.github.io/TripCraft/) 👈
-
-*西行计划 · 丝路自驾路书与 2.0 智能座舱体验中枢（2,400km 穿越河西走廊、张掖丹霞、嘉峪关、敦煌莫高窟、东风航天城 · 腾势 D9 2.28m MPV 与考斯特通达实测）*
-
-</div>
-
-```text
-┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│                               TripCraft 2.0 实战体验核心亮点                             │
-│                                                                                         │
-│  🎨 Unify GTM 温暖纸质美学       📱 2.0 五幕长镜头演进            🏔️ 1.2MB 零依赖自包含产物  │
-│  暖纸白 / 暖炭黑 / 5px 工业圆角   01倾诉流式打字 ➔ 02河西沙盘      纯自包含单文件 HTML 交付   │
-│  火焰跃动光晕 / 社论级西文衬线    03愿望池 ➔ 04座舱 ➔ 05离线交付   祁连山与沙漠拓扑断网秒开   │
-│                                                                                         │
-│  🛡️ 4 项家庭刚性守护清单         🚗 2.0 奢华座舱车道光毯          🚌 双车型极限通达性实测   │
-│  70岁膝关节/4岁午休/日落摄影      分屏实时 HUD 车速与 P 挡微镜     腾势 D9 2.28m 老城地库拦截 │
-│  老定制师 3 步 CoT 结构化推演     2.0m 刚性预警 (BR-025 物理断言)  考斯特 2.8m 限高与景区换乘 │
-└─────────────────────────────────────────────────────────────────────────────────────────┘
-```
-
-- **标杆脱敏 DSL 数据基准**：[`examples/dunhuang-silkroad-9d/trip.json`](examples/dunhuang-silkroad-9d/trip.json)  
-  *包含 9 天完整行程点位、住宿餐饮、考斯特通过性标识与三段式弹性熔断预案，完全遵从 [`spec/trip.schema.json`](spec/trip.schema.json) 工业级校验。*
+> 📌 **口径说明**：项目设计周期较长，文档经历过三次定位调整。**现行口径以 [产品基线 PRD-01 v3](docs/product/PRD-01-vision-positioning.md) 为准**；其中 [§8](docs/product/PRD-01-vision-positioning.md#8-本次基线变更2026-10-17被取代的旧口径) 列出了被取代的旧口径（例如"单文件离线快照是一等交付形态""不做旅行社比价撮合"）。
 
 ---
 
-## 🌟 什么是 TripCraft？(About TripCraft)
-
-**TripCraft（旅艺）** 是一套专为**自驾与长途深度游**场景打造的**新一代智能旅行路书协同系统与数字化交付中枢（Universal Travel Harness）**。
-
-在数字化高度发达的今天，长途自驾与定制旅行的交付体验却惊人地停留在“石器时代”：
-- **C 端散客的割裂**：机票在航旅纵横、酒店在携程、门票在美团、攻略在小红书、导航在高德。旅途中全家在 5+ 个 App 间狼狈切换；通用大模型做攻略频频产生景点闭馆、封路与路线伪造的严重“AI 幻觉”。
-- **B 端车队的尴尬**：包车车队与精品地接社收取上万元高额服务费，最终交付给高净值客户的却只是一段排版混乱的微信长文本或 Word 截图。
-- **高原断网白屏瘫痪**：驶入川西、甘青、新藏等高原无人区与峡谷暗区时，依赖网络的传统 H5 与小程序瞬间白屏崩溃。
-- **座舱交互的安全隐患**：司机在颠簸行车中低头紧盯手机支架小屏幕，极易引发严重安全事故；每到一个途经点必须在车机上笨拙地重新搜索下一站。
-
-TripCraft 致力于彻底打破这一现状。项目确立以 **「本地优先（Local-First）多端协同 App 矩阵」** 与 **「零依赖自包含高保真离线快照（C-SNAPSHOT）」** 为双轮驱动：
-
-```mermaid
-graph LR
-    subgraph TrackA["长期演进目标 · 本地优先多端协同矩阵"]
-        ACC["统一账号身份体系"]
-        MOB["📱 手机端随身打卡"]
-        TAB["📱 平板地理沙盘编排"]
-        DESK["💻 桌面 Web 专业工作台"]
-        CABIN["🚗 车载大屏生态流转"]
-        ACC --- MOB & TAB & DESK & CABIN
-    end
-
-    subgraph TrackB["当前核心交付基石 · 极端弱网高保真快照"]
-        SNAP["📦 零依赖单文件离线快照 (C-SNAPSHOT)"]
-        HTML["纯自包含 HTML 产物<br/>(免安装 / 微信点开即看 / 毫秒级加载)"]
-        PATCH["TripPatch 增量改道补丁<br/>(弱网现场面对面扫码秒级同步)"]
-        SNAP --- HTML & PATCH
-    end
-
-    TrackA <==>|韧性互补 · 分层演进| TrackB
-```
-
-> 🔑 **产品核心形态定调**：  
-> **多端实时同步漫游为长期演进目标，单文件离线高保真快照为当前核心交付基础。**  
-> 二者并非对立，而是现代旅行中枢在「多设备高效协同」与「极端弱网容灾韧性」场景下的分层演进与韧性互补。完整形态拆解详见 [`docs/15-multi-device-and-collaboration.md`](docs/15-multi-device-and-collaboration.md)。
-
----
-
-## 💔 行业痛点与 TripCraft 破局之道
-
-TripCraft 直面自驾旅行“低频、重线下、非标品、极其依赖实体履约”的客观规律，构筑全链路系统级破局方案：
-
-### 维度对比矩阵 (Why TripCraft)
-
-| 评估维度 | 通用 AI 对话 (ChatGPT / Kimi) | 传统 OTA 巨头 (携程 / 美团) | 地图导航 App (高德 / 百度) | 传统路书交付 (Word / 微信长文) | TripCraft (旅艺) 破局方案 |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **时空权威度** | ❌ 缺乏地面实况，常捏造闭馆与假路线 | ⚠️ 偏重机酒标品，无深度动态时空编排 | ⚠️ 擅长单点导航，缺乏人文深度与整程沙盘 | ⚠️ 手工整理耗时 4~8h，极易遗漏关键变动 | ✅ **严格 JSON Schema 强契约校验，未核实 POI 强制打标 tentative** |
-| **弱网抗灾力** | ❌ 断网完全瘫痪 | ❌ 无网直接白屏卡死 | ⚠️ 离线地图可搜点，但无整团行程上下文 | ⚠️ 静态文本/图片无法自适应交互与动态展开 | ✅ **零依赖自包含单文件 HTML，断网全功能交互 + 增量扫码改道** |
-| **座舱大屏体验** | ❌ 无座舱投递能力 | ❌ 仅限手机 App 内查看 | ⚠️ 手机支架窄屏危险驾驶，途经点逐一重搜 | ❌ 无法与车载系统联动 | ✅ **全天 10+ 途经点一键批量投递车机，原生地图接管导航，副驾大屏联动** |
-| **B端商业赋能** | ❌ 无企业白标与资产保护 | ❌ 平台围墙花园，佣金抽成，切断私域 | ❌ 无法定制机构专属品牌与特许机位 | ❌ 交付物简陋，形象停留在“土作坊” | ✅ **独立品牌白标 + 专属域名 + 20分钟极速出单 + 独家特许资源库 RLS 隔离** |
-| **交互输入负担** | ❌ 需要多轮繁琐打字描述 | ❌ 繁琐表单搜索筛选 | ❌ 逐站手动搜索输入 | ❌ 大量机械复制粘贴 | ✅ **苏格拉底双模启发：零输入胶囊药丸点选 (Zero-Typing Pills) 渐进收敛** |
-
-<br/>
-
-<div align="center">
-
-![TripCraft 双轨驱动与超级中枢商业飞轮](docs/assets/tripcraft-dual-flywheel.jpg)
-
-*图：TripCraft 智能座舱交付与 B2B 线下地接社数字化外骨骼双轮驱动生态飞轮*
-
-</div>
-
-### 💼 B2B2C 价值流动与商业模式
-- **不要试图用 AI 消灭线下旅行社，而要成为武装他们的超级工具**：为考斯特车队、精品地接社、独立自驾领队打造高质感数字化交付外骨骼，使接待形象从“土作坊”跃升为“顶级管家”，直接提升客单价与服务溢价；详见 [`docs/03-b2b-agency-operations.md`](docs/03-b2b-agency-operations.md) 与 [`docs/13-agency-partnership-design.md`](docs/13-agency-partnership-design.md)；
-- **做独立中立的 Universal Travel Harness（旅行超级中枢）**：不拘泥于单一巨头封闭插件，探索全网 OTA 插件集成与 CPS 联盟比价分销（商业假设 A-01 / A-02，详见 [`docs/ASSUMPTIONS.md`](docs/ASSUMPTIONS.md)），不与入驻地接社争夺终端客源，实现平台、地接社与旅客三方共赢。
-
----
-
-## ⚡ 核心杀手级特性 (Killer Features)
-
-### 1. 🤖 苏格拉底启发式对齐引擎与流式思维链 (`S-GENERATE`)
-*告别繁琐打字疲劳与 AI 路线幻觉，构建懂旅行、懂家庭的智能启发向导。*
-
-- **逐字流式打字与交互聚焦**：集成 `useScrollTypewriter` 逐字打字机流式输入（字符敲入 ➔ 光标呼吸 ➔ 模拟提交点击），真实再现复杂家庭出行意图录入过程；
-- **老定制师 3 步 CoT 结构化推演树**：分层展开「意图语义解析 ➔ 刚性约束提取 ➔ 行程拓扑收敛」思维链，与右侧刚性规则列表严格联动；
-- **4 项家庭出行刚性守护清单**：深度解析并固化「👴 70岁长辈膝关节手术（规避高长台阶）」「👶 4岁幼儿午休防中暑（避开正午酷热）」「🚗 腾势 D9 带车顶箱 2.28m 限高（老城地库拦截预警）」「🌅 鸣沙山 19:30 日落摄影（黄金光线窗口）」；
-- **双模弹性唤醒与待定容忍**：支持「自由倾倒模式」与「零输入胶囊药丸点选模式 (Zero-Typing Pills)」；用户回答“随便/还没定”时绝不反复逼问，自动注入行业最佳实践并标记语义，配套「🟢 计划A ｜ 🟡 弹性缓冲 ｜ 🔴 降级预案」三段式时间熔断机制；
-- **强契约防幻觉校验**：生成产物强制通过 [`spec/trip.schema.json`](spec/trip.schema.json) 工业级校验，未核实 POI 强制打标 `tentative`，彻底杜绝大模型编造虚假路线；规范依据详见 [`docs/08-socratic-interaction-design.md`](docs/08-socratic-interaction-design.md)。
-
-<div align="center">
-
-![TripCraft 苏格拉底交互对齐与胶囊点选流](docs/assets/tripcraft-socratic-flow.jpg)
-
-*图：苏格拉底多轮交互对齐漏斗与胶囊点选交互流*
-
-</div>
-
----
-
-### 2. 🎨 Unify GTM 瑞士工程与苹果液态玻璃双融视觉系统 (Unify GTM & Liquid Glass)
-*拒绝死板灰暗的传统表格与过度圆润的低幼质感，呈现瑞士理性工程与头等舱杂志级排版美学。*
-
-- **Unify GTM 温暖纸质质感调色板**：
-  - 画布暖纸白（Warm Paper）：`#FFFFF9`
-  - 模块质感浅卡其（Surface Card）：`#F4F4EE`
-  - 暖炭黑主文本（Warm Charcoal）：`#241E20`
-  - 火焰跃动点缀辉光（Flame Accent / Headline Aura Glow）：`#FE3C01`（为“活路书”与主操作注入高能生命力）
-  - 极细分割发丝线（Hairline Border）：`#E2E2D8`
-- **严格几何圆角阶梯 (Radius Hierarchy)**：
-  - 交互按钮严格 `rounded-[5px]`（拒绝低幼圆角膨胀，还原工业精密质感）；
-  - 状态药丸与胶囊徽标严格 `rounded-full`（100px）；
-  - 内容卡片与模块 `rounded-[12px]`；
-  - 主展示视窗与输入容器 `rounded-[16px]`；
-- **社论级西文衬线 (Editorial Serif) 与 1200px 网格**：主副标题采用高雅西文衬线字体，搭配 `-0.035em` 紧凑字间距，规范在 `max-w-[1200px]` 瑞士工程网格中自适应流转；
-- **五大自然主题意境与液态玻璃**：敦煌金（大漠风情）、青甘碧（高原湖泊）、雪山银（冰川冷冽）、赛博紫（夜幕星空）、丹霞红（地貌奇观），配合苹果液态玻璃（`backdrop-filter: blur(20px)`）流光质感；
-- **长辈关怀大字模式 (Senior Care Mode)**：内置 `<head>` 防闪烁逻辑（Zero-FOUC），满足 WCAG 2.1 AAA 严苛标准，按钮触控靶区全面扩大至 ≥ 48px × 48px；规范依据详见 [`docs/09-visual-design-system.md`](docs/09-visual-design-system.md) 与 [`docs/SHOWCASE-web-design.md`](docs/SHOWCASE-web-design.md)。
-
-<div align="center">
-
-![TripCraft 苹果液态玻璃五大主题与多端适配展示](docs/assets/tripcraft-glass-themes.jpg)
-
-*图：五大液态玻璃主题色系与车载宽屏/手机/长辈大字多端自适应呈现*
-
-</div>
-
----
-
-### 3. 📦 零依赖·免安装·1.2MB 高保真单文件自包含离线快照 (`C-SNAPSHOT`)
-*践行「零构建交付、单文件优先、降级不可耻、白屏才是罪」的硬核工程铁律。*
-
-```mermaid
-flowchart LR
-    subgraph Build["S-EXPORT 极速编译管线"]
-        DSL["TripCraft DSL<br/>(trip.json)"]
-        CSS["液态玻璃视觉包<br/>(Liquid Glass CSS)"]
-        MAP["离线矢量地图引擎<br/>(Vector Tiles & POI)"]
-        LOGIC["离线交互运行时<br/>(Vanilla JS Runtime)"]
-        COMP["S-EXPORT 编译器"]
-        DSL & CSS & MAP & LOGIC --> COMP
-    end
-
-    subgraph Output["C-SNAPSHOT 零依赖自包含产物"]
-        HTML["单文件 HTML (自包含 1.2MB)<br/>• 零运行时 npm 依赖<br/>• 微信秒开 / AirDrop 秒投<br/>• 荒漠无人区毫秒级加载"]
-    end
-
-    subgraph Sync["极端弱网现场差分同步"]
-        PATCH["TripPatch 增量差分补丁<br/>(百字节级 JSON)"]
-        QR["现场面对面扫码 / 局域网"]
-        CLIENTS["全团多端秒级更新路线"]
-        PATCH --> QR --> CLIENTS
-    end
-
-    COMP --> HTML
-    HTML -.->|突发塌方/修路改道| Sync
-```
-
-- **自包含全量编译**：将完整行程数据、高对比离线矢量地图、CSS 主题动效与离线交互逻辑编译为**单个自包含 1.2MB HTML 文件**；
-- **完全免安装**：零第三方 npm 运行时依赖，微信点开即看、AirDrop 隔空秒投、本地文件双击即览；
-- **三级离线容灾降级架构**：一级 MapLibre 矢量瓦片 ➔ 二级高对比静态 SVG 地形 ➔ 三级节点时空卡片，在海拔 4000 米高原无人区、深山峡谷断网、弱网基站拥塞等恶劣条件下，保障毫秒级加载与全量离线交互，严禁白屏；规范依据详见 [`docs/01-resilience-and-failover.md`](docs/01-resilience-and-failover.md) 与 [`docs/05-compiler-pipeline.md`](docs/05-compiler-pipeline.md)；
-- **TripPatch 点对点增量分发**：突发塌方、泥石流或修路改道时，领队生成百字节级 [`spec/patch.schema.json`](spec/patch.schema.json) 差分补丁，面对面扫码或局域网全员秒级同步。
-
----
-
-### 4. 🚗 2.0 智能座舱极简交付与车道级领航协议 (`C-CABIN`)
-*告别手机支架低头驾驶隐患，原生奢华座舱车道级光毯与物理限高拦截。*
+## 🧭 核心使用流程
 
 ```mermaid
 flowchart TB
-    subgraph CockpitDelivery["TripCraft 座舱交付协议 (Cockpit Protocol) —— 三条落地路径"]
-        PA["路径 A · 系统级深链投递<br/>──────────────────────<br/>一键将全天 10+ 经纬度批量投递到车载高德/百度<br/>★ 零改造要求，立即可用"]
-        PB["路径 B · 手机无线镜像大屏<br/>──────────────────────<br/>华为超级桌面 / 小米妙享将液态玻璃路书投至大屏<br/>★ 高清大屏景深，体验拉满"]
-        PC["路径 C · 车厂生态互联预留<br/>──────────────────────<br/>HiCar / ICCOA / CarPlay 官方开放协议<br/>⚠️ 预留规范，商务对接"]
-    end
-
-    subgraph Handover["车机安全责任与控制边界"]
-        AUTO["车机原生地图接管路线规划与导航引导<br/>(🚫 绝不激活 NOA，绝不触碰线控底盘)"]
-    end
-
-    subgraph Radar["新能源理性补能与限高雷达"]
-        ENERGY["车型公开百公里电耗模型 + 沿途海拔爬坡落差 + 用户表显电量输入<br/>★ 纯数学离线估算，明确责任边界，杜绝虚假承诺"]
-        CLEARANCE["车型高度校验 (腾势 D9 2.28m)<br/>★ 老城地库 2.0m 限高刚性拦截警报 (BR-025 物理断言)"]
-    end
-
-    PA & PB & PC --> Handover
-    CockpitDelivery -.-> Radar
+    IN["① AI 对话窗口<br/>平台模型 / 自带 API"] --> ASK["② 追问引导<br/>每轮 1 题，≤ 3 轮"]
+    ASK --> PROFILE["③ 需求画像<br/>硬约束 + 软偏好 + 权重"]
+    PROFILE --> PICK{"④ 选择路径"}
+    PICK -->|路径 A| PA["AI 自主规划自驾<br/>沿线景点 · 打卡点 · 美食 · 补给"]
+    PICK -->|路径 B| PB["旅行社线路匹配<br/>匹配度 % + 理由"]
+    PB --> FILTER["筛选页<br/>价格 / 天数分布图滑块 · 条件方块"]
+    FILTER --> DETAIL["线路详情<br/>AI 路书 · 路线动画 · 透明报价 · 按需调整"]
+    DETAIL --> ASKAG["向旅行社咨询 → 报价版本"]
+    PA --> SPACE["⑤ 行程空间<br/>邀请同行人 · 提名 · 多端同步"]
+    ASKAG --> SPACE
 ```
 
-- **全天路线批量投递**：全天沿途打卡点、观景台、服务区一键打包推送车机，车机原生地图接管导航引导；
-- **2.0 奢华中控大屏与 3D 车道级光毯**：分屏实时展示 HUD 车速、3D 车道级行进光毯与下一节点指引；
-- **老城地库 2.0m 限高刚性拦截预警**：实测 7 座 MPV（腾势 D9 带车顶箱总高 2.28m）老城地库通行，检测到 2.0m 限高立即触发刚性视觉拦截预警与就近露天停车场推荐（严守 BR-025 物理断言）；
-- **P 挡步行微镜接力**：车辆挂入 P 挡泊车后，车机自动向随身手机推送步行微镜通知，无缝接力最后 500 米古城街巷打卡；
-- **理性补能规划雷达**：结合车型公开百公里电耗模型、海拔爬坡落差与用户输入的表显电量做数学估算，提前预警补能区间；规范依据详见 [`docs/02-cockpit-protocol.md`](docs/02-cockpit-protocol.md)。
-
----
-
-### 5. 🏢 微信免登愿望池协同与线下地接 B2B 白标 SaaS (`Collab` & `C-CONSOLE`)
-*微信扫码免登多人愿望池协同，专为精品地接社、自驾俱乐部与高端车队量身定制的商业化外骨骼。*
-
-```mermaid
-flowchart LR
-    subgraph Before["传统手工作坊 (痛点重重)"]
-        T1["耗时 4~8 小时手工整理"]
-        T2["交付丑陋微信长文 / Word 截图"]
-        T3["缺乏专业感，客户频频砍价"]
-        T4["独家路线容易被公域平台抄袭截流"]
-        T1 --> T2 --> T3 --> T4
-    end
-
-    subgraph After["TripCraft 白标外骨骼 (赋能跃升)"]
-        A1["20 分钟极速智能出单"]
-        A2["交付专属域名+Logo的苹果头等舱路书"]
-        A3["形象跃升为顶级管家，客单价提升"]
-        A4["独家特许机位/暗道 RLS 行级安全隔离"]
-        A1 --> A2 --> A3 --> A4
-    end
-
-    Before ==>|TripCraft 赋能改造| After
-```
-
-- **微信全团免登愿望池协同**：同行亲友微信扫码免登一键加入，副驾 3D 拟真手机伴侣悬浮视窗随视差滚轮平滑交互；
-- **顺路度智能拓扑重算**：提名小吃打卡（正宁路夜市·牛奶鸡蛋醪糟）后，纯前端 Web Worker 毫秒级重算 98% 顺路度对比条形图，一键合并入时间线；
-- **极速出单与品牌溢价**：原本需要耗费 4~8 小时的手写长文本，通过白标工作台 20 分钟内生成苹果头等舱质感路书；
-- **独立品牌白标体系**：支持租户专属 Logo、品牌主色调、专属域名（如 `vip.myagency.com`）与防伪定制水印；规范依据详见 [`spec/brand.schema.json`](spec/brand.schema.json)；
-- **独家特许资源库管理**：机构独家机位、大巴限高暗道、地接协议餐宿等核心资产通过行级安全隔离（RLS），防止从业者核心情报流失；
-- **全生命周期客户保护**：客户数据完全属于入驻机构，免登快照杜绝平台截流抢单；规范依据详见 [`docs/03-b2b-agency-operations.md`](docs/03-b2b-agency-operations.md) 与 [`docs/13-agency-partnership-design.md`](docs/13-agency-partnership-design.md)。
-
----
-
-## 🏛️ 系统架构总览 (System Architecture)
-
-TripCraft 整体架构采用五层全景分层与模块化单体（Modular Monolith）工程设计：
-
-<div align="center">
-
-![TripCraft 系统全景分层架构图](docs/assets/tripcraft-system-arch.jpg)
-
-*图：TripCraft 五层全景架构（L1 数据源层 ➔ L2 契约层 ➔ L3 编译器与同步层 ➔ L4 运行时层 ➔ L5 多端交付层）*
-
-</div>
-
-### 模块拓扑与服务交互
-
-```mermaid
-flowchart TB
-    subgraph L5["L5 多端交付与协同矩阵 (Clients & Matrix)"]
-        MOB["C-MOBILE 手机随身端<br/>(PWA / 原生跨端)"]
-        TAB["C-TABLET 平板沙盘<br/>(iPad / 触控大屏)"]
-        CON["C-CONSOLE B端工作台<br/>(桌面 Web 编排)"]
-        CAB["C-CABIN 智能座舱<br/>(深链投递 / 投屏镜像)"]
-        SNAP["C-SNAPSHOT 离线快照<br/>(零依赖单文件 HTML)"]
-    end
-
-    subgraph L3_L4["L3 / L4 核心服务与运行时 (Modular Monolith)"]
-        GW["统一 API 网关 / 路由鉴权 / 多租户隔离"]
-        S_ID["S-IDENTITY<br/>统一账号与身份"]
-        S_WS["S-WORKSPACE<br/>行程工作区管理"]
-        S_GEN["S-GENERATE<br/>苏格拉底智能澄清"]
-        S_SYNC["S-SYNC<br/>本地优先协作漫游"]
-        S_EXP["S-EXPORT<br/>单文件快照编译器"]
-        S_TEN["S-TENANT<br/>机构白标与特许库"]
-    end
-
-    subgraph L2["L2 核心数据契约规范 (spec/)"]
-        SCHEMA_T["trip.schema.json<br/>完整行程 DSL"]
-        SCHEMA_B["brand.schema.json<br/>品牌与租户规范"]
-        SCHEMA_N["node.schema.json<br/>细粒度节点规范"]
-        SCHEMA_P["patch.schema.json<br/>轻量差分补丁"]
-    end
-
-    subgraph L1["L1 合规外部基础设施 (Integrations)"]
-        MAP_EXT["合规持牌图商服务<br/>(高德 / 百度 API)"]
-        AI_EXT["合规 LLM 推理引擎<br/>(结构化提取与澄清)"]
-        CDN_EXT["对象存储与边缘静态托管<br/>(OSS / Cloudflare Pages)"]
-    end
-
-    L5 <-->|REST API / WebSocket / 离线快照| GW
-    GW <--> L3_L4
-    L3_L4 -.->|严格遵守| L2
-    L3_L4 -->|合法经纬度校验 & POI检索| MAP_EXT
-    L3_L4 -->|意图澄清与反问推理| AI_EXT
-    L3_L4 -->|离线快照归档与分发| CDN_EXT
-```
-
----
-
-## 📦 核心数据契约规范 (Data Contracts)
-
-系统所有数据输入、输出与流转均严格受到 `spec/` 目录下的 JSON Schema 契约治理：
-
-| Schema 契约文件 | 命名空间规范 | 核心职责与业务语义 |
+| 环节 | 设计要点 | 专项设计 |
 | :--- | :--- | :--- |
-| [`spec/trip.schema.json`](spec/trip.schema.json) | `https://tripcraft.dev/schema/v1.0.0/trip.schema.json` | **行程全案核心契约**：定义行程元数据、团队成员画像、每日时间线、节点列表、餐饮住宿及 Plan B 三段式熔断结构。 |
-| [`spec/brand.schema.json`](spec/brand.schema.json) | `https://tripcraft.dev/schema/v1.0.0/brand.schema.json` | **租户与白标契约**：定义 B 端机构资质、品牌 Logo、主题配色、客服专线、专属域名及电子防伪印章。 |
-| [`spec/node.schema.json`](spec/node.schema.json) | `https://tripcraft.dev/schema/v1.0.0/node.schema.json` | **行程节点元数据契约**：定义单个打卡点、途经点、坐标、停留时长、海拔、考斯特大巴通达性及注意事项。 |
-| [`spec/patch.schema.json`](spec/patch.schema.json) | `https://tripcraft.dev/schema/v1.0.0/patch.schema.json` | **TripPatch 差分补丁契约**：定义基于版本操作日志的轻量增量补丁，支持现场突发改道的秒级低带宽广播。 |
+| **对话与追问** | 一个话不多的"老定制师"人设；用药丸选项代替写作文；回答"随便"就标待定，不反复逼问 | [第 8 章](docs/08-socratic-interaction-design.md) · [§16.2](docs/16-planning-paths-and-route-matching.md#162-对话入口与模型选择) |
+| **自带模型 API** | Key 只存在你的设备上，平台不经手；无论用哪个模型，产出都走同一条校验管线 | [ADR-009](docs/architecture/adr/ADR-009-llm-provider-byok.md) |
+| **需求画像** | 每个字段标注来源（你说的 / AI 推断的 / 默认的），推断项需要你确认 | [§16.3](docs/16-planning-paths-and-route-matching.md#163-需求画像特征点的提取) |
+| **路径 A** | 模型只负责编排和写推荐理由；景点、店名、坐标、开放时间全部来自图商，查不到的标"待定" | [§16.5](docs/16-planning-paths-and-route-matching.md#165-路径-a--ai-自主规划自驾路线) · [ADR-008](docs/architecture/adr/ADR-008-ai-generation-guardrails.md) |
+| **路径 B** | 先判资格（海拔、人数、日期等硬条件）再算匹配度；匹配度可展开分项；**付费不影响匹配度** | [§16.6](docs/16-planning-paths-and-route-matching.md#166-路径-b--旅行社线路匹配) · [ADR-010](docs/architecture/adr/ADR-010-route-matching-scoring.md) |
+| **筛选页** | 价格滑块上方是真实的价格柱状分布（标出你的预算与市场中位）；方块显示选中后剩几条；无结果时告诉你放宽哪一项最有效 | [§16.7](docs/16-planning-paths-and-route-matching.md#167--筛选页设计) |
+| **多人共享与同步** | 只收齐意见、不替你投票；长辈可用大字版或免安装的分享版 | [第 15 章](docs/15-multi-device-and-collaboration.md) |
+
+<div align="center">
+
+![TripCraft 追问与药丸点选交互流](docs/assets/tripcraft-socratic-flow.jpg)
+
+*图：追问漏斗与药丸点选交互*
+
+</div>
 
 ---
 
-## 🛡️ 诚实能力边界声明 (Honest Boundaries)
+## 🏢 面向旅行社：线路工作室
 
-为切实保障**行车生命安全、测绘合规红线与商业合作伙伴利益**，TripCraft 郑重确立以下能力边界声明：
+| 传统旅行社的问题 | 线路工作室的做法 | 设计依据 |
+| :--- | :--- | :--- |
+| 好线路被看见的机会少 | 上架后按需求画像匹配给合适的旅客；已有的 Word / PDF 行程单可直接导入 | [§17.3](docs/17-agency-route-studio.md#173-线路上架三种录入方式) |
+| 信息不透明、旅客信赖度低 | 包含 / 不包含必填；价格展示档位（起价 / 区间 / 分项明细）由旅行社选择；实拍与示意分开标注；资质公示；司导名片 | [§17.5](docs/17-agency-route-studio.md#175-透明度设计) |
+| 只能发 PDF，看不懂 | AI 生成交互路书与 30–60 秒路线动画 | [§17.6](docs/17-agency-route-studio.md#176-ai-路书与路线动画) |
+| 按客户需求改线路、改价成本高 | 可调选项预先定价，客户自助看到预估价；报价按版本留痕并自动列出差异 | [§17.7](docs/17-agency-route-studio.md#177-按需调整与报价闭环) |
+| 担心平台抢客户 | 平台不自营线路；咨询记录只对双方可见；成交后的白标路书不出现平台品牌与竞品 | [§17.8](docs/17-agency-route-studio.md#178-客户归属与旅行社的顾虑) |
 
-1. 🚫 **绝不激活领航辅助 (NOA)，绝不触碰线控底盘**：座舱交付严格止于向车机地图投递途经点经纬度，后续导航与辅助驾驶决策全部由车载系统自主接管，绝不干预任何车辆行驶与控制。
-2. 🚫 **绝不读取车辆实时电量 (SOC)**：沿途补能规划均基于公开车型能耗模型、高程爬坡落差与用户手动填报的表显续航进行数学估算，并明确标注为「参考估算」，杜绝虚假安全承诺。
-3. 🚫 **绝不强行安装车机原生第三方 APK**：车机端采用成熟合规的手机系统深链直调与高清无线镜像交付，杜绝占用车机系统关键算力与车机运行内存。
-4. 🚫 **绝不自研底层地图与算路引擎**：所有地理编码与算路均调用高德、百度等国家持牌合规图商服务；**严守 BR-025 测绘合规红线**，静态产物中绝不非法内联稠密算路几何点串。
-5. 🚫 **绝不自营重资产地接与旅游交易**：TripCraft 坚守中立技术与工具底座定位，全面赋能线下小 B 从业者，不与其争夺终端客户与地接订单。
-
-> 📌 更多历史事实核查与更正说明详见 [`docs/ERRATA.md`](docs/ERRATA.md)。
+**只有通过资质审核的持证旅行社可以上架和被匹配**（[§13.5.4 资质红线](docs/13-agency-partnership-design.md#1354--一个必须先回答的问题他有资质吗)）。商业模式见 [PRD-05](docs/product/PRD-05-business-model.md)：主要收入来自旅行社的工作室订阅与线索包，C 端基础功能免费。
 
 ---
 
-## 📊 组件工程状态与落地路线图
+## 🧩 支撑能力
 
-### 组件工程状态对照表
+这些能力保留原有设计，但不承担主叙事，排期在主线之后（[DLV-01](docs/delivery/DLV-01-roadmap-mvp.md)）：
 
-我们坚持工程诚实原则，严格区分**设计状态**与**代码实现状态**：
+| 能力 | 一句话 | 设计依据 |
+| :--- | :--- | :--- |
+| **离线可读与单文件导出** | 已同步的行程断网可读；可导出零依赖单文件 HTML 发给不装 App 的长辈 | [第 1 章](docs/01-resilience-and-failover.md) · [第 5 章](docs/05-compiler-pipeline.md) · [ADR-006](docs/architecture/adr/ADR-006-snapshot-delivery-format.md) |
+| **车机投递** | 全天途经点一键交给车机导航（深链 + 手机投屏） | [第 2 章](docs/02-cockpit-protocol.md) |
+| **白标交付** | 旅行社把成交后的路书以自有品牌交给客户 | [第 3 章](docs/03-b2b-agency-operations.md) |
+| **旅后回忆录** | 照片与足迹整理成回忆 | [第 6 章](docs/06-memory-journal-engine.md) |
 
-| 模块 / 组件 | 架构层级 | 设计状态 | 实现状态 | 规范与文档依据 |
-| :--- | :--- | :--- | :--- | :--- |
-| **`spec/` 契约集** | 契约层 (L2) | **已验证** | **已实现** | [`spec/`](spec/)、[`docs/04-dsl-specification-v1.md`](docs/04-dsl-specification-v1.md) |
-| **`tools/` 门禁工具链** | 工程基础设施 | **已验证** | **已实现** | [`tools/`](tools/)、[`package.json`](package.json) |
-| **`examples/` 标杆数据** | 数据基准 | **已验证** | **已实现** | [`examples/dunhuang-silkroad-9d/trip.json`](examples/dunhuang-silkroad-9d/trip.json) |
-| **`apps/showcase` 体验站** | 交付体验 (L5) | **已验证** | **2.0 已上线 (Unify GTM / 5幕长镜头)** | [`apps/showcase/`](apps/showcase/)、[在线体验](https://johnmaxwell0123.github.io/TripCraft/) |
-| **`S-EXPORT` 单文件编译器** | 编译流水线 (L3) | 已评审 | 原型验证 | [`docs/05-compiler-pipeline.md`](docs/05-compiler-pipeline.md) |
-| **`C-SNAPSHOT` 离线运行时** | 容灾运行时 (L4) | 已评审 | 原型验证 | [`docs/architecture/ARC-04-clients-channels.md`](docs/architecture/ARC-04-clients-channels.md) |
-| **`C-CABIN` 座舱交付协议** | 终端接入 (L5) | 已评审 | 协议已定 | [`docs/02-cockpit-protocol.md`](docs/02-cockpit-protocol.md) |
-| **`S-IDENTITY` 统一账号** | 核心服务 (L3) | 规划设计 | 规划中 (Phase 1) | [`docs/architecture/ARC-05-backend-integrations.md`](docs/architecture/ARC-05-backend-integrations.md) |
-| **`S-WORKSPACE` 行程工作区** | 核心服务 (L3) | 规划设计 | 规划中 (Phase 1) | [`docs/architecture/ARC-02-domain-data-model.md`](docs/architecture/ARC-02-domain-data-model.md) |
-| **`S-GENERATE` 智能澄清** | 核心服务 (L3) | 规划设计 | 规划中 (Phase 1) | [`docs/08-socratic-interaction-design.md`](docs/08-socratic-interaction-design.md) |
-| **`S-SYNC` 本地优先协同** | 核心服务 (L3) | 规划设计 | 规划中 (Phase 2) | [`docs/architecture/ARC-03-offline-sync.md`](docs/architecture/ARC-03-offline-sync.md) |
-| **`S-TENANT` 机构白标** | 核心服务 (L3) | 规划设计 | 规划中 (Phase 1) | [`docs/architecture/ARC-06-multitenancy-whitelabel.md`](docs/architecture/ARC-06-multitenancy-whitelabel.md) |
-| **`C-MOBILE` 跨端 App** | 终端接入 (L5) | 规划设计 | 规划中 (Phase 1) | [`docs/architecture/adr/ADR-001-client-framework.md`](docs/architecture/adr/ADR-001-client-framework.md) |
+---
 
-### 🗺️ 五阶段演进路线图 (Roadmap)
+## 🛡️ 能力边界
 
-详见演进路线规划书 [`docs/delivery/DLV-01-roadmap-mvp.md`](docs/delivery/DLV-01-roadmap-mvp.md)：
+1. 🚫 **不是旅行社**：平台不自营线路、不组团、不与旅客签旅游合同；阶段 1–2 不经手团款，合同与付款在旅行社与旅客之间完成。
+2. 🚫 **只为持证旅行社引流**：未通过资质审核的主体不能上架、不会出现在匹配结果中；匹配引流的合规边界须律师出具意见（OI-021），意见出具前路径 B 不对公众开放。
+3. 🚫 **模型不编造事实**：景点、店名、坐标、开放时间只能来自图商或旅行社确认；AI 生成的文字与画面显式标注。
+4. 🚫 **不是导航软件，不控制车辆**：不触发或干预 NOA，不读取车辆 SOC；车机能力止于深链投递与手机投屏。
+5. 🚫 **不自研地图**：调用持牌图商服务，严守 BR-025——产物中不内联算路几何。
+
+> 📌 更多边界与事实更正见 [PRD-01 §5](docs/product/PRD-01-vision-positioning.md#5-能力边界规范-scope--boundaries) 与 [docs/ERRATA.md](docs/ERRATA.md)。
+
+---
+
+## 🏛️ 系统架构
+
+```mermaid
+flowchart TB
+    subgraph CLIENTS["客户端"]
+        MOB["C-MOBILE 手机 App"]
+        WEB["C-WEB 对话 · 筛选 · 行程空间"]
+        CON["C-CONSOLE 旅行社工作台"]
+        SNAP["C-SNAPSHOT 离线单文件"]
+        CAB["C-CABIN 车机深链"]
+    end
+
+    subgraph CORE["后端模块化单体"]
+        S_AI["S-AI 模型网关"]
+        S_GEN["S-GENERATE 追问 · 画像 · 编排"]
+        S_MATCH["S-MATCH 匹配评分"]
+        S_CAT["S-CATALOG 线路 · 咨询 · 报价"]
+        S_WS["S-WORKSPACE / S-SYNC / S-COLLAB 行程空间与同步"]
+        S_GEO["S-GEO 图商适配"]
+        S_OPS["S-OPS 资质与内容审核"]
+    end
+
+    subgraph SPEC["数据契约 spec/"]
+        TRIP["trip.schema.json"]
+        NODE["node.schema.json"]
+        BRAND["brand.schema.json"]
+        PATCH["patch.schema.json"]
+    end
+
+    subgraph EXT["外部服务"]
+        MAP["持牌图商（高德 / 百度）"]
+        LLM["平台默认模型"]
+        BYOK["用户自带模型（客户端直连）"]
+    end
+
+    CLIENTS --> CORE
+    CORE -.->|严格遵守| SPEC
+    S_GEO --> MAP
+    S_AI --> LLM
+    MOB & WEB -.-> BYOK
+```
+
+完整设计见 [ARC-01 系统总体架构](docs/architecture/ARC-01-overview.md) 与 [ARC-09 架构决策索引](docs/architecture/ARC-09-adr-index.md)（ADR-001 ~ ADR-010）。
+
+---
+
+## 📊 实现状态与路线图
+
+**当前仓库只有设计文档、数据契约、门禁工具与演示站，还没有产品代码。**
+
+| 模块 / 组件 | 设计状态 | 实现状态 | 依据 |
+| :--- | :--- | :--- | :--- |
+| `spec/` 数据契约 | 已验证 | **已实现** | [spec/](spec/)、[第 4 章](docs/04-dsl-specification-v1.md) |
+| `tools/` 门禁工具链 | 已验证 | **已实现** | [tools/](tools/) |
+| `examples/` 标杆数据 | 已验证 | **已实现** | [trip.json](examples/dunhuang-silkroad-9d/trip.json) |
+| `apps/showcase` 演示站 | 已评审 | **已上线**（叙事尚未覆盖路径 B 与线路工作室） | [apps/showcase/](apps/showcase/)、[演示站](https://johnmaxwell0123.github.io/TripCraft/) |
+| 对话入口、需求画像、路径 A | 草案 | 未开始（阶段 1） | [第 16 章](docs/16-planning-paths-and-route-matching.md) |
+| 多端同步与行程空间 | 草案 | 未开始（阶段 1） | [第 15 章](docs/15-multi-device-and-collaboration.md) |
+| 旅行社线路导入与上架 | 草案 | 未开始（阶段 1） | [第 17 章](docs/17-agency-route-studio.md) |
+| 路径 B 匹配与筛选页、AI 路书、报价闭环 | 草案 | 未开始（阶段 2） | [第 16 章](docs/16-planning-paths-and-route-matching.md)、[第 17 章](docs/17-agency-route-studio.md) |
+| 单文件编译器、车机投递 | 已评审 | 未开始（阶段 3） | [第 5 章](docs/05-compiler-pipeline.md)、[第 2 章](docs/02-cockpit-protocol.md) |
 
 ```mermaid
 timeline
-    title TripCraft 产品与工程落地演进路线
-    Phase 1 (MVP) : 共用核心与 B 端白标最小闭环 : 3~5 家地接社试点极速出单 : 单文件高保真离线快照生成
-    Phase 2 : Local-First 多人协同与漫游 : 基于操作日志的多端同步 : 弱网 TripPatch 增量扫码同步
-    Phase 3 : B 端工作台完整化与商业订阅 : 机构独家特许资源库管理 : 细粒度子账号权限与 SaaS 计费
-    Phase 4 : 智能座舱生态互联与深度体验 : 华为/小米车机无线镜像深度调优 : 副驾屏/后排屏多屏协同流转
-    Phase 5 : 旅后回忆录与中立生态分销 : AI 多媒体游记与动态足迹大片 : 跨平台比价与中立佣金网络
+    title TripCraft 演进路线（DLV-01 v3，MVP 切分待业主确认 D8）
+    阶段 1 : AI 对话与需求画像 : 路径 A 自主规划自驾 : 行程空间与多端同步 : 首批旅行社线路导入上架
+    阶段 2 : 路径 B 匹配与筛选页 : AI 路书与路线动画 : 咨询与报价闭环 : 白标交付与订阅
+    阶段 3 : 离线单文件导出 : 车机投递 : 行中变更同步
+    阶段 4 : 旅行社资源库与调度 : 座舱深度协同
+    阶段 5 : 旅后回忆录 : 生态扩展
 ```
 
 ---
 
-## ⚡ 快速上手与门禁验证
+## 📦 数据契约
 
-无需复杂的后端服务与数据库环境，即可完成从在线体验到工程门禁校验、再到 Showcase 本地运行的完整流程：
+系统的数据输入、输出与流转受 `spec/` 下的 JSON Schema（Draft 2020-12）约束：
 
-### 1. 即刻体验在线标杆与官方主页
-直接访问在线演示站 👉 [TripCraft · 旅艺 —— 面向自驾与深度游的智能旅行路书协同中枢](https://johnmaxwell0123.github.io/TripCraft/)，无需任何本地安装。
+| Schema | 职责 |
+| :--- | :--- |
+| [`spec/trip.schema.json`](spec/trip.schema.json) | **行程 DSL**：路径 A 草案、旅行社线路的逐日行程、成交后的白标路书都使用它 |
+| [`spec/node.schema.json`](spec/node.schema.json) | 行程节点：坐标、停留时长、开放时间、事实与建议分离 |
+| [`spec/brand.schema.json`](spec/brand.schema.json) | 旅行社白标品牌 |
+| [`spec/patch.schema.json`](spec/patch.schema.json) | TripPatch 增量补丁 |
 
-### 2. 查看标杆脱敏 DSL 数据
-查阅位于 [`examples/dunhuang-silkroad-9d/trip.json`](examples/dunhuang-silkroad-9d/trip.json) 的完整路书数据结构，了解 9 天西北自驾的点位、时间线与弹性熔断配置。
+> ⚠️ 需求画像与旅行社线路的上架信封**尚无契约**（OI-024），字段定义暂以 [§16.3.1](docs/16-planning-paths-and-route-matching.md#1631-特征点清单) 与 [§17.4](docs/17-agency-route-studio.md#174-上架线路包含什么) 为准。
 
-### 3. 克隆代码并安装门禁工具
+---
+
+## 🚀 快速上手与门禁验证
+
+### 1. 查看演示站
+直接访问 [演示站](https://johnmaxwell0123.github.io/TripCraft/)，无需本地安装。
+
+### 2. 安装门禁工具
 ```bash
-# 克隆代码仓库并进入工作目录
 git clone https://github.com/JohnMaxwell0123/TripCraft.git
-cd TripCraft
+```
 
-# 安装开发期质量门禁依赖 (仅用于 Ajv 校验与检查脚本，无任何运行时 npm 依赖)
+```bash
 npm install
 ```
 
-### 4. 运行全量四重质量门禁自动化检查
+### 3. 运行全部门禁
 ```bash
 npm run check
 ```
-
-#### 自动化门禁工具链说明
 
 ```text
 npm run check
-├── 1. validate     验证 4 份核心 JSON Schema 契约元定义与示例数据的语法一致性
-├── 2. check-links  扫描全仓库 Markdown 文档的跨文件链接与标题锚点完整性 (1100+ 链接)
-├── 3. check-br025  严苛扫描并拦截任何违规内联的图商导航算路密集折线，保障测绘合规
-└── 4. check-trace  自动化校验场景、功能、架构决策(ADR)与商业假设的全链路双向追溯闭环
+├── 1. validate     校验 4 份 JSON Schema 契约与示例数据
+├── 2. check-links  校验 README 与 docs/ 下全部 Markdown 跨文件链接与标题锚点
+├── 3. check-br025  拦截违规内联的图商算路几何（含注入测试与阈值边界测试）
+└── 4. check-trace  校验场景、功能、架构决策与假设的全链路追溯闭环
 ```
 
-### 5. 启动本地交互式 Showcase 官方体验站点
+### 4. 本地运行演示站
 ```bash
-# 启动 Showcase 体验站本地开发服务 (Next.js 16 + Tailwind CSS)
 npm run showcase:dev
-
-# 执行静态全量导出构建与类型检查 (生产 SSG 构建)
-npm run showcase:typecheck
-npm run showcase:build
-
-# 预览 SSG 导出的生产静态产物
-npm run showcase:serve
 ```
 
-### 6. Git 分支结构与上线部署地图
-仓库遵循严谨的分支治理纪律，杜绝代码污染与基线漂移：
-- **`main`**：生产主分支，已同步最新的 2.0 智能座舱与高保真五幕协同成果，推送自动触发 GitHub Actions 持续部署至 GitHub Pages。
-- **`feat/showcase-cockpit-autonomous`**：2.0 核心演进特性分支，与 `main` 完全对齐，前沿优化与门禁先行在此验证。
-- **`archive/v1-classic` 与 Tag `v1.0-classic`**：**永久封存的 1.0 经典原版**（严格只读，永久保留供随时一键回滚）。
+```bash
+npm run showcase:build
+```
 
 ---
 
-## 📚 文档全景导航 (Documentation)
-
-TripCraft 拥有极度详尽的产品 PRD、系统架构 ARC、交付规划 DLV 与执行全书规范：
+## 📚 文档导航
 
 ```text
 docs/
-├── WHITEPAPER.md                      # 架构全景白皮书 (产品愿景、商业模式与战略思考)
-├── ASSUMPTIONS.md                     # 商业与技术假设台账 (A-01 ~ A-12)
-├── ERRATA.md                          # 外部事实核查与更正声明
-│
-├── product/                           # 【产品设计包 (PRD)】
-│   ├── PRD-01-vision-positioning.md   # 愿景、定位与商业价值
-│   ├── PRD-02-personas-segments.md    # 用户客群模型与画像
-│   ├── PRD-03-scenarios.md            # 场景全流程设计 (14 大典型出行与履约场景)
-│   ├── PRD-04-functional-architecture.md # 功能架构规格 (51 项端到端功能全景)
-│   └── PRD-05-business-model.md       # 商业模式与商业化战略
-│
-├── architecture/                      # 【系统架构包 (ARC)】
-│   ├── ARC-01-overview.md             # 系统总体架构设计
-│   ├── ARC-02-domain-data-model.md    # 领域模型与数据契约设计
-│   ├── ARC-03-offline-sync.md         # 离线优先与数据同步架构
-│   ├── ARC-04-clients-channels.md     # 客户端矩阵与交付渠道架构
-│   ├── ARC-05-backend-integrations.md # 后端架构与合规外部系统集成
-│   ├── ARC-06-multitenancy-whitelabel.md # 多租户白标与特许资源库隔离
-│   ├── ARC-07-security-privacy-compliance.md # 安全合规与隐私保护架构
-│   ├── ARC-08-nfr-deployment-cost.md  # 非功能性需求、部署与成本估算
-│   └── ARC-09-adr-index.md            # 架构决策索引 (ADR-001 ~ ADR-008)
-│
-├── delivery/                          # 【交付规划包 (DLV)】
-│   ├── DLV-01-roadmap-mvp.md          # 演进路线图与 MVP 交付范围
-│   ├── DLV-02-risk-register.md        # 风险登记册与缓解策略
-│   └── DLV-03-traceability-matrix.md  # 全链路需求与架构追溯矩阵
-│
-└── README.md                          # 【执行全书 16 章总纲】
-    ├── 🎨 设计轨: §8 澄清反问 · §9 视觉系统 · §10 深度阅读 · §11 受众自适应 · §15 多设备协同
-    ├── 💼 商业轨: §3 B2B运营 · §12 车厂合作 · §13 地接社合作 · §14 通用引擎扩展
-    ├── ⚙️ 工程轨: §1 韧性容灾 · §2 座舱协议 · §4 DSL契约 · §5 编译器管线
-    └── ⚖️ 支撑轨: §0 总纲术语 · §6 记忆日志 · §7 法律合规
+├── product/        产品设计包 PRD-01 ~ PRD-05（★ PRD-01 = 产品基线，口径以它为准）
+├── architecture/   系统架构包 ARC-01 ~ ARC-10、ADR-001 ~ ADR-010
+├── delivery/       交付规划包 DLV-01 ~ DLV-03（路线图、风险、追溯矩阵）
+├── 00 ~ 17         执行全书：专项设计与工程细节（章首注明与基线的关系）
+│   ├── ★ 16        双路径规划与旅行社线路匹配（对话 · 画像 · 筛选页）
+│   └── ★ 17        旅行社线路工作室（上架 · AI 路书 · 透明报价）
+├── ASSUMPTIONS.md  商业与技术假设台账（A-01 ~ A-18）
+├── ERRATA.md       事实核查与更正
+└── WHITEPAPER.md   早期白皮书（历史背景）
 ```
+
+入口：[执行全书总览](docs/README.md) ｜ [产品包](docs/product/README.md) ｜ [架构包](docs/architecture/README.md) ｜ [交付包](docs/delivery/README.md)
 
 ---
 
@@ -508,37 +269,27 @@ docs/
 
 ```text
 TripCraft/
-├── apps/
-│   └── showcase/      # 现代化交互式官方展示站 (Next.js 16 / React 19 / Unify GTM / 五幕长镜头 Scrollytelling) [已实现]
-├── spec/              # 核心 JSON Schema 工业级契约 (trip, brand, node, patch) [已实现]
-├── docs/              # 完整文档体系 (产品 PRD、系统架构 ARC、交付 DLV、执行全书 16 章、白皮书)
-│   ├── product/       # 产品设计包 (PRD-01 ~ PRD-05) [已评审]
-│   ├── architecture/  # 系统架构包 (ARC-01 ~ ARC-09, ADR-001 ~ ADR-008) [已评审]
-│   ├── delivery/      # 交付规划包 (DLV-01 ~ DLV-03) [已评审]
-│   └── assets/        # 高清视觉资源与系统架构图 (Hero Banner, 飞轮, 交互流, 主题色, 架构图)
-├── examples/          # 标杆样例数据 (西北大环线 9 天自驾基准 DSL) [已实现]
-├── tools/             # 自动化门禁工具链 (validate-schemas, check-links, check-br025, check-trace) [已实现]
-├── CHANGELOG.md       # 规范与架构变更记录
-├── LICENSE            # 开源许可证 (MIT)
-├── package.json       # 项目元数据与质量门禁脚本
-└── README.md          # 仓库首页说明文档 (当前文档)
+├── apps/showcase/     演示站（Next.js 16 / React 19 / Tailwind），推送 main 后自动部署到 GitHub Pages
+├── spec/              JSON Schema 数据契约
+├── docs/              产品、架构、交付文档与执行全书
+├── examples/          标杆样例数据（河西走廊 9 天）
+├── tools/             门禁工具链
+├── AGENTS.md          智能体协作指南
+├── PROJECT_PROGRESS.md 项目进度与交接备忘
+├── CHANGELOG.md       变更记录
+└── LICENSE            MIT
 ```
 
 ---
 
-## 🏷️ GitHub 仓库配置建议 (Repository Metadata)
+## 🏷️ GitHub 仓库配置建议
 
-建议在 GitHub 仓库主页右侧 **About** 栏同步配置如下元数据：
-
-- **Description (一句话简介)**：  
-  `新一代自驾与深度游智能路书系统 —— 统一账号、多端协同、单文件离线快照一等公民与 B 端白标 SaaS（产品设计与系统架构全案）`
-- **Website (在线主页)**：  
-  [TripCraft · 旅艺 —— 面向自驾与深度游的智能旅行路书协同中枢](https://johnmaxwell0123.github.io/TripCraft/)（`https://johnmaxwell0123.github.io/TripCraft/`）
-- **Topics (主题标签)**：  
-  `travel` · `roadbook` · `itinerary` · `offline-first` · `local-first` · `dsl` · `cockpit` · `b2b2c` · `architecture` · `nextjs` · `tailwind`
+- **Description**：`多端同步、多人共享的 AI 旅行规划 App —— 对话说需求，AI 规划自驾或匹配旅行社线路；为旅行社提供线路上架、AI 路书与透明报价（产品设计与系统架构全案）`
+- **Website**：`https://johnmaxwell0123.github.io/TripCraft/`
+- **Topics**：`travel` · `ai-agent` · `itinerary` · `local-first` · `route-matching` · `b2b2c` · `dsl` · `architecture` · `nextjs`
 
 ---
 
 ## 📄 开源许可证
 
-本项目核心数据契约规范、文档体系与质量门禁工具链遵循 [MIT License](LICENSE) 开源协议。
+本项目的数据契约、文档体系与门禁工具链遵循 [MIT License](LICENSE)。
