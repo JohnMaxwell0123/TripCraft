@@ -1,0 +1,331 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tripcraft.dev/schema/v1.0.0/profile.schema.json",
+  "title": "TripCraft Requirement Profile",
+  "description": "TripCraft 需求画像契约 v1.0.0 —— 对话与规划之间唯一的接口（docs/16 §16.3）。路径 A 的规划器与路径 B 的匹配器只读本画像，不读对话原文。每个特征点都包在一个「带来源的字段」里：source = stated（用户明说）/ inferred（模型推断，须经画像回显卡确认）/ default（行业默认，3 轮追问后仍缺时写入并标 pending）。坐标 GCJ-02 [经度, 纬度]，金额整数分。",
+  "type": "object",
+  "required": ["profileVersion", "id", "createdAt", "party"],
+  "additionalProperties": false,
+
+  "properties": {
+    "$schema": { "type": "string", "format": "uri-reference" },
+
+    "profileVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+      "description": "语义化版本，与 trip.schema.json 的 dslVersion 同口径。"
+    },
+
+    "id": {
+      "type": "string",
+      "pattern": "^prof_[0-9]{8}_[a-z0-9][a-z0-9-]{1,63}$",
+      "description": "画像 ID，格式 prof_<yyyymmdd>_<slug>"
+    },
+
+    "createdAt": { "$ref": "trip.schema.json#/$defs/timestamp" },
+    "updatedAt": { "$ref": "trip.schema.json#/$defs/timestamp" },
+    "revision": { "type": "integer", "minimum": 1,
+      "description": "用户每次在画像回显卡上编辑或确认后 +1。匹配结果按 (profile.id, revision) 复算（§16.6.2 可复现）。" },
+
+    "extraction": { "$ref": "#/$defs/extraction" },
+
+    "origin": {
+      "$ref": "#/$defs/sourced",
+      "description": "【硬】出发地。路径 A：路线起点；路径 B：是否含接送 / 集合地距离。",
+      "required": ["value"],
+      "properties": { "value": { "$ref": "#/$defs/place" } },
+      "unevaluatedProperties": false
+    },
+
+    "regions": {
+      "$ref": "#/$defs/sourced",
+      "description": "【软】目的地 / 区域（愿望地点）。路径 B 的目的地覆盖度之辅项。",
+      "required": ["value"],
+      "properties": { "value": { "type": "array", "minItems": 1, "maxItems": 20,
+        "items": { "$ref": "#/$defs/place" } } },
+      "unevaluatedProperties": false
+    },
+
+    "mustVisit": {
+      "$ref": "#/$defs/sourced",
+      "description": "【硬】非去不可的地点。路径 A：骨架必经点；路径 B：目的地覆盖度之主项。",
+      "required": ["value"],
+      "properties": { "value": { "type": "array", "maxItems": 20,
+        "items": { "$ref": "#/$defs/place" } } },
+      "unevaluatedProperties": false
+    },
+
+    "avoid": {
+      "$ref": "#/$defs/sourced",
+      "description": "【硬】回避项。路径 A：过滤；路径 B：资格筛除（含回避项的线路不展示）。",
+      "required": ["value"],
+      "properties": { "value": { "type": "array", "maxItems": 30,
+        "items": { "$ref": "#/$defs/avoidItem" } } },
+      "unevaluatedProperties": false
+    },
+
+    "dates": {
+      "$ref": "#/$defs/sourced",
+      "description": "【硬，弹性内为软】出行日期窗口。earliest / latest 为硬边界；flexDays 内的偏移按软偏好计分。路径 B：团期可用性。",
+      "required": ["value"],
+      "properties": { "value": { "$ref": "#/$defs/dateWindow" } },
+      "unevaluatedProperties": false
+    },
+
+    "days": {
+      "$ref": "#/$defs/sourced",
+      "description": "【软】行程天数范围。路径 B 的「天数超出 ±1 天」可放宽（§16.6.1）。",
+      "required": ["value"],
+      "properties": { "value": { "$ref": "#/$defs/dayRange" } },
+      "unevaluatedProperties": false
+    },
+
+    "party": {
+      "$ref": "#/$defs/sourced",
+      "description": "【硬】同行人员。直接复用 trip.schema.json 的 party 定义，规划结果可无损写回行程 DSL。人群口径：senior = 长者 65+，child = 儿童 2–12，infant = 婴幼儿 < 2（§16.7.3）。",
+      "required": ["value"],
+      "properties": { "value": { "$ref": "trip.schema.json#/$defs/party" } },
+      "unevaluatedProperties": false
+    },
+
+    "hard": {
+      "type": "array",
+      "maxItems": 30,
+      "description": "【硬】身体约束（海拔上限、台阶、晕车等，§8.6 第二层问题树）。每项直接复用 trip.schema.json 的 hardConstraint；可用 scope 指向人群（group:senior），以生成分队方案而非砍掉整条线路。",
+      "items": {
+        "$ref": "#/$defs/sourced",
+        "required": ["value"],
+        "properties": { "value": { "$ref": "trip.schema.json#/$defs/hardConstraint" } },
+        "unevaluatedProperties": false
+      }
+    },
+
+    "soft": {
+      "type": "array",
+      "maxItems": 30,
+      "description": "【软】其余可量化的软偏好。每项直接复用 trip.schema.json 的 softConstraint（已含可选 scope，见 OI-019 ②）。",
+      "items": {
+        "$ref": "#/$defs/sourced",
+        "required": ["value"],
+        "properties": { "value": { "$ref": "trip.schema.json#/$defs/softConstraint" } },
+        "unevaluatedProperties": false
+      }
+    },
+
+    "budget": {
+      "$ref": "#/$defs/sourced",
+      "description": "【软；用户说「最多」时 strictness = hard】预算。路径 B：预算贴合度、价格滑块初值。只在用户表现出路径 B 意向时追问（§16.3.2）。",
+      "required": ["value"],
+      "properties": { "value": { "$ref": "#/$defs/budget" } },
+      "unevaluatedProperties": false
+    },
+
+    "travelMode": {
+      "$ref": "#/$defs/sourced",
+      "description": "【软】可接受的出行方式。路径 A：判定是否走自驾规划；路径 B：出行方式筛选。",
+      "required": ["value"],
+      "properties": { "value": { "type": "array", "minItems": 1, "uniqueItems": true,
+        "items": { "$ref": "#/$defs/travelMode" } } },
+      "unevaluatedProperties": false
+    },
+
+    "pace": {
+      "$ref": "#/$defs/sourced",
+      "description": "【软】行程节奏。relaxed = 日均车程 ≤ 3 小时；moderate = 3–5 小时；intensive = > 5 小时（§16.7.3，口径与 OI-011 一并收敛）。",
+      "required": ["value"],
+      "properties": { "value": { "$ref": "#/$defs/pace" } },
+      "unevaluatedProperties": false
+    },
+
+    "maxDailyDriveHours": {
+      "$ref": "#/$defs/sourced",
+      "description": "【硬】每天车程上限（小时）。路径 A：每日编排硬上限；路径 B：节奏与体力维度的余量。",
+      "required": ["value"],
+      "properties": { "value": { "type": "number", "exclusiveMinimum": 0, "maximum": 16 } },
+      "unevaluatedProperties": false
+    },
+
+    "themes": {
+      "$ref": "#/$defs/sourced",
+      "description": "【软】主题偏好。路径 A：POI 排序；路径 B：主题重合度。",
+      "required": ["value"],
+      "properties": { "value": { "type": "array", "minItems": 1, "uniqueItems": true,
+        "items": { "$ref": "#/$defs/theme" } } },
+      "unevaluatedProperties": false
+    },
+
+    "accommodation": {
+      "$ref": "#/$defs/sourced",
+      "description": "【软】住宿要求。路径 A：过夜点选择；路径 B：住宿档次。",
+      "required": ["value"],
+      "properties": { "value": { "$ref": "#/$defs/accommodation" } },
+      "unevaluatedProperties": false
+    },
+
+    "weights": {
+      "$ref": "#/$defs/sourced",
+      "description": "匹配度维度权重（§16.6.2）。用户跳过时写 default 并取默认权重；「我更看重…」最多选 2 项。",
+      "required": ["value"],
+      "properties": { "value": { "$ref": "#/$defs/weights" } },
+      "unevaluatedProperties": false
+    }
+  },
+
+  "$defs": {
+
+    "source": {
+      "type": "string",
+      "enum": ["stated", "inferred", "default"],
+      "description": "字段来源。stated = 用户明说；inferred = 模型推断（画像回显卡上带「推断 · 请确认」标记）；default = 行业默认。"
+    },
+
+    "sourced": {
+      "type": "object",
+      "description": "带来源的字段外壳。具体字段在引用处用 properties.value 声明取值类型，并以 unevaluatedProperties: false 封口（等价于 additionalProperties: false，但能穿透 $ref）。",
+      "required": ["source"],
+      "properties": {
+        "source": { "$ref": "#/$defs/source" },
+        "confirmed": { "type": "boolean", "default": false,
+          "description": "用户是否已在画像回显卡上确认。inferred 字段未确认前，匹配结果须提示「含推断项」。" },
+        "pending": { "type": "boolean", "default": false,
+          "description": "3 轮追问后仍缺、以 default 填充的字段标记为待定（§16.3.2），不阻塞出结果。" },
+        "evidence": { "type": "string", "maxLength": 300,
+          "description": "依据：stated 时为用户原话摘要，inferred 时为推断理由。不存对话全文。" }
+      }
+    },
+
+    "extraction": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "画像的抽取过程元信息。不含对话原文与 API Key。",
+      "properties": {
+        "rounds": { "type": "integer", "minimum": 0, "maximum": 3,
+          "description": "实际追问轮数，上限 3 轮（§8.9 收敛判定）。" },
+        "modelProvider": { "type": "string", "enum": ["platform", "byok"],
+          "description": "平台模型或用户自带模型（§16.2.2 / ADR-009）。" },
+        "pathHint": { "type": "string", "enum": ["A", "B", "none"],
+          "description": "按 §16.4 推荐规则得出的高亮路径；不隐藏另一条路径。" }
+      }
+    },
+
+    "place": {
+      "type": "object",
+      "required": ["name"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "kind": { "type": "string", "enum": ["city", "region", "poi", "route"] },
+        "adcode": { "type": "string", "pattern": "^[0-9]{6}$",
+          "description": "行政区划代码（图商核验后填写）" },
+        "coords": { "$ref": "trip.schema.json#/$defs/coords" }
+      }
+    },
+
+    "avoidItem": {
+      "type": "object",
+      "required": ["kind", "label"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "type": "string",
+          "enum": ["place", "activity", "theme", "transport", "lodging", "food", "other"] },
+        "label": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "place": { "$ref": "#/$defs/place" }
+      }
+    },
+
+    "dateWindow": {
+      "type": "object",
+      "required": ["earliest", "latest"],
+      "additionalProperties": false,
+      "properties": {
+        "earliest": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "最早出发日（硬边界）" },
+        "latest": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "description": "最晚返回日（硬边界）" },
+        "flexDays": { "type": "integer", "minimum": 0, "maximum": 30, "default": 0,
+          "description": "可前后挪动的天数（软）。路径 B：团期在弹性窗口外 ≤ 7 天进入「接近但不满足」。" }
+      }
+    },
+
+    "dayRange": {
+      "type": "object",
+      "required": ["min", "max"],
+      "additionalProperties": false,
+      "properties": {
+        "min": { "type": "integer", "minimum": 1, "maximum": 60 },
+        "max": { "type": "integer", "minimum": 1, "maximum": 60 }
+      }
+    },
+
+    "budget": {
+      "type": "object",
+      "required": ["basis", "currency", "strictness"],
+      "additionalProperties": false,
+      "anyOf": [{ "required": ["minCents"] }, { "required": ["maxCents"] }],
+      "properties": {
+        "basis": { "type": "string", "enum": ["per_person", "total"] },
+        "minCents": { "$ref": "trip.schema.json#/$defs/moneyCents" },
+        "maxCents": { "$ref": "trip.schema.json#/$defs/moneyCents" },
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$", "default": "CNY" },
+        "strictness": { "type": "string", "enum": ["hard", "soft"], "default": "soft",
+          "description": "用户说「最多 / 不能超过」时为 hard（超出即不满足资格）；否则为 soft（超出按比例扣分，≤ 15% 可放宽）。" }
+      }
+    },
+
+    "travelMode": {
+      "type": "string",
+      "enum": ["self_drive", "chartered_car", "private_tour", "small_group", "group_tour"],
+      "description": "self_drive = 自驾（可由旅行社代订住宿与门票）；chartered_car = 包车带司机；private_tour = 私家团（司导）；small_group = 拼小团（≤ 8 人）；group_tour = 常规跟团。与 listing.schema.json 共用同一枚举。"
+    },
+
+    "pace": { "type": "string", "enum": ["relaxed", "moderate", "intensive"] },
+
+    "theme": {
+      "type": "string",
+      "enum": ["nature", "culture_history", "photography", "food", "hiking_outdoor", "folk_festival"],
+      "description": "主题标签（§16.7.3）。与 listing.schema.json 共用同一枚举。"
+    },
+
+    "lodgingTier": {
+      "type": "string",
+      "enum": ["economy", "comfort", "premium", "boutique_homestay"],
+      "description": "住宿档次：经济 / 舒适 / 高档 / 特色民宿。与 listing.schema.json 共用同一枚举。"
+    },
+
+    "accommodation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tiers": { "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": { "$ref": "#/$defs/lodgingTier" } },
+        "note": { "type": "string", "maxLength": 200 }
+      }
+    },
+
+    "weightValue": { "type": "number", "minimum": 0, "maximum": 1 },
+
+    "matchDimension": {
+      "type": "string",
+      "enum": ["destination", "budget", "schedule", "paceFitness", "audienceFit", "themes", "lodgingService"],
+      "description": "匹配度七个维度（§16.6.2）：目的地覆盖 / 预算贴合 / 天数与日期 / 节奏与体力 / 人群适配 / 主题偏好 / 住宿与服务。"
+    },
+
+    "weights": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "各维度权重。默认值 0.25 / 0.20 / 0.15 / 0.15 / 0.10 / 0.10 / 0.05；匹配器使用前归一化，故不强制和为 1。",
+      "properties": {
+        "destination":    { "$ref": "#/$defs/weightValue", "default": 0.25 },
+        "budget":         { "$ref": "#/$defs/weightValue", "default": 0.20 },
+        "schedule":       { "$ref": "#/$defs/weightValue", "default": 0.15 },
+        "paceFitness":    { "$ref": "#/$defs/weightValue", "default": 0.15 },
+        "audienceFit":    { "$ref": "#/$defs/weightValue", "default": 0.10 },
+        "themes":         { "$ref": "#/$defs/weightValue", "default": 0.10 },
+        "lodgingService": { "$ref": "#/$defs/weightValue", "default": 0.05 },
+        "emphasis": { "type": "array", "maxItems": 2, "uniqueItems": true,
+          "items": { "$ref": "#/$defs/matchDimension" },
+          "description": "「我更看重…」最多选 2 项，各 +10%，其余等比缩减（§16.6.2）。" }
+      }
+    }
+  }
+}

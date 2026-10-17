@@ -77,7 +77,7 @@
 | 未填写的维度在匹配中计为"未提供"，不计满分也不计零分 | 不惩罚信息少的线路，也不奖励它 | 信息越少分数越高（因为没有可扣分的地方），旅行社学会少填 |
 | 工作台显示线路**完整度**，并提示"补全某项后可以出现在哪些筛选里" | 用"被看见"激励补全，比强制必填更有效 | 必填项过多 → 上架流程劝退；必填过少 → 匹配无据可依 |
 
-> ⚠️ 上架信封目前**没有数据契约**。登记为 **OI-024**（与需求画像契约同批处理）；契约落地前，本节字段表是唯一定义。
+> 📦 **数据契约**：[`spec/listing.schema.json`](../spec/listing.schema.json)（OI-024，2026-10-17 落地）。逐日行程在 `itinerary` 中内联行程 DSL 快照（`trip`，`$ref` [`trip.schema.json`](../spec/trip.schema.json)）或按 revision 引用（`tripRef`）；契约在结构上强制：至少有成人价、包含 / 不包含七项全部勾选、「起价」档必须带条件、人群适配标签必须附说明、素材必须标注实拍 / 示意 / AI 生成、固定团期至少一个日期；**全契约不存在成本价字段**（`additionalProperties: false`）。示例：[`examples/dunhuang-silkroad-9d/listing.json`](../examples/dunhuang-silkroad-9d/listing.json)。
 
 ---
 
@@ -234,7 +234,7 @@ stateDiagram-v2
 | :--- | :--- | :--- |
 | 17-1 | 只有通过资质审核的旅行社可以上架、被匹配 | Proposed |
 | 17-2 | 导入现有行程单，AI 抽取后逐字段确认 | Proposed |
-| 17-3 | 上架线路 = 行程 DSL + 上架信封；人群适配标签必须附说明 | Proposed（契约待定 OI-024） |
+| 17-3 | 上架线路 = 行程 DSL + 上架信封；人群适配标签必须附说明 | Proposed（契约：[`listing.schema.json`](../spec/listing.schema.json)） |
 | 17-4 | 价格展示三档粒度由旅行社选择，平台设最低透明线，成本价永不展示 | Proposed（A-14 待验证） |
 | 17-5 | 路线动画不落库算路几何；无授权时降级为矢量路线 | Proposed（待 OI-007） |
 | 17-6 | AI 生成内容显式与隐式标识；不生成景点照片 | Proposed（待 OI-023） |

@@ -300,7 +300,7 @@ mindmap
   2. Given 勾选“适合长辈”等人群标签，When 未填写说明，Then 不允许提交。
   3. Given 选择价格展示档位（起价 / 区间 / 分项明细），When 选择“起价”，Then 必须填写起价条件。
   4. Given 线路信息不完整，When 查看工作台，Then 显示完整度与“补全后可出现在哪些筛选里”。
-- **依赖**：F-M18-01 ｜ **设计/实现状态**：草案 / 无（契约待定 OI-024）
+- **依赖**：F-M18-01 ｜ **设计/实现状态**：草案 / 契约已定义（[`listing.schema.json`](../../spec/listing.schema.json)，OI-024）
 
 #### F-M18-03 AI 交互路书生成
 - **优先级/阶段**：P0 / 阶段 2 ｜ **端**：C-CONSOLE ｜ **模块**：M18
@@ -476,7 +476,7 @@ mindmap
   1. Given 追问收敛，When 生成需求画像，Then 画像覆盖 [docs/16 §16.3.1](../16-planning-paths-and-route-matching.md#1631-特征点清单) 的特征点，每个字段标注来源 `stated` / `inferred` / `default`。
   2. Given 画像中存在 `inferred` 字段，When 展示回显卡，Then 该字段带“推断 · 请确认”标记，用户可点击直接修改。
   3. Given 同一份已确认的画像，When 再次调用路径 A 或路径 B，Then 不重新读取对话原文，结果只取决于画像。
-- **依赖**：F-M03-02 ｜ **设计/实现状态**：草案 / 无（契约待定 OI-024）
+- **依赖**：F-M03-02 ｜ **设计/实现状态**：草案 / 契约已定义（[`profile.schema.json`](../../spec/profile.schema.json)，OI-024）
 
 #### F-M03-06 规划路径选择与推荐
 - **优先级/阶段**：P0 / 阶段 1 ｜ **端**：C-MOBILE, C-WEB ｜ **模块**：M03

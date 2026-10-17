@@ -1,0 +1,299 @@
+{
+  "$schema": "../../spec/profile.schema.json",
+  "profileVersion": "1.0.0",
+  "id": "prof_20260801_silkroad-family-10p",
+  "createdAt": "2026-08-01T09:30:00+08:00",
+  "updatedAt": "2026-08-01T09:42:00+08:00",
+  "revision": 2,
+  "extraction": {
+    "rounds": 2,
+    "modelProvider": "platform",
+    "pathHint": "B"
+  },
+  "origin": {
+    "source": "stated",
+    "confirmed": true,
+    "evidence": "我们从济南飞兰州，在兰州集合",
+    "value": {
+      "name": "兰州",
+      "kind": "city",
+      "adcode": "620100",
+      "coords": [
+        103.834303,
+        36.061089
+      ]
+    }
+  },
+  "regions": {
+    "source": "stated",
+    "confirmed": true,
+    "evidence": "想走河西走廊，顺路看看青海湖",
+    "value": [
+      {
+        "name": "河西走廊",
+        "kind": "region"
+      },
+      {
+        "name": "青海湖",
+        "kind": "poi"
+      }
+    ]
+  },
+  "mustVisit": {
+    "source": "stated",
+    "confirmed": true,
+    "evidence": "莫高窟和张掖丹霞一定要去",
+    "value": [
+      {
+        "name": "莫高窟",
+        "kind": "poi"
+      },
+      {
+        "name": "张掖七彩丹霞",
+        "kind": "poi"
+      }
+    ]
+  },
+  "avoid": {
+    "source": "stated",
+    "confirmed": true,
+    "evidence": "不要购物店，长辈不想骑骆驼",
+    "value": [
+      {
+        "kind": "activity",
+        "label": "购物店"
+      },
+      {
+        "kind": "activity",
+        "label": "骑骆驼"
+      }
+    ]
+  },
+  "dates": {
+    "source": "stated",
+    "confirmed": true,
+    "evidence": "九月下旬出发，前后能挪两三天",
+    "value": {
+      "earliest": "2026-09-22",
+      "latest": "2026-10-06",
+      "flexDays": 3
+    }
+  },
+  "days": {
+    "source": "stated",
+    "confirmed": true,
+    "evidence": "玩 8 到 10 天",
+    "value": {
+      "min": 8,
+      "max": 10
+    }
+  },
+  "party": {
+    "source": "stated",
+    "confirmed": true,
+    "evidence": "一共 10 个人：两位老人、两个孩子、四个大人，另外两位司机",
+    "value": {
+      "size": 10,
+      "groups": [
+        {
+          "key": "senior",
+          "label": "长辈",
+          "count": 2,
+          "weights": {
+            "comfort": 0.9,
+            "photo": 0.2,
+            "adventure": 0.05,
+            "pace": 0.2
+          },
+          "hardNeeds": {
+            "maxWalkMeters": 500,
+            "restroomIntervalMin": 90,
+            "hotFoodRequired": true,
+            "maxAltitudeM": 3600,
+            "shadeRequired": true
+          }
+        },
+        {
+          "key": "child",
+          "label": "儿童",
+          "count": 2,
+          "weights": {
+            "comfort": 0.6,
+            "photo": 0.3,
+            "adventure": 0.6,
+            "pace": 0.4
+          },
+          "hardNeeds": {
+            "napWindow": [
+              "13:00",
+              "14:30"
+            ],
+            "maxAltitudeM": 3200,
+            "safetyRadiusM": 200
+          }
+        },
+        {
+          "key": "adult",
+          "label": "青壮年",
+          "count": 4,
+          "weights": {
+            "comfort": 0.4,
+            "photo": 0.9,
+            "adventure": 0.8,
+            "pace": 0.7
+          }
+        },
+        {
+          "key": "driver",
+          "label": "驾驶员",
+          "count": 2,
+          "weights": {
+            "comfort": 0.8,
+            "photo": 0.3,
+            "adventure": 0.3,
+            "pace": 0.1
+          },
+          "hardNeeds": {
+            "maxDailyDriveKm": 350,
+            "maxContinuousDriveMin": 180,
+            "noNightDriving": true,
+            "backupDriverAvailable": true
+          }
+        }
+      ],
+      "mobility": {
+        "wheelchair": false,
+        "reducedMobility": true,
+        "note": "长辈膝盖术后恢复期，长下坡与台阶需扶手"
+      },
+      "animals": {
+        "pets": false
+      }
+    }
+  },
+  "hard": [
+    {
+      "source": "stated",
+      "confirmed": true,
+      "evidence": "我爸高血压，以前有过高原反应",
+      "value": {
+        "id": "hc_altitude",
+        "type": "maxAltitudeM",
+        "value": 3600,
+        "scope": "group:senior",
+        "reason": "高血压 + 高原反应史，垭口段需备便携氧气",
+        "override": "medical_clearance"
+      }
+    },
+    {
+      "source": "inferred",
+      "confirmed": true,
+      "evidence": "有长辈与儿童同行，推断不宜夜间行车",
+      "value": {
+        "id": "hc_night_drive",
+        "type": "noNightDriving",
+        "value": true,
+        "scope": "group:driver",
+        "reason": "夜间戈壁路段野生动物横穿风险高",
+        "override": "none"
+      }
+    },
+    {
+      "source": "stated",
+      "confirmed": true,
+      "evidence": "我妈膝盖做过手术，台阶不能太多",
+      "value": {
+        "id": "hc_stairs",
+        "type": "maxWalkMeters",
+        "value": 500,
+        "scope": "group:senior",
+        "reason": "膝盖术后恢复期，单次步行不超过 500 米",
+        "override": "none"
+      }
+    }
+  ],
+  "soft": [
+    {
+      "source": "stated",
+      "confirmed": true,
+      "evidence": "年轻人想拍丹霞日落",
+      "value": {
+        "id": "sc_sunset",
+        "type": "other",
+        "value": 1,
+        "weight": 0.85,
+        "scope": "group:adult"
+      }
+    }
+  ],
+  "budget": {
+    "source": "inferred",
+    "confirmed": false,
+    "evidence": "用户提到「去年云南人均七千左右」，推断同档预算",
+    "value": {
+      "basis": "per_person",
+      "minCents": 600000,
+      "maxCents": 900000,
+      "currency": "CNY",
+      "strictness": "soft"
+    }
+  },
+  "travelMode": {
+    "source": "stated",
+    "confirmed": true,
+    "evidence": "人多，想包车带司机，省心",
+    "value": [
+      "chartered_car",
+      "private_tour"
+    ]
+  },
+  "pace": {
+    "source": "inferred",
+    "confirmed": true,
+    "evidence": "有 70 岁以上长辈与 4 岁儿童",
+    "value": "relaxed"
+  },
+  "maxDailyDriveHours": {
+    "source": "stated",
+    "confirmed": true,
+    "evidence": "每天车上别超过 4 小时",
+    "value": 4
+  },
+  "themes": {
+    "source": "stated",
+    "confirmed": true,
+    "evidence": "主要看风景，顺便拍照",
+    "value": [
+      "nature",
+      "photography",
+      "culture_history"
+    ]
+  },
+  "accommodation": {
+    "source": "default",
+    "pending": true,
+    "evidence": "3 轮追问后未提及，取舒适型默认",
+    "value": {
+      "tiers": [
+        "comfort"
+      ]
+    }
+  },
+  "weights": {
+    "source": "stated",
+    "confirmed": true,
+    "evidence": "最在意老人别太累",
+    "value": {
+      "destination": 0.25,
+      "budget": 0.2,
+      "schedule": 0.15,
+      "paceFitness": 0.15,
+      "audienceFit": 0.1,
+      "themes": 0.1,
+      "lodgingService": 0.05,
+      "emphasis": [
+        "paceFitness"
+      ]
+    }
+  }
+}

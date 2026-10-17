@@ -4,7 +4,7 @@ title: 领域模型与数据架构
 status: Draft v3（按产品基线 PRD-01 v3 修订，待 owner 评审）
 last_updated: 2026-10-17
 related: [PRD-04, ARC-01, ARC-03, ARC-06, ADR-009, ADR-010]
-sources: [spec/trip.schema.json, spec/brand.schema.json, spec/node.schema.json, spec/patch.schema.json, docs/16-planning-paths-and-route-matching.md, docs/17-agency-route-studio.md]
+sources: [spec/trip.schema.json, spec/brand.schema.json, spec/node.schema.json, spec/patch.schema.json, spec/profile.schema.json, spec/listing.schema.json, docs/16-planning-paths-and-route-matching.md, docs/17-agency-route-studio.md]
 ---
 
 # ARC-02 · 领域模型与数据架构
@@ -154,8 +154,8 @@ flowchart TD
 | `Brand` | [`spec/brand.schema.json`](../../spec/brand.schema.json) | 旅行社白标品牌契约 |
 | `Node`, `Resource` | [`spec/node.schema.json`](../../spec/node.schema.json) | 离散节点契约 |
 | 增量变更指令集 | [`spec/patch.schema.json`](../../spec/patch.schema.json) | TripPatch 增量补丁契约 |
-| `RequirementProfile` | ⏳ **待定**（OI-024） | 部分字段可复用 `trip.schema.json` 的 `party` 与 `constraints` |
-| `RouteListing` 上架信封、`PriceRule`、`ListingOption` | ⏳ **待定**（OI-024） | 逐日行程复用 `trip.schema.json`；商业字段需新契约 |
+| `RequirementProfile` | [`spec/profile.schema.json`](../../spec/profile.schema.json) | 需求画像：每个特征点带来源 `stated` / `inferred` / `default`；`party`、`hard[]`、`soft[]` 复用 `trip.schema.json`（OI-024） |
+| `RouteListing` 上架信封、`PriceRule`、`ListingOption` | [`spec/listing.schema.json`](../../spec/listing.schema.json) | 上架线路 = 行程 DSL（`$ref` `trip.schema.json`）+ 上架信封（价格规则、可调选项、包含项、团期、人群适配、素材标注）；不含成本价（OI-024） |
 | `Inquiry`、`QuoteVersion`、`MatchResult` | 服务端内部模型 | 不作为跨层交换格式，不进入 `spec/` |
 
 ---

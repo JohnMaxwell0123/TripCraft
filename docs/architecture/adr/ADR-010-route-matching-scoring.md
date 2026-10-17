@@ -36,7 +36,7 @@
 
 - **影响**：
   - 新增后端逻辑模块 `S-MATCH`（[ARC-05](../ARC-05-backend-integrations.md)）；筛选页的分面计数与分布图数据由 `S-MATCH` 提供。
-  - 需求画像与上架信封需要数据契约（OI-024）。
+  - 需求画像与上架信封需要数据契约（OI-024）——已落地为 [`profile.schema.json`](../../../spec/profile.schema.json) 与 [`listing.schema.json`](../../../spec/listing.schema.json)。
   - 匹配度校准成为常规运营指标：按匹配度分段统计咨询率，检验是否单调（A-15）。
 
 - **重新评估的触发条件**：

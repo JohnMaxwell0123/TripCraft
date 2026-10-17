@@ -68,13 +68,13 @@ PRD-01 ~ 05、ARC-01 ~ 09、ADR-001 ~ 008、DLV-01 ~ 03；新增 `check-trace` �
 2. **首个区域旅行社访谈与试点签约**（建议河西走廊 / 甘青环线 3–5 家）：验证 A-14、A-17。
 
 ### 4.3 工程开工（DLV-01 阶段 1）
-1. 补数据契约：`profile.schema.json`、`listing.schema.json`（OI-024），纳入 `npm run validate`。
+1. ~~补数据契约：`profile.schema.json`、`listing.schema.json`（OI-024），纳入 `npm run validate`。~~ ✅ 2026-10-17 已完成。
 2. 初始化 Monorepo：`packages/dsl-core`、`packages/agent-core`、`services/` 骨架（[ARC-01 §6](docs/architecture/ARC-01-overview.md#6-规划中代码仓库组织-proposed-monorepo-layout)）。
 3. 对话 + 需求画像 + 路径 A 最小原型；行程空间与多端同步；旅行社行程单导入。
 
 ### 4.4 工程卫生
 1. 演示站叙事对齐基线：补路径 B 筛选页与旅行社线路工作室，车机与离线交付降为支撑（[SHOWCASE-web-design](docs/SHOWCASE-web-design.md) 章首说明）。
-2. 把 `npm run check` 接入 GitHub Actions（当前只有部署工作流）。
+2. ~~把 `npm run check` 接入 GitHub Actions（当前只有部署工作流）。~~ ✅ 2026-10-17 已完成（`.github/workflows/check.yml`）。
 
 ---
 

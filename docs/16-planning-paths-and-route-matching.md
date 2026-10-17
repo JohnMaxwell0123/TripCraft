@@ -102,7 +102,7 @@
 | 住宿 | `accommodation` | 软 | 「住宿要求？」 | 过夜点选择 | 住宿档次 |
 | 权重 | `weights` | — | 「这些里面最在意哪个？」（可跳过） | POI 排序权重 | 匹配度维度权重 |
 
-> ⚠️ 需求画像目前**没有对应的数据契约**。它的一部分（`party`、`constraints.hard/soft`）可以复用 [`trip.schema.json`](../spec/trip.schema.json) 的定义，其余字段需要新契约，登记为 **OI-024**（与线路上架契约同批处理）。
+> 📦 **数据契约**：[`spec/profile.schema.json`](../spec/profile.schema.json)（OI-024，2026-10-17 落地）。每个特征点包在带 `source`（`stated` / `inferred` / `default`）、`confirmed`、`pending`、`evidence` 的字段外壳里；`party`、`hard[]`、`soft[]` 直接 `$ref` [`trip.schema.json`](../spec/trip.schema.json) 的 `party` / `hardConstraint` / `softConstraint`；预算的硬 / 软由 `budget.strictness` 表达；匹配维度权重见 `weights`。示例：[`examples/dunhuang-silkroad-9d/profile.json`](../examples/dunhuang-silkroad-9d/profile.json)。
 
 ### 16.3.2 只在需要时追问
 
@@ -424,7 +424,7 @@ flowchart LR
 | :--- | :--- | :--- |
 | 16-1 | 一段对话、一份画像、两条路径，用户可两条都看 | Proposed |
 | 16-2 | 自带 API 的 Key 只存设备；所有模型输出走同一校验管线 | Proposed（ADR-009） |
-| 16-3 | 规划与匹配只读结构化画像；字段标注 stated / inferred / default | Proposed（契约待定 OI-024） |
+| 16-3 | 规划与匹配只读结构化画像；字段标注 stated / inferred / default | Proposed（契约：[`profile.schema.json`](../spec/profile.schema.json)） |
 | 16-4 | 路径 A：模型只编排与写建议，事实全部来自图商工具 | Proposed（沿用 ADR-008） |
 | 16-5 | 路径 B：先资格后评分；"接近但不满足"单列 | Proposed（ADR-010） |
 | 16-6 | 评分不计入匹配度；付费不影响匹配度；结果可复现 | Proposed（ADR-010） |

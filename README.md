@@ -146,6 +146,8 @@ flowchart TB
         NODE["node.schema.json"]
         BRAND["brand.schema.json"]
         PATCH["patch.schema.json"]
+        PROFILE["profile.schema.json"]
+        LISTING["listing.schema.json"]
     end
 
     subgraph EXT["外部服务"]
@@ -203,8 +205,8 @@ timeline
 | [`spec/node.schema.json`](spec/node.schema.json) | 行程节点：坐标、停留时长、开放时间、事实与建议分离 |
 | [`spec/brand.schema.json`](spec/brand.schema.json) | 旅行社白标品牌 |
 | [`spec/patch.schema.json`](spec/patch.schema.json) | TripPatch 增量补丁 |
-
-> ⚠️ 需求画像与旅行社线路的上架信封**尚无契约**（OI-024），字段定义暂以 [§16.3.1](docs/16-planning-paths-and-route-matching.md#1631-特征点清单) 与 [§17.4](docs/17-agency-route-studio.md#174-上架线路包含什么) 为准。
+| [`spec/profile.schema.json`](spec/profile.schema.json) | **需求画像**：对话与规划之间唯一的接口；每个特征点标注来源 `stated` / `inferred` / `default`，区分硬约束与软偏好（[§16.3.1](docs/16-planning-paths-and-route-matching.md#1631-特征点清单)） |
+| [`spec/listing.schema.json`](spec/listing.schema.json) | **上架线路**：行程 DSL + 上架信封（价格规则、可调选项、包含项、团期、人群适配、素材标注；不含成本价，[§17.4](docs/17-agency-route-studio.md#174-上架线路包含什么)） |
 
 ---
 
@@ -229,7 +231,7 @@ npm run check
 
 ```text
 npm run check
-├── 1. validate     校验 4 份 JSON Schema 契约与示例数据
+├── 1. validate     校验 6 份 JSON Schema 契约与示例数据（含 listing → trip 跨文件校验）
 ├── 2. check-links  校验 README 与 docs/ 下全部 Markdown 跨文件链接与标题锚点
 ├── 3. check-br025  拦截违规内联的图商算路几何（含注入测试与阈值边界测试）
 └── 4. check-trace  校验场景、功能、架构决策与假设的全链路追溯闭环

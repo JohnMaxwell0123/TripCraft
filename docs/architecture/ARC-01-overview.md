@@ -108,7 +108,7 @@ flowchart TB
 | 白皮书原始层级 | 原始定义与职责 | 对应现代系统架构组件 (ARC-01) | 映射说明与演进决策 |
 | :--- | :--- | :--- | :--- |
 | **L1 数据源层** | POI 图资、路况、特许资源、AI 生成 | `S-GEO`, `S-AI`, `S-CATALOG`, 外部地图/模型服务 | 新增两类数据源：用户自带模型、旅行社上架线路 |
-| **L2 契约层** | DSL Schema 规范（trip, brand, node, patch） | `spec/*.json`, `S-WORKSPACE` | DSL 仍是唯一真相源；需求画像与上架信封契约待定（OI-024） |
+| **L2 契约层** | DSL Schema 规范（trip, brand, node, patch, profile, listing） | `spec/*.json`, `S-WORKSPACE` | DSL 仍是唯一真相源；需求画像与上架信封契约已落地（OI-024） |
 | **L3 编译器与同步层** | 云端同步、冲突仲裁、单文件打包器 | `S-SYNC`, `S-COLLAB`, `S-EXPORT` | 同步提升为阶段 1 能力；单文件导出为支撑能力 |
 | **L4 运行时层** | 零依赖容灾运行时、离线沙盒 | `C-SNAPSHOT`, 客户端本地存储 | 离线可读仍是红线（铁律 3），但不再承担主叙事 |
 | **L5 多端接入层** | 手机、iPad、车机座舱、桌面工作台 | `C-MOBILE`, `C-WEB`, `C-TABLET`, `C-CONSOLE`, `C-CABIN` | 主入口为对话界面与筛选页；车机以深链与投屏为主 |

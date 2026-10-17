@@ -417,7 +417,10 @@
         "id": { "type": "string" },
         "type": { "type": "string", "enum": ["budgetPerPersonCents", "paceScore", "comfortScore", "other"] },
         "value": { "type": "number" },
-        "weight": { "type": "number", "minimum": 0, "maximum": 1 }
+        "weight": { "type": "number", "minimum": 0, "maximum": 1 },
+        "scope": { "type": "string",
+          "pattern": "^(group|vehicle|node):.+$",
+          "description": "偏好作用域，与 hardConstraint.scope 同口径。让「年轻人想拍日落」这类偏好挂到人群上（OI-019 ②）。" }
       }
     },
 

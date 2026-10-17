@@ -1,0 +1,175 @@
+{
+  "$schema": "../../spec/listing.schema.json",
+  "listingVersion": "1.0.0",
+  "id": "lst_zhangye-jinma-silkroad-9d",
+  "status": "published",
+  "revision": 3,
+  "updatedAt": "2026-08-10T16:00:00+08:00",
+
+  "agency": {
+    "agencyId": "agc_zhangye-jinma",
+    "legalName": "张掖金马国际旅行社有限公司（示例）",
+    "licenseNo": "L-GS-00000（示例）",
+    "brandRef": "brand:zhangye-jinma"
+  },
+
+  "basics": {
+    "title": "甘青大环线 9 日 · 考斯特包车慢游",
+    "regions": [
+      { "name": "河西走廊", "kind": "region" },
+      { "name": "青海湖", "kind": "poi" }
+    ],
+    "days": 9,
+    "nights": 8,
+    "startCity": { "name": "兰州", "kind": "city", "adcode": "620100" },
+    "endCity": { "name": "兰州", "kind": "city", "adcode": "620100" },
+    "travelModes": ["chartered_car", "private_tour"],
+    "vehicleClasses": ["mpv_7", "minibus_9_19"],
+    "lodgingTiers": ["comfort", "premium"]
+  },
+
+  "itinerary": {
+    "tripRef": { "id": "trip_20260924_silkroad-gansu-qinghai-9d", "revision": 1 }
+  },
+
+  "pricing": {
+    "currency": "CNY",
+    "basePrices": { "adult": 628000, "senior": 598000, "child": 458000, "infant": 0 },
+    "seasons": [
+      {
+        "id": "golden-week",
+        "label": "国庆黄金周",
+        "kind": "holiday",
+        "ranges": [{ "from": "2026-09-29", "to": "2026-10-07" }],
+        "prices": { "adult": 890000, "senior": 850000, "child": 650000, "infant": 0 }
+      },
+      {
+        "id": "late-autumn",
+        "label": "深秋淡季",
+        "kind": "off",
+        "ranges": [{ "from": "2026-10-20", "to": "2026-11-30" }],
+        "prices": { "adult": 528000, "senior": 498000, "child": 388000, "infant": 0 }
+      }
+    ],
+    "groupTiers": [
+      { "minPax": 2, "maxPax": 3, "deltaPerPersonCents": 150000 },
+      { "minPax": 4, "maxPax": 5, "deltaPerPersonCents": 60000 },
+      { "minPax": 6, "maxPax": 12, "deltaPerPersonCents": 0 }
+    ],
+    "singleSupplement": { "amountCents": 22000, "unit": "per_night" },
+    "display": {
+      "tier": "from",
+      "from": {
+        "amountCents": 628000,
+        "conditions": ["6 人成团", "舒适型住宿", "9 月平日出发"]
+      }
+    }
+  },
+
+  "options": [
+    {
+      "id": "hotel-premium",
+      "name": "升级高档酒店",
+      "priceChange": { "amountCents": 38000, "unit": "per_person_per_night" },
+      "excludes": ["hotel-homestay"]
+    },
+    {
+      "id": "hotel-homestay",
+      "name": "敦煌段改住特色民宿",
+      "priceChange": { "amountCents": 12000, "unit": "per_person_per_night" },
+      "excludes": ["hotel-premium"]
+    },
+    {
+      "id": "extra-day",
+      "name": "增加 1 天（青海湖慢游）",
+      "priceChange": { "amountCents": 90000, "unit": "per_person" }
+    },
+    {
+      "id": "extra-day-photo-guide",
+      "name": "加天当日配摄影向导",
+      "priceChange": { "amountCents": 80000, "unit": "per_order" },
+      "requires": ["extra-day"]
+    },
+    {
+      "id": "vehicle-mpv7",
+      "name": "换 7 座 MPV",
+      "priceChange": { "amountCents": 60000, "unit": "per_day" },
+      "note": "仅适用于 7 人及以下"
+    }
+  ],
+
+  "inclusions": {
+    "lodging":   { "included": true,  "note": "8 晚舒适型酒店双人间，含早" },
+    "transport": { "included": true,  "note": "全程考斯特包车含司机食宿、油费、过路费" },
+    "tickets":   { "included": true,  "note": "仅含行程内景点首道门票" },
+    "meals":     { "included": false, "note": "含早不含正餐" },
+    "guide":     { "included": true,  "note": "司导兼讲解" },
+    "insurance": { "included": true,  "note": "旅行社责任险；旅游意外险建议自购" },
+    "transfer":  { "included": true,  "note": "兰州中川机场接送各一次" },
+    "others": [
+      { "label": "便携氧气瓶", "included": true, "note": "垭口路段随车配备" }
+    ]
+  },
+
+  "departures": {
+    "mode": "anytime",
+    "anytime": {
+      "from": "2026-05-01",
+      "to": "2026-11-30",
+      "leadDays": 14,
+      "blackoutDates": ["2026-10-01", "2026-10-02"]
+    },
+    "minGroupSize": 2,
+    "maxCapacity": 12
+  },
+
+  "audienceFit": [
+    {
+      "tag": "senior_friendly",
+      "explanation": "全程最高海拔 3,600 米（日月山），每日车程不超过 4 小时，景区内单次步行不超过 500 米"
+    },
+    {
+      "tag": "child_friendly",
+      "explanation": "每日 13:00–14:30 安排午休，车上配儿童安全座椅（需提前告知年龄）"
+    }
+  ],
+
+  "themes": ["nature", "culture_history", "photography"],
+
+  "media": [
+    {
+      "assetId": "hero_dunhuang_banner",
+      "type": "image",
+      "capture": "ai_generated",
+      "alt": "敦煌鸣沙山日落，驼队行进于沙脊之上",
+      "license": { "type": "ai_generated", "by": "tripcraft-image-engine" }
+    },
+    {
+      "assetId": "agency_danxia_2025",
+      "type": "image",
+      "capture": "real_shot",
+      "alt": "2025 年 9 月团队在张掖丹霞四号观景台的合影背景（无人物）",
+      "dayIndex": 2,
+      "license": { "type": "user_upload", "by": "张掖金马（示例）" }
+    },
+    {
+      "assetId": "coaster_interior",
+      "type": "image",
+      "capture": "illustrative",
+      "alt": "考斯特车型内饰示意图，实际车辆以出团为准",
+      "license": { "type": "licensed_library" }
+    }
+  ],
+
+  "guideCard": {
+    "name": "示例司导",
+    "role": "driver_guide",
+    "bio": "跑甘青线 12 年，熟悉祁连山区路况与景区限高。"
+  },
+
+  "refundPolicy": {
+    "freeCancelBeforeDays": 15,
+    "reschedule": { "allowed": true, "note": "出发前 7 天以上可免费改期一次" },
+    "text": "出发前 15 天以上取消全额退款；14–7 天扣 20%；6–1 天扣 50%；出发当日不退。"
+  }
+}

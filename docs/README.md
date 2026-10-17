@@ -223,6 +223,8 @@ flowchart TB
 | [`spec/node.schema.json`](../spec/node.schema.json) | 节点契约 | ~11 KB |
 | [`spec/brand.schema.json`](../spec/brand.schema.json) | 品牌包契约 | ~9 KB |
 | [`spec/patch.schema.json`](../spec/patch.schema.json) | 离线补丁契约 | ~5 KB |
+| [`spec/profile.schema.json`](../spec/profile.schema.json) | 需求画像契约（§16.3） | ~15 KB |
+| [`spec/listing.schema.json`](../spec/listing.schema.json) | 上架线路契约（§17.4） | ~18 KB |
 
 全部为 **JSON Schema Draft 2020-12**，全部启用 `additionalProperties: false`。
 
@@ -235,20 +237,24 @@ npm run check      # = validate + check-links + check-br025 + check-trace
 
 ```
 契约元校验
-  ✓ brand.schema.json   https://tripcraft.dev/schema/v1.0.0/brand.schema.json
-  ✓ node.schema.json    https://tripcraft.dev/schema/v1.0.0/node.schema.json
-  ✓ patch.schema.json   https://tripcraft.dev/schema/v1.0.0/patch.schema.json
-  ✓ trip.schema.json    https://tripcraft.dev/schema/v1.0.0/trip.schema.json
+  ✓ brand.schema.json     https://tripcraft.dev/schema/v1.0.0/brand.schema.json
+  ✓ listing.schema.json   https://tripcraft.dev/schema/v1.0.0/listing.schema.json
+  ✓ node.schema.json      https://tripcraft.dev/schema/v1.0.0/node.schema.json
+  ✓ patch.schema.json     https://tripcraft.dev/schema/v1.0.0/patch.schema.json
+  ✓ profile.schema.json   https://tripcraft.dev/schema/v1.0.0/profile.schema.json
+  ✓ trip.schema.json      https://tripcraft.dev/schema/v1.0.0/trip.schema.json
 实例校验
+  ✓ examples/dunhuang-silkroad-9d/listing.json
+  ✓ examples/dunhuang-silkroad-9d/profile.json
   ✓ examples/dunhuang-silkroad-9d/trip.json
-✓ 契约校验全部通过（4 份 Schema，1 份实例）
+✓ 契约校验全部通过（6 份 Schema，3 份实例）
 
 跨文件链接: 759  |  失效: 0
 ```
 
 | 工具 | 作用 |
 | :--- | :--- |
-| `tools/validate-schemas.js` | 校验 4 份 JSON Schema 自身合法 + 示例实例符合契约 |
+| `tools/validate-schemas.js` | 校验 6 份 JSON Schema 自身合法 + 示例实例符合契约 + 语义与跨文件校验（`listing.json` 的 `tripRef` 必须对上同目录 `trip.json`，并按内联快照再校验一次） |
 | [`tools/check-links.mjs`](../tools/check-links.mjs) | 校验全书 **759 条跨文件内链**（含跨文件锚点）。**它按 GitHub 的真实锚点算法实现**，而不是估算 |
 | [`tools/check-br025.mjs`](../tools/check-br025.mjs) | **[BR-025](07-legal-and-compliance.md#781--br-025地图数据不得落库oi-003-收敛后的新增规则) 的可执行形态** —— 扫描产物中是否内联了算路 API 返回的路线几何。含注入测试与阈值边界测试 |
 
@@ -545,7 +551,7 @@ npm run check      # = validate + check-links + check-br025 + check-trace
 | [OI-021](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register) | 线路匹配的平台角色与引流合规边界 | **P0（法务）** |
 | [OI-022](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register) | 自带模型 API 与平台默认模型的合规口径 | P1（法务） |
 | [OI-023](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register) | AI 生成路书与路线动画的内容标识 | P1（法务） |
-| [OI-024](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register) | 需求画像与上架信封没有数据契约 | P1（**阻塞 schema**） |
+| [OI-024](00-overview-and-glossary.md#07-未决事项登记册-open-issues-register) | 需求画像与上架信封没有数据契约 | P1 → ✅ 2026-10-17 已收敛（`profile` / `listing` 契约） |
 
 #### 一处必须记录的方法论教训（第五课）
 

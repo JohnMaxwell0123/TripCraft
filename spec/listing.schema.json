@@ -1,0 +1,420 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tripcraft.dev/schema/v1.0.0/listing.schema.json",
+  "title": "TripCraft Route Listing",
+  "description": "TripCraft 上架线路契约 v1.0.0 —— 一条上架线路 = 行程 DSL（逐日安排，复用 trip.schema.json）+ 上架信封（价格、团期、选项等商业信息，docs/17 §17.4）。金额单位为整数分。★ 本契约不含、也不允许出现任何成本价字段：旅行社的成本价永远不展示，也不向其他旅行社提供（§17.5.1）。",
+  "type": "object",
+  "required": ["listingVersion", "id", "status", "agency", "basics", "itinerary", "pricing",
+               "inclusions", "departures", "refundPolicy"],
+  "additionalProperties": false,
+
+  "properties": {
+    "$schema": { "type": "string", "format": "uri-reference" },
+
+    "listingVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+      "description": "语义化版本，与 trip.schema.json 的 dslVersion 同口径。"
+    },
+
+    "id": {
+      "type": "string",
+      "pattern": "^lst_[a-z0-9][a-z0-9-]{1,63}$",
+      "description": "线路 ID，格式 lst_<slug>"
+    },
+
+    "status": { "type": "string", "enum": ["draft", "in_review", "published", "paused", "archived"],
+      "description": "只有 published 的线路进入路径 B 资格判定（§16.6.1「线路在售」）。" },
+    "revision": { "type": "integer", "minimum": 1 },
+    "updatedAt": { "$ref": "trip.schema.json#/$defs/timestamp" },
+
+    "agency": { "$ref": "#/$defs/agency" },
+    "basics": { "$ref": "#/$defs/basics" },
+    "itinerary": { "$ref": "#/$defs/itinerary" },
+    "pricing": { "$ref": "#/$defs/pricing" },
+
+    "options": {
+      "type": "array",
+      "maxItems": 50,
+      "description": "可调选项（详情页预估价，§17.7）。",
+      "items": { "$ref": "#/$defs/option" }
+    },
+
+    "inclusions": { "$ref": "#/$defs/inclusions" },
+    "departures": { "$ref": "#/$defs/departures" },
+
+    "audienceFit": {
+      "type": "array",
+      "maxItems": 4,
+      "description": "人群适配标签。★ 每个标签必须附一句可核验的说明（§17.4）。",
+      "items": { "$ref": "#/$defs/audienceFitTag" }
+    },
+
+    "themes": {
+      "type": "array", "uniqueItems": true,
+      "items": { "$ref": "profile.schema.json#/$defs/theme" }
+    },
+
+    "media": {
+      "type": "array",
+      "maxItems": 60,
+      "description": "图片与视频素材，每项必须标注实拍 / 示意 / AI 生成（§17.5.2、§17.6.3）。",
+      "items": { "$ref": "#/$defs/mediaItem" }
+    },
+
+    "guideCard": { "$ref": "#/$defs/guideCard" },
+    "refundPolicy": { "$ref": "#/$defs/refundPolicy" }
+  },
+
+  "$defs": {
+
+    "moneyCents": { "$ref": "trip.schema.json#/$defs/moneyCents" },
+    "deltaCents": { "type": "integer", "description": "金额变化，单位为分；可为负数（降级 / 优惠）。" },
+    "date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+    "slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$" },
+
+    "agency": {
+      "type": "object",
+      "required": ["agencyId", "legalName", "licenseNo"],
+      "additionalProperties": false,
+      "description": "资质公示（§17.2）：许可证编号与主体名称在详情页公示。只有资质审核通过的旅行社可以上架。",
+      "properties": {
+        "agencyId": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "legalName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "licenseNo": { "type": "string", "minLength": 1, "maxLength": 64,
+          "description": "旅行社业务经营许可证编号" },
+        "brandRef": { "type": "string",
+          "description": "白标品牌引用，指向 brand.schema.json 实例（如 brand:zhangye-jinma）" }
+      }
+    },
+
+    "basics": {
+      "type": "object",
+      "required": ["title", "regions", "days", "startCity", "endCity", "travelModes"],
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "regions": { "type": "array", "minItems": 1, "maxItems": 20,
+          "items": { "$ref": "profile.schema.json#/$defs/place" } },
+        "days": { "type": "integer", "minimum": 1, "maximum": 60 },
+        "nights": { "type": "integer", "minimum": 0, "maximum": 60 },
+        "startCity": { "$ref": "profile.schema.json#/$defs/place" },
+        "endCity": { "$ref": "profile.schema.json#/$defs/place" },
+        "travelModes": { "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": { "$ref": "profile.schema.json#/$defs/travelMode" } },
+        "vehicleClasses": { "type": "array", "uniqueItems": true,
+          "description": "车型（出行方式含车时填写，§16.7.3）",
+          "items": { "type": "string", "enum": ["suv_5", "mpv_7", "minibus_9_19", "offroad", "coach"] } },
+        "lodgingTiers": { "type": "array", "uniqueItems": true,
+          "items": { "$ref": "profile.schema.json#/$defs/lodgingTier" } }
+      }
+    },
+
+    "itinerary": {
+      "type": "object",
+      "description": "逐日行程。发布时内联行程 DSL 快照（trip）；草稿阶段可只引用工作台里的行程（tripRef，按 revision 锁定）。",
+      "oneOf": [
+        {
+          "required": ["trip"],
+          "additionalProperties": false,
+          "properties": { "trip": { "$ref": "trip.schema.json" } }
+        },
+        {
+          "required": ["tripRef"],
+          "additionalProperties": false,
+          "properties": {
+            "tripRef": {
+              "type": "object",
+              "required": ["id", "revision"],
+              "additionalProperties": false,
+              "properties": {
+                "id": { "type": "string", "pattern": "^trip_[0-9]{8}_[a-z0-9][a-z0-9-]{1,63}$" },
+                "revision": { "type": "integer", "minimum": 1 },
+                "contentHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+              }
+            }
+          }
+        }
+      ]
+    },
+
+    "crowdPrices": {
+      "type": "object",
+      "required": ["adult"],
+      "additionalProperties": false,
+      "description": "按人群的每人售价（整趟）。至少有成人价；未填的人群按成人价计并在详情页注明。",
+      "properties": {
+        "adult":  { "$ref": "#/$defs/moneyCents" },
+        "senior": { "$ref": "#/$defs/moneyCents" },
+        "child":  { "$ref": "#/$defs/moneyCents" },
+        "infant": { "$ref": "#/$defs/moneyCents" }
+      }
+    },
+
+    "pricing": {
+      "type": "object",
+      "required": ["currency", "basePrices", "display"],
+      "additionalProperties": false,
+      "description": "价格规则：成人 / 长者 / 儿童 / 婴幼儿基础价；淡旺季日历；按成团人数的阶梯价；单房差。",
+      "properties": {
+        "currency": { "type": "string", "pattern": "^[A-Z]{3}$", "default": "CNY" },
+        "basePrices": { "$ref": "#/$defs/crowdPrices" },
+        "seasons": {
+          "type": "array",
+          "description": "淡旺季日历。落在某季节区间内的出发日，以该季节的 prices 整体替代 basePrices。",
+          "items": {
+            "type": "object",
+            "required": ["id", "kind", "ranges", "prices"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "$ref": "#/$defs/slug" },
+              "label": { "type": "string", "maxLength": 40 },
+              "kind": { "type": "string", "enum": ["peak", "shoulder", "off", "holiday"] },
+              "ranges": { "type": "array", "minItems": 1, "items": {
+                "type": "object", "required": ["from", "to"], "additionalProperties": false,
+                "properties": { "from": { "$ref": "#/$defs/date" }, "to": { "$ref": "#/$defs/date" } } } },
+              "prices": { "$ref": "#/$defs/crowdPrices" }
+            }
+          }
+        },
+        "groupTiers": {
+          "type": "array",
+          "description": "按成团人数的阶梯价：在（季节）基础价上每人加减。",
+          "items": {
+            "type": "object",
+            "required": ["minPax", "deltaPerPersonCents"],
+            "additionalProperties": false,
+            "properties": {
+              "minPax": { "type": "integer", "minimum": 1 },
+              "maxPax": { "type": "integer", "minimum": 1 },
+              "deltaPerPersonCents": { "$ref": "#/$defs/deltaCents" }
+            }
+          }
+        },
+        "singleSupplement": {
+          "type": "object",
+          "required": ["amountCents", "unit"],
+          "additionalProperties": false,
+          "description": "单房差",
+          "properties": {
+            "amountCents": { "$ref": "#/$defs/moneyCents" },
+            "unit": { "type": "string", "enum": ["per_night", "per_trip"] }
+          }
+        },
+        "display": { "$ref": "#/$defs/priceDisplay" }
+      }
+    },
+
+    "priceDisplay": {
+      "type": "object",
+      "required": ["tier"],
+      "additionalProperties": false,
+      "description": "价格展示档位由旅行社选择（§17.5.1）：from = 起价，range = 区间，itemized = 分项明细。平台最低要求：起价必须写明条件。",
+      "properties": {
+        "tier": { "type": "string", "enum": ["from", "range", "itemized"] },
+        "from": {
+          "type": "object",
+          "required": ["amountCents", "conditions"],
+          "additionalProperties": false,
+          "properties": {
+            "amountCents": { "$ref": "#/$defs/moneyCents" },
+            "conditions": { "type": "array", "minItems": 1, "maxItems": 6,
+              "items": { "type": "string", "minLength": 2, "maxLength": 60 },
+              "description": "起价成立的条件，如「6 人成团」「舒适型住宿」「7 月平日」" }
+          }
+        },
+        "range": {
+          "type": "object",
+          "required": ["minCents", "maxCents", "factors"],
+          "additionalProperties": false,
+          "properties": {
+            "minCents": { "$ref": "#/$defs/moneyCents" },
+            "maxCents": { "$ref": "#/$defs/moneyCents" },
+            "factors": { "type": "array", "minItems": 1, "maxItems": 6,
+              "items": { "type": "string", "minLength": 2, "maxLength": 60 },
+              "description": "区间的决定因素" }
+          }
+        },
+        "itemized": {
+          "type": "object",
+          "required": ["items"],
+          "additionalProperties": false,
+          "description": "分项明细：逐项列出每人售价构成。列的是售价分项，不是成本。",
+          "properties": {
+            "items": { "type": "array", "minItems": 2, "items": {
+              "type": "object", "required": ["category", "amountCents"], "additionalProperties": false,
+              "properties": {
+                "category": { "type": "string",
+                  "enum": ["transport", "lodging", "tickets", "meals", "guide_service", "other"] },
+                "amountCents": { "$ref": "#/$defs/moneyCents" },
+                "note": { "type": "string", "maxLength": 120 }
+              } } }
+          }
+        }
+      },
+      "allOf": [
+        { "if": { "properties": { "tier": { "const": "from" } } }, "then": { "required": ["from"] } },
+        { "if": { "properties": { "tier": { "const": "range" } } }, "then": { "required": ["range"] } },
+        { "if": { "properties": { "tier": { "const": "itemized" } } }, "then": { "required": ["itemized"] } }
+      ]
+    },
+
+    "option": {
+      "type": "object",
+      "required": ["id", "name", "priceChange"],
+      "additionalProperties": false,
+      "description": "可调选项，如「升级高档酒店 +¥380/人/晚」「增加 1 天 +¥900/人」「换 7 座 MPV +¥600/天」。",
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 60 },
+        "priceChange": {
+          "type": "object",
+          "required": ["amountCents", "unit"],
+          "additionalProperties": false,
+          "properties": {
+            "amountCents": { "$ref": "#/$defs/deltaCents" },
+            "unit": { "type": "string",
+              "enum": ["per_person", "per_person_per_night", "per_night", "per_day", "per_order"] }
+          }
+        },
+        "excludes": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/slug" },
+          "description": "互斥：与这些选项不能同时选" },
+        "requires": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/slug" },
+          "description": "依赖：选本项前必须已选这些选项" },
+        "note": { "type": "string", "maxLength": 200 }
+      }
+    },
+
+    "inclusionEntry": {
+      "type": "object",
+      "required": ["included"],
+      "additionalProperties": false,
+      "properties": {
+        "included": { "type": "boolean" },
+        "note": { "type": "string", "maxLength": 120,
+          "description": "范围说明，如「含早不含正餐」「仅含首道门票」" }
+      }
+    },
+
+    "inclusions": {
+      "type": "object",
+      "required": ["lodging", "transport", "tickets", "meals", "guide", "insurance", "transfer"],
+      "additionalProperties": false,
+      "description": "包含 / 不包含清单。七项全部必须明确勾选（平台最低要求：清单完整，§17.5.1）。",
+      "properties": {
+        "lodging":   { "$ref": "#/$defs/inclusionEntry" },
+        "transport": { "$ref": "#/$defs/inclusionEntry" },
+        "tickets":   { "$ref": "#/$defs/inclusionEntry" },
+        "meals":     { "$ref": "#/$defs/inclusionEntry" },
+        "guide":     { "$ref": "#/$defs/inclusionEntry", "description": "导游讲解" },
+        "insurance": { "$ref": "#/$defs/inclusionEntry" },
+        "transfer":  { "$ref": "#/$defs/inclusionEntry", "description": "接送站" },
+        "others": { "type": "array", "items": {
+          "type": "object", "required": ["label", "included"], "additionalProperties": false,
+          "properties": {
+            "label": { "type": "string", "minLength": 1, "maxLength": 40 },
+            "included": { "type": "boolean" },
+            "note": { "type": "string", "maxLength": 120 }
+          } } }
+      }
+    },
+
+    "departures": {
+      "type": "object",
+      "required": ["mode", "minGroupSize", "maxCapacity"],
+      "additionalProperties": false,
+      "description": "团期与容量：固定团期列表或随时出发；最少成团人数；最大接待人数。",
+      "properties": {
+        "mode": { "type": "string", "enum": ["fixed", "anytime"] },
+        "dates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["date", "status"],
+            "additionalProperties": false,
+            "properties": {
+              "date": { "$ref": "#/$defs/date" },
+              "status": { "type": "string", "enum": ["open", "guaranteed", "full", "closed"] },
+              "seatsLeft": { "type": "integer", "minimum": 0 }
+            }
+          }
+        },
+        "anytime": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "from": { "$ref": "#/$defs/date" },
+            "to": { "$ref": "#/$defs/date" },
+            "leadDays": { "type": "integer", "minimum": 0, "description": "至少提前几天预订" },
+            "blackoutDates": { "type": "array", "items": { "$ref": "#/$defs/date" } }
+          }
+        },
+        "minGroupSize": { "type": "integer", "minimum": 1 },
+        "maxCapacity": { "type": "integer", "minimum": 1 }
+      },
+      "allOf": [
+        { "if": { "properties": { "mode": { "const": "fixed" } } },
+          "then": { "required": ["dates"], "properties": { "dates": { "minItems": 1 } } } }
+      ]
+    },
+
+    "audienceFitTag": {
+      "type": "object",
+      "required": ["tag", "explanation"],
+      "additionalProperties": false,
+      "properties": {
+        "tag": { "type": "string", "enum": ["senior_friendly", "child_friendly", "accessible", "pet_friendly"] },
+        "explanation": { "type": "string", "minLength": 6, "maxLength": 200,
+          "description": "可核验的事实说明，如「全程无超过 50 级的台阶，最高海拔 1,800 米」。" }
+      }
+    },
+
+    "mediaItem": {
+      "type": "object",
+      "required": ["assetId", "type", "capture", "alt"],
+      "additionalProperties": false,
+      "properties": {
+        "assetId": { "type": "string", "minLength": 1 },
+        "type": { "type": "string", "enum": ["image", "video"] },
+        "path": { "type": "string" },
+        "capture": { "type": "string", "enum": ["real_shot", "illustrative", "ai_generated"],
+          "description": "实拍 / 示意 / AI 生成。AI 生成的素材另按 §17.6.3 加显式标识。" },
+        "alt": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "dayIndex": { "type": "integer", "minimum": 0, "description": "关联到行程第几天（可选）" },
+        "license": { "$ref": "trip.schema.json#/$defs/license" }
+      }
+    },
+
+    "guideCard": {
+      "type": "object",
+      "required": ["name", "role"],
+      "additionalProperties": false,
+      "description": "司导名片，沿用 §13.3.4 白标第二层定制。",
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 40 },
+        "role": { "type": "string", "enum": ["planner", "guide", "driver", "driver_guide"] },
+        "bio": { "type": "string", "maxLength": 300 },
+        "photoAssetId": { "type": "string" },
+        "ref": { "type": "string" }
+      }
+    },
+
+    "refundPolicy": {
+      "type": "object",
+      "required": ["freeCancelBeforeDays", "reschedule"],
+      "additionalProperties": false,
+      "properties": {
+        "freeCancelBeforeDays": { "type": "integer", "minimum": 0,
+          "description": "出发前多少天以上可免费取消；0 表示不支持免费取消" },
+        "reschedule": {
+          "type": "object", "required": ["allowed"], "additionalProperties": false,
+          "properties": {
+            "allowed": { "type": "boolean" },
+            "note": { "type": "string", "maxLength": 200 }
+          }
+        },
+        "text": { "type": "string", "maxLength": 1000, "description": "退改条款全文" }
+      }
+    }
+  }
+}

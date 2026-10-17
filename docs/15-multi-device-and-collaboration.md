@@ -453,7 +453,7 @@ flowchart TB
 | 提名的地点（说得清） | `days[].nodes[]` · `place.{name, coords}` | ✅ |
 | 画圈的地点（说不清） | `place.coords`（圈心）+ `place.geofenceM`（半径）+ `tentative: true` | ✅ **字段都在**（`geofenceM` 上限 10000 米） |
 | 硬要求 | `constraints.hard[]`（带 `scope: group:xxx`）或节点 `time.rigidity: "rigid"` | 🟡 `scope` **只存在于 hard** |
-| 「想去」的偏好 | `constraints.soft[]` | 🔴 **`softConstraint` 上没有 `scope`**——装不下"姑姑想去"和"老张想去"的区分 |
+| 「想去」的偏好 | `constraints.soft[]` | 🟡 **`softConstraint.scope` 已于 2026-10-17 放开**（OI-019 ②），可写 `group:<key>`；但 scope 只到人群粒度，"姑姑想去"和"老张想去"的个人区分仍需成员级 scope |
 | **理由（为什么想去）** | —— | 🔴 **没有家** |
 | 顾虑（"怕人多"） | —— | 🔴 没有家（`advice.avoid[]` 是**我们的**建议，不是用户的顾虑，语义相反） |
 | **没被采纳的提名** | —— | 🔴 **没有家**——而 §15.5 的"不被抹掉"靠的正是它 |

@@ -2,6 +2,13 @@
 
 所有关键架构修订、外部事实核查与规范变更记录在此。历史更正详情见 [docs/ERRATA.md](docs/ERRATA.md)。
 
+## [2026-10-17] - 需求画像与上架线路契约（OI-024）
+
+- **新增契约**：`spec/profile.schema.json`（需求画像，§16.3.1；每个特征点带 `source` = `stated` / `inferred` / `default`，`party` / `hard[]` / `soft[]` 复用 `trip.schema.json`）与 `spec/listing.schema.json`（上架线路 = 行程 DSL + 上架信封，§17.4；起价必须带条件、人群适配标签必须附说明、素材必须标注实拍 / 示意 / AI 生成、无成本价字段）。
+- **契约放宽**：`trip.schema.json` 的 `softConstraint` 新增可选 `scope`（OI-019 ②，纯放宽，向后兼容）。
+- **示例与门禁**：`examples/dunhuang-silkroad-9d/` 新增 `profile.json`、`listing.json`；`tools/validate-schemas.js` 增加语义与跨文件校验（`tripRef` 对上同目录 `trip.json` 并按内联快照再校验）；新增 `.github/workflows/check.yml`，push / PR 时运行 `npm run check`。
+- **文档**：OI-024 标为已收敛，OI-019 / OI-020 标为部分收敛；ARC-01 / ARC-02 / ADR-010 / PRD-04 / docs/15 / docs/16 / docs/17 / README / docs/README 同步。
+
 ## [2026-10-17] - 产品基线 v3：文档口径统一
 
 业主明确产品设计目标为**多端同步、多人共享的 AI 旅行规划 App**：AI 对话（平台模型或自带 API）→ 追问 → 需求画像 → 路径 A（AI 自主规划自驾）/ 路径 B（旅行社线路匹配与筛选页）；商业化方向为面向旅行社的线路上架、AI 路书与透明报价。本次修订把全仓库文档对齐到这一口径。

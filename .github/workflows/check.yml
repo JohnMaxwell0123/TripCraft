@@ -1,0 +1,34 @@
+name: Check (contracts, links, BR-025, traceability)
+
+# 仓库门禁：npm run check = validate + check-links + check-br025 + check-trace
+# 根目录 package-lock.json 被 .gitignore 忽略（运行时零依赖，见 docs/00 铁律 1），
+# 因此这里用 npm install 而不是 npm ci，也不启用 setup-node 的 npm 缓存。
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dev tooling
+        run: npm install --no-audit --no-fund
+
+      - name: Run all gates
+        run: npm run check
