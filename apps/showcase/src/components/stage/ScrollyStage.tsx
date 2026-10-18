@@ -3,21 +3,20 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, useMotionValue } from 'framer-motion';
 import { useMediaQuery, useStep } from '@/lib/motion';
-import { CHAPTERS, T } from './timeline';
+import { ACTS, T, type ActId } from './timeline';
 import { LayoutContext, ProgressContext, useProgress } from './primitives';
-import { ChatScene } from './ChatScene';
+import { DialogueScene } from './DialogueScene';
 import { Workspace } from './Workspace';
+import { MatchScene, PathCrossHint } from './MatchScene';
+import { StudioScene } from './StudioScene';
 import { CollabDrawer, PhoneMock, ShareSheet, Topbar } from './Collab';
 import { Backdrop, RecommendModal, StageToasts } from './Recommend';
-import { CockpitScene } from './CockpitScene';
-import { DeliverScene } from './Deliver';
+import { SyncFinale } from './SyncFinale';
 import {
   PlayIcon,
   PauseIcon,
   SparklesIcon,
-  TerminalIcon,
   ShieldIcon,
-  CheckIcon,
 } from '@/components/common/Icons';
 
 /**
@@ -33,53 +32,49 @@ import {
  */
 
 interface StoryTab {
-  id: string;
+  act: ActId;
   title: string;
   desc: string;
   duration: number; // 持续时长 (ms)
 }
 
+/** 五幕顺序即产品基线 v3 的核心流程（PRD-01 §2）；车机投递与离线交付作为支撑能力收在第 5 幕末尾 */
 const TABS: StoryTab[] = [
   {
-    id: 'intent-parsing',
-    title: '自然语言意图提炼',
-    desc: '不用面对冷冰冰的繁琐表单。说出出行人员、车型配置与在意事项，AI 定制师自动提炼长辈少台阶、幼儿午休与 2.28m 车高限高等专属守护规则。',
-    duration: 11000,
+    act: 'dialogue',
+    title: 'AI 对话与需求画像',
+    desc: '像和大模型聊天一样说出想法，平台模型或自带 API 都行。AI 每轮只追问一个问题，把同行人、身体情况、车辆与预算整理成一张可确认的需求画像，推断项单独标出。',
+    duration: 12000,
   },
   {
-    id: 'outline-topology',
-    title: '九日路书与航线拓扑',
-    desc: '一段话瞬间长成一本看得见的专业路书。九天日程时序、河西走廊拓扑航线、海拔爬升剖面与 7 座 MPV 地面车位几秒内依次就位。',
-    duration: 11500,
+    act: 'drive',
+    title: '路径 A · AI 规划自驾',
+    desc: '选自驾，AI 按画像编排九天骨架、午休节奏与限高停车；地点与开放时间来自图商核验，模型只写建议。结果页底部提示相似的旅行社线路。',
+    duration: 12500,
   },
   {
-    id: 'wechat-collab',
-    title: '微信免登愿望池协同',
-    desc: '同行亲友微信扫码即写，免注册免装 App。全团心愿实时上屏，智能评估顺路度与绕行代价，领队一键确认即全团同步。',
-    duration: 15500,
+    act: 'match',
+    title: '路径 B · 旅行社线路匹配',
+    desc: '想省心就看持证旅行社的线路。价格滑块上方是真实的价格分布，标出你的预算与市场中位；来自需求的条件自动选中并带 ★。匹配度为信息参考，具体以旅行社报价与合同为准。',
+    duration: 15000,
   },
   {
-    id: 'cockpit-pilot',
-    title: '车道级领航与限高拦截',
-    desc: '副驾手机一键流转至车载大屏，3D 车道级导引光毯、实时车速 HUD 与老城 2.0m 地库限高提前预警改道，停稳后自动接力步行导航。',
-    duration: 13000,
+    act: 'studio',
+    title: '旅行社线路工作室',
+    desc: '旅行社导入已有行程单，AI 抽取后逐字段确认；一键生成交互路书与路线动画；价格分项列出，按旅客要求调整后生成新的报价版本，差异自动列明。',
+    duration: 16000,
   },
   {
-    id: 'multi-device-offline',
-    title: '多端同频与无网离线守护',
-    desc: '跨手机、车机与桌面端全天候毫秒级同频。驶入戈壁无人区脱网时，自动无感切换至本地离线沙盘，地图、避险规则与应急专线全量可用。',
-    duration: 11500,
+    act: 'share',
+    title: '多人共享 · 多端同步',
+    desc: '方案进入行程空间，家人扫码加入、提名想去的地方；AI 评估顺路度，领队确认后手机、平板、电脑同步更新。离线可读、单文件导出与车机投递作为支撑能力随行。',
+    duration: 18000,
   },
 ];
 
-/** 每个 Tab 对应的全局时间轴进度跨度 (映射至 timeline.ts，留出充足静止驻留阅读欣赏时间) */
-const TAB_RANGES: [number, number][] = [
-  [0.00, 0.198],   // Tab 0: 倾诉与规则推演 (0.15 完成，0.15-0.198 静态驻留)
-  [0.20, 0.415],   // Tab 1: 路线大纲与拓扑沙盘 (0.395 完成，0.395-0.415 静态驻留)
-  [0.42, 0.775],   // Tab 2: 微信协同与推荐决策 + 兰州步行微镜 (0.758 完成，0.758-0.775 静态驻留)
-  [0.78, 0.925],   // Tab 3: 手机投车与车机原生座舱 (0.91 完成停稳，0.91-0.925 静态驻留)
-  [0.93, 0.998],   // Tab 4: 多端同频与全自动离线守护 (0.93-0.998 全景交互)
-];
+/** 每个 Tab 对应的全局时间轴进度跨度（见 timeline.ts ACTS，每幕末尾留有静止驻留） */
+const TAB_RANGES: (readonly [number, number])[] = TABS.map((tab) => ACTS[tab.act]);
+const TAB_STARTS = TAB_RANGES.slice(1).map(([s]) => s);
 
 export function ScrollyStage() {
   const [activeTab, setActiveTab] = useState(0);
@@ -176,10 +171,11 @@ export function ScrollyStage() {
     };
     win.__setStageProgress = (globalVal: number) => {
       const clamped = Math.max(0, Math.min(1, globalVal));
-      let idx = TAB_RANGES.findIndex(([s, e]) => clamped >= s && clamped <= e);
-      if (idx === -1) {
-        idx = clamped >= 0.925 ? 4 : 0;
-      }
+      // 落在两幕之间的空隙时，归到起点不晚于它的最后一幕
+      let idx = 0;
+      TAB_RANGES.forEach(([s], i) => {
+        if (clamped >= s) idx = i;
+      });
       const [s, e] = TAB_RANGES[idx];
       const local = e > s ? Math.max(0, Math.min(1, (clamped - s) / (e - s))) : 1;
       activeTabRef.current = idx;
@@ -229,7 +225,7 @@ export function ScrollyStage() {
       ref={containerRef}
       id="demo"
       className="py-12 md:py-16 bg-[#FFFFF9] text-[#241E20] relative overflow-hidden"
-      aria-label="TripCraft 智能旅行协同中枢全功能导览"
+      aria-label="TripCraft 产品主线导览：对话、双路径规划、旅行社线路工作室与共享同步"
     >
       {/* 极简背景微光网格 */}
       <div
@@ -252,15 +248,15 @@ export function ScrollyStage() {
             >
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FE3C01]/10 text-[#FE3C01] text-xs font-semibold tracking-wider mb-3">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#FE3C01]" />
-                <span>全链路数字化自驾协同中枢</span>
+                <span>一段对话 · 两条路径 · 全家同步</span>
               </div>
               <h2 className="text-2xl sm:text-3xl lg:text-[26px] xl:text-[30px] font-sans font-bold tracking-tight leading-[1.32] text-[#1E2024] text-balance">
-                告别碎片路书与导航死角，
+                说清需求，
                 <br />
-                打造一体化自驾协同中枢
+                自驾或旅行社线路任你选
               </h2>
               <p className="mt-2.5 text-sm sm:text-[15px] text-black/60 leading-relaxed font-sans max-w-xl">
-                打通自然语言倾诉、河西走廊拓扑沙盘、微信免登愿望池、车道级领航与无网离线守护，让每一程自驾从容同频。
+                AI 追问出一份需求画像，再自主规划自驾路线，或匹配持证旅行社的线路；旅行社在线路工作室上架、出路书、透明报价。方案进入行程空间后，全家一起看、多端同步。
               </p>
             </motion.div>
 
@@ -270,7 +266,7 @@ export function ScrollyStage() {
                 const isActive = activeTab === idx;
                 return (
                   <div
-                    key={tab.id}
+                    key={tab.act}
                     onClick={() => handleSelectTab(idx)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
@@ -381,18 +377,20 @@ export function ScrollyStage() {
                   <div className="macos-window relative flex h-[600px] sm:h-[650px] lg:h-[680px] w-full flex-col overflow-hidden rounded-[16px] bg-[#FAF8F5]/98 text-left border border-[#E2E2D8] shadow-[0_28px_80px_rgba(0,0,0,0.14)]">
                     <Topbar />
                     <div className="relative min-h-0 flex-1 overflow-hidden">
-                      <ChatScene />
+                      <DialogueScene />
                       <Workspace />
+                      <PathCrossHint />
+                      <MatchScene />
                       <CollabDrawer />
                       <ShareSheet />
                       <Backdrop />
                       <RecommendModal />
                       <StageToasts />
-                      <DeliverScene />
+                      <SyncFinale />
                     </div>
                     <InAppStatusBar />
-                    {/* 车载中控座舱作为独立硬件大屏完整接管舞台视窗，拒绝套在桌面窗口顶底栏内部 */}
-                    <CockpitScene />
+                    {/* 旅行社线路工作室是 B 端另一款界面，整窗接管（含顶栏与状态条） */}
+                    <StudioScene />
                   </div>
 
                   {/* 随身手机协同端 (独立悬浮于母体视窗之上，完全无边缘硬裁切，超高质感 3D 悬浮投影) */}
@@ -410,46 +408,44 @@ export function ScrollyStage() {
 /* ── App 原生底栏状态条 (In-App Master Footer Status Bar) ── */
 function InAppStatusBar() {
   const p = useProgress();
-  const chapterStep = useStep(p, [0.20, 0.42, 0.62, 0.84]);
+  const chapterStep = useStep(p, TAB_STARTS);
   const isV11 = useStep(p, [T.version]) === 1;
-  const isDelivery = chapterStep === 4;
 
   const telemetry = [
-    { text: '已提取 5 人家庭出行偏好 · 长辈少台阶、幼儿午休与 2.28m 车高保障已生效', badge: '专属定制' },
-    { text: '河西走廊 9 日全线贯通 · 兰州 ➔ 张掖 ➔ 嘉峪关 ➔ 敦煌 (1,980km)', badge: '全景航线' },
-    { text: '3 位同行人实时在线 · 微信扫码免登加入 · 愿望池提名实时共享', badge: '多人共创' },
-    { text: '正宁路夜市顺路度 98% · 领队已确认并入 D0 晚间 · 全团秒级同步', badge: '智能重排' },
-    { text: '腾势 D9 座舱与随身离线包已同步 · 48.6 MB 离线地图与应急专线常驻', badge: '离线守护' },
-  ][chapterStep] || { text: '多端实时同频已就绪', badge: '实时同频' };
+    { text: '平台模型 · 追问 1 轮 · 需求画像 7 项特征点（1 项推断待确认）', badge: '需求画像' },
+    { text: '路径 A · 河西走廊 9 日自驾草案 · 地点经图商核验，模型只写建议', badge: 'AI 规划' },
+    { text: '路径 B · 持证旅行社线路按匹配度排序 · 匹配度为信息参考', badge: '线路匹配' },
+    { text: '线路工作室 · 报价 v2 已生成，差异自动列出', badge: '旅行社端' },
+    { text: '3 位同行人在线 · 领队确认后手机、平板、电脑同步更新', badge: '共享同步' },
+  ][chapterStep];
 
   return (
-    <footer className="relative z-30 flex h-6 sm:h-7 shrink-0 items-center justify-between border-t border-ink/[0.08] bg-paper/90 px-3 sm:px-4 text-[10px] font-sans text-ink-soft select-none backdrop-blur-md overflow-hidden whitespace-nowrap">
-      {/* 左侧：连接状态 + 版本 */}
+    <footer className="relative z-30 flex h-6 sm:h-7 shrink-0 items-center justify-between border-t border-ink/[0.08] bg-paper/90 px-3 sm:px-4 text-xs font-sans text-ink-soft select-none backdrop-blur-md overflow-hidden whitespace-nowrap">
+      {/* 左侧：同步状态 + 版本 */}
       <div className="flex items-center gap-2 shrink-0 whitespace-nowrap">
-        <span className="flex items-center gap-1.5 font-semibold text-jade">
+        <span className="flex items-center gap-1.5 font-semibold text-emerald-700">
           <span className="h-1.5 w-1.5 animate-breathe rounded-full bg-jade" />
-          <span>{isDelivery ? '无人区离线守护中' : '多端实时同频'}</span>
+          <span>多端实时同步</span>
         </span>
         <span className="text-ink/20">|</span>
-        <span className="font-medium text-ink flex items-center gap-1 font-mono text-[9.5px]">
+        <span className="font-medium text-ink flex items-center gap-1 font-mono">
           <span className="text-ink-soft">版本</span>
-          <span className="font-semibold text-gold-ink">{isV11 ? 'v1.1 (已含夜市加点)' : 'v1.0'}</span>
+          <span className="font-semibold text-gold-ink">{isV11 ? 'v1.1' : 'v1.0'}</span>
         </span>
       </div>
 
-      {/* 中间：当前章节场景摘要 */}
+      {/* 中间：当前幕次摘要 */}
       <div className="hidden md:flex items-center gap-1.5 text-ink shrink min-w-0 overflow-hidden whitespace-nowrap">
-        <SparklesIcon className="h-2.5 w-2.5 text-gold-ink shrink-0" />
+        <SparklesIcon className="h-3 w-3 text-gold-ink shrink-0" />
         <span className="truncate max-w-[360px] lg:max-w-[440px]">{telemetry.text}</span>
-        <span className="chip rounded-pill bg-ink/[0.05] text-ink-soft text-[9px] px-1.5 py-0 shrink-0">{telemetry.badge}</span>
+        <span className="chip rounded-pill bg-ink/[0.05] text-ink-soft px-1.5 py-0 shrink-0">{telemetry.badge}</span>
       </div>
 
-      {/* 右侧：离线安全保障 */}
+      {/* 右侧：支撑能力（离线可读） */}
       <div className="flex items-center gap-1.5 shrink-0 whitespace-nowrap">
-        <span className="text-emerald-700 font-semibold flex items-center gap-1">
-          <ShieldIcon className="h-2.5 w-2.5 text-emerald-600" />
-          <span className="hidden sm:inline">48.6 MB 离线包已就绪</span>
-          <span className="sm:hidden">离线就绪</span>
+        <span className="text-ink-soft flex items-center gap-1">
+          <ShieldIcon className="h-3 w-3 text-emerald-600" />
+          <span>离线可读</span>
         </span>
       </div>
     </footer>

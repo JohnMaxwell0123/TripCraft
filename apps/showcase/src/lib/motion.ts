@@ -161,15 +161,23 @@ export function useScrollTypewriter(
   return ref;
 }
 
-/** 滚动驱动的数字计数器：缓存 lastVal，避免高频 DOM 读写 */
-export function useScrollCounter(progress: MotionValue<number>, from: number, to: number, a: number, b: number, decimals = 0) {
+/** 滚动驱动的数字计数器：缓存 lastVal，避免高频 DOM 读写；format 可自定义显示（如千分位） */
+export function useScrollCounter(
+  progress: MotionValue<number>,
+  from: number,
+  to: number,
+  a: number,
+  b: number,
+  decimals = 0,
+  format?: (n: number) => string,
+) {
   const ref = useRef<HTMLSpanElement>(null);
   const lastVal = useRef('');
   const apply = (v: number) => {
     const el = ref.current;
     if (!el) return;
     const val = from + (to - from) * ease.out(local(v, a, b));
-    const next = val.toFixed(decimals);
+    const next = format ? format(val) : val.toFixed(decimals);
     if (next === lastVal.current) return;
     lastVal.current = next;
     el.textContent = next;

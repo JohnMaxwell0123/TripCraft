@@ -26,24 +26,21 @@ import {
 export function Workspace() {
   const p = useProgress();
   const inTimeline = useFade(p, T.timelineIn[0], T.timelineIn[1]);
-  // 在车机大屏激活期间 (Ch4) 与离线交付期间 (Ch5)，母体工作台优雅淡出 / 隐藏，彻底消除幽灵多图层透叠
+  // 车机大屏接管期间母体工作台淡出（车机投递为支撑能力，座舱场景当前不挂载，见 timeline.ts OFFSTAGE）
   const cockpitDim = useRange(
     p,
     [T.cockpitIn[0], T.cockpitIn[1], T.cockpitOut[0], T.cockpitOut[1]],
     [1, 0, 0, 1],
   );
-  const deliverDim = useRange(p, [0.922, 0.928], [1, 0]);
   const scale = useRange(
     p,
     [T.cockpitIn[0], T.cockpitIn[1], T.cockpitOut[0], T.cockpitOut[1]],
     [1, 0.96, 0.96, 1],
     { rest: 1 },
   );
-  const opacity = useTransform(
-    [inTimeline, cockpitDim, deliverDim],
-    ([tl, cDim, dDim]) => (tl as number) * (cDim as number) * (dDim as number),
-  );
-  const visibility = useVisibility(p, T.timelineIn[0] - 0.01, 0.928);
+  const opacity = useTransform([inTimeline, cockpitDim], ([tl, cDim]) => (tl as number) * (cDim as number));
+  // 路径 A 之后一直作为行程空间的母体留在舞台上（路径 B 与工作室覆盖其上，第 5 幕回到这里共享）
+  const visibility = useVisibility(p, T.timelineIn[0] - 0.01, 1);
 
   return (
     <motion.div
