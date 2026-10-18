@@ -73,7 +73,7 @@ PRD-01 ~ 05、ARC-01 ~ 09、ADR-001 ~ 008、DLV-01 ~ 03；新增 `check-trace` �
 3. 对话 + 需求画像 + 路径 A 最小原型；行程空间与多端同步；旅行社行程单导入。
 
 ### 4.4 工程卫生
-1. 演示站叙事对齐基线：补路径 B 筛选页与旅行社线路工作室，车机与离线交付降为支撑（[SHOWCASE-web-design](docs/SHOWCASE-web-design.md) 章首说明）。
+1. ~~演示站叙事对齐基线~~ ✅ 2026-10-18：演示区改为「对话与需求画像 → 路径 A → 路径 B 筛选页 → 旅行社线路工作室 → 共享同步」五幕，车机与离线交付降为支撑（[SHOWCASE-web-design §4](docs/SHOWCASE-web-design.md)）。剩余：首屏、Bento 画廊与导航栏文案仍是旧叙事。
 2. 把 `npm run check` 接入 GitHub Actions（当前只有部署工作流）。
 
 ---
