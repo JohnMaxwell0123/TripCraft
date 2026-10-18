@@ -1,5 +1,6 @@
 import type { Config } from 'tailwindcss';
 import colors from 'tailwindcss/colors';
+import plugin from 'tailwindcss/plugin';
 
 /**
  * 设计令牌映射：全部颜色走 CSS 变量（见 src/app/globals.css），
@@ -126,7 +127,21 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    /**
+     * 演示舞台的应用视窗按「自身宽度」而不是视口宽度排版：
+     * 桌面双栏时视窗只占 8/12 列，堆叠时又占满整行，视口断点无法反映视窗的真实宽度。
+     * 视窗根节点声明 container-name: win（见 stage/AppWindow.tsx），子元素用 cq-* 变体响应。
+     *   cq-sm ≥ 560px：显示标题栏、图标侧栏与底部状态栏（手机宽度以下为移动端布局）
+     *   cq-md ≥ 680px：显示上下文面板，主区可左右分栏
+     *   cq-lg ≥ 800px：侧栏显示文字标签
+     */
+    plugin(({ addVariant }) => {
+      addVariant('cq-sm', '@container win (min-width: 560px)');
+      addVariant('cq-md', '@container win (min-width: 680px)');
+      addVariant('cq-lg', '@container win (min-width: 800px)');
+    }),
+  ],
 };
 
 export default config;

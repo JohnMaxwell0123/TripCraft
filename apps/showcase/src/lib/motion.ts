@@ -161,7 +161,7 @@ export function useScrollTypewriter(
   return ref;
 }
 
-/** 滚动驱动的数字计数器：缓存 lastVal，避免高频 DOM 读写；format 可自定义显示（如千分位） */
+/** 滚动驱动的数字计数器：缓存 lastVal，避免高频 DOM 读写；format 可自定义显示（如千分位），easing 默认先快后慢（时间码请传 ease.linear） */
 export function useScrollCounter(
   progress: MotionValue<number>,
   from: number,
@@ -170,13 +170,14 @@ export function useScrollCounter(
   b: number,
   decimals = 0,
   format?: (n: number) => string,
+  easing: Easing = ease.out,
 ) {
   const ref = useRef<HTMLSpanElement>(null);
   const lastVal = useRef('');
   const apply = (v: number) => {
     const el = ref.current;
     if (!el) return;
-    const val = from + (to - from) * ease.out(local(v, a, b));
+    const val = from + (to - from) * easing(local(v, a, b));
     const next = format ? format(val) : val.toFixed(decimals);
     if (next === lastVal.current) return;
     lastVal.current = next;

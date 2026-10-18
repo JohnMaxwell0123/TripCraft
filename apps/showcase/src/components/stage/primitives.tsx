@@ -125,17 +125,19 @@ export function TapCursor({
 /*  头像                                                                        */
 /* -------------------------------------------------------------------------- */
 
-export function Avatar({ name, tone, size = 28, className = '' }: { name: string; tone: 'gold' | 'jade' | 'lapis' | 'ochre'; size?: number; className?: string }) {
+export type AvatarTone = 'gold' | 'jade' | 'lapis' | 'ochre';
+
+export function Avatar({ name, tone, size = 28, className = '' }: { name: string; tone: AvatarTone; size?: number; className?: string }) {
   const bg = {
-    gold: 'bg-gradient-to-br from-gold to-gold-ink',
-    jade: 'bg-gradient-to-br from-jade to-[#0a5d51]',
-    lapis: 'bg-gradient-to-br from-lapis to-lapis-deep',
-    ochre: 'bg-gradient-to-br from-ochre to-[#5e2419]',
+    gold: 'bg-[#8C6A2F]',
+    jade: 'bg-[#0E7A5A]',
+    lapis: 'bg-[#3D5A80]',
+    ochre: 'bg-[#B4441B]',
   }[tone];
   return (
     <span
-      className={`inline-flex shrink-0 select-none items-center justify-center rounded-full font-semibold text-paper ring-2 ring-paper ${bg} ${className}`}
-      style={{ width: size, height: size, fontSize: size * 0.42 }}
+      className={`inline-flex shrink-0 select-none items-center justify-center rounded-full font-semibold text-white ring-2 ring-white ${bg} ${className}`}
+      style={{ width: size, height: size, fontSize: Math.max(12, Math.round(size * 0.46)) }}
     >
       {name.slice(0, 1)}
     </span>
@@ -146,22 +148,64 @@ export function Avatar({ name, tone, size = 28, className = '' }: { name: string
 /*  气泡提示                                                                     */
 /* -------------------------------------------------------------------------- */
 
-export function Toast({ range, children, tone = 'jade' }: { range: readonly [number, number, number, number]; children: ReactNode; tone?: 'jade' | 'gold' }) {
+/** 轻提示：白底发丝边框，一次只说一件事；range 为 [淡入起, 淡入止, 淡出起, 淡出止]（淡出可省略，停留到舞台结束） */
+export function Toast({
+  range,
+  children,
+  tone = 'jade',
+  className = '',
+}: {
+  range: readonly [number, number] | readonly [number, number, number, number];
+  children: ReactNode;
+  tone?: 'jade' | 'neutral';
+  className?: string;
+}) {
   const p = useProgress();
-  const opacity = useFade(p, range[0], range[1], range[2], range[3]);
-  const y = useRange(p, [range[0], range[1], range[2], range[3]], [-14, 0, 0, -10], { rest: 0 });
-  const scale = useRange(p, [range[0], range[1]], [0.94, 1], { easing: ease.back, rest: 1 });
+  const out = range.length === 4;
+  const opacity = useFade(p, range[0], range[1], out ? range[2] : undefined, out ? range[3] : undefined);
+  const y = useRange(p, out ? [range[0], range[1], range[2], range[3]] : [range[0], range[1]], out ? [-8, 0, 0, -6] : [-8, 0], { easing: ease.out, rest: 0 });
+  const visibility = useVisibility(p, range[0], out ? range[3] : 2);
   return (
     <motion.div
       role="status"
-      className="glass-strong flex items-center gap-2 whitespace-nowrap rounded-pill border border-ink/[0.08] px-4 py-1.5 text-xs font-medium text-ink shadow-level-float"
-      style={{ opacity, y, scale }}
+      className={`flex max-w-full items-center gap-2 rounded-[10px] border border-[#E2E2D8] bg-white px-3 py-2 text-[13px] font-medium leading-snug text-[#241E20] shadow-[0_8px_24px_rgba(36,30,32,0.10)] ${className}`}
+      style={{ opacity, y, visibility }}
     >
-      <span className={`flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold text-paper ${tone === 'jade' ? 'bg-jade' : 'bg-gradient-to-br from-gold to-gold-ink'}`}>
+      <span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-white ${tone === 'jade' ? 'bg-[#0E7A5A]' : 'bg-[#241E20]'}`}>
         <CheckIcon className="h-3 w-3" />
       </span>
-      {children}
+      <span className="min-w-0">{children}</span>
     </motion.div>
+  );
+}
+
+/**
+ * 视窗里的一屏：绝对铺满主区，按进度淡入（叠在上一屏之上），完全盖住后上一屏再隐藏，
+ * 交接过程中不会露出空白。range 为 [淡入起, 淡入止] 或 [淡入起, 淡入止, 隐藏起, 隐藏止]。
+ */
+export function Scene({
+  range,
+  label,
+  className = '',
+  children,
+}: {
+  range: readonly [number, number] | readonly [number, number, number, number];
+  label: string;
+  className?: string;
+  children: ReactNode;
+}) {
+  const p = useProgress();
+  const out = range.length === 4;
+  const opacity = useRange(p, range, out ? [0, 1, 1, 0] : [0, 1]);
+  const visibility = useVisibility(p, range[0] - 0.0005, out ? range[3] + 0.0005 : 2);
+  return (
+    <motion.section
+      aria-label={label}
+      className={`absolute inset-0 flex flex-col overflow-hidden bg-white ${className}`}
+      style={{ opacity, visibility }}
+    >
+      {children}
+    </motion.section>
   );
 }
 
