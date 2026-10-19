@@ -324,14 +324,14 @@ export function BentoGrid() {
 
           <div className="lg:col-span-6 rounded-[12px] bg-[#F4F4EE] border border-[#E2E2D8] p-4 text-[#241E20]">
             <div className="flex items-center justify-between gap-2 pb-2 mb-3 border-b border-[#E2E2D8] text-xs">
-              <span className="font-bold text-[#241E20]">线路工作室 · 今天</span>
-              <span className="text-[#625F61]">青甘大环线 8 日</span>
+              <span className="shrink-0 whitespace-nowrap font-bold text-[#241E20]">线路工作室 · 今天</span>
+              <span className="min-w-0 truncate text-[#625F61]">河西走廊 9 日私家团</span>
             </div>
             <ol className="space-y-2 text-sm leading-relaxed">
-              <StudioStep time="09:30" text="导入 Word 行程单，AI 抽取 8 天行程，3 处低置信度字段逐项确认" />
-              <StudioStep time="10:40" text="填写上架信息：起价附成团条件，包含 / 不包含逐项列明" />
-              <StudioStep time="14:00" text="生成交互路书与路线动画，AI 生成内容已标注" />
-              <StudioStep time="16:20" text="收到 3 条咨询；报价 v2 换成温泉酒店，差异自动列出" />
+              <StudioStep time="09:30" text="导入 Word 行程单，AI 抽取逐日行程，2 处低置信度字段逐项确认" />
+              <StudioStep time="10:40" text="填写上架信息：价格规则与可调选项，包含 / 不包含七项逐一列明" />
+              <StudioStep time="14:00" text="一键生成交互路书与 45 秒路线动画，AI 撰写内容已标注" />
+              <StudioStep time="16:20" text="旅客想加一天去阳关玉门关，报价 v2 自动列出差异" />
             </ol>
             <p className="mt-3 pt-2.5 border-t border-[#E2E2D8] text-xs text-[#625F61] leading-relaxed">
               合同与付款由旅客与旅行社直接签订，平台不经手团款。
