@@ -3,56 +3,55 @@
 > **在线展示地址**：[https://johnmaxwell0123.github.io/TripCraft/](https://johnmaxwell0123.github.io/TripCraft/)  
 > **代码目录**：`apps/showcase`  
 > **技术栈基准**：Next.js 16 (App Router, webpack build), React 19, Tailwind CSS 3.4, Framer Motion 12  
-> **设计规范契约**：[Unify GTM Design System](../../.agents/rules/unify-gtm-design-system.md)
+> **设计规范契约**：[Unify GTM 页面美学（2026-10-20 实测复核版）](../../.agents/rules/unify-gtm-design-system.md)
 
 ---
 
 ## 1. 工程定位与核心使命
 
-`apps/showcase` 是 **TripCraft（旅艺）** 面向全球自驾车主、家庭领队、精品地接社、新能源车企伙伴与开发者的**高保真交互演示与数字化交付中枢**。
+`apps/showcase` 是 **TripCraft（旅艺）** 的交互演示站：用两段场景动画讲清产品基线 v3（[PRD-01](../../docs/product/PRD-01-vision-positioning.md)）——旅客用一段对话说清需求，AI 规划自驾路线或匹配持证旅行社的线路，方案进入行程空间、全家多端同步；旅行社在线路工作室上架线路、生成路书、透明报价。访客无需注册登录，滚到哪段就播哪段。
 
-它并非普通的静态营销宣传页，而是一个深度融合了 **Apple Scrollytelling 电影级故事流长镜头** 与 **沙盒微交互** 的数字化体验平台。访客无需注册登录，即可完整感受从一句话自然语言诉求到无人区单文件离线安全舱的全流程推演。
+TripCraft 仍在设计与原型阶段：演示用的是示例数据，「设计场景」一节是 PRD-03 的典型场景，不是用户评价。
 
 ---
 
-## 2. Unify GTM 官方设计系统落地
+## 2. 视觉规范（Unify GTM 实测复核版）
 
-本工程严格践行 Unify GTM 高奢编辑出版物与瑞士精密工程设计范式：
+规范全文与对照表见 [`.agents/rules/unify-gtm-design-system.md`](../../.agents/rules/unify-gtm-design-system.md)（2026-10-20 按 unifygtm.com 的实测计算样式重写）。要点：
 
-### 2.1 核心色彩令牌
-- **画布底色 (Canvas)**：温润纸张乳白 **`#FFFFF9`**，彻底杜绝冷调数字纯白 (`#FFFFFF`) 的生硬感；
-- **模块底色 (Module)**：亚麻浅石灰 **`#F4F4EE`**，用于二级卡片与背景沉降区；
-- **高奢对比色 (Charcoal)**：暖炭黑 **`#241E20`**，用于大屏座舱、代码视窗与重要强调区；
-- **高能强调色 (Flame Accent)**：烈焰橙红 **`#FE3C01`**，精准聚焦关键行动指示、首屏 Aura Glow 与 1px 发丝指示条；
-- **发丝结构边框 (Hairline)**：1px 机械发丝线 **`#E2E2D8`**。
+### 2.1 色彩
+- **画布** `#FFFFF9`；**平铺块** `#F8F7F3`；**炭黑** `#241E20`（文字、主按钮、公告条）。
+- **烈焰橙** `#FE3C01` 只用于：标题里的关键词（纯色无光晕）、1px 竖线与进度条、需要注意的信号（推断项、低置信度、角标）、首屏关键词的贴边投影；12–13px 的橙字用 `#C43200`。
+- **氛围带**：B 端舞台的黄昏、首屏面板的白昼、页脚上方的夜色，都用渐变 + 模糊绘制（`.atmo-*`），不引入外部图片。
 
-### 2.2 严格圆角阶梯红线 (Strict Radius Hierarchy)
-- 🔘 **所有操作按钮与行动链接 (Buttons)**：**严格等于 `rounded-[5px]`**（机械精密圆角，杜绝钝重胶囊感）；
-- 💊 **所有状态胶囊与步进指示器 (Badges, Pills)**：**严格等于 `rounded-full` (100px)**；
-- 🃏 **内容卡片与功能模块 (Cards)**：**严格等于 `rounded-[12px]`**（子框/次级卡片 `rounded-[10px]`）；
-- 🪟 **输入外框与应用模拟视窗 (Windows, Frames)**：**严格等于 `rounded-[16px]`**。
+### 2.2 圆角
+按钮 5px · 胶囊全圆 · 平铺块 4px · 卡片 8px · 产品窗口 18px · 页脚纸面 10px · 纸面压氛围带的收边 28px。
 
-### 2.3 排版体系与字体栈
-- **展示性大标题 (H1, H2)**：高对比度编辑部衬线体（Editorial Serif）配 `-0.035em` 紧凑负字距与 `leading-[1.05]` 紧凑行高；
-- **正文与功能操作 (Body, UI)**：现代几何无衬线字体（Geometric Grotesque Sans: Plus Jakarta Sans / Inter）；
-- **遥测数据与代码 (Telemetry, Code)**：等宽字体（JetBrains Mono / SF Mono / tabular-nums）；
-- **首屏关键词「定下来」**：注入 **Flame Aura Glow** 烈焰微光场多层扩散。
+### 2.3 字体与字号
+- 标题与大数字用衬线 Noto Serif SC（`FontLoader` 挂载后加载，不阻塞首次渲染）；正文与界面用 Plus Jakarta Sans + 系统中文无衬线。
+- 首屏 72 / 56 / 40px，分区标题 44 / 40 / 32px，导语 18–20px，正文 15–16px，按钮与导航 15px，眉题 13px 炭黑；辅助字 ≥ 13px，视窗内 ≥ 12px。
+- 首屏关键词「定下来」：文字仍是炭黑，加 `text-shadow: 1px 0 2px rgba(254,60,1,.65)`（`.u-aura`）。
+
+### 2.4 常用类名（`src/app/globals.css`）
+`.u-eyebrow` · `.u-aura` · `.u-btn` + `.u-btn-primary / -secondary / -light` · `.u-pill` · `.u-card` · `.u-tile` · `.u-link` · `.atmo` + `.atmo-day / -dusk / -night`
 
 ---
 
 ## 3. 核心演示区：两段独立的场景动画
 
-演示区由两段互相独立的舞台组成，详细规格见 [`docs/SHOWCASE-web-design.md` §4](../../docs/SHOWCASE-web-design.md)：
+演示区由两段互相独立的舞台组成，讲的是同一家人、同一条线路，详细规格见 [`docs/SHOWCASE-web-design.md` §4](../../docs/SHOWCASE-web-design.md)：
 
 ```text
-C 端 · 旅客的完整使用流（ScrollyStage，#demo）
+C 端 · 旅客的完整使用流（ScrollyStage，#demo，66 秒）
   01 AI 对话与需求画像 → 02 路径 A · AI 规划自驾 → 03 路径 B · 线路筛选与详情 → 04 行程空间 · 共享与同步
 
-B 端 · 定制师的一天（AgencyStage，#agency）
+B 端 · 定制师的一天（AgencyStage，#agency，61 秒，黄昏氛围带）
   09:30 导入行程单 → 10:40 填写上架信息 → 14:00 生成路书与路线动画 → 16:20 咨询、报价与交付
 ```
 
-- **共用外壳**：`StageShell.tsx`（rAF 时钟、章节导航、播放控制）与 `AppWindow.tsx`（标题栏、侧栏、状态栏、手机标签栏）；章节按时长首尾相接（`acts.ts`），只播放一遍，离开视口时挂起，播放过程 0 React 重渲染。
+- **幕间因果衔接**：每一幕以一次点击结束，下一幕开头就是它的结果（例：03 幕发出咨询后点侧栏「行程空间」，04 幕的行程空间里放着自驾草案与这条咨询）；B 端 16:20 收到的正是 C 端那一家人的咨询。衔接表与数据线见 SHOWCASE §4.0。
+- **共用外壳**：`StageShell.tsx`（rAF 时钟、章节导航、播放控制；`tone="band"` 深色氛围带）与 `AppWindow.tsx`（标题栏与时钟、侧栏、状态栏、手机标签栏；导航项可带角标与演示光标）；章节按时长首尾相接（`acts.ts`），只播放一遍，离开视口时挂起，播放过程 0 React 重渲染。
+- **换章版面不动**：各章说明同时收放、手机说明固定高度，避免浏览器滚动锚定把整页滚走。
 - **时间轴**：C 端 `timeline.ts`、B 端 `agencyTimeline.ts`；关键帧以全局进度书写，调整节奏只改这两份文件。
 - **按视窗宽度排版**：视窗是 `container-name: win` 的容器，内部用 `cq-sm / cq-md / cq-lg` 变体（见 `tailwind.config.ts`）。
 - **减弱动态效果**：`prefers-reduced-motion` 下不自动播放，每章展示一张静帧。
