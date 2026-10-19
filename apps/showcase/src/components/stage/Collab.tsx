@@ -9,12 +9,14 @@ import { Avatar, Reveal, Scene, TapCursor, Toast, useProgress, type AvatarTone }
 import { Badge, PageHeader, btn } from './ui';
 import { NominationCard } from './Recommend';
 import { DeviceSync } from './SyncFinale';
-import { CheckIcon, CopyIcon, LinkIcon, UtensilsIcon } from '@/components/common/Icons';
+import { BuildingIcon, CheckIcon, CopyIcon, LinkIcon, SparklesIcon, UtensilsIcon } from '@/components/common/Icons';
 
 /**
  * 04 幕 · 行程空间：多人共享与多端同步（docs/15、PRD-01 支柱 3）
  *
- * 方案进入行程空间 → 领队用链接邀请家人（加入后可查看与提名，改动由领队确认）→ 阿杰、小雨加入 →
+ * 03 幕末尾点了侧栏「行程空间」，这一屏就是它的结果：02 幕存下的自驾草案与 03 幕刚发出的咨询并排放着
+ * （PRD-01 §2：两条路径都落到行程空间）。等旅行社回复的时候——
+ * 领队用链接邀请家人（加入后可查看与提名，改动由领队确认）→ 阿杰、小雨加入 →
  * 阿杰提名一个地点，AI 评估代价 → 领队确认，D0 晚上插入新安排，版本 v1.0 → v1.1 → 逐台设备同步。
  */
 
@@ -30,7 +32,7 @@ export function TripSpaceScene() {
             <VersionBadge />
           </span>
         }
-        subtitle="河西走廊 9 日 · 自驾 · 领队：我"
+        subtitle="河西走廊 · 两个方案 · 领队：我"
         actions={
           <>
             <Members />
@@ -41,6 +43,7 @@ export function TripSpaceScene() {
 
       <div className="relative flex min-h-0 flex-1">
         <section className="min-w-0 flex-1 overflow-hidden px-4 py-3">
+          <PlanStrip />
           <Itinerary />
         </section>
 
@@ -65,6 +68,32 @@ export function TripSpaceScene() {
         </div>
       </div>
     </Scene>
+  );
+}
+
+/* ── 两个方案：路径 A 存下的草案（当前查看）与路径 B 发出的咨询（等待报价） ── */
+function PlanStrip() {
+  const p = useProgress();
+  const [a, b] = T.planIn;
+  const flash = useRange(p, [a, b, b + sec(1.4)], [0, 1, 0]);
+  return (
+    <div className="mb-3 grid grid-cols-2 gap-2">
+      <div className="min-w-0 rounded-[10px] border border-[#241E20] bg-white px-3 py-2">
+        <p className="flex items-center gap-1.5 truncate text-xs text-[#625F61]">
+          <SparklesIcon className="h-3 w-3 shrink-0 text-[#FE3C01]" />
+          正在看 · AI 规划
+        </p>
+        <p className="mt-0.5 truncate text-[13px] font-medium text-[#241E20]">自驾草案 · 9 天</p>
+      </div>
+      <div className="relative min-w-0 rounded-[10px] border border-[#E2E2D8] bg-white px-3 py-2">
+        <motion.span aria-hidden className="absolute -inset-px rounded-[10px] ring-2 ring-[#FE3C01]/40" style={{ opacity: flash }} />
+        <p className="flex items-center gap-1.5 truncate text-xs text-[#625F61]">
+          <BuildingIcon className="h-3 w-3 shrink-0" />
+          已咨询 · 等待报价
+        </p>
+        <p className="mt-0.5 truncate text-[13px] font-medium text-[#241E20]">长辈友好私家团</p>
+      </div>
+    </div>
   );
 }
 
@@ -201,7 +230,7 @@ function InsertedRow() {
         <motion.span aria-hidden className="absolute inset-0 rounded-[5px] bg-[#FE3C01]/[0.08]" style={{ opacity: highlight }} />
         <span className="relative w-8 shrink-0 text-xs font-semibold tabular-nums text-[#C43200]">20:00</span>
         <UtensilsIcon className="relative h-3.5 w-3.5 shrink-0 text-[#C43200]" />
-        <span className="relative min-w-0 flex-1 truncate text-[#241E20]">正宁路夜市 · 步行 12 分钟</span>
+        <span className="relative min-w-0 flex-1 truncate text-[#241E20]">正宁路夜市</span>
         <span className="relative hidden shrink-0 text-xs text-[#828081] cq-sm:inline">阿杰提名</span>
       </motion.div>
     </motion.li>

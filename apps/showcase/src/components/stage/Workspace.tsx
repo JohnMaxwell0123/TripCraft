@@ -3,18 +3,19 @@
 import { motion } from 'framer-motion';
 import { DAYS, SELF_DRIVE_ROUTE, type DayPlan } from '@/data/trip';
 import { ease, useFade, useRange, useStep, useVisibility } from '@/lib/motion';
-import { T } from './timeline';
-import { Scene, TapCursor, useProgress } from './primitives';
+import { T, sec } from './timeline';
+import { Scene, TapCursor, Toast, useProgress } from './primitives';
 import { PageHeader, btn } from './ui';
 import { TripMap } from './RouteMap';
-import { ArrowRightIcon, BuildingIcon } from '@/components/common/Icons';
+import { ArrowRightIcon, BuildingIcon, CheckIcon } from '@/components/common/Icons';
 
 /**
  * 02 幕 · 路径 A · AI 规划自驾（docs/16 §16.5）
  *
  * 一个页面一个任务：审阅 AI 按需求画像编排的九天自驾草案。
  * 地图上路线按天推进，下方日程同步高亮当天；每天一行写清它怎样照顾到画像（午休、台阶、车高、日落）。
- * 结果页底部出现与旅行社线路的交叉提示（§16.5.2），点击进入路径 B。
+ * 画完先「保存到行程空间」（04 幕里全家看到的就是它），结果页底部随即提示：同一份需求画像也匹配到旅行社线路
+ * （§16.5.2，「带画像进入筛选页」），点击进入路径 B。
  */
 
 const MAP_LABELS = ['lz', 'zy', 'jyg', 'dh', 'yd'] as const;
@@ -31,10 +32,7 @@ export function Workspace() {
         actions={
           <>
             <span className={`${btn.secondary} hidden cq-md:inline-flex`}>换一个方案</span>
-            <span className={btn.primary}>
-              <span className="cq-sm:hidden">保存</span>
-              <span className="hidden cq-sm:inline">保存到行程空间</span>
-            </span>
+            <SaveButton />
           </>
         }
       />
@@ -43,10 +41,28 @@ export function Workspace() {
         <TripMap route={SELF_DRIVE_ROUTE} draw={draw} labels={MAP_LABELS} />
         <span className="absolute right-3 top-3 rounded-full bg-white/90 px-2 py-0.5 text-xs text-[#625F61] ring-1 ring-[#E2E2D8]">全程 1,980 km · 开车 6 天</span>
         <CrossHint />
+        <div className="pointer-events-none absolute inset-x-4 top-3 z-30 flex justify-center">
+          <Toast range={T.savedToast}>已保存到行程空间「西行计划」</Toast>
+        </div>
       </div>
 
       <DayList />
     </Scene>
+  );
+}
+
+/* ── 保存到行程空间：路径 A 的草案落进行程空间（S-C08 第 4 步） ── */
+function SaveButton() {
+  const p = useProgress();
+  const saved = useStep(p, [T.saveClick]) === 1;
+  const press = useRange(p, [T.saveClick - sec(0.12), T.saveClick, T.saveClick + sec(0.12)], [1, 0.95, 1]);
+  return (
+    <motion.span className={`${saved ? `${btn.secondary} text-[#0E7A5A]` : btn.primary} relative`} style={{ scale: press }}>
+      {saved ? <CheckIcon className="h-3.5 w-3.5" /> : null}
+      <span className="cq-sm:hidden">{saved ? '已保存' : '保存'}</span>
+      <span className="hidden cq-sm:inline">{saved ? '已存入行程空间' : '保存到行程空间'}</span>
+      <TapCursor approach={T.saveCursor} clickAt={T.saveClick} hideAt={T.saveClick + sec(0.45)} className="left-1/2 top-4" />
+    </motion.span>
   );
 }
 
@@ -89,27 +105,39 @@ function DayRow({ day, index, active, className = '' }: { day: DayPlan; index: n
   );
 }
 
-/* ── 结果页底部：与旅行社线路的交叉提示 ── */
+/* ── 结果页底部：同一份需求画像也匹配到旅行社线路（§16.5.2 交叉提示，带画像进入筛选页） ── */
 function CrossHint() {
   const p = useProgress();
   const [a, b] = T.crossHint;
   const opacity = useFade(p, a, b);
   const y = useRange(p, [a, b], [12, 0], { easing: ease.out, rest: 0 });
   const visibility = useVisibility(p, a, 2);
-  const press = useRange(p, [T.crossClick - 0.003, T.crossClick, T.crossClick + 0.003], [1, 0.96, 1]);
+  const press = useRange(p, [T.crossClick - sec(0.12), T.crossClick, T.crossClick + sec(0.12)], [1, 0.96, 1]);
+  const opening = useStep(p, [T.crossClick]) === 1;
 
   return (
     <motion.div className="absolute inset-x-3 bottom-3 z-20" style={{ opacity, y, visibility }}>
       <div className="flex items-center gap-3 rounded-[12px] border border-[#E2E2D8] bg-white px-3 py-2 shadow-[0_12px_32px_rgba(36,30,32,0.12)]">
-        <BuildingIcon className="h-4 w-4 shrink-0 text-[#625F61]" />
-        <p className="min-w-0 flex-1 text-[13px] leading-snug text-[#241E20]">
-          有 <b className="font-semibold tabular-nums">5 条</b>旅行社线路与这份方案相似
-          <span className="hidden text-[#625F61] cq-sm:inline">，最高匹配 91%</span>
-        </p>
+        <BuildingIcon className="hidden h-4 w-4 shrink-0 text-[#625F61] cq-sm:block" />
+        <div className="min-w-0 flex-1">
+          <p className="text-[13px] leading-snug text-[#241E20]">
+            同一份需求画像，也匹配到 <b className="font-semibold tabular-nums">23 条</b>旅行社线路
+          </p>
+          <p className="mt-0.5 hidden truncate text-xs text-[#625F61] cq-sm:block">其中 5 条与这份自驾草案相似 · 最高匹配 91%</p>
+        </div>
         <motion.span className={`${btn.secondary} relative`} style={{ scale: press }}>
-          查看线路
-          <ArrowRightIcon className="h-3.5 w-3.5" />
-          <TapCursor approach={T.crossCursor} clickAt={T.crossClick} hideAt={T.filterScene[1]} className="left-8 top-4" />
+          {opening ? (
+            <>
+              <span className="h-3 w-3 animate-spin rounded-full border-2 border-[#241E20] border-t-transparent" />
+              套用画像…
+            </>
+          ) : (
+            <>
+              看旅行社线路
+              <ArrowRightIcon className="h-3.5 w-3.5" />
+            </>
+          )}
+          <TapCursor approach={T.crossCursor} clickAt={T.crossClick} hideAt={T.filterScene[1]} className="left-1/2 top-4" />
         </motion.span>
       </div>
     </motion.div>
