@@ -475,7 +475,7 @@ function FilterDrawer() {
       style={{ y: yPct, visibility }}
     >
       <span aria-hidden className="mx-auto mt-2 block h-1 w-9 shrink-0 rounded-full bg-[#E2E2D8]" />
-      <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden px-4 pt-3">
+      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden px-4 pt-1">
         <FilterPanel compact />
       </div>
       <div className="shrink-0 border-t border-[#EEEDE7] p-3">

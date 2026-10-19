@@ -79,13 +79,13 @@ export function Navbar() {
     <div className="fixed inset-x-0 top-0 z-50 flex flex-col">
       {/* 1. Unify Top Announcement Banner */}
       <div className="w-full bg-[#241E20] text-[#FFFFF9] text-xs py-1.5 px-4 text-center font-medium flex items-center justify-center gap-2 select-none">
-        <span className="opacity-90">TripCraft 2.0 · 零构建交付与智能座舱协同系统正式发布</span>
+        <span className="opacity-90">一段对话说清需求：AI 规划自驾，或匹配持证旅行社线路</span>
         <button
           type="button"
           onClick={() => scrollToSection('demo')}
           className="inline-flex items-center gap-1 font-semibold underline underline-offset-2 hover:text-[#FE3C01] transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FE3C01]"
         >
-          <span>查看视差演进</span>
+          <span>看演示</span>
           <span aria-hidden="true" className="text-xs">→</span>
         </button>
       </div>
@@ -155,32 +155,32 @@ export function Navbar() {
                       onClick={() => scrollToSection('demo')}
                       className="flex flex-col items-start p-2 rounded hover:bg-[#241E20]/[0.04] transition-colors text-left"
                     >
-                      <span className="text-xs font-bold text-[#241E20]">AI 倾诉对话智能体</span>
-                      <span className="text-[11px] text-[#6E6A67]">启发式多轮诉求提取与日程自动编排</span>
+                      <span className="text-xs font-bold text-[#241E20]">AI 对话与需求画像</span>
+                      <span className="text-xs text-[#6E6A67]">平台模型或自带 API，追问出一份需求画像</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => scrollToSection('demo')}
                       className="flex flex-col items-start p-2 rounded hover:bg-[#241E20]/[0.04] transition-colors text-left"
                     >
-                      <span className="text-xs font-bold text-[#241E20]">微信全团愿望池</span>
-                      <span className="text-[11px] text-[#6E6A67]">免登扫码加入，权重博弈与意图聚合</span>
+                      <span className="text-xs font-bold text-[#241E20]">两条规划路径</span>
+                      <span className="text-xs text-[#6E6A67]">AI 规划自驾，或匹配持证旅行社线路</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => scrollToSection('demo')}
                       className="flex flex-col items-start p-2 rounded hover:bg-[#241E20]/[0.04] transition-colors text-left"
                     >
-                      <span className="text-xs font-bold text-[#241E20]">2.28m 车高限高守护</span>
-                      <span className="text-[11px] text-[#6E6A67]">MPV/SUV 加装车顶箱地库限高智能拦截</span>
+                      <span className="text-xs font-bold text-[#241E20]">行程共享与多端同步</span>
+                      <span className="text-xs text-[#6E6A67]">家人提名、领队确认，手机平板电脑同步</span>
                     </button>
                     <button
                       type="button"
-                      onClick={() => scrollToSection('demo')}
+                      onClick={() => scrollToSection('agency')}
                       className="flex flex-col items-start p-2 rounded hover:bg-[#241E20]/[0.04] transition-colors text-left"
                     >
-                      <span className="text-xs font-bold text-[#241E20]">离线单文件安全舱</span>
-                      <span className="text-[11px] text-[#6E6A67]">双击秒开自包含 HTML，无人区断网保活</span>
+                      <span className="text-xs font-bold text-[#241E20]">旅行社线路工作室</span>
+                      <span className="text-xs text-[#6E6A67]">导入行程单、AI 路书与透明报价</span>
                     </button>
                   </div>
                 </div>
@@ -189,10 +189,10 @@ export function Navbar() {
 
             <button
               type="button"
-              onClick={() => scrollToSection('demo')}
+              onClick={() => scrollToSection('agency')}
               className="inline-flex min-h-[40px] items-center px-3 py-1.5 rounded text-sm text-[#241E20]/80 hover:text-[#241E20] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01]"
             >
-              车道级领航
+              线路工作室
             </button>
             <button
               type="button"
@@ -260,8 +260,16 @@ export function Navbar() {
               onClick={() => scrollToSection('demo')}
               className="flex min-h-[40px] items-center justify-between rounded px-3 py-2 text-sm font-medium text-[#241E20] hover:bg-[#241E20]/[0.04]"
             >
-              <span>故事流视差演进</span>
-              <span className="text-xs text-[#FE3C01] font-mono">01~05</span>
+              <span>旅客使用流程</span>
+              <span className="text-xs text-[#FE3C01] font-mono">01–04</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection('agency')}
+              className="flex min-h-[40px] items-center justify-between rounded px-3 py-2 text-sm font-medium text-[#241E20] hover:bg-[#241E20]/[0.04]"
+            >
+              <span>旅行社线路工作室</span>
+              <span className="text-xs text-[#6E6A67]">定制师的一天</span>
             </button>
             <button
               type="button"
