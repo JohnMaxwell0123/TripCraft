@@ -1,57 +1,56 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { ease, useFade, useRange, useVisibility } from '@/lib/motion';
+import type { ComponentType } from 'react';
+import { useStep } from '@/lib/motion';
 import { T } from './timeline';
 import { useProgress } from './primitives';
-import { CheckIcon, MonitorIcon, SmartphoneIcon, TabletIcon } from '@/components/common/Icons';
+import { CheckIcon, MonitorIcon, SmartphoneIcon, TabletIcon, type IconProps } from '@/components/common/Icons';
 
 /**
- * 05 幕收束：领队确认后的新版本同步到同行人的每一台设备（PRD-01 支柱 3）；
- * 离线可读、单文件导出与车机投递作为支撑能力随行，不再单独成幕。
+ * 04 幕收束 · 多端同步（PRD-01 支柱 3）
+ *
+ * 领队确认后的新版本逐台同步到同行人的设备：每一行是谁的哪台设备、现在是哪个版本。
+ * 离线可读作为支撑能力，用一句状态说明交代，不单独成幕。
  */
-const DEVICES = [
-  { Icon: SmartphoneIcon, label: '手机' },
-  { Icon: TabletIcon, label: '平板' },
-  { Icon: MonitorIcon, label: '电脑' },
+
+const DEVICES: { Icon: ComponentType<IconProps>; name: string; note?: string }[] = [
+  { Icon: MonitorIcon, name: '我的电脑', note: '当前设备' },
+  { Icon: SmartphoneIcon, name: '阿杰的手机' },
+  { Icon: TabletIcon, name: '小雨的平板' },
 ];
 
-const SUPPORT = ['离线可读', '单文件导出', '车机投递'];
-
-export function SyncFinale() {
+export function DeviceSync() {
   const p = useProgress();
-  const [a, b] = T.syncStrip;
-  const opacity = useFade(p, a, b);
-  const y = useRange(p, [a, b], [16, 0], { easing: ease.out, rest: 0 });
-  const visibility = useVisibility(p, a, 1);
-
+  const synced = useStep(p, T.syncRows);
   return (
-    <motion.div
-      role="status"
-      className="pointer-events-none absolute inset-x-2 bottom-2 z-[45] flex justify-center sm:bottom-3"
-      style={{ opacity, y, visibility }}
-    >
-      <div className="flex max-w-full flex-wrap items-center justify-center gap-x-3 gap-y-1.5 rounded-[12px] border border-[#E2E2D8] bg-[#FFFFF9] px-3 py-2 text-xs shadow-[0_16px_40px_rgba(36,30,32,0.14)]">
-        <span className="whitespace-nowrap text-[13px] font-semibold text-[#241E20]">v1.1 已同步到全团 3 人的设备</span>
-        <span className="flex items-center gap-1.5">
-          {DEVICES.map(({ Icon, label }) => (
-            <span key={label} className="inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-[#E2E2D8] bg-white px-2 py-0.5 text-[#241E20]">
-              <Icon className="h-3 w-3 text-[#625F61]" />
-              {label}
-              <CheckIcon className="h-3 w-3 text-[#0E8A5F]" />
-            </span>
-          ))}
-        </span>
-        <span className="hidden h-4 w-px bg-[#E2E2D8] sm:block" />
-        <span className="flex flex-wrap items-center gap-1.5 text-[#828081]">
-          <span className="whitespace-nowrap">支撑能力</span>
-          {SUPPORT.map((s) => (
-            <span key={s} className="whitespace-nowrap rounded-full border border-dashed border-[#E2E2D8] px-2 py-0.5 text-[#625F61]">
-              {s}
-            </span>
-          ))}
-        </span>
-      </div>
-    </motion.div>
+    <div>
+      <p className="text-[13px] font-semibold text-[#241E20]">同步</p>
+      <ul className="mt-2 flex flex-col">
+        {DEVICES.map((dev, i) => {
+          const done = synced > i;
+          return (
+            <li key={dev.name} className="flex h-9 items-center gap-2 border-b border-[#F0EFE9] last:border-b-0">
+              <dev.Icon className="h-4 w-4 shrink-0 text-[#828081]" />
+              <span className="min-w-0 flex-1 truncate text-[13px] text-[#241E20]">
+                {dev.name}
+                {dev.note ? <span className="text-xs text-[#828081]"> · {dev.note}</span> : null}
+              </span>
+              {done ? (
+                <span className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-[#0E7A5A]">
+                  <CheckIcon className="h-3 w-3" />
+                  v1.1
+                </span>
+              ) : (
+                <span className="inline-flex shrink-0 items-center gap-1.5 text-xs text-[#828081]">
+                  <span className="h-2.5 w-2.5 animate-spin rounded-full border-[1.5px] border-[#C9C7BF] border-t-transparent" />
+                  同步中
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+      <p className="mt-2 text-xs text-[#828081] cq-md:hidden">已同步的行程在无信号路段也能打开</p>
+    </div>
   );
 }

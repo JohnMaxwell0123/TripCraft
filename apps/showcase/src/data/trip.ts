@@ -29,20 +29,24 @@ export interface DayPlan {
   tag: string;
   date: string;
   title: string;
+  /** 这一天怎样照顾到需求画像（午休、台阶、车高、日落） */
   meta: string;
+  /** 当天车程；不开车的日子留空 */
+  drive?: string;
   badge?: { tone: Tone; text: string };
 }
 
+/** 路径 A 的自驾草案（全家 5 口 · 腾势 D9 带车顶箱，总高 2.28 m） */
 export const DAYS: DayPlan[] = [
-  { tag: 'D0', date: '09/24', title: '兰州 · 丝路集结夜', meta: '14:30 落地中川 · 19:15 入住黄河边' },
-  { tag: 'D1', date: '09/25', title: '兰州 → 张掖 · 翻越乌鞘岭', meta: '505 km · 双司机轮换', badge: { tone: 'amber', text: '超 350km · 领队已确认' } },
-  { tag: 'D2', date: '09/26', title: '七彩丹霞 → 嘉峪关', meta: '225 km · 丹霞 17:40 最佳光线', badge: { tone: 'amber', text: '景区换乘环保车' } },
-  { tag: 'D3', date: '09/27', title: '嘉峪关 → 敦煌', meta: '瓜州 13:00 午休 · 宝宝睡个好觉' },
-  { tag: 'D4', date: '09/28', title: '莫高窟 · 无障碍慢游', meta: '接驳车 · 4 个平层大窟', badge: { tone: 'jade', text: '无台阶路线' } },
-  { tag: 'D5', date: '09/29', title: '鸣沙山 · 月牙泉', meta: '19:30 日落窗口 · 电瓶车上山' },
-  { tag: 'D6', date: '09/30', title: '阳关 · 玉门关', meta: '大漠孤烟 · 午后避暑' },
-  { tag: 'D7', date: '10/01', title: '雅丹魔鬼城 · 星空', meta: '日落后原路返回 · 不夜行' },
-  { tag: 'D8', date: '10/02', title: '敦煌 ➔ 航班返程', meta: '11:20 起飞 · 行李提前装车' },
+  { tag: 'D0', date: '09/24', title: '兰州 · 落地取车', meta: '酒店地面车位 · 避开 2.0 m 限高地库' },
+  { tag: 'D1', date: '09/25', title: '兰州 → 张掖', meta: '翻越乌鞘岭 · 车上通过最高点', drive: '6 h' },
+  { tag: 'D2', date: '09/26', title: '七彩丹霞 → 嘉峪关', meta: '景区环保车 · 17:40 看丹霞', drive: '3 h' },
+  { tag: 'D3', date: '09/27', title: '嘉峪关 → 敦煌', meta: '13:00 瓜州服务区午休', drive: '4.5 h' },
+  { tag: 'D4', date: '09/28', title: '莫高窟', meta: '无障碍接驳 · 只看平层窟' },
+  { tag: 'D5', date: '09/29', title: '鸣沙山 · 月牙泉', meta: '电瓶车上山 · 19:30 日落' },
+  { tag: 'D6', date: '09/30', title: '阳关 · 玉门关', meta: '午后回酒店休息', drive: '2.5 h' },
+  { tag: 'D7', date: '10/01', title: '雅丹', meta: '日落后原路返回，不夜行', drive: '3 h' },
+  { tag: 'D8', date: '10/02', title: '敦煌还车 · 返程', meta: '11:20 航班' },
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -127,8 +131,7 @@ export interface Point2D {
 }
 
 /** 预计算三次贝塞尔路线的均匀弧长查表矩阵（256采样），0 运行时 DOM 几何读取 */
-export function buildRouteLUT(samples = 256): Point2D[] {
-  const points = PROJECTED.map((s) => [s.x, s.y] as const);
+export function buildRouteLUT(samples = 256, points: ReadonlyArray<readonly [number, number]> = PROJECTED.map((s) => [s.x, s.y] as const)): Point2D[] {
   if (points.length < 2) return [];
   const tension = 0.5;
 
@@ -207,6 +210,64 @@ export function buildRouteLUT(samples = 256): Point2D[] {
 }
 
 export const ROUTE_LUT: ReadonlyArray<Point2D> = buildRouteLUT(256);
+
+/* -------------------------------------------------------------------------- */
+/*  一条路线 = 若干节点：路径、弧长查表与每个节点在弧长上的位置                    */
+/* -------------------------------------------------------------------------- */
+
+export interface RouteGeometry {
+  stops: ReadonlyArray<ProjectedStop & { arc: number }>;
+  d: string;
+  lut: ReadonlyArray<Point2D>;
+}
+
+/**
+ * 按节点 id 组装一条路线。arc 是节点在曲线弧长上的位置（0~1）：
+ * 路线用 pathLength 按弧长描绘，节点按 arc 落地，图钉与线头严丝合缝。
+ */
+export function routeFor(ids: readonly string[]): RouteGeometry {
+  const picked = ids.map((id) => {
+    const s = PROJECTED.find((p) => p.id === id);
+    if (!s) throw new Error(`未知节点：${id}`);
+    return s;
+  });
+  const points = picked.map((s) => [s.x, s.y] as const);
+  const lut = buildRouteLUT(256, points);
+  let from = 0;
+  const stops = picked.map((s) => {
+    // Catmull-Rom 曲线穿过每个节点：沿查表向前找最近的采样点即为该节点的弧长位置
+    let best = from;
+    let bestDist = Infinity;
+    for (let i = from; i < lut.length; i++) {
+      const dist = Math.hypot(lut[i].x - s.x, lut[i].y - s.y);
+      if (dist < bestDist) {
+        bestDist = dist;
+        best = i;
+      }
+    }
+    from = best;
+    return { ...s, arc: best / (lut.length - 1) };
+  });
+  return { stops, d: smoothPath(points), lut };
+}
+
+/** 弧长查表上取点（t ∈ 0~1） */
+export function pointOnRoute(lut: ReadonlyArray<Point2D>, t: number): Point2D {
+  const idx = Math.max(0, Math.min(1, t)) * (lut.length - 1);
+  const i0 = Math.floor(idx);
+  const i1 = Math.min(i0 + 1, lut.length - 1);
+  const f = idx - i0;
+  return { x: lut[i0].x + (lut[i1].x - lut[i0].x) * f, y: lut[i0].y + (lut[i1].y - lut[i0].y) * f };
+}
+
+/** 路径 A：AI 规划的自驾路线（含阳关、玉门关、雅丹） */
+export const SELF_DRIVE_ROUTE = routeFor(STOPS.map((s) => s.id));
+
+/** 旅行社线路「河西走廊 9 日 · 长辈友好私家团」（阳关、玉门关是可加购的一天） */
+export const AGENCY_ROUTE = routeFor(['lz', 'wsl', 'ww', 'zy', 'dx', 'jyg', 'gz', 'dh', 'yd', 'dh2']);
+
+/** 地图视框：收拢全部路线节点并留出标签边距 */
+export const MAP_VIEW = { x: 10, y: 20, w: 960, h: 560 } as const;
 
 /* -------------------------------------------------------------------------- */
 /*  地形意象（手绘近似，非测绘数据）                                              */
