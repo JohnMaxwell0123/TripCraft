@@ -1,596 +1,240 @@
 'use client';
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ZapIcon, ShieldIcon, CheckIcon } from '@/components/common/Icons';
+import { useState, type KeyboardEvent } from 'react';
+
+/**
+ * 技术底座（产品基线 v3 的四条工程主张）
+ *
+ * 数字与代码都来自仓库本身：spec/ 下的 6 份 JSON Schema、`npm run check` 的 4 道门禁、10 份 ADR、
+ * PRD-03 / PRD-04 的 20 个场景与 76 项功能。代码窗口里是契约文件的节选（删去了部分描述），不是示意代码。
+ * 版式学 Unify：数字卡用衬线常规字重的大数字；四条主张用左侧选项卡（进度条在留白里）+ 右侧炭黑代码窗口。
+ * 本段以圆角纸面压在页脚的氛围带上（rounded-b + relative z-10）。
+ */
+
+const REPO = 'https://github.com/JohnMaxwell0123/TripCraft';
+
+const NUMBERS = [
+  { value: '6', label: '份 JSON Schema 契约', source: 'spec/*.schema.json' },
+  { value: '4', label: '道 CI 门禁', source: '契约 · 链接 · BR-025 · 追溯' },
+  { value: '10', label: '份架构决策记录', source: 'ADR-001 – ADR-010' },
+  { value: '20 / 76', label: '个场景 / 项功能，双向追溯', source: 'PRD-03 · PRD-04 · DLV-03' },
+];
 
 interface Pillar {
   id: string;
-  tag: string;
-  number: string;
   title: string;
-  subTitle: string;
-  quote: string;
-  summary: string;
-  highlights: { label: string; desc: string }[];
-  contractBadge: string;
-  shortTitle: string;
-  codeSnippet: {
-    filename: string;
-    language: string;
-    code: string;
-  };
-  interactiveDemoType: 'failover' | 'dsl' | 'guardrails' | 'compiler';
+  desc: string;
+  file: string;
+  href: string;
+  code: string;
 }
 
 const PILLARS: Pillar[] = [
   {
-    id: 'local-first',
-    tag: '数据主权 · 极端弹性',
-    number: '01',
-    title: '本地优先与极端网络弹性',
-    shortTitle: '本地优先架构',
-    subTitle: '极端网络弹性与数据主权闭环',
-    quote: '“断网绝非异常，而是荒野自驾探索中的物理常态。”',
-    summary:
-      '日常多端云协同极速同频；行程轨迹、证件与照片等数据主权端侧受控。无网弱网下自动无感切入离线保活，网络恢复时经由增量补丁同步，无人区从容兜底。',
-    highlights: [
-      {
-        label: '三级容灾降级管道',
-        desc: '在线地图服务超时 (>3s) 瞬间降级为离线矢量 SVG 底图；若矢量图异常则退化至纯时序拓扑卡片，彻底消灭白屏。',
-      },
-      {
-        label: '数据隐私端侧闭环',
-        desc: '敏感信息不上云，所有点位聚类、高程积分与耗时计算完全消耗客户端本地算力。',
-      },
-      {
-        label: '增量时钟协同合并',
-        desc: '基于向量时钟与事务流，团队成员离线改动在线后自动无损合流。',
-      },
-    ],
-    contractBadge: '架构决策 · 本地存储与三级降级管道',
-    codeSnippet: {
-      filename: 'src/lib/resilience/failover-pipeline.ts',
-      language: 'typescript',
-      code: `// 三级地图降级管道状态机：永远杜绝白屏
-export async function resolveMapLayer(ctx: RenderContext): Promise<MapRenderer> {
-  try {
-    const tileSDK = await timeout(loadOnlineMapSDK(ctx.vendor), 3000);
-    return new VectorTileRenderer(tileSDK);
-  } catch (err) {
-    console.warn('[Resilience] 在线瓦片加载超时，降级至 Level 2 离线矢量 SVG');
-    if (ctx.offlineSvgGeometry) {
-      return new OfflineSvgRenderer(ctx.offlineSvgGeometry);
-    }
-    console.warn('[Resilience] 触发 Level 3 极简时序拓扑卡片渲染');
-    return new MinimalTopologyCardRenderer(ctx.tripNodes);
-  }
-}`,
-    },
-    interactiveDemoType: 'failover',
-  },
-  {
-    id: 'dsl-truth',
-    tag: '形式契约 · 语法中枢',
-    number: '02',
-    title: '可执行结构化契约作为唯一真相源',
-    shortTitle: '可执行契约语法',
-    subTitle: '严格形式化约束与唯一数据真相源',
-    quote: '“路书不是凌乱的图文备忘，而是一份结构严谨、机器可执行的自驾程序。”',
-    summary:
-      '所有界面交互、智能体决策输出与协作补丁，全部映射至自驾抽象语法树，并通过严格契约校验。单一数据源编译驱动网页、车机与 A5 纸质手册全端表现。',
-    highlights: [
-      {
-        label: '严格规范定义约束',
-        desc: '经纬度坐标、车型尺寸、道路坡度、高程阶梯、餐饮补给均有形式化元数据定义。',
-      },
-      {
-        label: '不可变补丁事务流',
-        desc: '每一次微调均产生确定性补丁事务，天然支持版本无损回滚、冲突比对与协同存证。',
-      },
-      {
-        label: '全端同源编译驱动',
-        desc: '同一份结构化数据，既是前端动态画布的源动力，也是导出车机深链与纸质印刷排版的核心。',
-      },
-    ],
-    contractBadge: '核心契约 · 增量事务规范',
-    codeSnippet: {
-      filename: 'spec/node.schema.json',
-      language: 'json',
-      code: `{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "TripNode",
-  "type": "object",
-  "required": ["id", "type", "geo", "schedule", "vehicle_constraints"],
-  "properties": {
-    "geo": {
-      "type": "object",
-      "required": ["lat", "lng", "altitude_m"],
-      "properties": {
-        "lat": { "type": "number", "minimum": -90, "maximum": 90 },
-        "lng": { "type": "number", "minimum": -180, "maximum": 180 },
-        "altitude_m": { "type": "number" }
-      }
-    },
-    "vehicle_constraints": {
-      "type": "object",
-      "properties": {
-        "max_height_m": { "type": "number" },
-        "parking_type": { "enum": ["underground", "ground_open", "none"] }
-      }
-    }
-  }
-}`,
-    },
-    interactiveDemoType: 'dsl',
-  },
-  {
-    id: 'ai-guardrails',
-    tag: '客观刚性 · 拒绝幻觉',
-    number: '03',
-    title: '双轨防幻觉与物理安全断言',
-    shortTitle: '双轨物理防御引擎',
-    subTitle: '物理规则刚性防御与事实分离',
-    quote: '“客观物理规律是刚性红线，智能体是懂人性与美学的同路副驾。”',
-    summary:
-      '客观交通限制（车型限高、山路限速、刹车热衰减、特窟闭馆）标记为刚性「事实」；优化策略标记为「建议」。模型输出必须通过 25 道物理规则防御墙硬校验。',
-    highlights: [
-      {
-        label: '事实与建议形式化分离',
-        desc: '严禁模型擅自篡改既定行程。系统绝不伪造虚假通行能力，用户永远保留最终裁决权。',
-      },
-      {
-        label: '25 道物理规则防御墙',
-        desc: '长下坡制动热衰减警告、高反急剧爬升限速、地库限高 2.1m 拦截、无人区加油站极限间距刚性断言。',
-      },
-      {
-        label: '启发式对谈与抉择引导',
-        desc: '遇到路线冲突时，系统绝不越俎代庖，而是通过权衡利弊选项引导领队做出清晰抉择。',
-      },
-    ],
-    contractBadge: '风控决策 · 物理规则防御引擎',
-    codeSnippet: {
-      filename: 'src/lib/guardrails/physics-assert.ts',
-      language: 'typescript',
-      code: `// 物理规则硬拦截：车型限高与地库断言
-export function assertVehicleClearance(vehicle: VehicleMeta, poi: PoiNode): AssertionResult {
-  if (vehicle.height_m > 2.0 && poi.parking_type === 'underground') {
-    return {
-      passed: false,
-      code: 'CLEARANCE_VIOLATION',
-      severity: 'FATAL_OVERRIDE',
-      fact: \`车辆加装车顶箱后总高 \${vehicle.height_m}m 超过该老城区地库限高 2.0m\`,
-      suggestion: '已强制规划为酒店地面专用车位，并为全家生成慢步导引 950m（约12分钟）',
-      fallbackParking: findNearbyGroundParking(poi.geo)
-    };
-  }
-  return { passed: true };
-}`,
-    },
-    interactiveDemoType: 'guardrails',
-  },
-  {
-    id: 'zero-build-compiler',
-    tag: '容灾秒开 · 座舱协议',
-    number: '04',
-    title: '全要素自包含容灾编译器与座舱互联',
-    shortTitle: '自包含容灾编译',
-    subTitle: '单文件离线秒开与车机协议',
-    quote: '“随处可开，零依赖安装，做一件真正能带走的数字化艺术品。”',
-    summary:
-      '自研单文件编译器将 9 天完整路书、内联离线矢量图、子集化中文字体与轻量运行时封装为出游容灾舱。配合极简 Tier 0 座舱深链协议，零 SDK 前装准入直接唤醒车机投屏。',
-    highlights: [
-      {
-        label: '出游容灾舱双击秒开',
-        desc: '全要素自包含封装，0 运行时安装依赖。无论戈壁滩还是深山无信号区，随时随地双击瞬时呈现，无人区从容兜底。',
-      },
-      {
-        label: 'Tier 0 车机极简唤醒',
-        desc: '无需漫长的车企前装认证流程，通过标准深链（URL Scheme / Geo URI）将全天途经点集群一键发往车机高德/百度。',
-      },
-      {
-        label: '纸电双模 A5 印刷支持',
-        desc: '遵循 CSS Paged Media 规范，内联打印样式表，一键输出符合自驾装订标准的 A5 实体路书折页。',
-      },
-    ],
-    contractBadge: 'ADR-005 / ADR-006 · 单文件编译管线',
-    codeSnippet: {
-      filename: 'tools/compiler/pack-single-file.ts',
-      language: 'typescript',
-      code: `// 单文件编译器核心管线：全要素自包含离线封装
-export async function compileSingleFile(tripDsl: TripDSL): Promise<string> {
-  const [subsetFont, inlinedSvgMap, runtimeJs] = await Promise.all([
-    subsetChineseFonts(tripDsl.allTexts),
-    renderVectorMapSvg(tripDsl.waypoints),
-    bundleMinimalRuntime()
-  ]);
+    id: 'profile',
+    title: '需求画像是两条路径的共同输入',
+    desc: '对话之后只留下一份带来源的画像：每个特征点标明是用户明说、模型推断还是行业默认。推断项没确认，匹配结果会提示「含推断项」；画像里不存对话全文和 API Key。',
+    file: 'spec/profile.schema.json',
+    href: `${REPO}/blob/main/spec/profile.schema.json`,
+    code: `"source": {
+  "type": "string",
+  "enum": ["stated", "inferred", "default"],
+  "description": "stated = 用户明说；inferred = 模型推断（画像回显卡上带「推断 · 请确认」标记）；default = 行业默认。"
+},
 
-  return \`<!DOCTYPE html>
-<html>
-<head>
-  <style>\${subsetFont.css}\${inlinedStyles}</style>
-</head>
-<body>
-  <div id="trip-map">\${inlinedSvgMap}</div>
-  <script>window.__TRIP_AST__ = \${JSON.stringify(tripDsl)};\${runtimeJs}</script>
-</body>
-</html>\`;
+"sourced": {
+  "type": "object",
+  "required": ["source"],
+  "properties": {
+    "source": { "$ref": "#/$defs/source" },
+    "confirmed": { "type": "boolean", "default": false },
+    "pending": { "type": "boolean", "default": false },
+    "evidence": { "type": "string", "maxLength": 300 }
+  }
 }`,
-    },
-    interactiveDemoType: 'compiler',
+  },
+  {
+    id: 'listing',
+    title: '价格与素材透明，写进上架契约',
+    desc: '起价必须写明成立条件；「适合长辈」这类标签必须附一句可核验的说明；每张图片标明实拍、示意还是 AI 生成。上架契约里没有成本价字段。',
+    file: 'spec/listing.schema.json',
+    href: `${REPO}/blob/main/spec/listing.schema.json`,
+    code: `"from": {
+  "required": ["amountCents", "conditions"],
+  "properties": {
+    "conditions": { "type": "array", "minItems": 1, "maxItems": 6,
+      "description": "起价成立的条件，如「6 人成团」「舒适型住宿」「7 月平日」" }
+  }
+},
+
+"audienceFitTag": {
+  "required": ["tag", "explanation"],
+  "properties": {
+    "tag": { "enum": ["senior_friendly", "child_friendly", "accessible", "pet_friendly"] },
+    "explanation": { "type": "string", "minLength": 6, "maxLength": 200 }
+  }
+},
+
+"capture": { "enum": ["real_shot", "illustrative", "ai_generated"] }`,
+  },
+  {
+    id: 'match',
+    title: '匹配度可复现，付费不进分数',
+    desc: '先判资格再算分：资质、团期、身体约束不满足的线路不展示；其余按维度加权，每一项附一句理由。评分是纯函数，规则版本随结果保存；推广位单独标注「广告」。',
+    file: 'ADR-010 · 建议决策（摘录）',
+    href: `${REPO}/blob/main/docs/architecture/adr/ADR-010-route-matching-scoring.md`,
+    code: `score(profile, listing, weights, rulesVersion)   # 纯函数，可复现
+
+默认权重
+  目的地覆盖      25%
+  预算贴合        20%
+  天数与日期      15%
+  节奏与体力      15%
+  人群适配        10%
+  主题偏好        10%
+  住宿与服务       5%
+
+不进入匹配度：旅行社评分 · 推广付费 · 资料完整度
+展示：round(score × 100)，上限 99；默认阈值 60`,
+  },
+  {
+    id: 'sync',
+    title: '版本只增不改，冲突交给人',
+    desc: '行程以递增的修订号为准；离线时的改动打包成增量补丁，联网后基于同一版本合并。冲突不交给算法投票，由领队拍板。报价也一样：只新增版本，自动列出差异。',
+    file: 'spec/patch.schema.json',
+    href: `${REPO}/blob/main/spec/patch.schema.json`,
+    code: `"required": ["patchVersion", "tripId", "baseRevision", "ops", "issuedAt"],
+
+"tripId": {
+  "type": "string",
+  "pattern": "^trip_[0-9]{8}_[a-z0-9][a-z0-9-]{1,63}$",
+  "description": "目标行程 ID。不匹配则拒绝应用"
+},
+
+"baseRevision": {
+  "type": "integer",
+  "minimum": 0,
+  "description": "若本地 revision < baseRevision 则拒绝（存在信息缺口）；若 > baseRevision 则可尝试应用但需提示冲突"
+}`,
   },
 ];
 
 export function TechFoundation() {
-  const [activePillar, setActivePillar] = useState<Pillar>(PILLARS[0]);
+  const [active, setActive] = useState(0);
+  const [copy, setCopy] = useState<'idle' | 'done' | 'failed'>('idle');
+  const pillar = PILLARS[active];
 
-  // Interactive micro-demos state
-  const [failoverLevel, setFailoverLevel] = useState<1 | 2 | 3>(1);
-  const [guardrailTested, setGuardrailTested] = useState(false);
-  const [copiedCode, setCopiedCode] = useState(false);
+  const select = (i: number) => {
+    setActive(i);
+    setCopy('idle');
+  };
 
-  const handleCopyCode = () => {
-    navigator.clipboard.writeText(activePillar.codeSnippet.code);
-    setCopiedCode(true);
-    setTimeout(() => setCopiedCode(false), 2000);
+  const onKeyDown = (e: KeyboardEvent<HTMLButtonElement>, i: number) => {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    e.preventDefault();
+    const next = e.key === 'ArrowDown' ? Math.min(PILLARS.length - 1, i + 1) : Math.max(0, i - 1);
+    select(next);
+    document.getElementById(`pillar-tab-${PILLARS[next].id}`)?.focus();
+  };
+
+  const copyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(pillar.code);
+      setCopy('done');
+    } catch (err) {
+      console.warn('[TechFoundation] 复制到剪贴板失败', err);
+      setCopy('failed');
+    }
   };
 
   return (
-    <section id="foundation" className="relative overflow-hidden py-12 sm:py-16 md:py-24 bg-[#FFFFF9] border-t border-[#E2E2D8] scroll-mt-20 md:scroll-mt-24">
-      {/* Decorative ambient background glows */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute top-12 left-1/4 h-96 w-96 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(254,60,1,0.04),transparent_70%)] blur-3xl"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-12 right-1/4 h-96 w-96 translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(36,30,32,0.03),transparent_70%)] blur-3xl"
-      />
-
-      <div className="relative mx-auto max-w-[1200px] px-6 sm:px-10 lg:px-12">
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#FE3C01]">
-            ENGINEERING FOUNDATION · 架构哲学与四大支柱
-          </p>
-          <h2 className="mt-3 font-serif text-3xl sm:text-5xl font-normal tracking-[-0.035em] text-[#241E20] leading-[1.15]">
-            支撑旅艺的硬核技术底座与工程铁律
-          </h2>
-          <p className="mt-4 text-sm sm:text-base leading-relaxed text-[#6E6A67]">
-            不盲从云端黑盒，不妥协荒野白屏。以 Local-First 本地主权、严谨 DSL 形式化契约与防幻觉物理断言，构筑坚不可摧的自驾协同中枢。
+    <section id="foundation" className="relative z-10 scroll-mt-16 rounded-b-[28px] bg-[#FFFFF9] pb-24 md:pb-32">
+      <div className="mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
+        <div className="grid gap-6 pt-24 md:pt-32 lg:grid-cols-12 lg:items-end">
+          <div className="lg:col-span-7">
+            <p className="u-eyebrow">技术底座</p>
+            <h2 className="mt-4 text-balance font-serif text-[32px] font-semibold leading-[1.15] tracking-[-0.02em] text-[#241E20] sm:text-[40px] lg:text-[44px]">
+              契约先行，事实可追溯
+            </h2>
+          </div>
+          <p className="text-base leading-relaxed text-[#241E20]/70 lg:col-span-5">
+            两条规划路径共用一份需求画像，产出同一种行程数据；地点等事实来自图商核验，模型只写建议；匹配度可复现，付费不进分数。下面的数字与代码都来自仓库本身。
           </p>
         </div>
 
-        {/* Engineering Hard Benchmarks Bar */}
-        <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-          <div className="unify-card p-4 sm:p-5 text-center">
-            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#241E20]">≤ 1.8 MB</p>
-            <p className="mt-1 text-xs font-semibold text-[#241E20]">出游容灾舱体积</p>
-            <p className="text-[11px] text-[#6E6A67]">含全量矢量图与子集字体</p>
-          </div>
-          <div className="unify-card p-4 sm:p-5 text-center">
-            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#241E20]">&lt; 300 ms</p>
-            <p className="mt-1 text-xs font-semibold text-[#241E20]">离线双击秒开耗时</p>
-            <p className="text-[11px] text-[#6E6A67]">零网络冷启动首屏</p>
-          </div>
-          <div className="unify-card p-4 sm:p-5 text-center">
-            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#FE3C01]">25 道</p>
-            <p className="mt-1 text-xs font-semibold text-[#241E20]">物理规则刚性防御墙</p>
-            <p className="text-[11px] text-[#6E6A67]">BR-001~025 彻底杜绝幻觉</p>
-          </div>
-          <div className="unify-card p-4 sm:p-5 text-center">
-            <p className="font-mono text-2xl sm:text-3xl font-bold tabular-nums text-[#241E20]">Tier 0</p>
-            <p className="mt-1 text-xs font-semibold text-[#241E20]">极简座舱互联协议</p>
-            <p className="text-[11px] text-[#6E6A67]">零前装准入深度唤醒</p>
-          </div>
+        {/* 数字卡 */}
+        <div className="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
+          {NUMBERS.map((n) => (
+            <div key={n.label} className="u-card flex min-h-[180px] flex-col p-5 sm:p-6">
+              <p className="font-serif text-[44px] font-normal leading-none tracking-[-0.03em] text-[#241E20] tabular-nums sm:text-[56px]">{n.value}</p>
+              <p className="mt-3 text-[15px] leading-snug text-[#241E20]">{n.label}</p>
+              <p className="mt-auto pt-4 font-mono text-[13px] leading-snug text-[#241E20]/60">{n.source}</p>
+            </div>
+          ))}
         </div>
 
-        {/* 4 Pillars Interactive Tab Selector */}
-        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4" role="tablist" aria-label="技术底座四大支柱">
-          {PILLARS.map((pillar) => {
-            const isSelected = activePillar.id === pillar.id;
-            return (
+        {/* 四条工程主张：左侧选项卡 + 右侧代码窗口 */}
+        <div className="mt-16 grid gap-10 lg:grid-cols-[360px_minmax(0,1fr)] lg:gap-14">
+          <div role="tablist" aria-orientation="vertical" aria-label="技术主张" className="flex flex-col">
+            {PILLARS.map((p, i) => {
+              const on = i === active;
+              return (
+                <button
+                  key={p.id}
+                  id={`pillar-tab-${p.id}`}
+                  type="button"
+                  role="tab"
+                  aria-selected={on}
+                  aria-controls="pillar-panel"
+                  tabIndex={on ? 0 : -1}
+                  onClick={() => select(i)}
+                  onKeyDown={(e) => onKeyDown(e, i)}
+                  className="group relative rounded-[5px] py-3 pl-6 text-left outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01] lg:pl-0"
+                >
+                  <span aria-hidden className={`absolute inset-y-2 left-0 w-[3px] rounded-full lg:-left-6 ${on ? 'bg-[#FE3C01]' : 'bg-[#241E20]/[0.12]'}`} />
+                  <span className={`block text-xl leading-snug transition-colors ${on ? 'text-[#241E20]' : 'text-[#241E20]/[0.62] group-hover:text-[#241E20]/85'}`}>{p.title}</span>
+                  <span className={`grid transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${on ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`} aria-hidden={!on}>
+                    <span className="overflow-hidden">
+                      <span className="block pt-2 text-[15px] leading-relaxed text-[#241E20]/70">{p.desc}</span>
+                    </span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div id="pillar-panel" role="tabpanel" aria-labelledby={`pillar-tab-${pillar.id}`} className="min-w-0 overflow-hidden rounded-[18px] bg-[#241E20] text-[#FFFFF9] shadow-[0_32px_64px_-24px_rgba(36,30,32,0.45)]">
+            <div className="flex items-center gap-3 border-b border-[#FFFFF9]/10 px-5 py-3">
+              <span aria-hidden className="flex gap-1.5">
+                <span className="h-3 w-3 rounded-full bg-[#FFFFF9]/20" />
+                <span className="h-3 w-3 rounded-full bg-[#FFFFF9]/20" />
+                <span className="h-3 w-3 rounded-full bg-[#FFFFF9]/20" />
+              </span>
+              <a href={pillar.href} target="_blank" rel="noreferrer" className="min-w-0 flex-1 truncate font-mono text-[13px] text-[#FFFFF9]/80 hover:text-[#FFFFF9]">
+                <span className="u-link pb-0.5">{pillar.file}</span>
+              </a>
+              <span className="hidden shrink-0 rounded-full px-2.5 py-0.5 text-[13px] text-[#FFFFF9]/70 shadow-[inset_0_0_0_1px_rgba(255,255,249,0.2)] sm:inline">节选</span>
               <button
-                key={pillar.id}
-                id={`tab-${pillar.id}`}
                 type="button"
-                role="tab"
-                aria-selected={isSelected}
-                aria-controls={`panel-${pillar.id}`}
-                onClick={() => {
-                  setActivePillar(pillar);
-                  setGuardrailTested(false);
-                }}
-                className={`relative rounded-[12px] p-4 text-left transition-all duration-200 flex flex-col justify-between active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01] ${
-                  isSelected
-                    ? 'bg-white border-2 border-[#FE3C01] shadow-[0_4px_20px_rgba(254,60,1,0.08)] -translate-y-0.5'
-                    : 'bg-[#F4F4EE] hover:bg-white border border-[#E2E2D8]'
-                }`}
+                onClick={copyCode}
+                className="h-9 shrink-0 rounded-[5px] px-3 text-[13px] font-medium text-[#FFFFF9]/85 shadow-[inset_0_0_0_1px_rgba(255,255,249,0.2)] transition-colors hover:text-[#FFFFF9] hover:shadow-[inset_0_0_0_1px_rgba(255,255,249,0.45)]"
               >
-                <div>
-                  <div className="flex items-center justify-between">
-                    <span
-                      className={`font-mono text-base font-bold tabular-nums ${
-                        isSelected ? 'text-[#FE3C01]' : 'text-[#6E6A67]'
-                      }`}
-                    >
-                      {pillar.number}
-                    </span>
-                    <span className="unify-pill-badge !text-[10px] !py-0.5">
-                      {pillar.tag.split('·')[0].trim()}
-                    </span>
-                  </div>
-                  <span className="block mt-2 font-serif text-sm sm:text-base font-semibold text-[#241E20] leading-snug">
-                    {pillar.shortTitle}
-                  </span>
-                </div>
-                <p className="mt-2 text-[11px] text-[#6E6A67] line-clamp-1 font-sans">
-                  {pillar.subTitle}
-                </p>
+                {copy === 'done' ? '已复制' : copy === 'failed' ? '复制失败' : '复制'}
               </button>
-            );
-          })}
-        </div>
-
-        {/* Main Interactive Stage for Selected Pillar */}
-        <div className="mt-8 grid gap-8 lg:grid-cols-12 lg:items-start text-left">
-          {/* Left Column: Philosophy Description & Highlights */}
-          <div
-            className="space-y-6 lg:col-span-6 min-w-0"
-            role="tabpanel"
-            id={`panel-${activePillar.id}`}
-            aria-labelledby={`tab-${activePillar.id}`}
-          >
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activePillar.id}
-                initial={{ opacity: 0, x: -16 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 16 }}
-                transition={{ duration: 0.25 }}
-                className="unify-card p-6 sm:p-8"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#241E20]/[0.06] pb-4">
-                  <span className="font-mono text-xl font-bold tabular-nums text-[#241E20]">
-                    支柱 {activePillar.number}
-                  </span>
-                  <span className="unify-pill-badge text-[#FE3C01]">
-                    {activePillar.contractBadge}
-                  </span>
-                </div>
-
-                <h3 className="mt-5 font-serif text-2xl font-normal text-[#241E20] leading-snug">
-                  {activePillar.title}
-                </h3>
-                <p className="mt-1 text-xs text-[#6E6A67]">
-                  {activePillar.subTitle}
-                </p>
-
-                {/* Engineering philosophical quote (Unify quote style) */}
-                <div className="mt-5 rounded-[8px] bg-[#FFFFF9] border border-[#241E20]/[0.06] p-4 text-sm font-serif italic text-[#241E20] leading-relaxed unify-quote">
-                  {activePillar.quote}
-                </div>
-
-                <p className="mt-5 text-xs text-[#6E6A67] leading-relaxed sm:text-sm">
-                  {activePillar.summary}
-                </p>
-
-                {/* Key Technical Highlights */}
-                <div className="mt-6 space-y-3">
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#241E20]">
-                    工程落地要点：
-                  </p>
-                  {activePillar.highlights.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="rounded-[10px] bg-white p-3.5 border border-[#E2E2D8] transition-all hover:border-[#FE3C01]/40"
-                    >
-                      <p className="text-xs font-bold text-[#241E20] flex items-center gap-2">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#FE3C01] shrink-0" />
-                        {item.label}
-                      </p>
-                      <p className="mt-1 text-xs text-[#6E6A67] leading-relaxed">
-                        {item.desc}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Interactive Mini-Sandbox for Current Pillar */}
-                <div className="mt-6 rounded-[12px] bg-[#FFFFF9] p-4 border border-[#E2E2D8]">
-                  <div className="text-xs font-bold text-[#241E20] flex items-center justify-between">
-                    <span className="flex items-center gap-1.5">
-                      <ZapIcon className="h-3.5 w-3.5 text-[#FE3C01]" />
-                      <span>架构交互演练微沙盒：</span>
-                    </span>
-                    <span className="text-xs text-[#6E6A67] font-normal">点击即时触发</span>
-                  </div>
-
-                  {/* Demo 1: Failover Pipeline Toggle */}
-                  {activePillar.interactiveDemoType === 'failover' && (
-                    <div className="mt-3 space-y-2">
-                      <div className="flex gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setFailoverLevel(1)}
-                          className={`flex-1 min-h-[40px] rounded-[5px] py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01] ${
-                            failoverLevel === 1
-                              ? 'bg-[#241E20] text-white'
-                              : 'bg-white text-[#6E6A67] border border-[#E2E2D8] hover:text-[#241E20]'
-                          }`}
-                        >
-                          Level 1 在线瓦片
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setFailoverLevel(2)}
-                          className={`flex-1 min-h-[40px] rounded-[5px] py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01] ${
-                            failoverLevel === 2
-                              ? 'bg-[#FE3C01] text-white'
-                              : 'bg-white text-[#6E6A67] border border-[#E2E2D8] hover:text-[#241E20]'
-                          }`}
-                        >
-                          Level 2 矢量SVG
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setFailoverLevel(3)}
-                          className={`flex-1 min-h-[40px] rounded-[5px] py-2 text-xs font-semibold transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01] ${
-                            failoverLevel === 3
-                              ? 'bg-amber-700 text-white'
-                              : 'bg-white text-[#6E6A67] border border-[#E2E2D8] hover:text-[#241E20]'
-                          }`}
-                        >
-                          Level 3 拓扑卡片
-                        </button>
-                      </div>
-                      <div className="rounded-[10px] bg-white p-3 text-xs border border-[#E2E2D8]">
-                        {failoverLevel === 1 && (
-                          <div className="flex items-center gap-2 text-emerald-700 font-semibold">
-                            <span>● 网络畅通：</span>
-                            <span className="text-[#241E20]">高德/百度高清矢量瓦片渲染中，帧率 <span className="font-mono tabular-nums">60fps</span></span>
-                          </div>
-                        )}
-                        {failoverLevel === 2 && (
-                          <div className="flex items-center gap-2 text-[#FE3C01] font-semibold">
-                            <span>▲ 触发超时降级：</span>
-                            <span className="text-[#241E20]">网络中断，无缝秒级切换至内联离线 SVG 矢量图</span>
-                          </div>
-                        )}
-                        {failoverLevel === 3 && (
-                          <div className="flex items-center gap-2 text-amber-700 font-semibold">
-                            <span>■ 极端环境兜底：</span>
-                            <span className="text-[#241E20]">SVG 渲染受限，自动展开纯 CSS 文本拓扑卡片，杜绝白屏</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Demo 2: DSL AST Verification */}
-                  {activePillar.interactiveDemoType === 'dsl' && (
-                    <div className="mt-3 rounded-[10px] bg-white p-3 text-xs border border-[#E2E2D8] space-y-1.5">
-                      <div className="flex items-center justify-between text-emerald-700 font-semibold">
-                        <span className="flex items-center gap-1.5">
-                          <CheckIcon className="h-3.5 w-3.5 text-emerald-700" />
-                          <span>结构化契约实时校验</span>
-                        </span>
-                        <span className="font-mono text-xs bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full tabular-nums">0 错误</span>
-                      </div>
-                      <p className="text-xs text-[#6E6A67]">
-                        节点数据包含 9 天全部 28 个途经点坐标、限高标签与餐厅打卡元数据，天然具备 SHA-256 签名存证。
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Demo 3: Physics Guardrail Assertion Tester */}
-                  {activePillar.interactiveDemoType === 'guardrails' && (
-                    <div className="mt-3 space-y-2">
-                      <button
-                        type="button"
-                        onClick={() => setGuardrailTested(!guardrailTested)}
-                        className="w-full min-h-[40px] rounded-[5px] bg-[#FE3C01]/10 text-[#FE3C01] hover:bg-[#FE3C01]/20 border border-[#FE3C01]/30 py-2.5 px-3 text-xs font-semibold transition-all flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01] text-center"
-                      >
-                        <span>模拟大模型指令：7座 MPV (加装车顶箱 2.28m) 直接驶入 2.0m 老城地库</span>
-                        <span className="underline shrink-0">触发断言拦截</span>
-                      </button>
-                      {guardrailTested && (
-                        <div className="rounded-[10px] bg-amber-50 border border-amber-300 p-3 text-xs text-amber-800 animate-fadeIn">
-                          <p className="font-bold flex items-center gap-1.5">
-                            <ShieldIcon className="h-4 w-4 text-amber-700 shrink-0" />
-                            <span>BR-025 物理断言刚性拦截：</span>
-                            <span className="font-mono text-xs bg-amber-700 text-white px-2 py-0.5 rounded-full">
-                              FATAL_OVERRIDE
-                            </span>
-                          </p>
-                          <p className="mt-1 text-xs leading-relaxed">
-                            车高 2.28m &gt; 地库限高 2.0m！已强制拦截并将车辆停放点修正为「酒店地面专用车位」，为全家规划 950m（12分钟）平缓慢步导引，避免车顶箱刮蹭损坏。
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Demo 4: Compiler Pipeline */}
-                  {activePillar.interactiveDemoType === 'compiler' && (
-                    <div className="mt-3 rounded-[10px] bg-white p-3 text-xs border border-[#E2E2D8] space-y-2">
-                      <div className="flex items-center justify-between font-mono text-xs">
-                        <span className="text-[#241E20] font-semibold">容灾舱目标: expedition-pro.v1.1.html</span>
-                        <span className="text-emerald-700 font-bold tabular-nums">1.8 MB (已压缩)</span>
-                      </div>
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-[#6E6A67]">
-                        <span className="unify-pill-badge !text-[10px] !py-0.5">0 外部脚本</span>
-                        <span className="unify-pill-badge !text-[10px] !py-0.5">字体子集化</span>
-                        <span className="unify-pill-badge !text-[10px] !py-0.5">内联离线SVG</span>
-                        <span className="unify-pill-badge !text-[10px] !py-0.5">Tier 0 深链</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          {/* Right Column: Code & Formal Contract Inspector */}
-          <div className="space-y-4 lg:col-span-6 lg:sticky lg:top-28 min-w-0">
-            <div className="unify-card rounded-[16px] p-5 sm:p-7 overflow-hidden">
-              {/* Code window chrome header */}
-              <div className="flex items-center justify-between border-b border-[#E2E2D8] pb-3">
-                <div className="flex items-center gap-2">
-                  <div className="flex gap-1.5">
-                    <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
-                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-                    <span className="h-2.5 w-2.5 rounded-full bg-[#FE3C01]" />
-                  </div>
-                  <span className="ml-2 font-mono text-xs font-semibold text-[#241E20]">
-                    {activePillar.codeSnippet.filename}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="unify-pill-badge !text-[10px] !py-0.5 uppercase font-mono">
-                    {activePillar.codeSnippet.language}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={handleCopyCode}
-                    className="rounded-[5px] min-h-[32px] py-1 px-3 text-xs text-[#241E20] hover:text-[#FE3C01] transition-all active:scale-95 font-medium border border-[#E2E2D8] bg-white hover:bg-[#F4F4EE] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01]"
-                    title="复制真实代码"
-                  >
-                    {copiedCode ? '已复制 ✓' : '复制代码'}
-                  </button>
-                </div>
-              </div>
-
-              {/* Code Content Box */}
-              <div className="mt-4 overflow-x-auto rounded-[10px] bg-[#241E20] p-4 font-mono text-xs text-white/90 leading-relaxed border border-[#241E20]">
-                <pre>
-                  <code>{activePillar.codeSnippet.code}</code>
-                </pre>
-              </div>
-
-              {/* Contract Metadata Footer */}
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-[#E2E2D8] pt-3 text-xs text-[#6E6A67]">
-                <span className="flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-emerald-600" />
-                  <span>与核心架构契约 100% 一致</span>
-                </span>
-                <span className="font-mono text-xs text-[#FE3C01] font-medium">
-                  TripCraft Architecture Spec v2
-                </span>
-              </div>
             </div>
-
-            {/* Architecture Ecosystem Summary Card */}
-            <div className="unify-card p-5 text-xs">
-              <p className="font-serif font-bold text-[#241E20] text-sm">
-                为什么我们坚守这些工程哲学？
-              </p>
-              <p className="mt-2 text-[#6E6A67] leading-relaxed">
-                自驾旅行不同于城市漫游，一旦踏入河西走廊戈壁、祁连山脉或无人区，面对的是剧烈的信号衰减、长坡限速与物理车辆限制。代码与界面终究会迭代，但对物理规律的敬畏、对用户数据的守护与对离线交付的执着，是旅艺最坚固的护城河。
-              </p>
-            </div>
+            <pre className="max-h-[440px] overflow-auto whitespace-pre-wrap px-5 py-5 font-mono text-[13px] leading-relaxed text-[#FFFFF9]/90 [overflow-wrap:anywhere]">
+              <code>{pillar.code}</code>
+            </pre>
           </div>
         </div>
+
+        <p className="mt-10 text-sm text-[#241E20]/65">
+          契约、架构决策与门禁脚本都在
+          <a href={REPO} target="_blank" rel="noreferrer" className="mx-1 font-medium text-[#241E20]">
+            <span className="u-link pb-0.5">GitHub 仓库</span>
+          </a>
+          里公开；<code className="mx-1 font-mono text-[13px] text-[#241E20]">npm run check</code>在每次推送与合并请求时运行。
+        </p>
       </div>
     </section>
   );

@@ -65,31 +65,11 @@ const config: Config = {
         },
       },
       fontFamily: {
-        serif: [
-          '"Noto Serif SC"',
-          '"Instrument Serif"',
-          '"Feature Text"',
-          '"Playfair Display"',
-          'Georgia',
-          'serif',
-        ],
-        sans: [
-          '"Plus Jakarta Sans"',
-          '"Inter"',
-          '"Saans"',
-          '"PingFang SC"',
-          '"HarmonyOS Sans SC"',
-          '"Microsoft YaHei UI"',
-          'system-ui',
-          'sans-serif',
-        ],
-        mono: [
-          '"JetBrains Mono"',
-          '"SF Mono"',
-          'Menlo',
-          'Consolas',
-          'monospace',
-        ],
+        // 衬线展示字：Noto Serif SC（由 FontLoader 非阻塞加载，含与之匹配的拉丁字形）→ 系统宋体 → Georgia
+        serif: ['"Noto Serif SC"', '"Source Han Serif SC"', '"Songti SC"', '"Instrument Serif"', 'Georgia', 'serif'],
+        // 界面与正文：Plus Jakarta Sans（拉丁）+ 系统中文无衬线
+        sans: ['"Plus Jakarta Sans"', '"PingFang SC"', '"HarmonyOS Sans SC"', '"Microsoft YaHei UI"', '"Microsoft YaHei"', 'system-ui', 'sans-serif'],
+        mono: ['"JetBrains Mono"', '"SF Mono"', 'Menlo', 'Consolas', 'monospace'],
       },
       borderRadius: {
         button: '5px',
