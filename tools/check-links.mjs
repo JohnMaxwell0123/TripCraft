@@ -1,5 +1,47 @@
-import { readFileSync, existsSync, statSync, globSync } from 'node:fs';
+import * as fs from 'node:fs';
 import { dirname, resolve } from 'node:path';
+const { readFileSync, existsSync, statSync } = fs;
+
+/**
+ * fs.globSync 自 Node 22 起才有；CI（Node 20）与 package.json engines（>=18）上它不存在，
+ * 具名导入会让整个脚本加载失败。这里退回一个只覆盖本仓库用法的小实现：一层花括号、** 与 *。
+ */
+function globFallback(pattern) {
+  const braces = pattern.match(/^\{(.*)\}$/);
+  const out = new Set();
+  for (const p of braces ? braces[1].split(',') : [pattern]) {
+    const parts = p.split('/');
+    const firstWild = parts.findIndex((x) => /[*?]/.test(x));
+    if (firstWild === -1) {
+      if (existsSync(p)) out.add(p);
+      continue;
+    }
+    const base = parts.slice(0, firstWild).join('/') || '.';
+    const re = new RegExp(
+      '^' +
+        parts
+          .slice(firstWild)
+          .join('/')
+          .replace(/[.+^${}()|[\]\\]/g, '\\$&')
+          .replace(/\*\*\//g, '\u0000')
+          .replace(/\*/g, '[^/]*')
+          .replace(/\?/g, '[^/]')
+          .replace(/\u0000/g, '(?:.*/)?') +
+        '$',
+    );
+    const walk = (dir) => {
+      if (!existsSync(dir)) return;
+      for (const name of fs.readdirSync(dir)) {
+        const full = dir === '.' ? name : `${dir}/${name}`;
+        if (statSync(full).isDirectory()) walk(full);
+        else if (re.test(base === '.' ? full : full.slice(base.length + 1))) out.add(full);
+      }
+    };
+    walk(base);
+  }
+  return [...out].sort();
+}
+const globSync = fs.globSync ?? globFallback;
 const slug = (s) => s.trim().toLowerCase().replace(/[^\p{L}\p{N} -]/gu, '').replace(/ /g, '-');
 function anchorsOf(file) {
   const set = []; let fence = false;
