@@ -36,7 +36,7 @@
 - **展示性大标题 (H1, H2)**：高对比度编辑部衬线体（Editorial Serif）配 `-0.035em` 紧凑负字距与 `leading-[1.05]` 紧凑行高；
 - **正文与功能操作 (Body, UI)**：现代几何无衬线字体（Geometric Grotesque Sans: Plus Jakarta Sans / Inter）；
 - **遥测数据与代码 (Telemetry, Code)**：等宽字体（JetBrains Mono / SF Mono / tabular-nums）；
-- **首屏关键词「活路书」**：注入 **Flame Aura Glow** 烈焰微光场多层扩散。
+- **首屏关键词「定下来」**：注入 **Flame Aura Glow** 烈焰微光场多层扩散。
 
 ---
 

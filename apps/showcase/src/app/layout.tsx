@@ -2,22 +2,22 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'TripCraft · 旅艺 —— 面向自驾与深度游的智能旅行路书协同中枢',
+  title: 'TripCraft · 旅艺 —— 多端同步、多人共享的 AI 旅行规划 App',
   description:
-    '通过故事流视差滚动动画 (Apple Scrollytelling)，生动展示 TripCraft 从用户大白话诉求、AI 深度对谈推演、九天可视化路书渐进生成、三人微信免登协同愿望池、领队一键确认与算法重排，到多端同频车机流转与无人区离线容灾的全流程。',
+    '用对话说清需求：AI 追问并整理成需求画像，再为你规划自驾路线，或匹配持证旅行社的线路；行程空间里全家一起商量，手机、平板、电脑实时同步。旅行社可在线路工作室上架线路、生成 AI 路书与路线动画、透明报价。',
   keywords: [
     'TripCraft',
     '旅艺',
-    '自驾路书',
-    'Scrollytelling',
-    '视差滚动',
-    '智能旅行',
-    '甘青大环线',
-    '7座豪华MPV',
-    '全家自驾关怀',
-    '车路云协同',
-    '多端实时同频',
-    '无人区离线舱',
+    'AI 旅行规划',
+    '自驾路线规划',
+    '旅行社线路匹配',
+    '需求画像',
+    '多人共享行程',
+    '多端同步',
+    '旅行社线路工作室',
+    'AI 路书',
+    '路线动画',
+    '透明报价',
   ],
   authors: [{ name: 'TripCraft Team' }],
   icons: {
