@@ -125,18 +125,22 @@ export function TapCursor({
 /*  头像                                                                        */
 /* -------------------------------------------------------------------------- */
 
-export type AvatarTone = 'gold' | 'jade' | 'lapis' | 'ochre';
+export type AvatarTone = 'violet' | 'teal' | 'rose' | 'blue' | 'slate' | 'amber';
 
-export function Avatar({ name, tone, size = 28, className = '' }: { name: string; tone: AvatarTone; size?: number; className?: string }) {
-  const bg = {
-    gold: 'bg-[#8C6A2F]',
-    jade: 'bg-[#0E7A5A]',
-    lapis: 'bg-[#3D5A80]',
-    ochre: 'bg-[#B4441B]',
-  }[tone];
+/** 头像底色：一组与目的地无关的中性彩色（同一个人在两段舞台里用同一种颜色） */
+const AVATAR_BG: Record<AvatarTone, string> = {
+  violet: 'bg-[#6D5BD0]',
+  teal: 'bg-[#0D8C87]',
+  rose: 'bg-[#C2416C]',
+  blue: 'bg-[#3A78D2]',
+  slate: 'bg-[#3E5C76]',
+  amber: 'bg-[#B86E00]',
+};
+
+export function Avatar({ name, tone, size = 28, ring = true, className = '' }: { name: string; tone: AvatarTone; size?: number; ring?: boolean; className?: string }) {
   return (
     <span
-      className={`inline-flex shrink-0 select-none items-center justify-center rounded-full font-semibold text-white ring-2 ring-white ${bg} ${className}`}
+      className={`inline-flex shrink-0 select-none items-center justify-center rounded-full font-semibold text-white ${ring ? 'ring-2 ring-ui-surface' : ''} ${AVATAR_BG[tone]} ${className}`}
       style={{ width: size, height: size, fontSize: Math.max(12, Math.round(size * 0.46)) }}
     >
       {name.slice(0, 1)}
@@ -168,10 +172,10 @@ export function Toast({
   return (
     <motion.div
       role="status"
-      className={`flex max-w-full items-center gap-2 rounded-[10px] border border-[#E2E2D8] bg-white px-3 py-2 text-[13px] font-medium leading-snug text-[#241E20] shadow-[0_8px_24px_rgba(36,30,32,0.10)] ${className}`}
+      className={`ui-float flex max-w-full items-center gap-2 rounded-full px-3.5 py-2 text-[13px] font-medium leading-snug text-ui-ink ${className}`}
       style={{ opacity, y, visibility }}
     >
-      <span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-white ${tone === 'jade' ? 'bg-[#0E7A5A]' : 'bg-[#241E20]'}`}>
+      <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-white ${tone === 'jade' ? 'bg-ui-success' : 'bg-ui-ink'}`}>
         <CheckIcon className="h-3 w-3" />
       </span>
       <span className="min-w-0">{children}</span>
@@ -201,7 +205,7 @@ export function Scene({
   return (
     <motion.section
       aria-label={label}
-      className={`absolute inset-0 flex flex-col overflow-hidden bg-white ${className}`}
+      className={`absolute inset-0 flex flex-col overflow-hidden bg-ui-panel ${className}`}
       style={{ opacity, visibility }}
     >
       {children}

@@ -1,11 +1,11 @@
 'use client';
 
-import type { ComponentType } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 import { motion, useTransform } from 'framer-motion';
 import { useFade, useFadeStyle, useFadeVisibility, useRange, useScrollTypewriter, useStep, useVisibility, ease } from '@/lib/motion';
 import { T } from './timeline';
-import { Grow, Reveal, Scene, TapCursor, useProgress } from './primitives';
-import { Badge, PageHeader, btn } from './ui';
+import { Grow, Scene, TapCursor, useProgress } from './primitives';
+import { Badge, CatMark, Chip, Ring, btn } from './ui';
 import {
   BuildingIcon,
   CalendarIcon,
@@ -14,11 +14,15 @@ import {
   ChevronDownIcon,
   CompassIcon,
   ElderIcon,
+  HeightIcon,
   KeyIcon,
+  MoonIcon,
   PaperclipIcon,
+  PersonGlyph,
   PinIcon,
   PlusIcon,
   SparklesIcon,
+  StairsIcon,
   UsersIcon,
   WalletIcon,
   type IconProps,
@@ -28,7 +32,9 @@ import {
  * 01 幕 · AI 对话与需求画像（docs/16 §16.2–§16.4）
  *
  * 对话框即入口：模型选择器（平台模型 / 自带 API）→ 用户说需求 → 每轮一个追问 →
- * 需求画像在右侧面板逐项填入（硬约束与偏好分组，推断项单独标出）→ 同时给出路径 A / 路径 B 两个入口。
+ * 需求画像在右侧逐项填入：每一项用图形表达（同行人剪影、必去地点、日期条、车高、预算区间），
+ * 先显示空位，对话提到一项填一项；推断项单独标出。收敛后同时给出路径 A / 路径 B 两个入口。
+ * 手机上画像的进度显示在顶部的胶囊里，收敛后以底部抽屉弹出。
  */
 
 const USER_TEXT =
@@ -36,46 +42,30 @@ const USER_TEXT =
 
 const REPLY_TEXT = '租腾势 D9，加了车顶箱，总高 2.28 米。';
 
-interface ProfileField {
-  Icon: ComponentType<IconProps>;
-  label: string;
-  value: string;
-  inferred?: boolean;
-  /** 在 T.profileFields 中的出现顺序（按对话提及的先后） */
-  order: number;
-}
-
-/** 需求画像特征点（docs/16 §16.3.1）：硬约束决定「能不能」，偏好决定「有多合适」 */
-const HARD: ProfileField[] = [
-  { Icon: UsersIcon, label: '同行', value: '3 成人 · 1 长者 70+ · 1 儿童 4 岁', order: 0 },
-  { Icon: PinIcon, label: '必去', value: '莫高窟 · 鸣沙山日落', order: 1 },
-  { Icon: ElderIcon, label: '身体', value: '少走台阶 · 孩子 13:00 午休', order: 3 },
-  { Icon: CarIcon, label: '车辆', value: '腾势 D9 · 总高 2.28 m', order: 5 },
-];
-const SOFT: ProfileField[] = [
-  { Icon: CalendarIcon, label: '日期', value: '国庆前后 · 8–10 天', order: 2 },
-  { Icon: CompassIcon, label: '方式', value: '自驾或旅行社都可以', order: 4 },
-  { Icon: WalletIcon, label: '预算', value: '人均 ¥5,000–7,000', inferred: true, order: 6 },
-];
-
 const MODELS = [
   { name: '平台模型', note: '默认 · 今日剩余 18 / 20 次', selected: true },
   { name: '我的 Claude', note: '自带 API · Anthropic 接口' },
   { name: '我的 DeepSeek', note: '自带 API · OpenAI 兼容接口' },
 ];
 
+const FIELD_COUNT = 7;
+
 export function DialogueScene() {
   return (
     <Scene range={T.dialogueScene} label="AI 对话与需求画像">
-      <PageHeader title="新对话" actions={<StatusBadge />} />
+      <header className="flex h-14 shrink-0 items-center gap-3 border-b border-ui-line px-4">
+        <h3 className="min-w-0 flex-1 truncate text-[15px] font-semibold text-ui-ink">新对话</h3>
+        <HeaderProgress />
+        <StatusBadge />
+      </header>
       <div className="relative flex min-h-0 flex-1">
-        <div className="flex min-w-0 flex-1 flex-col px-4 pb-4">
+        <div className="relative flex min-w-0 flex-1 flex-col px-4 pb-4">
           <Thread />
           <Composer />
         </div>
 
         {/* 宽视窗：画像随对话逐项填入右侧面板 */}
-        <aside className="hidden w-[288px] shrink-0 flex-col border-l border-[#EEEDE7] bg-[#FCFBF8] cq-md:flex">
+        <aside className="ui-aside hidden w-[300px] shrink-0 flex-col cq-md:flex">
           <ProfilePanel />
         </aside>
 
@@ -91,91 +81,89 @@ function StatusBadge() {
   const p = useProgress();
   const stage = useStep(p, [T.askBubble[0], T.followUp[0], T.profileReady[0]]);
   const label = ['等你开口', '理解需求中', '追问 1 / 3', '画像待确认'][stage];
-  return <Badge tone={stage === 3 ? 'flame' : 'neutral'}>{label}</Badge>;
+  return <Badge tone={stage === 3 ? 'signal' : 'neutral'}>{label}</Badge>;
 }
 
-/* ── 对话流：底部对齐，新消息把旧消息顶上去 ── */
+/* ═════════════════════ 对话流：底部对齐，新消息把旧消息顶上去 ═════════════════════ */
 function Thread() {
   const p = useProgress();
   const quickPicked = useStep(p, [T.followUpPick]) === 1;
 
   return (
     <div className="relative flex min-h-0 flex-1 flex-col justify-end overflow-hidden pb-4 pt-1">
-      {/* AI 开场 + 零输入药丸 */}
-      <div className="flex shrink-0 items-start gap-2">
-        <AiAvatar />
-        <div className="min-w-0 rounded-[12px] rounded-tl-[4px] bg-[#F4F4EE] px-3 py-2">
-          <p className="text-[13px] leading-relaxed text-[#241E20]">说说你想怎么玩？可以很随意，比如「暑假带爸妈和孩子去西北，别太累」。</p>
-          <div className="mt-2 hidden flex-wrap gap-2 cq-sm:flex">
-            {['带长辈', '自驾', '想找旅行社', '只有 5 天'].map((t) => (
-              <span key={t} className="rounded-full border border-[#E2E2D8] bg-white px-2 py-0.5 text-xs text-[#625F61]">
-                {t}
-              </span>
-            ))}
-          </div>
+      {/* AI 开场 + 零输入建议：示例说法与目的地无关 */}
+      <AssistantTurn>
+        <p>说说你想怎么玩？可以很随意，比如「周末带爸妈去海边住两晚，别太累」。</p>
+        <div className="mt-2.5 hidden flex-wrap gap-1.5 cq-sm:flex">
+          <Chip Icon={ElderIcon} tone="outline">带长辈</Chip>
+          <Chip Icon={CarIcon} tone="outline">自驾</Chip>
+          <Chip Icon={BuildingIcon} tone="outline">想找旅行社</Chip>
+          <Chip Icon={CalendarIcon} tone="outline">只有 5 天</Chip>
         </div>
-      </div>
+      </AssistantTurn>
 
       {/* 用户需求 */}
-      <Grow at={T.askBubble} max={192}>
-        <div className="ml-auto mt-3 max-w-[88%] rounded-[12px] rounded-tr-[4px] bg-[#241E20] px-3 py-2 text-[13px] leading-relaxed text-[#FFFFF9]">{USER_TEXT}</div>
+      <Grow at={T.askBubble} max={200}>
+        <UserBubble>{USER_TEXT}</UserBubble>
       </Grow>
 
       {/* 追问：每轮只问一个问题 */}
-      <Grow at={T.followUp} max={182}>
-        <div className="mt-3 flex items-start gap-2">
-          <AiAvatar />
-          <div className="min-w-0 rounded-[12px] rounded-tl-[4px] bg-[#F4F4EE] px-3 py-2">
-            <p className="text-xs text-[#828081]">追问 1 / 3</p>
-            <p className="mt-0.5 text-[13px] font-medium leading-relaxed text-[#241E20]">自驾的话开什么车？车高大概多少？</p>
-            <p className="mt-0.5 text-xs leading-relaxed text-[#625F61]">用来避开限高停车场；找旅行社时也按人数和行李匹配车型。</p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              <QuickReply label="5 座 SUV" />
-              <QuickReply label="7 座 MPV · 带车顶箱" picked={quickPicked} />
-              <QuickReply label="还没定" />
-            </div>
+      <Grow at={T.followUp} max={176}>
+        <AssistantTurn className="mt-4">
+          <p className="flex items-center gap-1.5 text-xs text-ui-ink-3">
+            <span aria-hidden className="flex gap-1">
+              <span className="h-1.5 w-1.5 rounded-full bg-ui-accent" />
+              <span className="h-1.5 w-1.5 rounded-full bg-ui-line-strong" />
+              <span className="h-1.5 w-1.5 rounded-full bg-ui-line-strong" />
+            </span>
+            追问 1 / 3
+          </p>
+          <p className="mt-1 font-medium">自驾的话开什么车？车高大概多少？</p>
+          <p className="mt-0.5 text-xs leading-relaxed text-ui-ink-2">用来避开限高停车场；找旅行社时也按人数和行李匹配车型。</p>
+          <div className="mt-2.5 flex flex-wrap gap-1.5">
+            <Chip Icon={CarIcon} tone="outline">5 座 SUV</Chip>
+            <Chip Icon={quickPicked ? CheckIcon : CarIcon} tone={quickPicked ? 'selected' : 'outline'}>
+              7 座 MPV · 带车顶箱
+            </Chip>
+            <Chip tone="outline">还没定</Chip>
           </div>
-        </div>
+        </AssistantTurn>
       </Grow>
 
       {/* 用户回答 */}
-      <Grow at={T.followUpReply} max={82}>
-        <div className="ml-auto mt-3 w-fit max-w-[88%] rounded-[12px] rounded-tr-[4px] bg-[#241E20] px-3 py-2 text-[13px] leading-relaxed text-[#FFFFF9]">{REPLY_TEXT}</div>
+      <Grow at={T.followUpReply} max={72}>
+        <UserBubble className="w-fit">{REPLY_TEXT}</UserBubble>
       </Grow>
 
       {/* 画像收敛 */}
-      <Grow at={[T.profileFields[6], T.profileReady[0]]} max={102}>
-        <div className="mt-3 flex items-start gap-2">
-          <AiAvatar />
-          <div className="min-w-0 rounded-[12px] rounded-tl-[4px] bg-[#F4F4EE] px-3 py-2 text-[13px] leading-relaxed text-[#241E20]">
-            需求整理好了。预算是我按人数和住宿档次<b className="font-semibold text-[#C43200]">推断</b>的，请确认；两条路径共用这份画像，都可以看。
-          </div>
-        </div>
+      <Grow at={[T.profileFields[6], T.profileReady[0]]} max={96}>
+        <AssistantTurn className="mt-4">
+          需求整理好了。预算是我按人数和住宿档次<b className="font-semibold text-ui-signal-ink">推断</b>的，请确认；两条路径共用这份画像，都可以看。
+        </AssistantTurn>
       </Grow>
     </div>
   );
 }
 
-function AiAvatar() {
+/** AI 的一轮：品牌标记 + 不加气泡的正文（与 ChatGPT / Claude 的读法一致） */
+function AssistantTurn({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
-    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-[5px] bg-[#241E20] text-[#FFFFF9]">
-      <SparklesIcon className="h-3.5 w-3.5" />
-    </span>
+    <div className={`flex shrink-0 items-start gap-2.5 ${className}`}>
+      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-[7px] bg-[#241E20] text-xs font-bold text-[#FFFFF9]">旅</span>
+      <div className="min-w-0 flex-1 text-[13px] leading-relaxed text-ui-ink">{children}</div>
+    </div>
   );
 }
 
-function QuickReply({ label, picked = false }: { label: string; picked?: boolean }) {
+function UserBubble({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
-    <span
-      className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs transition-colors duration-200 ${
-        picked ? 'border-[#241E20] bg-[#241E20] text-[#FFFFF9]' : 'border-[#E2E2D8] bg-white text-[#625F61]'
-      }`}
-    >
-      {picked ? <CheckIcon className="h-3 w-3" /> : null}
-      {label}
-    </span>
+    <div className={`ml-auto mt-4 max-w-[86%] rounded-[18px] rounded-br-[6px] bg-ui-bubble-user px-3.5 py-2 text-[13px] leading-relaxed text-ui-on-bubble-user ${className}`}>
+      {children}
+    </div>
   );
 }
+
+/* ═════════════════════ 输入框 ═════════════════════ */
 
 /**
  * 输入框（像 ChatGPT / Claude 的输入框）：上面是文本区，下面一行是模型选择器（平台模型 / 自带 API）、附件与发送。
@@ -196,37 +184,34 @@ function Composer() {
   return (
     <div className="relative shrink-0">
       <ModelMenu />
-      <div className="relative rounded-[16px] border border-[#E2E2D8] bg-white px-3 pb-2 pt-2.5 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+      <div className="ui-card relative px-3 pb-2 pt-2.5 !shadow-ui-float">
         {/* 文本区：一行 20px，最多 6 行（120px），超出后裁掉最上面的行 */}
-        <div className="relative flex max-h-[120px] min-h-5 flex-col justify-end overflow-hidden text-[13px] leading-5 text-[#241E20]">
-          <motion.span
-            className="pointer-events-none absolute inset-x-0 top-0 truncate text-[#828081]"
-            style={{ opacity: placeholder, visibility: placeholderVisibility }}
-          >
+        <div className="relative flex max-h-[120px] min-h-5 flex-col justify-end overflow-hidden text-[13px] leading-5 text-ui-ink">
+          <motion.span className="pointer-events-none absolute inset-x-0 top-0 truncate text-ui-ink-3" style={{ opacity: placeholder, visibility: placeholderVisibility }}>
             {sent ? '回答追问，或继续补充…' : '说说这趟旅行：谁去、去哪、在意什么…'}
           </motion.span>
           <p className="min-h-5 break-words">
             {/* 首帧为空：完整原文在发送后的用户气泡里 */}
             <span ref={typedRef} />
-            <motion.span className="ml-0.5 inline-block h-3.5 w-[2px] animate-caret bg-[#FE3C01] align-middle" style={caret} />
+            <motion.span className="ml-0.5 inline-block h-3.5 w-[2px] animate-caret bg-ui-accent align-middle" style={caret} />
           </p>
         </div>
 
-        <div className="mt-2 flex items-center gap-2">
+        <div className="mt-2 flex items-center gap-1.5">
           {/* 模型选择器 */}
-          <span className="relative inline-flex h-8 shrink-0 items-center gap-1 whitespace-nowrap rounded-[5px] border border-[#E2E2D8] bg-[#F7F6F1] px-2 text-xs font-medium text-[#241E20]">
-            <SparklesIcon className="h-3 w-3 text-[#FE3C01]" />
+          <span className="relative inline-flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-ui-sunken px-2.5 text-xs font-medium text-ui-ink">
+            <SparklesIcon className="h-3.5 w-3.5 text-ui-accent" />
             平台模型
-            <ChevronDownIcon className="h-3 w-3 text-[#828081]" />
+            <ChevronDownIcon className="h-3 w-3 text-ui-ink-3" />
             <TapCursor approach={T.modelCursor} clickAt={T.modelMenu[0]} hideAt={T.modelMenu[1] + 0.004} className="left-8 top-4" />
           </span>
-          <span className="ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-[5px] text-[#828081]" title="附件：截图、行程 PDF、聊天记录">
+          <span className="ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-ui-ink-3" title="附件：截图、行程 PDF、聊天记录">
             <PaperclipIcon className="h-4 w-4" />
           </span>
-          <motion.span aria-hidden className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-[5px] bg-[#FE3C01] text-white" style={{ scale: sendScale }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="22" y1="2" x2="11" y2="13" />
-              <polygon points="22 2 15 22 11 13 2 9 22 2" />
+          <motion.span aria-hidden className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ui-accent text-white" style={{ scale: sendScale }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 19V5" />
+              <path d="m5 12 7-7 7 7" />
             </svg>
             <TapCursor approach={[T.askType[1] - 0.006, T.askSend - 0.001]} clickAt={T.askSend} hideAt={T.askSend + 0.008} className="left-4 top-4" />
           </motion.span>
@@ -250,23 +235,28 @@ function ModelMenu() {
     <motion.div
       role="listbox"
       aria-label="选择模型"
-      className="absolute bottom-full left-0 z-30 mb-2 w-[min(280px,100%)] overflow-hidden rounded-[12px] border border-[#E2E2D8] bg-white p-1 shadow-[0_16px_40px_rgba(36,30,32,0.12)]"
+      className="ui-float absolute bottom-full left-0 z-30 mb-2 w-[min(288px,100%)] overflow-hidden rounded-ui-card p-1 !shadow-ui-pop"
       style={{ opacity, y, visibility }}
     >
       {MODELS.map((mdl, i) => (
-        <div key={mdl.name} className={`flex items-center justify-between gap-2 rounded-[5px] px-2 py-1.5 transition-colors duration-150 ${hoverIndex === i ? 'bg-[#F4F4EE]' : ''}`}>
-          <span className="min-w-0">
-            <span className="block text-[13px] font-medium text-[#241E20]">{mdl.name}</span>
-            <span className="block truncate text-xs text-[#828081]">{mdl.note}</span>
+        <div key={mdl.name} className={`flex items-center gap-2.5 rounded-ui-ctl px-2 py-1.5 transition-colors duration-150 ${hoverIndex === i ? 'bg-ui-sunken' : ''}`}>
+          <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${i === 0 ? 'bg-ui-accent/10 text-ui-accent-ink' : 'bg-ui-sunken text-ui-ink-2'}`}>
+            {i === 0 ? <SparklesIcon className="h-3.5 w-3.5" /> : <KeyIcon className="h-3.5 w-3.5" />}
           </span>
-          {mdl.selected ? <CheckIcon className="h-3.5 w-3.5 shrink-0 text-[#241E20]" /> : null}
+          <span className="min-w-0 flex-1">
+            <span className="block text-[13px] font-medium text-ui-ink">{mdl.name}</span>
+            <span className="block truncate text-xs text-ui-ink-3">{mdl.note}</span>
+          </span>
+          {mdl.selected ? <CheckIcon className="h-4 w-4 shrink-0 text-ui-accent-ink" /> : null}
         </div>
       ))}
-      <div className={`flex items-center gap-2 rounded-[5px] px-2 py-1.5 text-[13px] font-medium text-[#241E20] transition-colors duration-150 ${hoverIndex === 3 ? 'bg-[#F4F4EE]' : ''}`}>
-        <PlusIcon className="h-3.5 w-3.5 text-[#625F61]" />
+      <div className={`flex items-center gap-2.5 rounded-ui-ctl px-2 py-1.5 text-[13px] font-medium text-ui-ink transition-colors duration-150 ${hoverIndex === 3 ? 'bg-ui-sunken' : ''}`}>
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-dashed border-ui-line-strong text-ui-ink-2">
+          <PlusIcon className="h-3.5 w-3.5" />
+        </span>
         添加自己的 API
       </div>
-      <p className="mt-1 flex items-center gap-1.5 border-t border-[#EEEDE7] px-2 pb-1 pt-2 text-xs text-[#625F61]">
+      <p className="mt-1 flex items-center gap-1.5 border-t border-ui-line px-2 pb-1 pt-2 text-xs text-ui-ink-2">
         <KeyIcon className="h-3 w-3 shrink-0" />
         自带 Key 只存在本机，请求直连服务商
       </p>
@@ -274,117 +264,273 @@ function ModelMenu() {
   );
 }
 
-/* ── 需求画像（docs/16 §16.3.3） ── */
-function ProfilePanel({ compact = false }: { compact?: boolean }) {
-  const p = useProgress();
-  const emptyOpacity = useRange(p, [T.profileFields[0] - 0.006, T.profileFields[0]], [1, 0]);
-  const emptyVisibility = useFadeVisibility(emptyOpacity);
-  const count = useStep(p, T.profileFields);
+/* ═════════════════════ 需求画像（docs/16 §16.3.3）：每一项都是图形 ═════════════════════ */
 
-  return (
-    <div className={`flex h-full w-full flex-col ${compact ? '' : 'p-4'}`}>
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-[13px] font-semibold text-[#241E20]">需求画像</p>
-        <span className="text-xs tabular-nums text-[#828081]">
-          {count} / {HARD.length + SOFT.length} 项
-        </span>
-      </div>
-
-      <div className="relative mt-3 min-h-0 flex-1">
-        {!compact ? (
-          <motion.p className="absolute inset-x-0 top-0 text-xs leading-relaxed text-[#828081]" style={{ opacity: emptyOpacity, visibility: emptyVisibility }}>
-            对话里提到的人数、日期、身体情况与预算，会在这里整理成一张可以确认的画像。
-          </motion.p>
-        ) : null}
-        <FieldGroup title="硬约束" fields={HARD} compact={compact} />
-        <FieldGroup title="偏好" fields={SOFT} compact={compact} className={compact ? 'mt-2' : 'mt-4'} />
-      </div>
-
-      <Reveal at={T.profileReady} y={8} className={compact ? 'pt-3' : 'pt-4'}>
-        <PathButtons />
-      </Reveal>
-    </div>
-  );
+interface ProfileField {
+  label: string;
+  Icon: ComponentType<IconProps>;
+  /** 在 T.profileFields 中的出现顺序（按对话提及的先后） */
+  order: number;
+  inferred?: boolean;
+  full: ReactNode;
+  compact: ReactNode;
 }
 
-function FieldGroup({ title, fields, compact, className = '' }: { title: string; fields: ProfileField[]; compact: boolean; className?: string }) {
-  const p = useProgress();
-  const fade = useFadeStyle(p, T.profileFields[fields[0].order] - 0.004, T.profileFields[fields[0].order]);
-  return (
-    <div className={className}>
-      <motion.p className="text-xs text-[#828081]" style={fade}>
-        {title}
-      </motion.p>
-      <ul className="mt-1 flex flex-col gap-0.5">
-        {fields.map((f) => (
-          <ProfileRow key={f.label} field={f} compact={compact} />
+/** 同行人：剪影按人数排开，长者与儿童单独标注 */
+function Travelers() {
+  const group = (kinds: ('adult' | 'elder' | 'child')[], caption: string) => (
+    <span className="flex flex-col items-start gap-0.5">
+      <span className="flex items-end text-ui-ink-2">
+        {kinds.map((k, i) => (
+          <PersonGlyph key={i} kind={k} className={k === 'child' ? '-ml-1 h-5 w-5 first:ml-0' : '-ml-1 h-6 w-6 first:ml-0'} />
         ))}
-      </ul>
+      </span>
+      <span className="text-xs leading-4 text-ui-ink-2">{caption}</span>
+    </span>
+  );
+  return (
+    <span className="flex items-end gap-4">
+      {group(['adult', 'adult', 'adult'], '成人 ×3')}
+      {group(['elder'], '长者 70+')}
+      {group(['child'], '儿童 4 岁')}
+    </span>
+  );
+}
+
+/** 日期：国庆前后，8–10 天的弹性区间 */
+function DateBar() {
+  return (
+    <span className="block w-full">
+      <span className="relative block h-5">
+        <span className="absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-ui-sunken" />
+        {/* 必须的 8 天实心，可延长的 2 天渐隐 */}
+        <span className="absolute left-[8%] right-[26%] top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-ui-accent" />
+        <span className="absolute left-[73%] right-[8%] top-1/2 h-1.5 -translate-y-1/2 rounded-r-full bg-gradient-to-r from-ui-accent/60 to-ui-accent/0" />
+        {/* 10/1 国庆 */}
+        <span className="absolute left-[60%] top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-ui-surface bg-ui-ink" />
+      </span>
+      <span className="mt-0.5 flex justify-between text-xs leading-4 text-ui-ink-3">
+        <span>9/24</span>
+        <span className="text-ui-ink-2">国庆 · 8–10 天</span>
+        <span>10/3</span>
+      </span>
+    </span>
+  );
+}
+
+/** 预算：推断的人均区间（虚线框），刻度 ¥0–12k */
+function BudgetBar() {
+  return (
+    <span className="block w-full">
+      <span className="flex items-center justify-between gap-2">
+        <span className="text-[13px] font-medium tabular-nums text-ui-ink">
+          ¥5,000–7,000 <span className="text-xs font-normal text-ui-ink-3">/ 人</span>
+        </span>
+        <Badge tone="signal">推断 · 请确认</Badge>
+      </span>
+      <span className="relative mt-1 block h-2 rounded-full bg-ui-sunken">
+        <span className="absolute inset-y-[-2px] left-[41.6%] right-[41.6%] rounded-full border border-dashed border-ui-signal bg-ui-signal/15" />
+      </span>
+    </span>
+  );
+}
+
+const FIELDS: { title: string; fields: ProfileField[] }[] = [
+  {
+    title: '必须满足',
+    fields: [
+      { label: '同行', Icon: UsersIcon, order: 0, full: <Travelers />, compact: '3 成人 · 1 长者 70+ · 1 儿童 4 岁' },
+      {
+        label: '必去',
+        Icon: PinIcon,
+        order: 1,
+        full: (
+          <span className="flex flex-wrap gap-1.5">
+            <Chip>
+              <CatMark cat="sight" size={16} />
+              莫高窟
+            </Chip>
+            <Chip>
+              <CatMark cat="nature" size={16} />
+              鸣沙山日落
+            </Chip>
+          </span>
+        ),
+        compact: '莫高窟 · 鸣沙山日落',
+      },
+      {
+        label: '身体',
+        Icon: ElderIcon,
+        order: 3,
+        full: (
+          <span className="flex flex-wrap gap-1.5">
+            <Chip Icon={StairsIcon}>少走台阶</Chip>
+            <Chip Icon={MoonIcon}>13:00 午休</Chip>
+          </span>
+        ),
+        compact: '少走台阶 · 孩子 13:00 午休',
+      },
+      {
+        label: '车辆',
+        Icon: CarIcon,
+        order: 5,
+        full: (
+          <span className="flex flex-wrap items-center gap-1.5">
+            <span className="text-[13px] text-ui-ink">腾势 D9 · 车顶箱</span>
+            <Chip Icon={HeightIcon} tone="accent">
+              总高 2.28 m
+            </Chip>
+          </span>
+        ),
+        compact: '腾势 D9 · 总高 2.28 m',
+      },
+    ],
+  },
+  {
+    title: '偏好',
+    fields: [
+      { label: '日期', Icon: CalendarIcon, order: 2, full: <DateBar />, compact: '国庆前后 · 8–10 天' },
+      {
+        label: '方式',
+        Icon: CompassIcon,
+        order: 4,
+        full: (
+          <span className="flex flex-wrap gap-1.5">
+            <Chip Icon={CheckIcon}>自驾</Chip>
+            <Chip Icon={CheckIcon}>旅行社</Chip>
+          </span>
+        ),
+        compact: '自驾或旅行社都可以',
+      },
+      { label: '预算', Icon: WalletIcon, order: 6, inferred: true, full: <BudgetBar />, compact: '人均 ¥5,000–7,000' },
+    ],
+  },
+];
+
+/** 画像完成度：0 → 7 项，环形进度随每一项平滑推进 */
+function useProfileCount() {
+  const p = useProgress();
+  const count = useStep(p, T.profileFields);
+  const input: number[] = [];
+  const output: number[] = [];
+  T.profileFields.forEach((t, i) => {
+    input.push(t, t + 0.004);
+    output.push(i / FIELD_COUNT, (i + 1) / FIELD_COUNT);
+  });
+  const ring = useRange(p, input, output);
+  return { count, ring };
+}
+
+function ProfilePanel() {
+  const { count, ring } = useProfileCount();
+  return (
+    <div className="flex h-full w-full flex-col p-4">
+      <div className="flex items-center gap-2.5">
+        <Ring value={ring} size={30} stroke={3}>
+          <span className="text-xs font-semibold tabular-nums text-ui-ink">{count}</span>
+        </Ring>
+        <div className="min-w-0 flex-1">
+          <p className="text-[15px] font-semibold leading-5 text-ui-ink">需求画像</p>
+          <p className="text-xs leading-4 text-ui-ink-3">从对话里整理 · {count} / {FIELD_COUNT} 项</p>
+        </div>
+      </div>
+
+      <div className="mt-3 min-h-0 flex-1">
+        {FIELDS.map((g, gi) => (
+          <div key={g.title} className={gi > 0 ? 'mt-2.5' : ''}>
+            <p className="text-xs font-medium text-ui-ink-3">{g.title}</p>
+            <ul className="mt-0.5 flex flex-col">
+              {g.fields.map((f) => (
+                <FieldRow key={f.label} field={f} />
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <PathButtons />
     </div>
   );
 }
 
-function ProfileRow({ field, compact }: { field: ProfileField; compact: boolean }) {
+function FieldRow({ field }: { field: ProfileField }) {
   const p = useProgress();
   const at = T.profileFields[field.order];
   const opacity = useRange(p, [at, at + 0.006], [0, 1]);
   const visibility = useFadeVisibility(opacity);
-  const x = useRange(p, [at, at + 0.008], [8, 0], { easing: ease.out, rest: 0 });
-
-  if (compact) {
-    return (
-      <motion.li className="flex h-7 items-center gap-2" style={{ opacity, visibility, x }}>
-        <field.Icon className="h-3.5 w-3.5 shrink-0 text-[#828081]" />
-        <span className="w-8 shrink-0 text-xs text-[#828081]">{field.label}</span>
-        <span className="min-w-0 flex-1 truncate text-[13px] text-[#241E20]">{field.value}</span>
-        {field.inferred ? <Badge tone="flame">推断</Badge> : null}
-      </motion.li>
-    );
-  }
+  const y = useRange(p, [at, at + 0.008], [6, 0], { easing: ease.out, rest: 0 });
+  const empty = useRange(p, [at - 0.002, at + 0.002], [1, 0]);
+  const emptyVisibility = useFadeVisibility(empty);
 
   return (
-    <motion.li
-      className={`rounded-[5px] px-2 ${field.inferred ? 'border border-dashed border-[#FE3C01]/50 bg-[#FE3C01]/[0.04] py-1' : ''}`}
-      style={{ opacity, visibility, x }}
-    >
-      <div className="flex h-7 items-center gap-2">
-        <field.Icon className="h-3.5 w-3.5 shrink-0 text-[#828081]" />
-        <span className="w-8 shrink-0 text-xs text-[#828081]">{field.label}</span>
-        <span className="min-w-0 flex-1 truncate text-[13px] text-[#241E20]">{field.value}</span>
-      </div>
-      {field.inferred ? <p className="pb-0.5 pl-[62px] text-xs font-medium text-[#C43200]">推断 · 请确认</p> : null}
-    </motion.li>
+    <li className="flex gap-2 py-[5px]">
+      <span className="flex h-6 w-[52px] shrink-0 items-center gap-1.5 text-xs text-ui-ink-3">
+        <field.Icon className="h-3.5 w-3.5 shrink-0" />
+        {field.label}
+      </span>
+      <span className="relative flex min-h-6 min-w-0 flex-1 items-center">
+        {/* 空位：还没聊到这一项 */}
+        <motion.span
+          aria-hidden
+          className="absolute left-0 top-1 h-4 rounded-full border border-dashed border-ui-line-strong"
+          style={{ width: `${[72, 58, 64, 50, 80, 46, 68][field.order]}%`, opacity: empty, visibility: emptyVisibility }}
+        />
+        <motion.span className="block w-full" style={{ opacity, visibility, y }}>
+          {field.full}
+        </motion.span>
+      </span>
+    </li>
   );
 }
 
 /* ── 两条路径入口（docs/16 §16.4）：路径 B 按钮直接显示匹配数量 ── */
 function PathButtons() {
   const p = useProgress();
+  const fade = useFadeStyle(p, T.profileReady[0], T.profileReady[1]);
+  const y = useRange(p, T.profileReady, [8, 0], { rest: 0 });
   const picked = useStep(p, [T.pathClick]) === 1;
   const press = useRange(p, [T.pathClick - 0.003, T.pathClick, T.pathClick + 0.003], [1, 0.96, 1]);
 
   return (
-    <div className="flex flex-col gap-2">
-      <motion.span className={`${btn.primary} relative h-9 w-full`} style={{ scale: press }}>
+    <motion.div className="flex shrink-0 flex-col gap-2 pt-3" style={{ ...fade, y }}>
+      <motion.span className={`${btn.primary} relative h-10 w-full`} style={{ scale: press }}>
         {picked ? (
           <>
-            <span className="h-3 w-3 animate-spin rounded-full border-2 border-[#FFFFF9] border-t-transparent" />
+            <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />
             正在规划自驾路线…
           </>
         ) : (
           <>
-            <SparklesIcon className="h-3.5 w-3.5 text-[#FE3C01]" />
+            <SparklesIcon className="h-4 w-4" />
             AI 规划自驾路线
           </>
         )}
-        <TapCursor approach={T.pathCursor} clickAt={T.pathClick} hideAt={T.dialogueScene[2]} className="right-10 top-4" />
+        <TapCursor approach={T.pathCursor} clickAt={T.pathClick} hideAt={T.dialogueScene[2]} className="right-10 top-5" />
       </motion.span>
-      <span className={`${btn.secondary} h-9 w-full`}>
-        <BuildingIcon className="h-3.5 w-3.5 text-[#625F61]" />
+      <span className={`${btn.secondary} h-10 w-full`}>
+        <BuildingIcon className="h-4 w-4 text-ui-ink-2" />
         看旅行社线路
-        <span className="tabular-nums text-[#625F61]">· 23 条匹配</span>
+        <span className="tabular-nums text-ui-ink-3">· 23 条匹配</span>
       </span>
-    </div>
+    </motion.div>
+  );
+}
+
+/* ═════════════════════ 窄视窗：顶部进度胶囊 + 底部抽屉 ═════════════════════ */
+
+/** 窄视窗没有右侧面板：标题栏里用一个小进度环显示画像整理到第几项 */
+function HeaderProgress() {
+  const p = useProgress();
+  const { count, ring } = useProfileCount();
+  const fade = useFadeStyle(p, T.profileFields[0], T.profileFields[0] + 0.004);
+  return (
+    <motion.span className="flex shrink-0 items-center gap-1.5 text-xs text-ui-ink-2 cq-md:hidden" style={fade}>
+      <Ring value={ring} size={20} stroke={2.5} />
+      画像
+      <span className="tabular-nums">
+        {count}/{FIELD_COUNT}
+      </span>
+    </motion.span>
   );
 }
 
@@ -395,12 +541,26 @@ function MobileProfileSheet() {
   const visibility = useVisibility(p, T.profileReady[0] - 0.012, 2);
 
   return (
-    <motion.div
-      className="absolute inset-x-0 bottom-0 z-30 rounded-t-[16px] border-t border-[#E2E2D8] bg-white px-4 pb-4 pt-2 shadow-[0_-16px_40px_rgba(36,30,32,0.12)] cq-md:hidden"
-      style={{ y: yPct, visibility }}
-    >
-      <span aria-hidden className="mx-auto mb-3 block h-1 w-9 rounded-full bg-[#E2E2D8]" />
-      <ProfilePanel compact />
+    <motion.div className="ui-float absolute inset-x-0 bottom-0 z-30 rounded-t-ui-panel !border-x-0 !border-b-0 px-4 pb-4 pt-2 cq-md:hidden" style={{ y: yPct, visibility }}>
+      <span aria-hidden className="mx-auto mb-3 block h-1 w-9 rounded-full bg-ui-line-strong" />
+      <div className="flex items-center gap-2.5">
+        <Ring value={1} size={26} stroke={2.5}>
+          <CheckIcon className="h-3.5 w-3.5 text-ui-accent-ink" />
+        </Ring>
+        <p className="min-w-0 flex-1 text-[15px] font-semibold text-ui-ink">需求画像 · 7 项</p>
+        <Badge tone="signal">1 项推断</Badge>
+      </div>
+      <ul className="mt-2.5 flex flex-col">
+        {FIELDS.flatMap((g) => g.fields).map((f) => (
+          <li key={f.label} className="flex h-8 items-center gap-2 border-b border-ui-line last:border-b-0">
+            <f.Icon className="h-3.5 w-3.5 shrink-0 text-ui-ink-3" />
+            <span className="w-8 shrink-0 text-xs text-ui-ink-3">{f.label}</span>
+            <span className="min-w-0 flex-1 truncate text-[13px] text-ui-ink">{f.compact}</span>
+            {f.inferred ? <Badge tone="signal">推断</Badge> : null}
+          </li>
+        ))}
+      </ul>
+      <PathButtons />
     </motion.div>
   );
 }

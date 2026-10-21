@@ -108,9 +108,9 @@ function VersionBadge() {
 function Members() {
   return (
     <span className="flex items-center">
-      <Avatar name="我" tone="gold" size={24} />
-      <JoiningAvatar name="阿杰" tone="jade" range={T.joinAJie} />
-      <JoiningAvatar name="小雨" tone="lapis" range={T.joinXiaoyu} />
+      <Avatar name="我" tone="violet" size={24} />
+      <JoiningAvatar name="阿杰" tone="teal" range={T.joinAJie} />
+      <JoiningAvatar name="小雨" tone="rose" range={T.joinXiaoyu} />
     </span>
   );
 }

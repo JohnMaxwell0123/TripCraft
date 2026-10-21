@@ -23,7 +23,7 @@ export function NominationCard() {
   return (
     <div className="rounded-[12px] border border-[#E2E2D8] bg-white p-3">
       <div className="flex items-center gap-2">
-        <Avatar name="阿杰" tone="jade" size={24} />
+        <Avatar name="阿杰" tone="teal" size={24} />
         <span className="text-[13px] font-medium text-[#241E20]">阿杰</span>
         <span className="text-xs text-[#828081]">提名 · 刚刚</span>
       </div>

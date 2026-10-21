@@ -415,6 +415,217 @@ body {
   }
 }
 
+/* ==========================================================================
+ * 产品界面令牌：演示舞台应用视窗的内部（产品 UI 的 D10 提案，PRD-01 §9）
+ *
+ * 视觉语言与示例线路无关——配色、图标、地图样式、插画都不取材于某条线路的地貌，换成任何目的地都成立。
+ * 颜色来自三处：中性的界面底色；一种品牌 / 交互强调色；内容自带的颜色（地点类别、地图要素、行程封面）。
+ * 样张阶段两套方向用视窗根节点的 data-ui 切换，组件只用语义令牌（tailwind.config.ts 的 ui-*）：
+ *   paper：暖白 · 品牌橙——实色面板、发丝边，品牌橙沿用演示站的烈焰橙
+ *   glass：冷灰 · 液态玻璃——docs/09 的液态玻璃材质 + 冰川银中性配色，浮层半透明叠在地图上
+ * 色值是 RGB 三元组，便于 Tailwind 的透明度写法（bg-ui-accent/10）。
+ * ======================================================================== */
+[data-ui] {
+  /* 地点类别：沿用地图 App 的通行约定（景点紫、自然绿、餐饮橙、住宿品红、交通蓝、服务区青） */
+  --ui-cat-sight: 109 91 208;
+  --ui-cat-nature: 39 150 86;
+  --ui-cat-food: 226 108 10;
+  --ui-cat-stay: 190 62 134;
+  --ui-cat-transport: 58 120 210;
+  --ui-cat-service: 13 140 135;
+}
+
+[data-ui='paper'] {
+  --ui-shell: 243 242 238;
+  --ui-panel: 255 255 255;
+  --ui-surface: 255 255 255;
+  --ui-sunken: 246 245 241;
+  --ui-line: 233 231 225;
+  --ui-line-strong: 213 210 202;
+  --ui-ink: 36 30 32;
+  --ui-ink-2: 90 85 87;
+  --ui-ink-3: 117 112 114;
+  --ui-accent: 254 60 1;
+  --ui-accent-ink: 196 50 0;
+  --ui-primary: 36 30 32;
+  --ui-on-primary: 255 255 249;
+  --ui-signal: 254 60 1;
+  --ui-signal-ink: 196 50 0;
+  --ui-success: 14 122 90;
+  --ui-route: 254 60 1;
+  --ui-bubble-user: 241 239 233;
+  --ui-on-bubble-user: 36 30 32;
+
+  --ui-map-land: 241 240 236;
+  --ui-map-urban: 229 227 221;
+  --ui-map-water: 172 205 234;
+  --ui-map-water-ink: 46 104 156;
+  --ui-map-green: 208 229 200;
+  --ui-map-green-ink: 54 112 66;
+  --ui-map-road: 255 255 255;
+  --ui-map-casing: 222 219 211;
+  --ui-map-highway: 255 234 168;
+  --ui-map-highway-casing: 232 196 104;
+
+  --ui-r-panel: 14px;
+  --ui-r-card: 12px;
+  --ui-r-ctl: 8px;
+  --ui-r-btn: 8px;
+  --ui-shadow-card: 0 1px 2px rgb(36 30 32 / 0.05);
+  --ui-shadow-float: 0 1px 2px rgb(36 30 32 / 0.06), 0 12px 32px -8px rgb(36 30 32 / 0.18);
+  --ui-shadow-pop: 0 2px 4px rgb(36 30 32 / 0.05), 0 22px 48px -12px rgb(36 30 32 / 0.26);
+  --ui-shell-bg: rgb(var(--ui-shell));
+}
+
+[data-ui='glass'] {
+  --ui-shell: 226 232 238;
+  --ui-panel: 243 246 248;
+  --ui-surface: 255 255 255;
+  --ui-sunken: 235 239 243;
+  --ui-line: 218 225 231;
+  --ui-line-strong: 196 205 214;
+  --ui-ink: 28 37 41;
+  --ui-ink-2: 71 85 96;
+  --ui-ink-3: 98 111 122;
+  --ui-accent: 36 113 185;
+  --ui-accent-ink: 30 98 163;
+  --ui-primary: 36 113 185;
+  --ui-on-primary: 255 255 255;
+  --ui-signal: 214 110 0;
+  --ui-signal-ink: 166 84 0;
+  --ui-success: 26 127 70;
+  --ui-route: 36 113 185;
+  --ui-bubble-user: 36 113 185;
+  --ui-on-bubble-user: 255 255 255;
+
+  --ui-map-land: 235 239 242;
+  --ui-map-urban: 222 228 233;
+  --ui-map-water: 166 201 233;
+  --ui-map-water-ink: 40 96 150;
+  --ui-map-green: 206 229 212;
+  --ui-map-green-ink: 48 110 72;
+  --ui-map-road: 255 255 255;
+  --ui-map-casing: 208 216 224;
+  --ui-map-highway: 255 255 255;
+  --ui-map-highway-casing: 176 190 204;
+
+  --ui-r-panel: 22px;
+  --ui-r-card: 16px;
+  --ui-r-ctl: 12px;
+  --ui-r-btn: 999px;
+  --ui-shadow-card: 0 1px 2px rgb(20 40 60 / 0.06);
+  --ui-shadow-float: 0 1px 1px rgb(20 40 60 / 0.04), 0 14px 36px -10px rgb(20 40 60 / 0.24), inset 0 1px 0 rgb(255 255 255 / 0.85);
+  --ui-shadow-pop: 0 2px 6px rgb(20 40 60 / 0.06), 0 24px 52px -14px rgb(20 40 60 / 0.32), inset 0 1px 0 rgb(255 255 255 / 0.85);
+  --ui-shell-bg: linear-gradient(165deg, #EDF1F5 0%, #DFE6EC 55%, #D6DEE6 100%);
+}
+
+@layer components {
+  /* 视窗外壳底色（标题栏 + 侧栏） */
+  .ui-shell {
+    background: var(--ui-shell-bg);
+  }
+
+  /* 浮层：叠在地图或内容上的面板、底部抽屉、弹出层 */
+  .ui-float {
+    background: rgb(var(--ui-surface));
+    border: 1px solid rgb(var(--ui-line));
+    box-shadow: var(--ui-shadow-float);
+  }
+  [data-ui='glass'] .ui-float {
+    background: rgb(255 255 255 / 0.7);
+    -webkit-backdrop-filter: blur(22px) saturate(170%);
+    backdrop-filter: blur(22px) saturate(170%);
+    border-color: rgb(255 255 255 / 0.8);
+  }
+  /* 卡片：内容区里的一张卡 */
+  .ui-card {
+    background: rgb(var(--ui-surface));
+    border: 1px solid rgb(var(--ui-line));
+    border-radius: var(--ui-r-card);
+    box-shadow: var(--ui-shadow-card);
+  }
+  [data-ui='glass'] .ui-card {
+    border-color: rgb(255 255 255 / 0.9);
+  }
+
+  /* 按钮：32px 高，13px / 500 */
+  .ui-btn {
+    display: inline-flex;
+    height: 32px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+    border-radius: var(--ui-r-btn);
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1;
+  }
+  .ui-btn-primary {
+    background: rgb(var(--ui-primary));
+    color: rgb(var(--ui-on-primary));
+  }
+  .ui-btn-secondary {
+    background: rgb(var(--ui-surface));
+    color: rgb(var(--ui-ink));
+    box-shadow: inset 0 0 0 1px rgb(var(--ui-line-strong));
+  }
+  [data-ui='glass'] .ui-btn-secondary {
+    background: rgb(255 255 255 / 0.72);
+    box-shadow: inset 0 0 0 1px rgb(var(--ui-line-strong) / 0.8);
+  }
+  .ui-btn-quiet {
+    color: rgb(var(--ui-ink-2));
+    padding: 0 8px;
+  }
+
+  /* 上下文面板（对话旁的需求画像等）：paper 是贴边的一栏；glass 是浮起的一块玻璃 */
+  .ui-aside {
+    background: rgb(var(--ui-surface));
+    border-left: 1px solid rgb(var(--ui-line));
+  }
+  [data-ui='glass'] .ui-aside {
+    margin: 8px;
+    border: 1px solid rgb(255 255 255 / 0.85);
+    border-radius: var(--ui-r-panel);
+    background: rgb(255 255 255 / 0.66);
+    box-shadow: var(--ui-shadow-float);
+    -webkit-backdrop-filter: blur(22px) saturate(170%);
+    backdrop-filter: blur(22px) saturate(170%);
+  }
+
+  /* 侧栏当前项 */
+  .ui-nav-active {
+    background: rgb(var(--ui-surface));
+    box-shadow: inset 0 0 0 1px rgb(var(--ui-line)), var(--ui-shadow-card);
+  }
+  [data-ui='glass'] .ui-nav-active {
+    background: rgb(var(--ui-accent) / 0.12);
+    box-shadow: none;
+  }
+  [data-ui='glass'] .ui-nav-active,
+  [data-ui='glass'] .ui-nav-active svg {
+    color: rgb(var(--ui-accent-ink));
+  }
+
+  /* 胶囊标签：图标 + 文字（条件方块、快捷回复、画像里的取值） */
+  .ui-chip {
+    display: inline-flex;
+    height: 26px;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+    border-radius: 999px;
+    padding: 0 10px;
+    font-size: 12px;
+    color: rgb(var(--ui-ink));
+    background: rgb(var(--ui-sunken));
+  }
+}
+
 @layer utilities {
   .gpu-layer {
     transform: translateZ(0);

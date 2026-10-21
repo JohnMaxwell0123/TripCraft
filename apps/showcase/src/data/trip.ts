@@ -23,7 +23,11 @@ export function project(lon: number, lat: number): [number, number] {
 /*  日程                                                                         */
 /* -------------------------------------------------------------------------- */
 
-export type Tone = 'jade' | 'amber' | 'lapis' | 'ochre';
+/** 地点类别（与界面的类别配色、图形一一对应，见 stage/ui.tsx） */
+export type PlaceCategory = 'sight' | 'nature' | 'food' | 'stay' | 'transport' | 'service';
+
+/** 日程标签的图形：这一天怎样照顾到需求画像 */
+export type DayTagIcon = 'parking' | 'mountain' | 'bus' | 'sunset' | 'coffee' | 'accessible' | 'moon' | 'plane';
 
 export interface DayPlan {
   tag: string;
@@ -33,20 +37,73 @@ export interface DayPlan {
   meta: string;
   /** 当天车程；不开车的日子留空 */
   drive?: string;
-  badge?: { tone: Tone; text: string };
+  /** 当天车程里程 */
+  km?: number;
+  /** 当天主要地点的类别 */
+  cat: PlaceCategory;
+  /** meta 拆成带图形的标签 */
+  tags: { icon: DayTagIcon; text: string }[];
 }
 
 /** 路径 A 的自驾草案（全家 5 口 · 腾势 D9 带车顶箱，总高 2.28 m） */
 export const DAYS: DayPlan[] = [
-  { tag: 'D0', date: '09/24', title: '兰州 · 落地取车', meta: '酒店地面车位 · 避开 2.0 m 限高地库' },
-  { tag: 'D1', date: '09/25', title: '兰州 → 张掖', meta: '翻越乌鞘岭 · 车上通过最高点', drive: '6 h' },
-  { tag: 'D2', date: '09/26', title: '七彩丹霞 → 嘉峪关', meta: '景区环保车 · 17:40 看丹霞', drive: '3 h' },
-  { tag: 'D3', date: '09/27', title: '嘉峪关 → 敦煌', meta: '13:00 瓜州服务区午休', drive: '4.5 h' },
-  { tag: 'D4', date: '09/28', title: '莫高窟', meta: '无障碍接驳 · 只看平层窟' },
-  { tag: 'D5', date: '09/29', title: '鸣沙山 · 月牙泉', meta: '电瓶车上山 · 19:30 日落' },
-  { tag: 'D6', date: '09/30', title: '阳关 · 玉门关', meta: '午后回酒店休息', drive: '2.5 h' },
-  { tag: 'D7', date: '10/01', title: '雅丹', meta: '日落后原路返回，不夜行', drive: '3 h' },
-  { tag: 'D8', date: '10/02', title: '敦煌还车 · 返程', meta: '11:20 航班' },
+  { tag: 'D0', date: '09/24', title: '兰州 · 落地取车', meta: '酒店地面车位 · 避开 2.0 m 限高地库', cat: 'transport', tags: [{ icon: 'parking', text: '地面车位 · 避开 2.0 m 限高' }] },
+  { tag: 'D1', date: '09/25', title: '兰州 → 张掖', meta: '翻越乌鞘岭 · 车上通过最高点', drive: '6 h', km: 505, cat: 'nature', tags: [{ icon: 'mountain', text: '乌鞘岭 · 车上通过最高点' }] },
+  { tag: 'D2', date: '09/26', title: '七彩丹霞 → 嘉峪关', meta: '景区环保车 · 17:40 看丹霞', drive: '3 h', km: 225, cat: 'nature', tags: [{ icon: 'sunset', text: '17:40 看丹霞' }, { icon: 'bus', text: '景区环保车' }] },
+  { tag: 'D3', date: '09/27', title: '嘉峪关 → 敦煌', meta: '13:00 瓜州服务区午休', drive: '4.5 h', km: 383, cat: 'service', tags: [{ icon: 'coffee', text: '13:00 瓜州服务区午休' }] },
+  { tag: 'D4', date: '09/28', title: '莫高窟', meta: '无障碍接驳 · 只看平层窟', cat: 'sight', tags: [{ icon: 'accessible', text: '无障碍接驳 · 只看平层窟' }] },
+  { tag: 'D5', date: '09/29', title: '鸣沙山 · 月牙泉', meta: '电瓶车上山 · 19:30 日落', cat: 'nature', tags: [{ icon: 'sunset', text: '19:30 日落' }, { icon: 'bus', text: '电瓶车上山' }] },
+  { tag: 'D6', date: '09/30', title: '阳关 · 玉门关', meta: '午后回酒店休息', drive: '2.5 h', km: 220, cat: 'sight', tags: [{ icon: 'moon', text: '午后回酒店休息' }] },
+  { tag: 'D7', date: '10/01', title: '雅丹', meta: '日落后原路返回，不夜行', drive: '3 h', km: 360, cat: 'nature', tags: [{ icon: 'sunset', text: '日落后返回 · 不夜行' }] },
+  { tag: 'D8', date: '10/02', title: '敦煌还车 · 返程', meta: '11:20 航班', cat: 'transport', tags: [{ icon: 'plane', text: '11:20 航班' }] },
+];
+
+/* -------------------------------------------------------------------------- */
+/*  行程封面：同一套「路线图形」画法，换任何目的地都成立（stage/RouteGlyph.tsx）    */
+/* -------------------------------------------------------------------------- */
+
+/** 封面渐变：一组与目的地无关的配色，按行程分配，不按地貌取色 */
+export const COVER_PALETTES = {
+  indigo: ['#4F46E5', '#8B5CF6'],
+  ocean: ['#0F766E', '#2563EB'],
+  berry: ['#BE185D', '#7C3AED'],
+  sky: ['#0369A1', '#38BDF8'],
+} as const;
+
+export type CoverPalette = keyof typeof COVER_PALETTES;
+
+export interface TripSummary {
+  id: string;
+  name: string;
+  sub: string;
+  palette: CoverPalette;
+  /** 路线形状：途经点经纬度 */
+  shape: ReadonlyArray<readonly [number, number]>;
+}
+
+/** 示例行程「西行计划」（河西走廊）与账号里其他目的地的行程——界面换了目的地照样成立 */
+export const TRIPS: TripSummary[] = [
+  {
+    id: 'xixing',
+    name: '西行计划',
+    sub: '河西走廊 · 9 天',
+    palette: 'indigo',
+    shape: [[103.82, 36.06], [102.87, 37.2], [102.64, 37.93], [100.45, 38.93], [98.29, 39.77], [95.78, 40.52], [94.72, 40.1], [93.86, 40.35], [93.08, 40.55]],
+  },
+  {
+    id: 'chuanxi',
+    name: '川西 · 稻城亚丁',
+    sub: '草稿 · 7 天',
+    palette: 'ocean',
+    shape: [[104.07, 30.67], [103.0, 29.98], [101.96, 30.05], [101.49, 30.07], [100.27, 29.99], [100.3, 29.04], [100.36, 28.43]],
+  },
+  {
+    id: 'kyoto',
+    name: '京都 · 赏枫',
+    sub: '2025 · 5 天',
+    palette: 'berry',
+    shape: [[135.758, 34.985], [135.772, 34.967], [135.785, 34.995], [135.798, 35.027], [135.729, 35.039], [135.672, 35.009], [135.758, 34.985]],
+  },
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -64,20 +121,22 @@ export interface RouteStop {
   /** 地图上是否绘制图钉（途经垭口仅绘制小三角） */
   kind: 'city' | 'sight' | 'pass' | 'via';
   labelSide?: 'left' | 'right' | 'top' | 'bottom';
+  /** 地图图钉的类别（城市与途经点不画图钉，只画圆点） */
+  cat?: PlaceCategory;
 }
 
 export const STOPS: RouteStop[] = [
   { id: 'lz', name: '兰州', sub: '中川机场集结', day: 'D0', lon: 103.82, lat: 36.06, elev: 1520, kind: 'city', labelSide: 'left' },
-  { id: 'wsl', name: '乌鞘岭', sub: '2980m 特长隧道', day: 'D1', lon: 102.87, lat: 37.2, elev: 2980, kind: 'pass', labelSide: 'left' },
+  { id: 'wsl', name: '乌鞘岭', sub: '2980m 特长隧道', day: 'D1', lon: 102.87, lat: 37.2, elev: 2980, kind: 'pass', labelSide: 'left', cat: 'nature' },
   { id: 'ww', name: '武威', sub: '天马故乡', day: 'D1', lon: 102.64, lat: 37.93, elev: 1530, kind: 'via', labelSide: 'right' },
   { id: 'zy', name: '张掖', sub: '甘州府', day: 'D1', lon: 100.45, lat: 38.93, elev: 1480, kind: 'city', labelSide: 'right' },
-  { id: 'dx', name: '七彩丹霞', sub: '17:40 晚霞机位', day: 'D2', lon: 100.0, lat: 38.92, elev: 1750, kind: 'sight', labelSide: 'bottom' },
-  { id: 'jyg', name: '嘉峪关', sub: '天下第一雄关', day: 'D2', lon: 98.29, lat: 39.77, elev: 1700, kind: 'city', labelSide: 'bottom' },
-  { id: 'gz', name: '瓜州', sub: '服务区午休', day: 'D3', lon: 95.78, lat: 40.52, elev: 1180, kind: 'via', labelSide: 'top' },
+  { id: 'dx', name: '七彩丹霞', sub: '17:40 晚霞机位', day: 'D2', lon: 100.0, lat: 38.92, elev: 1750, kind: 'sight', labelSide: 'bottom', cat: 'nature' },
+  { id: 'jyg', name: '嘉峪关', sub: '天下第一雄关', day: 'D2', lon: 98.29, lat: 39.77, elev: 1700, kind: 'city', labelSide: 'bottom', cat: 'sight' },
+  { id: 'gz', name: '瓜州', sub: '服务区午休', day: 'D3', lon: 95.78, lat: 40.52, elev: 1180, kind: 'via', labelSide: 'top', cat: 'service' },
   { id: 'dh', name: '敦煌', sub: '莫高窟 · 鸣沙山', day: 'D3–D5', lon: 94.72, lat: 40.1, elev: 1140, kind: 'city', labelSide: 'bottom' },
-  { id: 'yg', name: '阳关', sub: '丝路南道故址', day: 'D6', lon: 94.06, lat: 39.93, elev: 1250, kind: 'sight', labelSide: 'bottom' },
-  { id: 'ymg', name: '玉门关', sub: '汉长城遗址', day: 'D6', lon: 93.86, lat: 40.35, elev: 1050, kind: 'sight', labelSide: 'right' },
-  { id: 'yd', name: '雅丹', sub: '魔鬼城星空', day: 'D7', lon: 93.08, lat: 40.55, elev: 930, kind: 'sight', labelSide: 'top' },
+  { id: 'yg', name: '阳关', sub: '丝路南道故址', day: 'D6', lon: 94.06, lat: 39.93, elev: 1250, kind: 'sight', labelSide: 'bottom', cat: 'sight' },
+  { id: 'ymg', name: '玉门关', sub: '汉长城遗址', day: 'D6', lon: 93.86, lat: 40.35, elev: 1050, kind: 'sight', labelSide: 'right', cat: 'sight' },
+  { id: 'yd', name: '雅丹', sub: '魔鬼城星空', day: 'D7', lon: 93.08, lat: 40.55, elev: 930, kind: 'sight', labelSide: 'top', cat: 'nature' },
   { id: 'dh2', name: '敦煌', day: 'D8', lon: 94.8, lat: 40.2, elev: 1140, kind: 'via' },
 ];
 
