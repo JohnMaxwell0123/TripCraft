@@ -92,7 +92,7 @@ export function Workspace() {
 /* ── 全程概要：天数、里程、开车天数 ── */
 function Stats({ className = '' }: { className?: string }) {
   return (
-    <span className={`ui-float h-8 items-center gap-3 rounded-full px-3 text-xs text-ui-ink ${className}`}>
+    <span className={`ui-glass h-8 items-center gap-3 rounded-full px-3 text-xs text-ui-ink ${className}`}>
       <span className="inline-flex items-center gap-1.5">
         <CalendarIcon className="h-3.5 w-3.5 text-ui-ink-3" />9 天
       </span>
@@ -252,7 +252,7 @@ function MobileDaySheet() {
   const top = useTransform(center, (c) => `clamp(calc(100% - ${total}px), calc(35% - ${c.toFixed(1)}px), 0px)`);
 
   return (
-    <div className="ui-float absolute inset-x-0 bottom-0 top-[44%] z-10 flex flex-col rounded-t-ui-panel !border-x-0 !border-b-0 cq-sm:hidden">
+    <div className="ui-glass absolute inset-x-0 bottom-0 top-[44%] z-10 flex flex-col rounded-t-ui-panel !border-x-0 !border-b-0 cq-sm:hidden">
       <span aria-hidden className="mx-auto mt-2 block h-1 w-9 shrink-0 rounded-full bg-ui-line-strong" />
       <div className="flex shrink-0 items-center gap-3 px-4 pb-2 pt-2.5 text-xs text-ui-ink">
         <span className="inline-flex items-center gap-1.5">

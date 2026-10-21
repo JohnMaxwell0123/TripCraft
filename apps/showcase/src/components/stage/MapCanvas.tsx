@@ -48,8 +48,12 @@ export interface MapCanvasProps {
   frame?: string;
   /** 缩放与定位按钮 */
   controls?: string | false;
-  /** 比例尺与「示意底图」标注 */
+  /** 「示意底图」标注 */
   legend?: boolean;
+  /** 比例尺 */
+  scale?: boolean;
+  /** 小地图：底图上只留水系名，城镇与保护地的名字不画（避免拥挤） */
+  minimal?: boolean;
   /** 「示意底图」标注的位置（默认右下角） */
   legendClass?: string;
   className?: string;
@@ -64,6 +68,8 @@ export function MapCanvas({
   frame = 'inset-0',
   controls = false,
   legend = true,
+  scale = true,
+  minimal = false,
   legendClass = 'bottom-2 right-2',
   className = '',
 }: MapCanvasProps) {
@@ -81,7 +87,7 @@ export function MapCanvas({
             <motion.path d={route.d} fill="none" className="stroke-ui-route" strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" style={{ pathLength: draw }} />
           </svg>
 
-          {BASE_LABELS.map((l) => (
+          {BASE_LABELS.filter((l) => !minimal || l.kind === 'water').map((l) => (
             <span
               key={l.text}
               className={`pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-xs ${HALO} ${
@@ -102,7 +108,7 @@ export function MapCanvas({
 
           {head ? <Head route={route} draw={draw} /> : null}
 
-          {legend ? (
+          {scale ? (
             <span aria-hidden className="pointer-events-none absolute bottom-[3%] left-[2%]" style={{ width: `${(KM_100 / MAP_VIEW.w) * 100}%` }}>
               <span className={`block whitespace-nowrap text-xs leading-4 text-ui-ink-2 ${HALO}`}>100 km</span>
               <span className="block h-1.5 w-full border-x-2 border-b-2 border-ui-ink-2/70" />
@@ -112,7 +118,7 @@ export function MapCanvas({
       </div>
 
       {legend ? (
-        <span className={`pointer-events-none absolute rounded-full bg-ui-surface/80 px-2 text-xs leading-5 text-ui-ink-3 ${legendClass}`}>示意底图 · 非图商数据</span>
+        <span className={`ui-glass pointer-events-none absolute rounded-full px-2 text-xs leading-5 text-ui-ink-2 ${legendClass}`}>示意底图 · 非图商数据</span>
       ) : null}
       {controls ? <MapControls className={controls} /> : null}
     </div>
@@ -212,7 +218,7 @@ function MapControls({ className = '' }: { className?: string }) {
   const cell = 'flex h-8 w-8 items-center justify-center text-ui-ink-2';
   return (
     <div aria-hidden className={`pointer-events-none absolute flex flex-col gap-2 ${className}`}>
-      <span className="ui-float flex flex-col overflow-hidden rounded-ui-ctl">
+      <span className="ui-glass flex flex-col overflow-hidden rounded-ui-ctl">
         <span className={cell}>
           <PlusIcon className="h-4 w-4" />
         </span>
@@ -221,10 +227,10 @@ function MapControls({ className = '' }: { className?: string }) {
           <MinusIcon className="h-4 w-4" />
         </span>
       </span>
-      <span className={`ui-float rounded-ui-ctl ${cell}`}>
+      <span className={`ui-glass rounded-ui-ctl ${cell}`}>
         <LocateIcon className="h-4 w-4" />
       </span>
-      <span className={`ui-float rounded-ui-ctl ${cell}`}>
+      <span className={`ui-glass rounded-ui-ctl ${cell}`}>
         <LayersIcon className="h-4 w-4" />
       </span>
     </div>

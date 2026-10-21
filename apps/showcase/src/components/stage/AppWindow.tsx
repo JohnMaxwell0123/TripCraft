@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, type ComponentType, type ReactNode } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { useFade, useFadeVisibility, useStep } from '@/lib/motion';
 import { TapCursor, useProgress } from './primitives';
@@ -13,14 +13,10 @@ import type { IconProps } from '@/components/common/Icons';
  * 窄视窗（手机）：不画桌面标题栏，内容铺满，底部是移动端标签栏。
  * 视窗是 container-name: win 的尺寸容器，内部用 cq-sm / cq-md / cq-lg 变体按视窗自身宽度排版（见 tailwind.config.ts）。
  *
- * 视窗里是产品界面（D10 的提案）：只用语义令牌，视觉方向由根节点的 data-ui 决定（globals.css「产品界面令牌」）。
+ * 视窗里是产品界面（D10 的提案）：只用语义令牌，根节点的 data-ui 是令牌的作用域（globals.css「产品界面令牌」）。
  * 当前高亮哪个导航项、状态栏写什么、标题栏的时钟显示几点，由 sections 按全局进度分段决定；
  * 导航项可以带演示光标（tap）：章节之间的衔接通过点击真实的导航完成，下一屏就是这次点击的结果。
  */
-
-/** 视觉方向（样张阶段可切换）：paper = 暖白 · 品牌橙；glass = 冷灰 · 液态玻璃 */
-export type UiDirection = 'paper' | 'glass';
-export const UI_DIRECTION: UiDirection = 'paper';
 
 export interface WindowNavItem {
   id: string;
@@ -63,13 +59,12 @@ export function AppWindow({ title, product, nav, sections, account, sidebarExtra
     sections.slice(1).map((s) => s.at),
   );
   const current = sections[step];
-  useDirectionHook();
 
   return (
     <div
       role="img"
       aria-label={ariaLabel}
-      data-ui={UI_DIRECTION}
+      data-ui="app"
       className="ui-shell relative h-[620px] w-full overflow-hidden rounded-[18px] border border-[#D7D7CF] text-left text-ui-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.86),0_0_0_1px_rgba(0,0,0,0.03),0_32px_64px_-24px_rgba(36,30,32,0.28)] [container-name:win] [container-type:inline-size] sm:h-[640px] lg:h-[660px]"
     >
       <div className="pointer-events-none flex h-full select-none flex-col">
@@ -127,19 +122,6 @@ export function AppWindow({ title, product, nav, sections, account, sidebarExtra
       </div>
     </div>
   );
-}
-
-/**
- * 样张阶段的调试钩子：window.__setUiDirection('paper' | 'glass') 切换两段舞台视窗的视觉方向（只改 data-ui 属性，
- * 不触发 React 渲染）。方向定下后删除。
- */
-function useDirectionHook() {
-  useEffect(() => {
-    const win = window as unknown as Record<string, unknown>;
-    win.__setUiDirection = (d: UiDirection) => {
-      document.querySelectorAll('[data-ui]').forEach((el) => el.setAttribute('data-ui', d));
-    };
-  }, []);
 }
 
 function NavBadge({ badge }: { badge: NonNullable<WindowNavItem['badge']> }) {

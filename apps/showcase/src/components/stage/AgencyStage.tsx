@@ -7,6 +7,7 @@ import { StudioImport } from './StudioImport';
 import { StudioListing } from './StudioListing';
 import { StudioRoadbook } from './StudioRoadbook';
 import { InquiryNotice, StudioInbox } from './StudioInbox';
+import { Avatar } from './primitives';
 import { BarChartIcon, InboxIcon, MapIcon, ReceiptIcon } from '@/components/common/Icons';
 
 /**
@@ -101,7 +102,7 @@ export function AgencyStage() {
         nav={NAV}
         sections={SECTIONS}
         account={{
-          avatar: <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#1F4E5A] text-xs font-semibold text-white">林</span>,
+          avatar: <Avatar name="林舟" tone="slate" size={24} />,
           name: '林舟 · 定制师',
           note: '敦煌某国际旅行社',
         }}

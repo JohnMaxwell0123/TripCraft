@@ -2,56 +2,53 @@
 
 import type { ReactNode } from 'react';
 import { motion, useTransform } from 'framer-motion';
-import { DAYS, qrPath } from '@/data/trip';
-import { ease, useFade, useRange, useStep, useVisibility } from '@/lib/motion';
+import { DAYS, LISTING_COVERS, TRIPS, qrPath, type PlaceCategory } from '@/data/trip';
+import { ease, useFade, useFadeStyle, useFadeVisibility, useRange, useStep, useVisibility } from '@/lib/motion';
 import { T, sec } from './timeline';
-import { Avatar, Reveal, Scene, TapCursor, Toast, useProgress, type AvatarTone } from './primitives';
-import { Badge, PageHeader, btn } from './ui';
+import { Avatar, Scene, TapCursor, Toast, useProgress, type AvatarTone } from './primitives';
+import { Badge, CatMark, CatTile, btn } from './ui';
+import { RouteGlyph } from './RouteGlyph';
 import { NominationCard } from './Recommend';
 import { DeviceSync } from './SyncFinale';
-import { BuildingIcon, CheckIcon, CopyIcon, LinkIcon, SparklesIcon, UtensilsIcon } from '@/components/common/Icons';
+import { CarIcon, CheckIcon, ClockIcon, CopyIcon, LinkIcon, SparklesIcon } from '@/components/common/Icons';
 
 /**
  * 04 幕 · 行程空间：多人共享与多端同步（docs/15、PRD-01 支柱 3）
  *
  * 03 幕末尾点了侧栏「行程空间」，这一屏就是它的结果：02 幕存下的自驾草案与 03 幕刚发出的咨询并排放着
- * （PRD-01 §2：两条路径都落到行程空间）。等旅行社回复的时候——
+ * （PRD-01 §2：两条路径都落到行程空间），两张方案卡各带自己的路线封面。等旅行社回复的时候——
  * 领队用链接邀请家人（加入后可查看与提名，改动由领队确认）→ 阿杰、小雨加入 →
  * 阿杰提名一个地点，AI 评估代价 → 领队确认，D0 晚上插入新安排，版本 v1.0 → v1.1 → 逐台设备同步。
  */
 
 const QR = qrPath();
+const [XIXING] = TRIPS;
 
 export function TripSpaceScene() {
   return (
     <Scene range={T.shareScene} label="行程空间：多人共享与多端同步">
-      <PageHeader
-        title={
-          <span className="inline-flex items-center gap-2">
+      <header className="flex h-16 shrink-0 items-center gap-3 border-b border-ui-line px-4">
+        <RouteGlyph trip={XIXING} className="h-10 w-10 shrink-0 rounded-[10px]" />
+        <div className="min-w-0 flex-1">
+          <h3 className="flex items-center gap-2 truncate text-[15px] font-semibold leading-5 text-ui-ink">
             西行计划
             <VersionBadge />
-          </span>
-        }
-        subtitle="河西走廊 · 两个方案 · 领队：我"
-        actions={
-          <>
-            <Members />
-            <InviteButton />
-          </>
-        }
-      />
+          </h3>
+          <p className="truncate text-xs leading-4 text-ui-ink-3">河西走廊 · 9/24–10/2 · 两个方案 · 领队：我</p>
+        </div>
+        <Members />
+        <InviteButton />
+      </header>
 
       <div className="relative flex min-h-0 flex-1">
-        <section className="min-w-0 flex-1 overflow-hidden px-4 py-3">
+        <section className="min-w-0 flex-1 overflow-hidden px-3 py-3 cq-sm:px-4">
           <PlanStrip />
           <Itinerary />
         </section>
 
-        <aside className="hidden w-[296px] shrink-0 flex-col gap-4 border-l border-[#EEEDE7] bg-[#FCFBF8] p-4 cq-md:flex">
+        <aside className="ui-aside hidden w-[296px] shrink-0 flex-col gap-4 p-4 cq-md:flex">
           <NominationPanel />
-          <Reveal at={T.syncIn} y={8}>
-            <DeviceSync />
-          </Reveal>
+          <SyncReveal />
         </aside>
 
         <InvitePopover />
@@ -76,22 +73,29 @@ function PlanStrip() {
   const p = useProgress();
   const [a, b] = T.planIn;
   const flash = useRange(p, [a, b, b + sec(1.4)], [0, 1, 0]);
+  const flashVisibility = useFadeVisibility(flash);
   return (
     <div className="mb-3 grid grid-cols-2 gap-2">
-      <div className="min-w-0 rounded-[10px] border border-[#241E20] bg-white px-3 py-2">
-        <p className="flex items-center gap-1.5 truncate text-xs text-[#625F61]">
-          <SparklesIcon className="h-3 w-3 shrink-0 text-[#FE3C01]" />
-          正在看 · AI 规划
-        </p>
-        <p className="mt-0.5 truncate text-[13px] font-medium text-[#241E20]">自驾草案 · 9 天</p>
+      <div className="ui-card flex min-w-0 items-center gap-2 !border-ui-ink p-2">
+        <RouteGlyph trip={XIXING} className="hidden h-9 w-9 shrink-0 rounded-[8px] cq-sm:block" />
+        <div className="min-w-0">
+          <p className="truncate text-[13px] font-semibold text-ui-ink">自驾草案 · 9 天</p>
+          <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-ui-ink-2">
+            <SparklesIcon className="h-3 w-3 shrink-0 text-ui-accent" />
+            AI 规划 · 正在看
+          </p>
+        </div>
       </div>
-      <div className="relative min-w-0 rounded-[10px] border border-[#E2E2D8] bg-white px-3 py-2">
-        <motion.span aria-hidden className="absolute -inset-px rounded-[10px] ring-2 ring-[#FE3C01]/40" style={{ opacity: flash }} />
-        <p className="flex items-center gap-1.5 truncate text-xs text-[#625F61]">
-          <BuildingIcon className="h-3 w-3 shrink-0" />
-          已咨询 · 等待报价
-        </p>
-        <p className="mt-0.5 truncate text-[13px] font-medium text-[#241E20]">长辈友好私家团</p>
+      <div className="ui-card relative flex min-w-0 items-center gap-2 p-2">
+        <motion.span aria-hidden className="absolute -inset-px rounded-ui-card ring-2 ring-ui-accent/50" style={{ opacity: flash, visibility: flashVisibility }} />
+        <RouteGlyph trip={LISTING_COVERS.elder} className="hidden h-9 w-9 shrink-0 rounded-[8px] cq-sm:block" />
+        <div className="min-w-0">
+          <p className="truncate text-[13px] font-semibold text-ui-ink">长辈友好私家团</p>
+          <p className="mt-0.5 flex items-center gap-1 truncate text-xs text-ui-signal-ink">
+            <ClockIcon className="h-3 w-3 shrink-0" />
+            已咨询 · 等待报价
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -101,14 +105,14 @@ function PlanStrip() {
 function VersionBadge() {
   const p = useProgress();
   const v11 = useStep(p, [T.version]) === 1;
-  return <Badge tone={v11 ? 'green' : 'neutral'}>{v11 ? 'v1.1' : 'v1.0'}</Badge>;
+  return <Badge tone={v11 ? 'success' : 'neutral'}>{v11 ? 'v1.1' : 'v1.0'}</Badge>;
 }
 
 /* ── 成员头像：加入时依次入列 ── */
 function Members() {
   return (
-    <span className="flex items-center">
-      <Avatar name="我" tone="violet" size={24} />
+    <span className="hidden items-center cq-sm:flex">
+      <Avatar name="我" tone="violet" size={26} />
       <JoiningAvatar name="阿杰" tone="teal" range={T.joinAJie} />
       <JoiningAvatar name="小雨" tone="rose" range={T.joinXiaoyu} />
     </span>
@@ -117,13 +121,13 @@ function Members() {
 
 function JoiningAvatar({ name, tone, range }: { name: string; tone: AvatarTone; range: readonly [number, number] }) {
   const p = useProgress();
-  const width = useRange(p, [range[0], range[1]], [0, 18]);
+  const width = useRange(p, [range[0], range[1]], [0, 20]);
   const scale = useRange(p, [range[0], range[1]], [0.4, 1], { easing: ease.back, rest: 1 });
-  const opacity = useFade(p, range[0], range[1]);
+  const fade = useFadeStyle(p, range[0], range[1]);
   return (
-    <motion.span className="relative flex h-6 justify-end" style={{ width }}>
-      <motion.span className="relative" style={{ scale, opacity }}>
-        <Avatar name={name} tone={tone} size={24} />
+    <motion.span className="relative flex h-[26px] justify-end" style={{ width }}>
+      <motion.span className="relative" style={{ scale, ...fade }}>
+        <Avatar name={name} tone={tone} size={26} />
       </motion.span>
     </motion.span>
   );
@@ -155,18 +159,19 @@ function InvitePopover() {
     <motion.div
       role="dialog"
       aria-label="邀请同行人"
-      className="absolute right-4 top-2 z-40 w-[min(320px,calc(100%-2rem))] rounded-[12px] border border-[#E2E2D8] bg-white p-4 shadow-[0_16px_40px_rgba(36,30,32,0.14)]"
+      className="ui-float absolute right-4 top-2 z-40 w-[min(330px,calc(100%-2rem))] rounded-ui-panel p-4 !shadow-ui-pop"
       style={{ opacity, y, visibility }}
     >
-      <p className="text-[13px] font-semibold text-[#241E20]">邀请同行人</p>
+      <p className="text-[15px] font-semibold text-ui-ink">邀请同行人</p>
       <div className="mt-3 flex gap-3">
-        <span className="shrink-0 rounded-[8px] border border-[#E2E2D8] p-1.5">
-          <svg viewBox="-1 -1 27 27" className="block h-20 w-20" shapeRendering="crispEdges" aria-hidden>
+        <span className="shrink-0 rounded-ui-ctl border border-ui-line bg-white p-1.5">
+          <svg viewBox="-1 -1 27 27" className="block h-[84px] w-[84px]" shapeRendering="crispEdges" aria-hidden>
             <path d={QR} fill="#241E20" />
           </svg>
         </span>
         <div className="flex min-w-0 flex-1 flex-col gap-2">
-          <span className="flex h-8 items-center rounded-[5px] border border-[#E2E2D8] bg-[#F7F6F1] px-2 text-xs tabular-nums text-[#241E20]">
+          <span className="flex h-8 items-center gap-1.5 rounded-ui-ctl bg-ui-sunken px-2 text-xs tabular-nums text-ui-ink">
+            <LinkIcon className="h-3.5 w-3.5 shrink-0 text-ui-ink-3" />
             <span className="truncate">tc.trip/j/7QX</span>
           </span>
           <motion.span className={`${btn.primary} relative w-full`} style={{ scale: press }}>
@@ -174,9 +179,10 @@ function InvitePopover() {
             {copied ? '已复制链接' : '复制链接'}
             <TapCursor approach={T.copyCursor} clickAt={T.copyClick} hideAt={T.copyClick + sec(0.5)} className="left-1/2 top-4" />
           </motion.span>
+          <p className="text-xs text-ui-ink-3">微信扫码或打开链接即可加入</p>
         </div>
       </div>
-      <p className="mt-3 text-xs leading-relaxed text-[#625F61]">微信扫码或打开链接即可加入。加入者可以查看行程、提名地点，改动由你确认后生效。</p>
+      <p className="mt-3 rounded-ui-ctl bg-ui-sunken px-2.5 py-2 text-xs leading-relaxed text-ui-ink-2">加入者可以查看行程、提名地点；改动由你确认后生效。</p>
     </motion.div>
   );
 }
@@ -185,23 +191,32 @@ function InvitePopover() {
 function Itinerary() {
   return (
     <div className="flex flex-col">
-      <div className="rounded-[12px] border border-[#E2E2D8] p-3">
-        <div className="flex items-center gap-3">
-          <span className="w-6 shrink-0 text-xs font-semibold tabular-nums text-[#828081]">D0</span>
-          <span className="min-w-0 flex-1 truncate text-[13px] font-semibold text-[#241E20]">09/24 · 兰州 · 落地取车</span>
+      <div className="ui-card p-3">
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-6 shrink-0 items-center rounded-full bg-ui-ink px-2 text-xs font-semibold tabular-nums text-white">D0</span>
+          <span className="min-w-0 flex-1 truncate text-[13px] font-semibold text-ui-ink">9/24 · 兰州 · 落地取车</span>
         </div>
-        <ul className="mt-2 flex flex-col gap-1 pl-9">
-          <TimeRow time="14:30" text="中川机场取车 · 腾势 D9" />
-          <TimeRow time="19:15" text="入住黄河边酒店 · 地面车位" />
-          <InsertedRow />
-        </ul>
+        <div className="relative mt-2">
+          <span aria-hidden className="absolute bottom-3 left-[59px] top-3 w-0 border-l-2 border-dotted border-ui-line-strong" />
+          <ul className="relative flex flex-col">
+            <TimeRow time="14:30" cat="transport" text="中川机场取车 · 腾势 D9" />
+            <TimeRow time="19:15" cat="stay" text="入住黄河边酒店 · 地面车位" />
+            <InsertedRow />
+          </ul>
+        </div>
       </div>
       <ol className="mt-2 flex flex-col">
         {DAYS.slice(1, 7).map((day) => (
-          <li key={day.tag} className="flex h-10 items-center gap-3 border-b border-[#F0EFE9] px-3">
-            <span className="w-6 shrink-0 text-xs font-semibold tabular-nums text-[#828081]">{day.tag}</span>
-            <span className="min-w-0 flex-1 truncate text-[13px] text-[#241E20]">{day.title}</span>
-            <span className="shrink-0 text-xs tabular-nums text-[#828081]">{day.drive ?? ''}</span>
+          <li key={day.tag} className="flex h-10 items-center gap-2.5 border-b border-ui-line px-1">
+            <CatTile cat={day.cat} size={26} />
+            <span className="w-6 shrink-0 text-xs font-semibold tabular-nums text-ui-ink-3">{day.tag}</span>
+            <span className="min-w-0 flex-1 truncate text-[13px] text-ui-ink">{day.title}</span>
+            {day.drive ? (
+              <span className="inline-flex shrink-0 items-center gap-1 text-xs tabular-nums text-ui-ink-3">
+                <CarIcon className="h-3.5 w-3.5" />
+                {day.drive}
+              </span>
+            ) : null}
           </li>
         ))}
       </ol>
@@ -209,11 +224,12 @@ function Itinerary() {
   );
 }
 
-function TimeRow({ time, text }: { time: string; text: string }) {
+function TimeRow({ time, cat, text }: { time: string; cat: PlaceCategory; text: ReactNode }) {
   return (
-    <li className="flex h-6 items-center gap-3 text-[13px]">
-      <span className="w-10 shrink-0 text-xs tabular-nums text-[#828081]">{time}</span>
-      <span className="min-w-0 flex-1 truncate text-[#241E20]">{text}</span>
+    <li className="relative flex h-8 items-center gap-2.5 text-[13px]">
+      <span className="w-10 shrink-0 text-xs tabular-nums text-ui-ink-3">{time}</span>
+      <CatMark cat={cat} size={20} className="relative ring-2 ring-ui-surface" />
+      <span className="min-w-0 flex-1 truncate text-ui-ink">{text}</span>
     </li>
   );
 }
@@ -221,47 +237,64 @@ function TimeRow({ time, text }: { time: string; text: string }) {
 function InsertedRow() {
   const p = useProgress();
   const [a, b] = T.insertRow;
-  const height = useRange(p, [a, b], [0, 28]);
-  const opacity = useFade(p, a + (b - a) * 0.4, b);
-  const highlight = useRange(p, [b, b + sec(1.2)], [1, 0.35]);
+  const height = useRange(p, [a, b], [0, 32]);
+  const fade = useFadeStyle(p, a + (b - a) * 0.4, b);
+  const highlight = useRange(p, [b, b + sec(1.2)], [1, 0.4]);
   return (
-    <motion.li style={{ height }} className="overflow-hidden">
-      <motion.div className="relative flex h-7 items-center gap-3 rounded-[5px] px-2 text-[13px]" style={{ opacity }}>
-        <motion.span aria-hidden className="absolute inset-0 rounded-[5px] bg-[#FE3C01]/[0.08]" style={{ opacity: highlight }} />
-        <span className="relative w-8 shrink-0 text-xs font-semibold tabular-nums text-[#C43200]">20:00</span>
-        <UtensilsIcon className="relative h-3.5 w-3.5 shrink-0 text-[#C43200]" />
-        <span className="relative min-w-0 flex-1 truncate text-[#241E20]">正宁路夜市</span>
-        <span className="relative hidden shrink-0 text-xs text-[#828081] cq-sm:inline">阿杰提名</span>
+    <motion.li style={{ height }} className="relative overflow-hidden">
+      <motion.div className="relative flex h-8 items-center gap-2.5 rounded-ui-ctl text-[13px]" style={fade}>
+        <motion.span aria-hidden className="absolute -inset-x-1.5 inset-y-0.5 rounded-ui-ctl bg-ui-accent/[0.08]" style={{ opacity: highlight }} />
+        <span className="relative w-10 shrink-0 text-xs font-semibold tabular-nums text-ui-accent-ink">20:00</span>
+        <CatMark cat="food" size={20} className="relative ring-2 ring-ui-surface" />
+        <span className="relative min-w-0 flex-1 truncate font-medium text-ui-ink">正宁路夜市 · 赵记醪糟</span>
+        <span className="relative hidden shrink-0 items-center gap-1 text-xs text-ui-ink-3 cq-sm:inline-flex">
+          <Avatar name="阿杰" tone="teal" size={16} ring={false} />
+          提名
+        </span>
       </motion.div>
     </motion.li>
   );
 }
 
-/* ── 右侧面板：提名（收齐，不裁决） ── */
+/* ── 右侧面板：提名（收齐，不裁决）与同步 ── */
 function NominationPanel() {
   const p = useProgress();
-  const empty = useFade(p, T.nominationIn[0] - sec(0.2), T.nominationIn[0]);
-  const emptyOpacity = useTransform(empty, (v) => 1 - v);
+  const emptyOpacity = useRange(p, [T.nominationIn[0] - sec(0.2), T.nominationIn[0]], [1, 0]);
+  const emptyVisibility = useFadeVisibility(emptyOpacity);
   const [a, b] = T.nominationIn;
-  const opacity = useFade(p, a, b);
+  const fade = useFadeStyle(p, a, b);
   const y = useRange(p, [a, b], [10, 0], { easing: ease.out, rest: 0 });
   const pending = useStep(p, [a, T.applyClick]);
 
   return (
     <div className="relative">
       <div className="flex items-center justify-between">
-        <p className="text-[13px] font-semibold text-[#241E20]">提名</p>
-        <span className="text-xs text-[#828081]">{['暂无', '1 条待你确认', '已处理'][pending]}</span>
+        <p className="text-[13px] font-semibold text-ui-ink">提名</p>
+        <span className={`text-xs ${pending === 1 ? 'font-medium text-ui-accent-ink' : 'text-ui-ink-3'}`}>{['暂无', '1 条待你确认', '已处理'][pending]}</span>
       </div>
       <div className="relative mt-2">
-        <motion.p className="absolute inset-x-0 top-0 text-xs leading-relaxed text-[#828081]" style={{ opacity: emptyOpacity }}>
+        <motion.p
+          className="absolute inset-x-0 top-0 rounded-ui-card border border-dashed border-ui-line-strong px-3 py-4 text-center text-xs leading-relaxed text-ui-ink-3"
+          style={{ opacity: emptyOpacity, visibility: emptyVisibility }}
+        >
           同行人提名的地点会出现在这里，由你确认后再加入行程。
         </motion.p>
-        <motion.div style={{ opacity, y }}>
+        <motion.div style={{ ...fade, y }}>
           <NominationCard />
         </motion.div>
       </div>
     </div>
+  );
+}
+
+function SyncReveal() {
+  const p = useProgress();
+  const fade = useFadeStyle(p, T.syncIn[0], T.syncIn[1]);
+  const y = useRange(p, T.syncIn, [8, 0], { rest: 0 });
+  return (
+    <motion.div style={{ ...fade, y }}>
+      <DeviceSync />
+    </motion.div>
   );
 }
 
@@ -273,11 +306,8 @@ function MobileSheet({ range, children }: { range: readonly [number, number] | r
   const yPct = useTransform(y, (n) => `${n}%`);
   const visibility = useVisibility(p, range[0], out ? range[3] : 2);
   return (
-    <motion.div
-      className="absolute inset-x-0 bottom-0 z-30 rounded-t-[16px] border-t border-[#E2E2D8] bg-white px-4 pb-4 pt-2 shadow-[0_-16px_40px_rgba(36,30,32,0.12)] cq-md:hidden"
-      style={{ y: yPct, visibility }}
-    >
-      <span aria-hidden className="mx-auto mb-3 block h-1 w-9 rounded-full bg-[#E2E2D8]" />
+    <motion.div className="ui-float absolute inset-x-0 bottom-0 z-30 rounded-t-ui-panel !border-x-0 !border-b-0 px-4 pb-4 pt-2 cq-md:hidden" style={{ y: yPct, visibility }}>
+      <span aria-hidden className="mx-auto mb-3 block h-1 w-9 rounded-full bg-ui-line-strong" />
       {children}
     </motion.div>
   );

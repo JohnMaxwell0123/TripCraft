@@ -862,3 +862,59 @@ export function PersonGlyph({ kind = 'adult', className = 'w-4 h-4', ...props }:
     </svg>
   );
 }
+
+/** 带宠物 */
+export function PawIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <circle cx="6" cy="10" r="1.8" />
+      <circle cx="10" cy="6" r="1.8" />
+      <circle cx="14" cy="6" r="1.8" />
+      <circle cx="18" cy="10" r="1.8" />
+      <path d="M8.5 17.5c0-2.6 1.6-4.5 3.5-4.5s3.5 1.9 3.5 4.5c0 1.6-1.2 2.5-2.4 2-.8-.3-1.4-.3-2.2 0-1.2.5-2.4-.4-2.4-2z" />
+    </Stroke>
+  );
+}
+
+/** 节奏（强度条） */
+export function PaceIcon({ level = 1, ...props }: IconProps & { level?: 1 | 2 | 3 }) {
+  return (
+    <Stroke {...props}>
+      <path d="M5 19v-4" opacity={1} />
+      <path d="M12 19v-8" opacity={level >= 2 ? 1 : 0.3} />
+      <path d="M19 19V7" opacity={level >= 3 ? 1 : 0.3} />
+    </Stroke>
+  );
+}
+
+/** 锁（尚未授权可见的信息） */
+export function LockIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <rect x="5" y="11" width="14" height="10" rx="2.5" />
+      <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+    </Stroke>
+  );
+}
+
+/** 步行 */
+export function WalkIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <circle cx="13" cy="4.5" r="1.8" />
+      <path d="m9 21 2.5-6.5L14 16v5" />
+      <path d="M8 11.5 10.5 8h3l2.5 3.5 2.5 1" />
+      <path d="M11.5 14.5 10.5 8" />
+    </Stroke>
+  );
+}
+
+/** 门票 */
+export function TicketIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <path d="M3 8.5V6a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2.5a2.5 2.5 0 0 0 0 5V16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-2.5a2.5 2.5 0 0 0 0-5z" />
+      <path d="M14.5 5v2M14.5 10.5v3M14.5 17v2" />
+    </Stroke>
+  );
+}

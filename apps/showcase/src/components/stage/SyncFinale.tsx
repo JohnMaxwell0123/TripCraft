@@ -3,8 +3,8 @@
 import type { ComponentType } from 'react';
 import { useStep } from '@/lib/motion';
 import { T } from './timeline';
-import { useProgress } from './primitives';
-import { CheckIcon, MonitorIcon, SmartphoneIcon, TabletIcon, type IconProps } from '@/components/common/Icons';
+import { Avatar, useProgress, type AvatarTone } from './primitives';
+import { CheckIcon, MonitorIcon, SignalSlashIcon, SmartphoneIcon, TabletIcon, type IconProps } from '@/components/common/Icons';
 
 /**
  * 04 幕收束 · 多端同步（PRD-01 支柱 3）
@@ -13,10 +13,10 @@ import { CheckIcon, MonitorIcon, SmartphoneIcon, TabletIcon, type IconProps } fr
  * 离线可读作为支撑能力，用一句状态说明交代，不单独成幕。
  */
 
-const DEVICES: { Icon: ComponentType<IconProps>; name: string; note?: string }[] = [
-  { Icon: MonitorIcon, name: '我的电脑', note: '当前设备' },
-  { Icon: SmartphoneIcon, name: '阿杰的手机' },
-  { Icon: TabletIcon, name: '小雨的平板' },
+const DEVICES: { Icon: ComponentType<IconProps>; owner: string; tone: AvatarTone; name: string; note?: string }[] = [
+  { Icon: MonitorIcon, owner: '我', tone: 'violet', name: '我的电脑', note: '当前设备' },
+  { Icon: SmartphoneIcon, owner: '阿杰', tone: 'teal', name: '阿杰的手机' },
+  { Icon: TabletIcon, owner: '小雨', tone: 'rose', name: '小雨的平板' },
 ];
 
 export function DeviceSync() {
@@ -24,25 +24,29 @@ export function DeviceSync() {
   const synced = useStep(p, T.syncRows);
   return (
     <div>
-      <p className="text-[13px] font-semibold text-[#241E20]">同步</p>
-      <ul className="mt-2 flex flex-col">
+      <div className="flex items-center justify-between">
+        <p className="text-[13px] font-semibold text-ui-ink">同步</p>
+        <span className="text-xs tabular-nums text-ui-ink-3">{synced} / {DEVICES.length} 台已是 v1.1</span>
+      </div>
+      <ul className="mt-2 flex flex-col gap-1.5">
         {DEVICES.map((dev, i) => {
           const done = synced > i;
           return (
-            <li key={dev.name} className="flex h-9 items-center gap-2 border-b border-[#F0EFE9] last:border-b-0">
-              <dev.Icon className="h-4 w-4 shrink-0 text-[#828081]" />
-              <span className="min-w-0 flex-1 truncate text-[13px] text-[#241E20]">
+            <li key={dev.name} className="flex h-10 items-center gap-2.5 rounded-ui-ctl bg-ui-sunken px-2.5">
+              <Avatar name={dev.owner} tone={dev.tone} size={22} ring={false} />
+              <span className="min-w-0 flex-1 truncate text-[13px] text-ui-ink">
                 {dev.name}
-                {dev.note ? <span className="text-xs text-[#828081]"> · {dev.note}</span> : null}
+                {dev.note ? <span className="text-xs text-ui-ink-3"> · {dev.note}</span> : null}
               </span>
+              <dev.Icon className="h-4 w-4 shrink-0 text-ui-ink-3" />
               {done ? (
-                <span className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-[#0E7A5A]">
+                <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-ui-success/10 px-2 text-xs font-medium leading-5 text-ui-success">
                   <CheckIcon className="h-3 w-3" />
                   v1.1
                 </span>
               ) : (
-                <span className="inline-flex shrink-0 items-center gap-1.5 text-xs text-[#828081]">
-                  <span className="h-2.5 w-2.5 animate-spin rounded-full border-[1.5px] border-[#C9C7BF] border-t-transparent" />
+                <span className="inline-flex shrink-0 items-center gap-1.5 text-xs text-ui-ink-3">
+                  <span className="h-3 w-3 animate-spin rounded-full border-[1.5px] border-ui-line-strong border-t-transparent" />
                   同步中
                 </span>
               )}
@@ -50,7 +54,10 @@ export function DeviceSync() {
           );
         })}
       </ul>
-      <p className="mt-2 text-xs text-[#828081] cq-md:hidden">已同步的行程在无信号路段也能打开</p>
+      <p className="mt-2 flex items-center gap-1.5 text-xs text-ui-ink-3">
+        <SignalSlashIcon className="h-3.5 w-3.5 shrink-0" />
+        已同步的行程在无信号路段也能打开
+      </p>
     </div>
   );
 }
