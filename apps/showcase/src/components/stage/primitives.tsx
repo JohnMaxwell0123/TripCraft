@@ -2,7 +2,7 @@
 
 import { createContext, useContext, type ReactNode } from 'react';
 import { motion, useTransform, type MotionValue } from 'framer-motion';
-import { useFade, useRange, useVisibility, interp, ease } from '@/lib/motion';
+import { useFade, useFadeVisibility, useRange, useVisibility, interp, ease } from '@/lib/motion';
 import { CheckIcon } from '@/components/common/Icons';
 
 /* -------------------------------------------------------------------------- */
@@ -100,8 +100,8 @@ export function TapCursor({
   const p = useProgress();
   const [a, b] = approach;
   const span = b - a;
-  const visibility = useVisibility(p, a, hideAt);
   const opacity = useRange(p, [a, a + span * 0.4, hideAt - span * 0.4, hideAt], [0, 1, 1, 0]);
+  const visibility = useFadeVisibility(opacity);
   const x = useRange(p, [a, b], [from[0], 0], { rest: 0 });
   const y = useRange(p, [a, b], [from[1], 0], { rest: 0 });
   const press = useRange(p, [clickAt - span * 0.3, clickAt, clickAt + span * 0.3], [1, 0.8, 1]);
@@ -164,7 +164,7 @@ export function Toast({
   const out = range.length === 4;
   const opacity = useFade(p, range[0], range[1], out ? range[2] : undefined, out ? range[3] : undefined);
   const y = useRange(p, out ? [range[0], range[1], range[2], range[3]] : [range[0], range[1]], out ? [-8, 0, 0, -6] : [-8, 0], { easing: ease.out, rest: 0 });
-  const visibility = useVisibility(p, range[0], out ? range[3] : 2);
+  const visibility = useFadeVisibility(opacity);
   return (
     <motion.div
       role="status"
@@ -225,9 +225,10 @@ export function Reveal({
 }) {
   const p = useProgress();
   const opacity = useFade(p, at[0], at[1], out?.[0], out?.[1]);
+  const visibility = useFadeVisibility(opacity);
   const ty = useRange(p, out ? [at[0], at[1], out[0], out[1]] : [at[0], at[1]], out ? [y, 0, 0, -y] : [y, 0], { rest: 0 });
   return (
-    <motion.div className={className} style={{ opacity, y: ty }}>
+    <motion.div className={className} style={{ opacity, visibility, y: ty }}>
       {children}
     </motion.div>
   );
@@ -251,9 +252,10 @@ export function Grow({
   const p = useProgress();
   const maxHeight = useRange(p, [at[0], at[1]], [0, max]);
   const opacity = useRange(p, [at[0] + (at[1] - at[0]) * 0.3, at[1]], [0, 1]);
+  const visibility = useFadeVisibility(opacity);
   const y = useRange(p, [at[0], at[1]], [10, 0], { easing: ease.out, rest: 0 });
   return (
-    <motion.div className={`shrink-0 overflow-hidden ${className}`} style={{ maxHeight, opacity, y }}>
+    <motion.div className={`shrink-0 overflow-hidden ${className}`} style={{ maxHeight, opacity, visibility, y }}>
       {children}
     </motion.div>
   );
@@ -264,8 +266,9 @@ export function Pop({ at, dur = 0.008, className = '', children }: { at: number;
   const p = useProgress();
   const scale = useRange(p, [at, at + dur], [0.6, 1], { easing: ease.back, rest: 1 });
   const opacity = useRange(p, [at, at + dur * 0.625], [0, 1]);
+  const visibility = useFadeVisibility(opacity);
   return (
-    <motion.div className={className} style={{ scale, opacity }}>
+    <motion.div className={className} style={{ scale, opacity, visibility }}>
       {children}
     </motion.div>
   );

@@ -2,7 +2,7 @@
 
 import type { ComponentType } from 'react';
 import { motion, useTransform } from 'framer-motion';
-import { useFade, useRange, useScrollTypewriter, useStep, useVisibility, ease } from '@/lib/motion';
+import { useFade, useFadeStyle, useFadeVisibility, useRange, useScrollTypewriter, useStep, useVisibility, ease } from '@/lib/motion';
 import { T } from './timeline';
 import { Grow, Reveal, Scene, TapCursor, useProgress } from './primitives';
 import { Badge, PageHeader, btn } from './ui';
@@ -177,48 +177,60 @@ function QuickReply({ label, picked = false }: { label: string; picked?: boolean
   );
 }
 
-/* ── 输入框：左侧模型选择器（平台模型 / 自带 API），右侧附件与发送 ── */
+/**
+ * 输入框（像 ChatGPT / Claude 的输入框）：上面是文本区，下面一行是模型选择器（平台模型 / 自带 API）、附件与发送。
+ * 文本区从一行起，随文字逐行向上长高，最多 6 行；再多就在框内滚动，最新一行始终可见（底部对齐，超出部分从顶上裁掉）。
+ * 输入框长高时，上方对话流随之上移；发送后文字进入用户气泡，输入框清空、收回一行。
+ * 打字机直接写 textContent、不触发 React 渲染，高度靠文字自然撑开。
+ */
 function Composer() {
   const p = useProgress();
-  const typedRef = useScrollTypewriter(p, USER_TEXT, T.askType[0], T.askType[1]);
+  const typedRef = useScrollTypewriter(p, USER_TEXT, T.askType[0], T.askType[1], T.askSend);
   const placeholder = useRange(p, [T.askType[0] - 0.002, T.askType[0], T.askSend, T.askSend + 0.004], [1, 0, 0, 1]);
-  const typed = useRange(p, [T.askType[0] - 0.002, T.askType[0], T.askSend - 0.001, T.askSend + 0.002], [0, 1, 1, 0]);
+  const placeholderVisibility = useFadeVisibility(placeholder);
+  // 光标只在打字时闪
+  const caret = useFadeStyle(p, T.askType[0] - 0.001, T.askType[0], T.askSend - 0.001, T.askSend);
   const sent = useStep(p, [T.askSend]) === 1;
   const sendScale = useRange(p, [T.askSend - 0.002, T.askSend, T.askSend + 0.002], [1, 0.88, 1]);
 
   return (
     <div className="relative shrink-0">
       <ModelMenu />
-      <div className="relative flex items-center gap-2 rounded-[16px] border border-[#E2E2D8] bg-white p-2 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
-        {/* 模型选择器 */}
-        <span className="relative inline-flex h-8 shrink-0 items-center gap-1 whitespace-nowrap rounded-[5px] border border-[#E2E2D8] bg-[#F7F6F1] px-2 text-xs font-medium text-[#241E20]">
-          <SparklesIcon className="h-3 w-3 text-[#FE3C01]" />
-          平台模型
-          <ChevronDownIcon className="h-3 w-3 text-[#828081]" />
-          <TapCursor approach={T.modelCursor} clickAt={T.modelMenu[0]} hideAt={T.modelMenu[1] + 0.004} className="left-8 top-4" />
-        </span>
-
-        {/* 文本区：保留最后两行，模拟输入框随打字滚动 */}
-        <div className="relative flex h-10 min-w-0 flex-1 flex-col justify-end overflow-hidden text-[13px] leading-5 text-[#241E20]">
-          <motion.span className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 truncate text-[#828081]" style={{ opacity: placeholder }}>
+      <div className="relative rounded-[16px] border border-[#E2E2D8] bg-white px-3 pb-2 pt-2.5 shadow-[0_4px_20px_rgba(0,0,0,0.04)]">
+        {/* 文本区：一行 20px，最多 6 行（120px），超出后裁掉最上面的行 */}
+        <div className="relative flex max-h-[120px] min-h-5 flex-col justify-end overflow-hidden text-[13px] leading-5 text-[#241E20]">
+          <motion.span
+            className="pointer-events-none absolute inset-x-0 top-0 truncate text-[#828081]"
+            style={{ opacity: placeholder, visibility: placeholderVisibility }}
+          >
             {sent ? '回答追问，或继续补充…' : '说说这趟旅行：谁去、去哪、在意什么…'}
           </motion.span>
-          <motion.p style={{ opacity: typed }}>
-            <span ref={typedRef}>{USER_TEXT}</span>
-            <span className="ml-0.5 inline-block h-3.5 w-[2px] animate-caret bg-[#FE3C01] align-middle" />
-          </motion.p>
+          <p className="min-h-5 break-words">
+            {/* 首帧为空：完整原文在发送后的用户气泡里 */}
+            <span ref={typedRef} />
+            <motion.span className="ml-0.5 inline-block h-3.5 w-[2px] animate-caret bg-[#FE3C01] align-middle" style={caret} />
+          </p>
         </div>
 
-        <span className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-[5px] text-[#828081] xs:flex" title="附件：截图、行程 PDF、聊天记录">
-          <PaperclipIcon className="h-4 w-4" />
-        </span>
-        <motion.span aria-hidden className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-[5px] bg-[#FE3C01] text-white" style={{ scale: sendScale }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="22" y1="2" x2="11" y2="13" />
-            <polygon points="22 2 15 22 11 13 2 9 22 2" />
-          </svg>
-          <TapCursor approach={[T.askType[1] - 0.006, T.askSend - 0.001]} clickAt={T.askSend} hideAt={T.askSend + 0.008} className="left-4 top-4" />
-        </motion.span>
+        <div className="mt-2 flex items-center gap-2">
+          {/* 模型选择器 */}
+          <span className="relative inline-flex h-8 shrink-0 items-center gap-1 whitespace-nowrap rounded-[5px] border border-[#E2E2D8] bg-[#F7F6F1] px-2 text-xs font-medium text-[#241E20]">
+            <SparklesIcon className="h-3 w-3 text-[#FE3C01]" />
+            平台模型
+            <ChevronDownIcon className="h-3 w-3 text-[#828081]" />
+            <TapCursor approach={T.modelCursor} clickAt={T.modelMenu[0]} hideAt={T.modelMenu[1] + 0.004} className="left-8 top-4" />
+          </span>
+          <span className="ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-[5px] text-[#828081]" title="附件：截图、行程 PDF、聊天记录">
+            <PaperclipIcon className="h-4 w-4" />
+          </span>
+          <motion.span aria-hidden className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-[5px] bg-[#FE3C01] text-white" style={{ scale: sendScale }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13" />
+              <polygon points="22 2 15 22 11 13 2 9 22 2" />
+            </svg>
+            <TapCursor approach={[T.askType[1] - 0.006, T.askSend - 0.001]} clickAt={T.askSend} hideAt={T.askSend + 0.008} className="left-4 top-4" />
+          </motion.span>
+        </div>
       </div>
     </div>
   );
@@ -266,6 +278,7 @@ function ModelMenu() {
 function ProfilePanel({ compact = false }: { compact?: boolean }) {
   const p = useProgress();
   const emptyOpacity = useRange(p, [T.profileFields[0] - 0.006, T.profileFields[0]], [1, 0]);
+  const emptyVisibility = useFadeVisibility(emptyOpacity);
   const count = useStep(p, T.profileFields);
 
   return (
@@ -279,7 +292,7 @@ function ProfilePanel({ compact = false }: { compact?: boolean }) {
 
       <div className="relative mt-3 min-h-0 flex-1">
         {!compact ? (
-          <motion.p className="absolute inset-x-0 top-0 text-xs leading-relaxed text-[#828081]" style={{ opacity: emptyOpacity }}>
+          <motion.p className="absolute inset-x-0 top-0 text-xs leading-relaxed text-[#828081]" style={{ opacity: emptyOpacity, visibility: emptyVisibility }}>
             对话里提到的人数、日期、身体情况与预算，会在这里整理成一张可以确认的画像。
           </motion.p>
         ) : null}
@@ -296,10 +309,10 @@ function ProfilePanel({ compact = false }: { compact?: boolean }) {
 
 function FieldGroup({ title, fields, compact, className = '' }: { title: string; fields: ProfileField[]; compact: boolean; className?: string }) {
   const p = useProgress();
-  const opacity = useFade(p, T.profileFields[fields[0].order] - 0.004, T.profileFields[fields[0].order]);
+  const fade = useFadeStyle(p, T.profileFields[fields[0].order] - 0.004, T.profileFields[fields[0].order]);
   return (
     <div className={className}>
-      <motion.p className="text-xs text-[#828081]" style={{ opacity }}>
+      <motion.p className="text-xs text-[#828081]" style={fade}>
         {title}
       </motion.p>
       <ul className="mt-1 flex flex-col gap-0.5">
@@ -315,11 +328,12 @@ function ProfileRow({ field, compact }: { field: ProfileField; compact: boolean 
   const p = useProgress();
   const at = T.profileFields[field.order];
   const opacity = useRange(p, [at, at + 0.006], [0, 1]);
+  const visibility = useFadeVisibility(opacity);
   const x = useRange(p, [at, at + 0.008], [8, 0], { easing: ease.out, rest: 0 });
 
   if (compact) {
     return (
-      <motion.li className="flex h-7 items-center gap-2" style={{ opacity, x }}>
+      <motion.li className="flex h-7 items-center gap-2" style={{ opacity, visibility, x }}>
         <field.Icon className="h-3.5 w-3.5 shrink-0 text-[#828081]" />
         <span className="w-8 shrink-0 text-xs text-[#828081]">{field.label}</span>
         <span className="min-w-0 flex-1 truncate text-[13px] text-[#241E20]">{field.value}</span>
@@ -331,7 +345,7 @@ function ProfileRow({ field, compact }: { field: ProfileField; compact: boolean 
   return (
     <motion.li
       className={`rounded-[5px] px-2 ${field.inferred ? 'border border-dashed border-[#FE3C01]/50 bg-[#FE3C01]/[0.04] py-1' : ''}`}
-      style={{ opacity, x }}
+      style={{ opacity, visibility, x }}
     >
       <div className="flex h-7 items-center gap-2">
         <field.Icon className="h-3.5 w-3.5 shrink-0 text-[#828081]" />

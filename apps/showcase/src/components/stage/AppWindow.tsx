@@ -2,7 +2,7 @@
 
 import type { ComponentType, ReactNode } from 'react';
 import { motion } from 'framer-motion';
-import { useFade, useStep } from '@/lib/motion';
+import { useFade, useFadeVisibility, useStep } from '@/lib/motion';
 import { TapCursor, useProgress } from './primitives';
 import type { IconProps } from '@/components/common/Icons';
 
@@ -123,10 +123,11 @@ export function AppWindow({ title, product, nav, sections, account, ariaLabel, c
 function NavBadge({ badge }: { badge: NonNullable<WindowNavItem['badge']> }) {
   const p = useProgress();
   const opacity = useFade(p, badge.range[0], badge.range[0] + 0.004, badge.range[1] - 0.002, badge.range[1]);
+  const visibility = useFadeVisibility(opacity);
   return (
     <motion.span
       className="ml-auto hidden h-4 min-w-4 items-center justify-center rounded-full bg-[#FE3C01] px-1 text-xs font-semibold leading-none text-white cq-lg:flex"
-      style={{ opacity }}
+      style={{ opacity, visibility }}
     >
       {badge.text}
     </motion.span>
@@ -136,7 +137,8 @@ function NavBadge({ badge }: { badge: NonNullable<WindowNavItem['badge']> }) {
 function NavDot({ badge }: { badge: NonNullable<WindowNavItem['badge']> }) {
   const p = useProgress();
   const opacity = useFade(p, badge.range[0], badge.range[0] + 0.004, badge.range[1] - 0.002, badge.range[1]);
-  return <motion.span aria-hidden className="absolute right-1 top-1 h-2 w-2 rounded-full bg-[#FE3C01] ring-2 ring-[#F7F6F1] cq-lg:hidden" style={{ opacity }} />;
+  const visibility = useFadeVisibility(opacity);
+  return <motion.span aria-hidden className="absolute right-1 top-1 h-2 w-2 rounded-full bg-[#FE3C01] ring-2 ring-[#F7F6F1] cq-lg:hidden" style={{ opacity, visibility }} />;
 }
 
 function NavRow({ item, active }: { item: WindowNavItem; active: boolean }) {
@@ -174,5 +176,6 @@ function TabRow({ item, active }: { item: WindowNavItem; active: boolean }) {
 function TabDot({ badge }: { badge: NonNullable<WindowNavItem['badge']> }) {
   const p = useProgress();
   const opacity = useFade(p, badge.range[0], badge.range[0] + 0.004, badge.range[1] - 0.002, badge.range[1]);
-  return <motion.span aria-hidden className="absolute left-1/2 top-1.5 ml-2 h-2 w-2 rounded-full bg-[#FE3C01]" style={{ opacity }} />;
+  const visibility = useFadeVisibility(opacity);
+  return <motion.span aria-hidden className="absolute left-1/2 top-1.5 ml-2 h-2 w-2 rounded-full bg-[#FE3C01]" style={{ opacity, visibility }} />;
 }
