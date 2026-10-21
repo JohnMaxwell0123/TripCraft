@@ -32,7 +32,7 @@ html {
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
   scroll-behavior: auto;
-  scroll-padding-top: 5rem;
+  scroll-padding-top: 64px;
   background-color: #FFFFF9;
 }
 
@@ -256,6 +256,162 @@ body {
   .mask-fade-b {
     -webkit-mask-image: linear-gradient(180deg, #000 82%, transparent);
     mask-image: linear-gradient(180deg, #000 82%, transparent);
+  }
+
+  /* ========================================================================
+   * Unify GTM 实测口径（2026-10-20 复核，见 .agents/rules/unify-gtm-design-system.md）
+   * ====================================================================== */
+
+  /* 眉题：炭黑 12–13px、600 字重、0.08em 字距；不用橙色、不加底色胶囊 */
+  .u-eyebrow {
+    font-size: 13px;
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: #241E20;
+  }
+
+  /* 标题关键词光晕：文字仍是炭黑，只加一道贴边的烈焰橙投影（Unify 首屏 h1 的真实做法） */
+  .u-aura {
+    text-shadow: 1px 0 2px rgba(254, 60, 1, 0.65);
+  }
+
+  /* 按钮：5px 圆角，44px 高，15px / 500 字重 */
+  .u-btn {
+    @apply inline-flex h-11 select-none items-center justify-center gap-2 whitespace-nowrap rounded-[5px] px-4 text-[15px] font-medium transition-[background-color,border-color,color,opacity] duration-300;
+  }
+  .u-btn-primary {
+    background-color: #241E20;
+    color: #FFFFF9;
+  }
+  .u-btn-primary:hover {
+    background-color: #3A3234;
+  }
+  .u-btn-secondary {
+    background-color: #FFFFF9;
+    color: #241E20;
+    box-shadow: inset 0 0 0 1px rgba(36, 30, 32, 0.16);
+  }
+  .u-btn-secondary:hover {
+    box-shadow: inset 0 0 0 1px rgba(36, 30, 32, 0.4);
+  }
+  /* 深色氛围带上的浅色按钮 */
+  .u-btn-light {
+    background-color: #FFFFF9;
+    color: #241E20;
+  }
+  .u-btn-light:hover {
+    background-color: #FFFFFF;
+  }
+
+  /* 胶囊标签：全圆角，32px 高，14px，24% 灰发丝边 */
+  .u-pill {
+    @apply inline-flex h-8 items-center whitespace-nowrap rounded-full px-3 text-sm;
+    color: rgba(36, 30, 32, 0.8);
+    box-shadow: inset 0 0 0 1px rgba(139, 139, 139, 0.24);
+  }
+
+  /* 卡片：画布底色 + 20% 灰发丝边 + 细投影，8px 圆角 */
+  .u-card {
+    background: #FFFFF9;
+    border-radius: 8px;
+    box-shadow: 0 0 0 1px rgba(163, 163, 163, 0.2), 0 2px 5px rgba(36, 30, 32, 0.06);
+  }
+  /* 平铺块：浅石灰底，4px 圆角，无边框无投影（数字 / 场景方块） */
+  .u-tile {
+    background: #F8F7F3;
+    border-radius: 4px;
+  }
+  /* 带底边细线的文字链接（悬停时下划线从左向右展开） */
+  .u-link {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 1px;
+    transition: background-size 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+  .u-link:hover {
+    background-size: 100% 1px;
+  }
+
+  /* ------------------------------------------------------------------------
+   * 氛围带：Unify 用动态模糊的实景照片做分区底色；这里只学原理，
+   * 用几层渐变加高斯模糊画一幅「河西走廊的风」，不引入任何外部图片。
+   * --atmo 由各变体给出；::before 负责模糊，::after 叠一层很淡的横向纹理。
+   * ---------------------------------------------------------------------- */
+  .atmo {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .atmo::before {
+    content: '';
+    position: absolute;
+    inset: -14%;
+    z-index: -2;
+    pointer-events: none;
+    background: var(--atmo);
+    filter: blur(var(--atmo-blur, 30px));
+    transform: translateZ(0);
+  }
+  /* 第二层：细长的光痕（动态模糊的质感）+ 很淡的横向纹理，只做轻度模糊 */
+  .atmo::after {
+    content: '';
+    position: absolute;
+    inset: -4%;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      var(--atmo-streaks, linear-gradient(transparent, transparent)),
+      repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 5px),
+      repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.03) 0 2px, transparent 2px 13px);
+    filter: blur(2.5px);
+  }
+  /* 黄昏：B 端舞台（深色，文字反白） */
+  .atmo-dusk {
+    background-color: #171213;
+    --atmo-streaks:
+      radial-gradient(34% 0.5% at 70% 46%, rgba(255, 150, 90, 0.7), transparent 70%),
+      radial-gradient(22% 0.4% at 88% 50%, rgba(255, 196, 140, 0.55), transparent 70%),
+      radial-gradient(40% 0.6% at 24% 54%, rgba(226, 150, 82, 0.4), transparent 70%),
+      radial-gradient(28% 0.35% at 48% 58%, rgba(255, 220, 180, 0.3), transparent 70%),
+      radial-gradient(18% 0.4% at 10% 44%, rgba(254, 60, 1, 0.45), transparent 70%);
+    --atmo:
+      radial-gradient(48% 7% at 76% 47%, rgba(254, 60, 1, 0.5), transparent 70%),
+      radial-gradient(36% 5% at 30% 52%, rgba(226, 150, 82, 0.34), transparent 70%),
+      radial-gradient(62% 6% at 58% 59%, rgba(255, 210, 160, 0.16), transparent 70%),
+      radial-gradient(26% 4% at 92% 41%, rgba(255, 128, 64, 0.34), transparent 70%),
+      radial-gradient(40% 9% at 12% 66%, rgba(120, 72, 46, 0.45), transparent 70%),
+      linear-gradient(180deg, #120E0F 0%, #1B1516 30%, #2A1D1A 45%, #4B2A1D 52%, #2C1F1C 59%, #171213 76%, #110D0E 100%);
+  }
+  /* 白昼：首屏的对话面板背后（浅色暖调） */
+  .atmo-day {
+    background-color: #E6D6BE;
+    --atmo-streaks:
+      radial-gradient(36% 0.6% at 26% 47%, rgba(255, 248, 236, 0.85), transparent 70%),
+      radial-gradient(26% 0.5% at 70% 52%, rgba(254, 60, 1, 0.35), transparent 70%),
+      radial-gradient(44% 0.7% at 52% 57%, rgba(90, 56, 36, 0.4), transparent 70%),
+      radial-gradient(30% 0.45% at 84% 44%, rgba(255, 240, 220, 0.7), transparent 70%),
+      radial-gradient(24% 0.5% at 14% 61%, rgba(120, 76, 48, 0.4), transparent 70%);
+    --atmo:
+      radial-gradient(52% 7% at 28% 43%, rgba(255, 246, 230, 0.9), transparent 70%),
+      radial-gradient(38% 5% at 76% 54%, rgba(254, 60, 1, 0.28), transparent 70%),
+      radial-gradient(70% 9% at 58% 68%, rgba(84, 54, 38, 0.5), transparent 70%),
+      radial-gradient(30% 6% at 12% 60%, rgba(150, 96, 58, 0.45), transparent 70%),
+      linear-gradient(180deg, #F0E8DA 0%, #EADBC4 26%, #DEC29C 40%, #C79060 49%, #8E5C3C 55%, #C49D74 63%, #E6D0B1 75%, #F2E7D6 100%);
+  }
+  /* 夜色：页脚上方的收尾行动区（深青灰） */
+  .atmo-night {
+    background-color: #161C1E;
+    --atmo-streaks:
+      radial-gradient(36% 0.5% at 34% 50%, rgba(240, 210, 160, 0.6), transparent 70%),
+      radial-gradient(22% 0.4% at 78% 46%, rgba(255, 120, 70, 0.5), transparent 70%),
+      radial-gradient(42% 0.5% at 60% 55%, rgba(140, 170, 160, 0.3), transparent 70%);
+    --atmo:
+      radial-gradient(56% 6% at 38% 50%, rgba(222, 186, 128, 0.42), transparent 70%),
+      radial-gradient(32% 5% at 80% 45%, rgba(254, 60, 1, 0.3), transparent 70%),
+      radial-gradient(50% 8% at 66% 60%, rgba(90, 120, 116, 0.35), transparent 70%),
+      linear-gradient(180deg, #101516 0%, #172022 32%, #263433 46%, #5E5440 53%, #263031 60%, #131819 80%, #0F1314 100%);
   }
 }
 

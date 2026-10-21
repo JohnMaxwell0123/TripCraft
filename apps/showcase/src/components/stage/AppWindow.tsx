@@ -3,7 +3,7 @@
 import type { ComponentType, ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { useFade, useStep } from '@/lib/motion';
-import { useProgress } from './primitives';
+import { TapCursor, useProgress } from './primitives';
 import type { IconProps } from '@/components/common/Icons';
 
 /**
@@ -13,8 +13,9 @@ import type { IconProps } from '@/components/common/Icons';
  * 窄视窗（手机）：不画桌面标题栏，内容铺满，底部是移动端标签栏。
  * 视窗是 container-name: win 的尺寸容器，内部用 cq-sm / cq-md / cq-lg 变体按视窗自身宽度排版（见 tailwind.config.ts）。
  *
- * 当前高亮哪个导航项、状态栏写什么，由 sections 按全局进度分段决定——随故事推进切换，
+ * 当前高亮哪个导航项、状态栏写什么、标题栏的时钟显示几点，由 sections 按全局进度分段决定——随故事推进切换，
  * 状态栏只写对这一步有实际意义的信息（数据来源、合规口径、同步状态），不放装饰性遥测。
+ * 导航项可以带演示光标（tap）：章节之间的衔接通过点击真实的导航完成，下一屏就是这次点击的结果。
  */
 
 export interface WindowNavItem {
@@ -23,6 +24,8 @@ export interface WindowNavItem {
   Icon: ComponentType<IconProps>;
   /** 角标显示区间（全局进度），例如新咨询到达后、打开之前 */
   badge?: { text: string; range: readonly [number, number] };
+  /** 演示光标点击这一项（侧栏与手机标签栏各画一个，同一时刻只有一个可见） */
+  tap?: { approach: readonly [number, number]; clickAt: number; hideAt: number };
 }
 
 export interface WindowSection {
@@ -31,6 +34,8 @@ export interface WindowSection {
   nav: string;
   status: ReactNode;
   statusRight?: ReactNode;
+  /** 标题栏右侧的时钟（B 端「定制师的一天」用来交代时间推进） */
+  time?: string;
 }
 
 interface AppWindowProps {
@@ -57,17 +62,18 @@ export function AppWindow({ title, product, nav, sections, account, ariaLabel, c
     <div
       role="img"
       aria-label={ariaLabel}
-      className="relative h-[620px] w-full overflow-hidden rounded-[16px] border border-[#E2E2D8] bg-[#F7F6F1] text-left shadow-[0_24px_64px_rgba(36,30,32,0.10)] [container-name:win] [container-type:inline-size] sm:h-[640px] lg:h-[660px]"
+      className="relative h-[620px] w-full overflow-hidden rounded-[18px] border border-[#D7D7CF] bg-[#F7F6F1] text-left shadow-[inset_0_1px_0_rgba(255,255,255,0.86),0_0_0_1px_rgba(0,0,0,0.03),0_32px_64px_-24px_rgba(36,30,32,0.28)] [container-name:win] [container-type:inline-size] sm:h-[640px] lg:h-[660px]"
     >
       <div className="pointer-events-none flex h-full select-none flex-col">
         {/* 标题栏 */}
         <div className="hidden h-10 shrink-0 items-center gap-2 px-4 cq-sm:flex">
-          <span aria-hidden className="flex gap-1.5">
+          <span aria-hidden className="flex w-14 gap-1.5">
             <span className="h-3 w-3 rounded-full bg-[#FF5F57]" />
             <span className="h-3 w-3 rounded-full bg-[#FEBC2E]" />
             <span className="h-3 w-3 rounded-full bg-[#28C840]" />
           </span>
-          <span className="flex-1 truncate pr-12 text-center text-xs font-medium text-[#828081]">{title}</span>
+          <span className="flex-1 truncate text-center text-xs font-medium text-[#828081]">{title}</span>
+          <span className="w-14 shrink-0 text-right text-xs tabular-nums text-[#625F61]">{current.time ?? ''}</span>
         </div>
 
         <div className="flex min-h-0 flex-1">
@@ -149,6 +155,7 @@ function NavRow({ item, active }: { item: WindowNavItem; active: boolean }) {
           <NavDot badge={item.badge} />
         </>
       ) : null}
+      {item.tap ? <TapCursor approach={item.tap.approach} clickAt={item.tap.clickAt} hideAt={item.tap.hideAt} className="left-5 top-4" /> : null}
     </li>
   );
 }
@@ -159,6 +166,7 @@ function TabRow({ item, active }: { item: WindowNavItem; active: boolean }) {
       <item.Icon className="h-[18px] w-[18px]" />
       {item.label}
       {item.badge ? <TabDot badge={item.badge} /> : null}
+      {item.tap ? <TapCursor approach={item.tap.approach} clickAt={item.tap.clickAt} hideAt={item.tap.hideAt} className="left-1/2 top-4" /> : null}
     </span>
   );
 }

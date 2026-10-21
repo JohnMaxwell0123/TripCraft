@@ -4,16 +4,18 @@ import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { ease, useFade, useRange, useStep, useVisibility } from '@/lib/motion';
 import { AT, bsec } from './agencyTimeline';
-import { Grow, Scene, TapCursor, useProgress } from './primitives';
+import { Grow, Scene, TapCursor, Toast, useProgress } from './primitives';
 import { Badge, KeyValue, btn } from './ui';
 import { ArrowLeftIcon, CheckIcon } from '@/components/common/Icons';
 
 /**
  * B 端 04 · 咨询收件箱 → 报价 → 成交 → 白标交付（docs/17 §17.7、§17.8、§17.9）
  *
+ * 16:20 新咨询到达（视窗顶部通知 + 侧栏角标），定制师点「咨询」打开收件箱。
+ * 这条咨询就是 C 端 03 幕那一家人发出的：同一份需求画像、同一条线路、同一组价格（自助预估 ¥7,040）。
  * 咨询只带旅客授权发送的信息（联系方式等旅客同意后才可见）→ 一键生成分项报价 v1 →
- * 旅客想加一天 → 基于 v1 新建 v2，与上一版的差异自动列出（版本只增不改）→ 旅客接受 →
- * 合同与付款在平台外完成，标记成交 → 以旅行社自己的品牌交付路书，进入旅客的行程空间。
+ * 全家在行程空间商量后想加一天 → 基于 v1 新建 v2，与上一版的差异自动列出（版本只增不改）→ 旅客接受 →
+ * 合同与付款在平台外完成，标记成交 → 以旅行社自己的品牌交付路书，进入旅客的行程空间「西行计划」。
  */
 
 const BREAKDOWN = [
@@ -49,7 +51,7 @@ export function StudioInbox() {
                 <TravelerMessage />
               </div>
             </Grow>
-            <Grow at={AT.quoteV2} max={232}>
+            <Grow at={AT.quoteV2} max={256}>
               <div className="pt-3">
                 <QuoteV2 />
               </div>
@@ -84,9 +86,7 @@ function InquiryList({ className = '' }: { className?: string }) {
         <span className="text-xs text-[#828081]">平均 2 小时内回复</span>
       </div>
       <div className="flex flex-col p-2">
-        <Grow at={AT.inquiryArrive} max={72}>
-          <InquiryRow title="5 人 · 国庆前后" route="河西走廊 9 日 · 长辈友好私家团" time="16:20" status={opened ? undefined : 'new'} active={opened} cursor />
-        </Grow>
+        <InquiryRow title="5 人 · 国庆前后" route="河西走廊 9 日 · 长辈友好私家团" time="16:20" status={opened ? undefined : 'new'} active={opened} cursor />
         <InquiryRow title="2 人 · 10 月中旬" route="敦煌 · 张掖 6 日" time="昨天" status="已报价" />
         <InquiryRow title="8 人 · 11 月初" route="河西走廊 9 日 · 长辈友好私家团" time="周一" status="已婉拒 · 团期已满" />
       </div>
@@ -166,8 +166,8 @@ function SummaryCard() {
   const press = useRange(p, [AT.quoteClick - bsec(0.12), AT.quoteClick, AT.quoteClick + bsec(0.12)], [1, 0.96, 1]);
   const rows: [string, string][] = [
     ['同行', '5 人（3 成人 · 1 长者 70+ · 1 儿童 4 岁）'],
-    ['日期', '国庆前后 · 9–10 天'],
-    ['预算', '人均 ¥5,000–7,000'],
+    ['日期', '国庆前后 · 8–10 天'],
+    ['预算', '人均 ¥5,000–7,000，可到 ¥8,000'],
     ['身体', '少走台阶 · 孩子 13:00 午休'],
     ['已选调整', '敦煌 2 晚升级高档酒店 · 自助预估 ¥7,040'],
   ];
@@ -238,7 +238,7 @@ function TravelerMessage() {
   return (
     <div>
       <p className="text-xs text-[#828081]">旅客 · 16:41</p>
-      <p className="mt-1 w-fit max-w-[88%] rounded-[12px] rounded-tl-[4px] bg-[#F4F4EE] px-3 py-2 text-[13px] text-[#241E20]">能再加一天去阳关和玉门关吗？</p>
+      <p className="mt-1 w-fit max-w-[88%] rounded-[12px] rounded-tl-[4px] bg-[#F4F4EE] px-3 py-2 text-[13px] text-[#241E20]">全家商量了一下，能再加一天去阳关和玉门关吗？</p>
       <motion.span className={`${btn.secondary} relative mt-2`} style={{ scale: press }}>
         基于 v1 新建报价 v2
         <TapCursor approach={AT.v2Cursor} clickAt={AT.v2Click} hideAt={AT.v2Click + bsec(0.4)} className="left-1/2 top-4" />
@@ -262,6 +262,7 @@ function QuoteV2() {
       </div>
       <KeyValue className="mt-2" label="成人合计" value={<>¥7,040 → <b className="font-semibold">¥7,940</b></>} />
       <KeyValue className="mt-1" label="全家" value="¥33,300 → ¥37,800" />
+      <p className="mt-1 text-xs text-[#0E7A5A]">仍在旅客说的人均 ¥8,000 以内</p>
       <div className="mt-2 flex items-center justify-between gap-3">
         <span className="min-w-0 truncate text-xs text-[#828081]">版本只增不改，旅客可逐版对比</span>
         <motion.span className={`${sent ? `${btn.secondary} text-[#0E7A5A]` : btn.primary} relative`} style={{ scale: press }}>
@@ -354,11 +355,23 @@ function WhiteLabelSheet() {
         <div className="border-t border-[#EEEDE7] bg-[#FAF8F3] px-4 py-3">
           <p className="flex items-center gap-1.5 text-xs font-medium text-[#0E7A5A]">
             <CheckIcon className="h-3.5 w-3.5" />
-            已发送到旅客的行程空间，旅客可邀请家人一起看
+            已发送到旅客的行程空间「西行计划」，同行的家人都能看到
           </p>
           <p className="mt-1 text-xs text-[#828081]">以贵社品牌交付，路书中不出现 TripCraft 标识。</p>
         </div>
       </motion.div>
     </motion.div>
+  );
+}
+
+/* ── 16:20 新咨询到达：视窗顶部通知（盖在上一章的路书页上，定制师随后点侧栏「咨询」） ── */
+export function InquiryNotice() {
+  return (
+    <div className="pointer-events-none absolute inset-x-4 top-3 z-50 flex justify-center">
+      <Toast range={AT.inquiryNotice} tone="neutral">
+        16:20 新咨询 · 5 人 · 国庆前后
+        <span className="hidden font-normal text-[#625F61] cq-md:inline"> · 河西走廊 9 日 · 长辈友好私家团</span>
+      </Toast>
+    </div>
   );
 }

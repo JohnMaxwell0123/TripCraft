@@ -17,6 +17,11 @@ import { PauseIcon, PlayIcon, RotateCcwIcon } from '@/components/common/Icons';
  * - 视窗露出不足 35% 时挂起；时钟累加每帧耗时（单帧最多计 64ms），切走标签页或掉帧回来不会跳幕。
  * - prefers-reduced-motion：不自动播放，每章停在一张能说明结果的静帧（still），由访客点选章节或手动播放。
  * - 手动点选章节时落在 enter（本章画面已完全淡入的时刻），不会闪过上一章的画面。
+ * - 换章时版面不动：桌面左栏顶端对齐，旧章说明收起与新章说明展开同时进行；手机的当前章说明占固定高度。
+ *   版面高度一变，浏览器的滚动锚定就会替访客滚动页面，看起来像整页跳了一下。
+ *
+ * 视觉（.agents/rules/unify-gtm-design-system.md）：眉题炭黑小字、标题用衬线、章节标题 20px 常规字重，
+ * 进度条贴在文字左侧的留白里，当前章用烈焰橙填充。tone="band" 是深色氛围带（B 端），文字反白。
  */
 
 export interface StageChapter {
@@ -38,6 +43,7 @@ export interface StageChapter {
 }
 
 type Status = 'playing' | 'paused' | 'ended';
+type Tone = 'canvas' | 'band';
 
 interface StageShellProps {
   id: string;
@@ -48,7 +54,10 @@ interface StageShellProps {
   chapters: readonly StageChapter[];
   /** 挂在 window 上的调试钩子名：传入全局进度即跳到该帧并暂停（视觉巡检用） */
   debugHook: string;
-  tone?: 'canvas' | 'module';
+  /** canvas：暖纸画布；band：深色氛围带（文字反白） */
+  tone?: Tone;
+  /** 与相邻分区的衔接：sheet = 底边圆角的纸面压在下一段氛围带上 */
+  edge?: 'sheet' | 'none';
   children: ReactNode;
 }
 
@@ -187,36 +196,70 @@ function useStageClock(chapters: readonly StageChapter[], debugHook: string, red
   return { progress, chapterProgress, active, status, select, toggle, viewRef };
 }
 
-export function StageShell({ id, ariaLabel, eyebrow, title, intro, chapters, debugHook, tone = 'canvas', children }: StageShellProps) {
+/** 两种底色下的文字与线条颜色 */
+const INK = {
+  canvas: {
+    eyebrow: 'text-[#241E20]',
+    title: 'text-[#241E20]',
+    body: 'text-[#241E20]/75',
+    num: 'text-[#241E20]/55',
+    active: 'text-[#241E20]',
+    idle: 'text-[#241E20]/[0.62] group-hover:text-[#241E20]/85',
+    desc: 'text-[#241E20]/70',
+    track: 'bg-[#241E20]/[0.12]',
+    done: 'bg-[#241E20]/30',
+    rule: 'border-[#241E20]/[0.12]',
+    btn: 'border-[#241E20]/15 bg-[#FFFFF9] text-[#241E20] hover:border-[#241E20]/40',
+    quiet: 'text-[#241E20]/70 hover:text-[#241E20] hover:bg-[#241E20]/[0.05]',
+  },
+  band: {
+    eyebrow: 'text-[#FFFFF9]/85',
+    title: 'text-[#FFFFF9]',
+    body: 'text-[#FFFFF9]/75',
+    num: 'text-[#FFFFF9]/55',
+    active: 'text-[#FFFFF9]',
+    idle: 'text-[#FFFFF9]/60 group-hover:text-[#FFFFF9]/85',
+    desc: 'text-[#FFFFF9]/70',
+    track: 'bg-[#FFFFF9]/[0.16]',
+    done: 'bg-[#FFFFF9]/40',
+    rule: 'border-[#FFFFF9]/[0.14]',
+    btn: 'border-[#FFFFF9]/25 bg-[#FFFFF9]/[0.06] text-[#FFFFF9] hover:border-[#FFFFF9]/50',
+    quiet: 'text-[#FFFFF9]/75 hover:text-[#FFFFF9] hover:bg-[#FFFFF9]/[0.08]',
+  },
+} as const;
+
+type Ink = (typeof INK)[Tone];
+
+export function StageShell({ id, ariaLabel, eyebrow, title, intro, chapters, debugHook, tone = 'canvas', edge = 'none', children }: StageShellProps) {
   const reduced = useMediaQuery('(prefers-reduced-motion: reduce)');
   const { progress, chapterProgress, active, status, select, toggle, viewRef } = useStageClock(chapters, debugHook, reduced);
+  const ink = INK[tone];
+
+  const surface =
+    tone === 'band'
+      ? // 深色氛围带：从上一段纸面的圆角下面伸出来，再被下一段纸面盖住
+        'atmo atmo-dusk -mt-7 pb-[calc(6rem+1.75rem)] pt-[calc(6rem+1.75rem)] md:pb-[calc(8rem+1.75rem)] md:pt-[calc(8rem+1.75rem)]'
+      : `bg-[#FFFFF9] py-24 md:py-32 ${edge === 'sheet' ? 'relative z-10 rounded-b-[28px]' : ''}`;
 
   return (
-    <section
-      id={id}
-      aria-label={ariaLabel}
-      className={`relative scroll-mt-20 overflow-hidden py-14 text-[#241E20] md:py-20 ${tone === 'module' ? 'bg-[#F4F4EE]' : 'bg-[#FFFFF9]'}`}
-    >
-      <div className="relative mx-auto max-w-[1640px] px-4 sm:px-8 lg:px-10 xl:px-12">
-        <div className="grid grid-cols-1 items-center gap-6 lg:grid-cols-12 lg:gap-8 xl:gap-12">
-          <div className="text-left lg:col-span-4">
-            <p className="inline-flex items-center gap-2 rounded-full bg-[#FE3C01]/10 px-3 py-1 text-xs font-semibold tracking-wider text-[#C43200]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#FE3C01]" />
-              {eyebrow}
-            </p>
-            <h2 className="mt-3 text-balance text-2xl font-bold leading-[1.3] tracking-tight text-[#1E2024] sm:text-3xl lg:text-[26px] xl:text-[30px]">{title}</h2>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-black/60 sm:text-[15px]">{intro}</p>
+    <section id={id} aria-label={ariaLabel} className={`relative scroll-mt-16 overflow-hidden ${surface}`}>
+      <div className="relative mx-auto max-w-[1320px] px-5 sm:px-8 lg:px-10">
+        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[340px_minmax(0,1fr)] xl:gap-14">
+          <div className="text-left">
+            <p className={`text-[13px] font-semibold tracking-[0.08em] ${ink.eyebrow}`}>{eyebrow}</p>
+            <h2 className={`mt-4 text-balance font-serif text-[30px] font-semibold leading-[1.18] tracking-[-0.02em] sm:text-[34px] xl:text-[38px] ${ink.title}`}>{title}</h2>
+            <p className={`mt-4 max-w-xl text-base leading-relaxed ${ink.body}`}>{intro}</p>
 
-            <ChapterList id={id} chapters={chapters} active={active} chapterProgress={chapterProgress} reduced={reduced} onSelect={select} />
-            <Controls className="mt-6 hidden lg:flex" active={active} total={chapters.length} status={status} onToggle={toggle} onSelect={select} />
-            <ChapterStrip id={id} chapters={chapters} active={active} chapterProgress={chapterProgress} onSelect={select} />
+            <ChapterList id={id} chapters={chapters} active={active} chapterProgress={chapterProgress} ink={ink} onSelect={select} />
+            <Controls className="mt-8 hidden lg:flex" active={active} total={chapters.length} status={status} ink={ink} onToggle={toggle} onSelect={select} />
+            <ChapterStrip id={id} chapters={chapters} active={active} chapterProgress={chapterProgress} ink={ink} onSelect={select} />
           </div>
 
-          <div ref={viewRef} className="w-full lg:col-span-8" role="tabpanel" aria-labelledby={`${id}-tab-${active}`}>
+          <div ref={viewRef} className="w-full" role="tabpanel" aria-labelledby={`${id}-tab-${active}`}>
             <ProgressContext.Provider value={progress}>
               <ReducedMotionContext.Provider value={reduced}>{children}</ReducedMotionContext.Provider>
             </ProgressContext.Provider>
-            <Controls className="mt-4 flex lg:hidden" active={active} total={chapters.length} status={status} onToggle={toggle} onSelect={select} />
+            <Controls className="mt-4 flex lg:hidden" active={active} total={chapters.length} status={status} ink={ink} onToggle={toggle} onSelect={select} />
           </div>
         </div>
       </div>
@@ -224,20 +267,20 @@ export function StageShell({ id, ariaLabel, eyebrow, title, intro, chapters, deb
   );
 }
 
-/* ── 桌面：竖排章节导航（标题 + 进度条，当前章展开说明） ── */
+/* ── 桌面：竖排章节导航（进度条在文字左侧留白里；当前章展开说明，旧章同时收起） ── */
 function ChapterList({
   id,
   chapters,
   active,
   chapterProgress,
-  reduced,
+  ink,
   onSelect,
 }: {
   id: string;
   chapters: readonly StageChapter[];
   active: number;
   chapterProgress: MotionValue<number>;
-  reduced: boolean;
+  ink: Ink;
   onSelect: (i: number) => void;
 }) {
   const onKeyDown = (e: KeyboardEvent<HTMLButtonElement>, i: number) => {
@@ -253,7 +296,7 @@ function ChapterList({
   const hasTime = chapters.some((c) => c.time);
 
   return (
-    <div role="tablist" aria-orientation="vertical" aria-label="章节" className="mt-6 hidden flex-col gap-4 lg:flex xl:gap-5">
+    <div role="tablist" aria-orientation="vertical" aria-label="章节" className="mt-10 hidden flex-col lg:flex">
       {chapters.map((ch, i) => {
         const isActive = i === active;
         return (
@@ -266,32 +309,25 @@ function ChapterList({
             tabIndex={isActive ? 0 : -1}
             onClick={() => onSelect(i)}
             onKeyDown={(e) => onKeyDown(e, i)}
-            className="group relative w-full rounded-sm pl-5 text-left outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01]"
+            className="group relative w-full rounded-[5px] py-2.5 text-left outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01]"
           >
-            <span aria-hidden className="absolute inset-y-0 left-0 w-[2px] overflow-hidden rounded-full bg-[#241E20]/10">
-              {i < active ? <span className="block h-full w-full bg-[#241E20]/35" /> : null}
+            <span aria-hidden className={`absolute inset-y-1 -left-5 w-[3px] overflow-hidden rounded-full xl:-left-6 ${ink.track}`}>
+              {i < active ? <span className={`block h-full w-full ${ink.done}`} /> : null}
               {isActive ? <motion.span className="block h-full w-full origin-top bg-[#FE3C01]" style={{ scaleY: chapterProgress }} /> : null}
             </span>
-            <span className="flex items-baseline gap-2">
-              <span className={`${hasTime ? 'w-11' : 'w-6'} shrink-0 font-mono text-xs tabular-nums text-[#241E20]/40`}>{ch.time ?? String(i + 1).padStart(2, '0')}</span>
-              <span
-                className={`text-lg leading-snug transition-colors duration-200 ${
-                  isActive ? 'font-semibold text-[#241E20]' : 'font-medium text-[#241E20]/45 group-hover:text-[#241E20]/75'
-                }`}
-              >
-                {ch.title}
+            <span className="flex items-baseline gap-3">
+              <span className={`${hasTime ? 'w-11' : 'w-6'} shrink-0 font-mono text-xs tabular-nums ${ink.num}`}>{ch.time ?? String(i + 1).padStart(2, '0')}</span>
+              <span className={`text-xl leading-snug transition-colors duration-200 ${isActive ? ink.active : ink.idle}`}>{ch.title}</span>
+            </span>
+            {/* 说明：所有章都渲染，靠 grid 行高 0fr ↔ 1fr 同时收放，列表总高度不变 */}
+            <span
+              className={`grid transition-[grid-template-rows,opacity] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${isActive ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}
+              aria-hidden={!isActive}
+            >
+              <span className="overflow-hidden">
+                <span className={`block pt-2 text-[15px] leading-relaxed ${ink.desc} ${hasTime ? 'pl-14' : 'pl-9'}`}>{ch.desc}</span>
               </span>
             </span>
-            {isActive ? (
-              <motion.span
-                className="block overflow-hidden"
-                initial={reduced ? false : { opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                transition={{ duration: 0.25 }}
-              >
-                <span className={`mt-1.5 block max-w-md text-sm leading-relaxed text-[#241E20]/60 ${hasTime ? 'pl-[52px]' : 'pl-8'}`}>{ch.desc}</span>
-              </motion.span>
-            ) : null}
           </button>
         );
       })}
@@ -299,23 +335,25 @@ function ChapterList({
   );
 }
 
-/* ── 手机 / 平板：横排进度条 + 当前章标题与说明，紧贴视窗上方 ── */
+/* ── 手机 / 平板：横排进度条 + 当前章标题与说明（固定高度），紧贴视窗上方 ── */
 function ChapterStrip({
   id,
   chapters,
   active,
   chapterProgress,
+  ink,
   onSelect,
 }: {
   id: string;
   chapters: readonly StageChapter[];
   active: number;
   chapterProgress: MotionValue<number>;
+  ink: Ink;
   onSelect: (i: number) => void;
 }) {
   const ch = chapters[active];
   return (
-    <div className="mt-6 lg:hidden">
+    <div className="mt-8 lg:hidden">
       <div role="tablist" aria-label="章节" className="grid gap-2" style={{ gridTemplateColumns: `repeat(${chapters.length}, minmax(0, 1fr))` }}>
         {chapters.map((c, i) => {
           const isActive = i === active;
@@ -336,22 +374,25 @@ function ChapterStrip({
                   document.getElementById(`${id}-mtab-${next}`)?.focus();
                 }
               }}
-              className="flex min-h-[44px] flex-col justify-center gap-2 rounded-sm text-left outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01]"
+              className="flex min-h-[44px] flex-col justify-center gap-2 rounded-[5px] text-left outline-none focus-visible:ring-2 focus-visible:ring-[#FE3C01]"
             >
-              <span aria-hidden className="relative block h-[3px] overflow-hidden rounded-full bg-[#241E20]/10">
-                {i < active ? <span className="absolute inset-0 bg-[#241E20]/35" /> : null}
+              <span aria-hidden className={`relative block h-[3px] overflow-hidden rounded-full ${ink.track}`}>
+                {i < active ? <span className={`absolute inset-0 ${ink.done}`} /> : null}
                 {isActive ? <motion.span className="absolute inset-0 origin-left bg-[#FE3C01]" style={{ scaleX: chapterProgress }} /> : null}
               </span>
-              <span className={`truncate text-xs ${isActive ? 'font-semibold text-[#241E20]' : 'text-[#241E20]/50'}`}>{c.short}</span>
+              <span className={`truncate text-[13px] ${isActive ? `font-semibold ${ink.active}` : ink.idle}`}>{c.short}</span>
             </button>
           );
         })}
       </div>
-      <p className="mt-3 text-base font-semibold text-[#241E20]">
-        <span className="mr-2 font-mono text-xs font-normal tabular-nums text-[#241E20]/40">{ch.time ?? String(active + 1).padStart(2, '0')}</span>
-        {ch.title}
-      </p>
-      <p className="mt-1 text-sm leading-relaxed text-[#241E20]/60">{ch.desc}</p>
+      {/* 固定高度：换章时下方视窗的位置不变 */}
+      <div className="mt-4 min-h-[124px] sm:min-h-[100px]">
+        <p className={`text-lg font-semibold leading-snug ${ink.active}`}>
+          <span className={`mr-2 font-mono text-xs font-normal tabular-nums ${ink.num}`}>{ch.time ?? String(active + 1).padStart(2, '0')}</span>
+          {ch.title}
+        </p>
+        <p className={`mt-1.5 line-clamp-3 text-[15px] leading-relaxed ${ink.desc}`}>{ch.desc}</p>
+      </div>
     </div>
   );
 }
@@ -362,6 +403,7 @@ function Controls({
   active,
   total,
   status,
+  ink,
   onToggle,
   onSelect,
 }: {
@@ -369,32 +411,33 @@ function Controls({
   active: number;
   total: number;
   status: Status;
+  ink: Ink;
   onToggle: () => void;
   onSelect: (i: number) => void;
 }) {
   const label = status === 'playing' ? '暂停' : status === 'ended' ? '重新播放' : '播放';
   const Icon = status === 'playing' ? PauseIcon : status === 'ended' ? RotateCcwIcon : PlayIcon;
   return (
-    <div className={`items-center justify-between border-t border-[#E2E2D8] pt-4 ${className}`}>
+    <div className={`items-center justify-between border-t pt-5 ${ink.rule} ${className}`}>
       <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={onToggle}
-          className="inline-flex h-8 items-center gap-1.5 rounded-[5px] bg-[#241E20]/[0.05] px-3 text-xs font-semibold text-[#241E20]/80 transition-colors hover:bg-[#241E20]/10 hover:text-[#241E20]"
+          className={`inline-flex h-10 items-center gap-2 rounded-[5px] border px-3.5 text-sm font-medium transition-colors ${ink.btn}`}
         >
           <Icon className="h-3.5 w-3.5 text-[#FE3C01]" />
           {label}
         </button>
-        <span className="font-mono text-xs tabular-nums text-[#241E20]/45">
+        <span className={`font-mono text-xs tabular-nums ${ink.num}`}>
           {String(active + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
         </span>
       </div>
-      <div className="flex items-center gap-1 text-xs text-[#241E20]/60">
+      <div className="flex items-center gap-1 text-sm">
         <button
           type="button"
           disabled={active === 0}
           onClick={() => onSelect(active - 1)}
-          className="h-8 rounded-[5px] px-2.5 transition-colors hover:bg-[#241E20]/5 hover:text-[#241E20] disabled:pointer-events-none disabled:opacity-35"
+          className={`h-10 rounded-[5px] px-2.5 transition-colors disabled:pointer-events-none disabled:opacity-35 ${ink.quiet}`}
         >
           ← 上一章
         </button>
@@ -402,7 +445,7 @@ function Controls({
           type="button"
           disabled={active === total - 1}
           onClick={() => onSelect(active + 1)}
-          className="h-8 rounded-[5px] px-2.5 transition-colors hover:bg-[#241E20]/5 hover:text-[#241E20] disabled:pointer-events-none disabled:opacity-35"
+          className={`h-10 rounded-[5px] px-2.5 transition-colors disabled:pointer-events-none disabled:opacity-35 ${ink.quiet}`}
         >
           下一章 →
         </button>

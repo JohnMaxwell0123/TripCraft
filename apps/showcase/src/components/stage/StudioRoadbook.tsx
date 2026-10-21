@@ -56,7 +56,7 @@ export function StudioRoadbook() {
         <GeneratePanel />
         <ResultView />
         <div className="pointer-events-none absolute inset-x-4 top-3 z-50 flex justify-center">
-          <Toast range={AT.publishedToast}>已发布：线路详情页显示路线动画与 AI 路书</Toast>
+          <Toast range={AT.publishedToast}>已发布 · 线路开始参与匹配，详情页显示路线动画与 AI 路书</Toast>
         </div>
       </div>
     </Scene>

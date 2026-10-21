@@ -3,15 +3,16 @@
 import { motion, useTransform, type MotionValue } from 'framer-motion';
 import { ease, useFade, useRange, useScrollCounter, useStep, useVisibility } from '@/lib/motion';
 import { T, sec } from './timeline';
-import { Pop, Scene, TapCursor, useProgress } from './primitives';
+import { Scene, TapCursor, useProgress } from './primitives';
 import { PageHeader, Segmented, btn } from './ui';
 import { CheckIcon, ChevronDownIcon, SparklesIcon, StarIcon } from '@/components/common/Icons';
 
 /**
  * 03 幕（上）· 路径 B 旅行社线路筛选页（docs/16 §16.6–§16.7）
  *
- * 价格滑块上方是真实的柱状分布（分面计数，范围内着色，标出你的预算与市场中位）；天数滑块；
- * 条件方块带结果数，来自需求画像的方块默认选中并带 ★。结果卡：匹配度、3 条理由与 1 条差距。
+ * 从路径 A 的「看旅行社线路」进来，页面先「套用需求画像」：分布图一开始就在，
+ * 画像里的预算区间与天数范围随后着色，来自画像的条件方块依次选中并带 ★——访客看得见画像怎样变成筛选条件。
+ * 价格滑块上方是真实的柱状分布（分面计数，标出你的预算与市场中位）；结果卡：匹配度、3 条理由与 1 条差距。
  * 「问 AI」后价格上限移到 ¥8,000，结果数变化，但匹配度不变——筛选是硬过滤，画像是软评分。
  */
 
@@ -107,7 +108,11 @@ export function MatchScene() {
     <Scene range={T.filterScene} label="路径 B：旅行社线路筛选">
       <PageHeader
         title="旅行社线路"
-        subtitle="5 人 · 1 长者 1 儿童 · 国庆前后 · 8–10 天 · 河西走廊"
+        subtitle={
+          <>
+            <span className="font-medium text-[#C43200]">已套用需求画像</span> · 5 人 · 1 长者 1 儿童 · 国庆前后 · 8–10 天
+          </>
+        }
         actions={
           <>
             <span className={`${btn.secondary} hidden cq-md:inline-flex`}>编辑需求</span>
@@ -173,7 +178,12 @@ function AskAiPopover() {
 }
 
 /* ═════════════════════ 筛选面板：分布图滑块 + 条件方块 ═════════════════════ */
+/** 来自画像的方块按这个顺序依次选中（长辈 → 儿童 → 轻松） */
+const PROFILE_TILES = TILE_GROUPS.flatMap((g) => g.tiles.filter((t) => t.selected).map((t) => t.label));
+
 function FilterPanel({ compact = false }: { compact?: boolean }) {
+  const p = useProgress();
+  const fromProfile = useFade(p, T.tilesStart - sec(0.2), T.tilesStart);
   return (
     <>
       <PriceFilter />
@@ -184,17 +194,15 @@ function FilterPanel({ compact = false }: { compact?: boolean }) {
             <p className="mb-2 flex items-center justify-between text-xs font-medium text-[#625F61]">
               {g.title}
               {gi === 0 ? (
-                <span className="inline-flex items-center gap-1 font-normal text-[#828081]">
+                <motion.span className="inline-flex items-center gap-1 font-normal text-[#828081]" style={{ opacity: fromProfile }}>
                   <StarIcon className="h-3 w-3 text-[#FE3C01]" />
                   来自你的需求
-                </span>
+                </motion.span>
               ) : null}
             </p>
             <div className="flex flex-wrap gap-2">
-              {g.tiles.map((t, ti) => (
-                <Pop key={t.label} at={T.tilesStart + (gi * 4 + ti) * T.tileStep} dur={T.tileStep * 2.5}>
-                  <TileChip tile={t} />
-                </Pop>
+              {g.tiles.map((t) => (
+                <TileChip key={t.label} tile={t} selectedAt={t.selected ? T.tilesStart + PROFILE_TILES.indexOf(t.label) * T.tileStep : undefined} />
               ))}
             </div>
           </div>
@@ -210,18 +218,21 @@ function FilterPanel({ compact = false }: { compact?: boolean }) {
   );
 }
 
-function TileChip({ tile }: { tile: Tile }) {
+/** 条件方块：来自画像的方块在 selectedAt 时选中（套用画像的那一刻） */
+function TileChip({ tile, selectedAt }: { tile: Tile; selectedAt?: number }) {
+  const p = useProgress();
+  const on = useStep(p, [selectedAt ?? 2]) === 1;
   const empty = tile.count === 0;
   return (
     <span
-      className={`inline-flex h-7 items-center gap-1 whitespace-nowrap rounded-[5px] border px-2 text-xs ${
-        tile.selected ? 'border-[#241E20] bg-[#F4F4EE] font-medium text-[#241E20]' : empty ? 'border-dashed border-[#E2E2D8] text-[#A3A19B]' : 'border-[#E2E2D8] bg-white text-[#625F61]'
+      className={`inline-flex h-7 items-center gap-1 whitespace-nowrap rounded-[5px] border px-2 text-xs transition-colors duration-200 ${
+        on ? 'border-[#241E20] bg-[#F4F4EE] font-medium text-[#241E20]' : empty ? 'border-dashed border-[#E2E2D8] text-[#A3A19B]' : 'border-[#E2E2D8] bg-white text-[#625F61]'
       }`}
     >
-      {tile.selected ? <CheckIcon className="h-3 w-3" /> : null}
+      {on ? <CheckIcon className="h-3 w-3" /> : null}
       {tile.label}
       <span className="tabular-nums text-[#828081]">{tile.count}</span>
-      {tile.selected ? <StarIcon className="h-3 w-3 text-[#FE3C01]" /> : null}
+      {on ? <StarIcon className="h-3 w-3 text-[#FE3C01]" /> : null}
     </span>
   );
 }
@@ -247,7 +258,7 @@ function PriceFilter() {
       <div aria-hidden className="relative mt-6 h-14">
         <div className="absolute inset-0 flex items-end gap-px">
           {PRICE_COUNTS.map((c, i) => (
-            <PriceBar key={i} index={i} count={c} hi={hi} rangeOn={rangeOn} />
+            <PriceBar key={i} count={c} hi={hi} rangeOn={rangeOn} center={PRICE_MIN + i * PRICE_BIN + PRICE_BIN / 2} />
           ))}
         </div>
         <motion.div className="absolute -top-1 bottom-0 border-l border-dashed border-[#241E20]/50" style={{ left: `${pricePct(MEDIAN)}%`, opacity: markers }}>
@@ -278,25 +289,21 @@ function PriceFilter() {
   );
 }
 
-function PriceBar({ index, count, hi, rangeOn }: { index: number; count: number; hi: MotionValue<number>; rangeOn: MotionValue<number> }) {
-  const p = useProgress();
-  const [a, b] = T.priceBars;
-  const at = a + ((b - a) * index) / PRICE_COUNTS.length;
-  const grow = useRange(p, [at, at + (b - a) * 0.3], [0, 1], { easing: ease.out });
-  const center = PRICE_MIN + index * PRICE_BIN + PRICE_BIN / 2;
+/** 分布图的柱子随页面一起出现（市场行情与画像无关）；画像里的预算区间随后着色 */
+function PriceBar({ count, hi, rangeOn, center }: { count: number; hi: MotionValue<number>; rangeOn: MotionValue<number>; center: number }) {
   const lit = useTransform([rangeOn, hi], ([r, h]) => ((r as number) > 0 && center > BUDGET[0] && center < (h as number) ? (r as number) : 0));
   const height = count === 0 ? '2px' : `${(count / PRICE_PEAK) * 100}%`;
 
   return (
-    <motion.div className="relative flex-1 origin-bottom rounded-t-[2px] bg-[#E2E2D8]" style={{ height, scaleY: grow }}>
+    <div className="relative flex-1 rounded-t-[2px] bg-[#E2E2D8]" style={{ height }}>
       <motion.span className="absolute inset-0 rounded-t-[2px] bg-[#FE3C01]" style={{ opacity: lit }} />
-    </motion.div>
+    </div>
   );
 }
 
 function DaysFilter() {
   const p = useProgress();
-  const rangeOn = useRange(p, [T.dayBars[1] - sec(0.4), T.dayBars[1]], [0, 1]);
+  const rangeOn = useRange(p, T.dayRange, [0, 1]);
   const peak = Math.max(...DAY_COUNTS);
   const lo = ((DAY_RANGE[0] + 0.5) / DAY_COUNTS.length) * 100;
   const hi = ((DAY_RANGE[1] + 0.5) / DAY_COUNTS.length) * 100;
@@ -311,7 +318,7 @@ function DaysFilter() {
       </div>
       <div aria-hidden className="mt-2 flex h-8 items-end gap-1">
         {DAY_COUNTS.map((c, i) => (
-          <DayBar key={DAY_LABELS[i]} index={i} height={`${(c / peak) * 100}%`} inRange={i >= DAY_RANGE[0] && i <= DAY_RANGE[1]} rangeOn={rangeOn} />
+          <DayBar key={DAY_LABELS[i]} height={`${(c / peak) * 100}%`} inRange={i >= DAY_RANGE[0] && i <= DAY_RANGE[1]} rangeOn={rangeOn} />
         ))}
       </div>
       <div aria-hidden className="relative mt-1 h-3">
@@ -329,15 +336,11 @@ function DaysFilter() {
   );
 }
 
-function DayBar({ index, height, inRange, rangeOn }: { index: number; height: string; inRange: boolean; rangeOn: MotionValue<number> }) {
-  const p = useProgress();
-  const [a, b] = T.dayBars;
-  const at = a + ((b - a) * index) / DAY_COUNTS.length;
-  const grow = useRange(p, [at, at + (b - a) * 0.35], [0, 1], { easing: ease.out });
+function DayBar({ height, inRange, rangeOn }: { height: string; inRange: boolean; rangeOn: MotionValue<number> }) {
   return (
-    <motion.div className="relative flex-1 origin-bottom rounded-t-[2px] bg-[#E2E2D8]" style={{ height, scaleY: grow }}>
+    <div className="relative flex-1 rounded-t-[2px] bg-[#E2E2D8]" style={{ height }}>
       {inRange ? <motion.span className="absolute inset-0 rounded-t-[2px] bg-[#FE3C01]" style={{ opacity: rangeOn }} /> : null}
-    </motion.div>
+    </div>
   );
 }
 
@@ -432,7 +435,7 @@ function CardBody({ result, picked }: { result: Result; picked: boolean }) {
           </p>
         </div>
       </div>
-      <p className="mt-2 line-clamp-2 text-xs leading-5 text-[#241E20] cq-md:truncate">
+      <p className="mt-2 line-clamp-2 text-xs leading-5 text-[#241E20]">
         {result.reasons.map((r) => (
           <span key={r} className="mr-2">
             <span className="text-[#0E7A5A]">✓</span> {r}

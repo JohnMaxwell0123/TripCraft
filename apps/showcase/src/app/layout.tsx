@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { FontLoader } from '@/components/common/FontLoader';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -39,14 +40,12 @@ export default function RootLayout({
   return (
     <html lang="zh-CN">
       <head>
+        {/* 网络字体由 FontLoader 在挂载后插入，不阻塞首次渲染（见该组件说明） */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
       </head>
       <body className="font-sans antialiased selection:bg-charcoal selection:text-canvas">
+        <FontLoader />
         {children}
       </body>
     </html>

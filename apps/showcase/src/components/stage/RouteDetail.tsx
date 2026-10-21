@@ -27,11 +27,12 @@ const ITINERARY = [
   { day: 'D5', title: '莫高窟 · 无障碍接驳' },
 ];
 
+/** 与 01 幕的需求画像同一组数据；预算附上筛选页里刚说的「可以到 8000」 */
 const CONSENT = [
   { label: '同行人员', value: '5 人 · 1 长者 1 儿童', checked: true },
-  { label: '日期', value: '国庆前后 · 9–10 天', checked: true },
-  { label: '预算', value: '人均 ¥5,000–7,000', checked: true },
-  { label: '身体情况', value: '少走台阶 · 孩子午休', checked: true },
+  { label: '日期', value: '国庆前后 · 8–10 天', checked: true },
+  { label: '预算', value: '人均 ¥5,000–7,000，可到 ¥8,000', checked: true },
+  { label: '身体情况', value: '少走台阶 · 孩子 13:00 午休', checked: true },
   { label: '已选调整', value: '敦煌升级高档酒店 · 预估 ¥7,040', checked: true },
   { label: '联系方式', value: '姓名与电话，对方回复后再决定', checked: false },
 ];
@@ -73,7 +74,10 @@ export function RouteDetail() {
 
         <ConsentSheet />
         <div className="pointer-events-none absolute inset-x-4 top-3 z-50 flex justify-center">
-          <Toast range={T.sentToast}>已发送给敦煌某国际旅行社 · 通常 2 小时内回复</Toast>
+          <Toast range={T.sentToast}>
+            16:20 已发给敦煌某国际旅行社
+            <span className="font-normal text-[#625F61]"> · 回复会出现在行程空间</span>
+          </Toast>
         </div>
       </div>
     </Scene>
