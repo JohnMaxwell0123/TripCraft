@@ -53,7 +53,7 @@ B 端 · 定制师的一天（AgencyStage，#agency，约 68 秒，黄昏氛围�
 - **共用外壳**：`StageShell.tsx`（rAF 时钟、章节导航、播放控制；`tone="band"` 深色氛围带）与 `AppWindow.tsx`（标题栏与时钟、侧栏、状态栏、手机标签栏；导航项可带角标与演示光标）；章节按时长首尾相接（`acts.ts`），只播放一遍，离开视口时挂起，播放过程 0 React 重渲染。
 - **换章版面不动**：各章说明同时收放、手机说明固定高度，避免浏览器滚动锚定把整页滚走。
 - **时间轴**：C 端 `timeline.ts`、B 端 `agencyTimeline.ts`；关键帧以全局进度、按「时间轴秒」书写，调整某一章的节奏只改这两份文件；整体快慢只改 `StageShell.tsx` 的 `PLAYBACK_RATE`（2026-10-21 起 0.9）。
-- **视窗里的产品界面**（SHOWCASE §4.1「视窗界面规范」，D10 已定的 App 外观；会员行程皮肤不在演示站里演示）：暖白 · 品牌橙为主，叠在地图上的浮层用玻璃（`.ui-glass`，不支持时退回实色）；组件只用 `globals.css`「产品界面令牌」与 `tailwind.config.ts` 的 `ui-*`。视觉语言与示例线路无关：示意矢量底图（`MapCanvas` + `data/basemap.ts`）、用路线形状生成的封面（`RouteGlyph`）、地点类别配色与图形（`ui.tsx`）。
+- **视窗里的产品界面**（SHOWCASE §4.1「视窗界面规范」，D10 已定的 App 外观；行程皮肤不在演示站里演示）：暖白 · 品牌橙为主，叠在地图上的浮层用玻璃（`.ui-glass`，不支持时退回实色）；组件只用 `globals.css`「产品界面令牌」与 `tailwind.config.ts` 的 `ui-*`。视觉语言与示例线路无关：示意矢量底图（`MapCanvas` + `data/basemap.ts`）、用路线形状生成的封面（`RouteGlyph`）、地点类别配色与图形（`ui.tsx`）。
 - **透明度为 0 时同时隐藏**：只靠透明度隐藏的元素用 `useFadeVisibility` / `useFadeStyle` 绑上 `visibility`，iPad Safari 不留残影。
 - **按视窗宽度排版**：视窗是 `container-name: win` 的容器，内部用 `cq-sm / cq-md / cq-lg` 变体（见 `tailwind.config.ts`）。
 - **减弱动态效果**：`prefers-reduced-motion` 下不自动播放，每章展示一张静帧。

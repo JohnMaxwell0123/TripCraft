@@ -589,7 +589,7 @@ npm run check      # = validate + check-links + check-br025 + check-trace
 - …用户说「随便」时怎么办？ → [§8.7 模糊输入的处理设计](08-socratic-interaction-design.md#87--模糊输入的处理设计)
 - …为什么要让用户确认一遍才生成？ → [§8.5 回显确认](08-socratic-interaction-design.md#85--回显确认整个设计里最重要的一个动作)
 - …一车人需求冲突怎么办？ → [§8.8 多人意见冲突](08-socratic-interaction-design.md#88--多人意见冲突的对话设计) + [§11.4 冲突可视化](11-audience-adaptive-rendering.md#114--冲突可视化)
-- …App 会按目的地换颜色吗？主题是给谁用的？ → [§9.0 App 外观与行程皮肤](09-visual-design-system.md#90-两层app-外观与行程皮肤)（App 统一；按路线生成的皮肤是会员功能）
+- …App 会按目的地换颜色吗？主题是给谁用的？ → [§9.0 App 外观与行程皮肤](09-visual-design-system.md#90-两层app-外观与行程皮肤)（App 统一；AI 按路线自动生成的皮肤免费，深度定制属会员）
 - …「敦煌金」到底该是什么颜色？ → [§9.2.2](09-visual-design-system.md#922-敦煌金-dunhuang-gold)
 - …主题和流派能随便组合吗？ → [§9.1.3 兼容性矩阵](09-visual-design-system.md#913-兼容性矩阵-本节的核心产出)
 - …长辈模式除了放大字还该做什么？ → [§9.7.2](09-visual-design-system.md#972-长辈模式的真实设计目标)

@@ -9,7 +9,7 @@
 - **主线专项**：对话、需求画像、双路径与筛选页见 [`docs/16`](docs/16-planning-paths-and-route-matching.md)；旅行社线路工作室见 [`docs/17`](docs/17-agency-route-studio.md)。
 - **支撑能力**：离线单文件导出、车机投递、白标交付、旅后回忆录保留原设计，但排期在主线之后（[`DLV-01`](docs/delivery/DLV-01-roadmap-mvp.md)），不要在新代码或文案里把它们写成产品主卖点。
 - **修改产品文档时**：新增场景 / 功能 / 假设须同步 PRD-03、PRD-04、DLV-01、DLV-03、ASSUMPTIONS，并通过 `npm run check`（含 `check-trace` 追溯校验）。
-- **产品 UI 视觉体系已定（D10，2026-10-22）**：App 外观统一，按 [SHOWCASE §4.1「视窗界面规范」](docs/SHOWCASE-web-design.md#41-共用外壳与应用视窗)（暖白 · 品牌橙，玻璃只用于叠在地图上的浮层），不随目的地换色。`docs/09` 的五主题 × 版式是**会员功能「行程皮肤」**：按路线生成，只作用于行程页、路书阅读、分享卡片、导出与回忆录（[docs/09 §9.0](docs/09-visual-design-system.md#90-两层app-外观与行程皮肤)）。不要再把目的地主题写成 App 的默认外观。Unify GTM 只约束 `apps/showcase` 的营销页面。
+- **产品 UI 视觉体系已定（D10，2026-10-22）**：App 外观统一，按 [SHOWCASE §4.1「视窗界面规范」](docs/SHOWCASE-web-design.md#41-共用外壳与应用视窗)（暖白 · 品牌橙，玻璃只用于叠在地图上的浮层），不随目的地换色。`docs/09` 的五主题 × 版式是**「行程皮肤」**：按路线生成，只作用于行程页、路书阅读、分享卡片、导出与回忆录；AI 自动生成的一套对所有人免费（可分享的个性化路书是获客入口），手动定制等深度个性化是会员服务（[docs/09 §9.0](docs/09-visual-design-system.md#90-两层app-外观与行程皮肤)，PRD-01 D9）。不要再把目的地主题写成 App 的默认外观。Unify GTM 只约束 `apps/showcase` 的营销页面。
 
 ---
 
@@ -43,7 +43,7 @@
 - **`github-mcp-server`**：GitHub 仓库与 Issue/PR 联动。
 
 ### 本地工程生效的 Skills (位于 `.agents/skills/`)
-1. **`frontend-design-system`**：Tailwind CSS 规范、两层令牌（统一的 App 外观 + 会员行程皮肤的五个主题族：敦煌金/赛博蓝/高原青/江南翠/冰川银）、地图浮层的液态玻璃、多端断点与长辈模式。
+1. **`frontend-design-system`**：Tailwind CSS 规范、两层令牌（统一的 App 外观 + 行程皮肤的五个主题族：敦煌金/赛博蓝/高原青/江南翠/冰川银）、地图浮层的液态玻璃、多端断点与长辈模式。
 2. **`nextjs-react-expert`**：Next.js App Router RSC/Client 边界划分、Suspense 骨架屏、三层状态解耦、Hydration 防御与 CWV 性能优化。
 3. **`web-devtools-qa`**：与 `chrome-devtools-mcp` 深度协同的 5 步前端自动化质量审计流。
 4. **`local-first-storage`**：Local-First 架构落地、IndexedDB 存储封装、单文件自包含 HTML 快照打包与 AJV Schema 契约校验。
