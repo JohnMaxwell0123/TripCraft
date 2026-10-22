@@ -29,7 +29,7 @@ sources: [docs/00-overview-and-glossary.md, docs/09-visual-design-system.md, doc
 TripCraft 的核心交付物虽然包含免安装单文件离线 HTML（`C-SNAPSHOT`），但项目不是一个纯静态网页生成器，而是贯穿行前去中心化协作、行中多端动态同步、座舱联动与 B 端旅行社 SaaS 白标的**完整智能旅行中枢**（见 [docs/15 §15.1](../15-multi-device-and-collaboration.md#151-核心定调为什么-tripcraft-最终形态必须是多端同步-app)）。
 
 Web 端（统称 `Web Platform`，包含面向 C 端旅客与组织者的 `C-WEB`，面向 B 端地接社与定制师的 `C-CONSOLE`，以及离线自包含运行时 `C-SNAPSHOT`）承担着双重使命：
-1. **用网站的形式来展示**：以工业级 Web 前端标准，提供极高质感的自驾路书呈现。支持五大液态玻璃主题、高对比地理沙盘、时序节点流、高程剖面图及长辈大字自适应模式。
+1. **用网站的形式来展示**：以工业级 Web 前端标准，提供极高质感的自驾路书呈现。统一的 App 外观（[docs/09 §9.0](../09-visual-design-system.md#90-两层app-外观与行程皮肤)，D10 已定），会员可为行程套用按路线生成的行程皮肤；高对比地理沙盘、时序节点流、高程剖面图及长辈大字自适应模式。
 2. **实现项目的全部功能**：Web 端不仅是“查看器”，更是**全生命周期生产力工作台**。支持从零倾倒意图、老定制师苏格拉底反问对齐、多人协作愿望提名池、考斯特大巴 2.8m 通达性规则校验、智能座舱 Tier 0 批量深链投递、面对面离线二维码 TripPatch 生成与合流、纯前端 EXIF 本地照片聚类回忆录、到旅行社企业白标配置与按单加量计费结算。
 
 ### 1.2 十条设计铁律在 Web 端的落地映射
@@ -64,7 +64,7 @@ flowchart TB
 
         subgraph PACKAGES["共享业务包 (Packages)"]
             CORE["packages/dsl-core<br/>(DSL 校验、AST 解析、TripPatch 算法)"]
-            TOKENS["packages/design-tokens<br/>(5大主题变量、5大流派样式、长辈模式)"]
+            TOKENS["packages/design-tokens<br/>(App 外观令牌、行程皮肤主题与版式、长辈模式)"]
             RENDER["packages/render-engine<br/>(时序日程、展卡、高程图、考斯特通达性)"]
             STORAGE["packages/storage-core<br/>(IndexedDB 封装、CRDT 本地操作流水)"]
             COCKPIT["packages/cockpit-sdk<br/>(Tier 0 深链 URI 算路生成器)"]
@@ -95,7 +95,7 @@ flowchart TB
    - *本地离线持久化*：`idb`（IndexedDB 极薄 Promise 封装）+ `@tripcraft/storage-core`。
 3. **样式与视觉引擎**：
    - `Tailwind CSS v3.4+` + 原生 CSS Custom Properties（CSS 变量）。
-   - 彻底贯彻 [docs/09 视觉设计系统](../09-visual-design-system.md) 的 5 大主题与 5 大流派动态类名注入。
+   - 两层令牌（[docs/09 §9.0](../09-visual-design-system.md#90-两层app-外观与行程皮肤)）：App 外观令牌全局统一；5 大主题与版式只作为会员的行程皮肤，挂在行程内容的根节点上（§5.1–§5.2）。
 4. **地理与地图可视化**：
    - 统一抽象层隔离高德地图 JS API v2.0 / 百度地图 Web API（[ADR-005](adr/ADR-005-map-navigation-abstraction.md)）。
    - 离线/降级模式下采用原生 HTML5 Canvas / SVG 绘制海拔高程起伏与拓扑连线。
@@ -222,57 +222,73 @@ stateDiagram-v2
 
 ## 5. UI/UX 视觉设计系统在 Web 端的落地规范
 
-### 5.1 CSS 变量与设计令牌工程化实现
-依据 [docs/09 视觉设计系统](../09-visual-design-system.md)，所有样式通过 `@tripcraft/design-tokens` 注入根节点：
+### 5.1 两层设计令牌：App 外观与行程皮肤
+
+依据 [docs/09 §9.0](../09-visual-design-system.md#90-两层app-外观与行程皮肤)（D10，2026-10-22 已定）：**App 不换肤，行程换肤**。令牌分两层，由 `@tripcraft/design-tokens` 提供：
+
+1. **App 外观令牌**（`--ui-*`）：全局统一，不随目的地变化，取值与演示站视窗一致（[SHOWCASE §4.1](../SHOWCASE-web-design.md#41-共用外壳与应用视窗)）。导航、对话、筛选与匹配、线路详情、咨询报价、设置、B 端线路工作室只用这一层。
+2. **行程皮肤令牌**（`--trip-*`）：会员功能，只挂在行程内容的根节点（`.trip-surface`）上，作用于行程页、路书阅读、分享卡片、单文件导出与回忆录。没有设置皮肤（免费版或未开通）时，`--trip-*` 回落到 App 外观令牌。
 
 ```css
-/* apps/web/src/styles/tokens.css 核心变量规范 */
+/* App 外观：统一，不随目的地变化 */
 :root {
-  /* 基础尺寸与触控靶区 */
   --touch-target-min: 44px;
-  --radius-liquid: 20px;
-  --glass-blur-default: 20px;
-  
-  /* 默认主题：敦煌金 (dunhuang-gold) */
-  --color-primary: #B8863B;           /* 氧化金箔 */
-  --color-secondary: #1F4E79;         /* 青金石蓝 */
-  --color-canvas: #F2E8D5;            /* 沙色暖白底 */
-  --color-surface-glass: rgba(255, 255, 255, 0.72);
-  --color-text-main: #3A2E1F;         /* 暖褐黑 (严禁纯黑 #000) */
-  --color-text-muted: #72624F;
-  --color-accent-alert: #8C3A2B;      /* 赭石红 */
-  --border-specular: rgba(255, 255, 255, 0.65);
+  --ui-panel: #FFFFFF;
+  --ui-ink: #241E20;
+  --ui-ink-3: #757072;              /* 白底对比度 4.8:1 */
+  --ui-accent: #FE3C01;             /* 品牌橙：路线、发送键、需要注意的信号 */
+  --ui-accent-ink: #C43200;         /* 12–13px 的橙字 */
+
+  /* 语义色：锁定，任何皮肤都不覆盖 */
+  --ui-success: #0E7A5A;
+  --ui-cat-sight: #6D5BD0;          /* 地点类别色，地图与日程共用 */
 }
 
-/* 动态主题类：经纬度地理逆编码或用户覆盖触发 */
-[data-theme="cyber-blue"] {
-  --color-primary: #00A3FF;
-  --color-secondary: #FF2D78;
-  --color-canvas: #0A1628;            /* 深蓝黑 (防脏光) */
-  --color-surface-glass: rgba(16, 33, 58, 0.75);
-  --color-text-main: #E8F1FF;
-  --color-text-muted: #8AA8D1;
-  --color-accent-alert: #00E5C0;
+/* 行程皮肤：缺省时回落到 App 外观 */
+.trip-surface {
+  --trip-primary: var(--ui-accent);
+  --trip-canvas: var(--ui-panel);
+  --trip-ink: var(--ui-ink);
 }
 
-[data-theme="plateau-cyan"] {
-  --color-primary: #1E6F8C;
-  --color-secondary: #C9A227;         /* 藏黄 */
-  --color-canvas: #EFF6F8;            /* 稀薄空气青白 */
-  --color-surface-glass: rgba(255, 255, 255, 0.82);
-  --color-text-main: #1A2E38;
+/* 会员按路线生成的皮肤（docs/09 §9.2 的主题族；生成结果写入行程 DSL 的 theme） */
+.trip-surface[data-trip-theme="dunhuang-gold"] {
+  --trip-primary: #B8863B;          /* 氧化金箔 */
+  --trip-secondary: #1F4E79;        /* 青金石蓝 */
+  --trip-canvas: #F2E8D5;           /* 沙色暖白 */
+  --trip-ink: #3A2E1F;              /* 暖褐黑 (严禁纯黑 #000) */
+}
+
+.trip-surface[data-trip-theme="plateau-cyan"] {
+  --trip-primary: #1E6F8C;
+  --trip-secondary: #C9A227;        /* 藏黄 */
+  --trip-canvas: #EFF6F8;           /* 稀薄空气青白 */
+  --trip-ink: #1A2E38;
+}
+
+/* 长辈模式、高对比、减少透明度：无障碍压过皮肤，行程页回到默认外观（只保留封面） */
+.senior-mode .trip-surface,
+.high-contrast .trip-surface {
+  --trip-primary: var(--ui-accent);
+  --trip-canvas: var(--ui-panel);
+  --trip-ink: var(--ui-ink);
 }
 ```
 
-### 5.2 五大流派样式引擎与兼容性拦截策略
-用户选择流派时，系统在 `<html>` 标签注入 `data-genre="apple-glass | material-you | retro-journal | swiss-minimal | cyber-hud"`。
+- 皮肤由行程 DSL 的 `theme` 决定（[docs/04 §4.6](../04-dsl-specification-v1.md#46-theme--视觉主题)）：`themeId` 映射到 `data-trip-theme`，`designSystem` 映射到 `data-trip-style`；随行程同步，所有成员与分享查看者看到同一套皮肤。
+- 生成时逐项校验对比度（正文 ≥ 4.5:1，长辈模式 ≥ 7:1），不通过回退该主题族的安全底色；`overrides` 只许覆盖 `--trip-*` 语义令牌，不许覆盖锁定的语义色。
+- 旅行社白标路书以品牌包（[ARC-06](ARC-06-multitenancy-whitelabel.md)）为准，用户皮肤不覆盖。
+
+### 5.2 版式（原「流派」）与兼容性拦截
+
+会员选择版式时，在**行程内容根节点**（不是 `<html>`）注入 `data-trip-style="apple-glass | google-material | vintage-retro | swiss-minimal | cyber-hud"`（取值即 DSL 的 `designSystem` 枚举）；对用户显示中性名称（默认、流光、手账、极简、夜航），首批上线默认、手账、夜航三种（[docs/09 §9.0.6](../09-visual-design-system.md#906-上线范围与商业化)）。
 
 ```typescript
 // packages/design-tokens/src/compatibility.ts
 export const GENRE_COMPATIBILITY_RULES: Record<string, string[]> = {
   'apple-glass': ['dunhuang-gold', 'cyber-blue', 'plateau-cyan', 'jiangnan-emerald', 'glacier-silver'],
-  'material-you': ['dunhuang-gold', 'cyber-blue', 'plateau-cyan', 'jiangnan-emerald', 'glacier-silver'],
-  'retro-journal': ['dunhuang-gold', 'jiangnan-emerald'], // 拟物物质感与冷光霓虹冲突
+  'google-material': ['dunhuang-gold', 'cyber-blue', 'plateau-cyan', 'jiangnan-emerald', 'glacier-silver'],
+  'vintage-retro': ['dunhuang-gold', 'jiangnan-emerald'], // 拟物物质感与冷光霓虹冲突
   'swiss-minimal': ['dunhuang-gold', 'cyber-blue', 'plateau-cyan', 'jiangnan-emerald', 'glacier-silver'],
   'cyber-hud': ['cyber-blue', 'glacier-silver'] // 暗底发光与高亮暖底冲突
 };
@@ -282,7 +298,7 @@ export function validateThemeGenreCombination(theme: string, genre: string): { v
   if (!allowed.includes(theme)) {
     return {
       valid: false,
-      reason: `流派「${genre}」与地域主题「${theme}」在物理光学性格上冲突（见第9章 §9.1.3）。建议切换为瑞士极简或Apple液态玻璃。`
+      reason: `版式「${genre}」与这趟路线的主题「${theme}」在光的性格上冲突（见第9章 §9.1.3）。建议换成极简或玻璃版式。`
     };
   }
   return { valid: true };
@@ -352,9 +368,9 @@ export function validateThemeGenreCombination(theme: string, genre: string): { v
     1. **默认基础模型 (Default Baseline Tier)**：
        - **默认模型指定**：`DeepSeek-v4.1-flash`。
        - **定位与优势**：全员默认免费提供。具备超高推理吞吐量与极低响应延迟（首字延迟 < 800ms），完美胜任自然语言意图提取、结构化约束识别与四步反问逻辑。
-    2. **高级会员专属模型 (VIP / Premium Tier)**：
+    2. **高成本模型（计入会员额度，Premium Tier）**：
        - **高阶模型清单**：开放更高算力成本的深度推理模型，包括 `DeepSeek-R1`（擅长深度思考链复杂环线排程与多目标冲突仲裁）、`Claude 3.5 Sonnet` / `GPT-4o`（擅长多模态图文识别与高质量游记文案生成）。
-       - **权限拦截机制**：普通用户点击下拉菜单中的 VIP 模型时，弹出权限卡片：“当前模型属于高阶深度推理算力，升级为高级会员即可畅享；或切换为个人 API Key 免费体验”。
+       - **额度说明**（D9：功能不设付费墙，模型是算力）：免费用户选择高成本模型时，弹出额度卡片：“这个模型算力成本较高，使用会员额度；也可以添加自己的 API 免费使用”。规划、对话等功能本身不因模型选择而受限。
     3. **用户自带个人 API 机制 (BYOK - Bring Your Own Key)**：
        - **定位与价值**：赋予极客用户与专业定制师最大自由度，解除平台调用频次与模型限制，支持换用用户自己的企业或个人 API。
        - **配置入口**：`/user/settings/ai` 或对话页顶部弹窗。
@@ -424,8 +440,8 @@ export function validateThemeGenreCombination(theme: string, genre: string): { v
   - *实现机制*：利用 `@media print` 专用打印样式表，自动排版为 A4 折页纸质路书，去除交互杂质。
 
 ### 6.9 M09 内容与主题 (S-CONTENT)
-- **F-M09-01 官方视觉主题** (P0)：
-  - *实现机制*：目的地包含甘肃/青海自动激活敦煌金；西藏/川西激活高原青；江浙沪激活江南翠；默认兜底冰川银。
+- **F-M09-01 会员行程皮肤** (P1)：
+  - *实现机制*：App 外观不随目的地变化（§5.1）。会员在行程设置里点「按路线生成」：服务端按途经地选主题族、按出行月份调季节色、按画像推荐版式并过兼容性矩阵（§5.2），再用路线形状生成封面与纹样，逐项校验对比度后写入行程 DSL 的 `theme`；客户端只在 `.trip-surface` 上挂 `data-trip-theme` / `data-trip-style`。免费版与未开通时行程页用默认外观，功能完整；会员到期后已生成的皮肤保留，不能再生成新的（[docs/09 §9.0](../09-visual-design-system.md#90-两层app-外观与行程皮肤)）。
 - **F-M09-02 POI 展卡渲染** (P0)：
   - *实现机制*：深度渲染莫高窟、鸣沙山等点位的人文背景、最佳机位、着装建议与避坑贴士。
 - **F-M09-03 长辈大字版** (P0)：
@@ -461,8 +477,8 @@ export function validateThemeGenreCombination(theme: string, genre: string): { v
   - *实现机制*：展示当前套餐席位数与本月单文件导出余量，配额不足时阻断生成并引导升级。
 - **F-M12-02 按单加量结算** (P1)：
   - *实现机制*：接入微信商户支付/企业扫码支付，支持按单购买快照导出额度。
-- **F-M12-03 C 端增值购买** (P2)：
-  - *实现机制*：散客在线购买高级 VIP 会员（解锁更高阶更贵的深度推理模型 `DeepSeek-R1` / `GPT-4o` / `Claude 3.5 Sonnet`、全套高级设计流派包及专属纪念画册合成）。同时支持非会员免费配置个人 API Key (BYOK) 机制跳过平台额度限制。
+- **F-M12-03 C 端会员个性化服务** (P2)：
+  - *实现机制*：C 端会员只提供个性化服务（D9：免费版使用全部功能）——按路线生成的行程皮肤 F-M09-01、带皮肤的分享与导出、回忆录的个性化成品（按皮肤排版的纪念画册、更多视频模板），附带更高的平台模型额度（可用 `DeepSeek-R1` 等高成本模型）；按月订阅之外评估「单趟解锁」（A-07）。非会员可配置个人 API Key (BYOK) 跳过平台额度限制。
 
 ### 6.13 M13 平台运营与合规 (S-OPS)
 - **F-M13-01 机构资质审核** (P0)：
@@ -553,6 +569,8 @@ flowchart TD
 
 ### 9.1 前端设计风格规范与 Mobbin 标杆范式沉淀 (Mobbin Design Paradigm Integration)
 
+> **D10 已定（2026-10-22）后的材质口径**：App 外观统一为暖白 · 品牌橙（§5.1，[SHOWCASE §4.1](../SHOWCASE-web-design.md#41-共用外壳与应用视窗)）。**玻璃只用于叠在地图上的浮层**——地图上的日程抽屉、全程概要胶囊、缩放 / 定位按钮；不叠在地图上的弹窗（分享卡片、推荐弹窗、确认框）用实色浮层（`.ui-float`）。本章下文凡写「液态玻璃弹窗 / 卡片」的地方按这条口径实现；动效参数不变。
+
 > [!NOTE] Mobbin MCP 服务运行状态与范式选型说明
 > 本工程已配置 `mobbin` MCP 服务器。经环境调用检测，Mobbin 官方 API 目前要求专业付费订阅（`Mobbin MCP requires a paid plan`）。为确保技术选型的最高标准与无缝落地，本设计文档系统化解构并沉淀了 Mobbin 平台收录的全球顶尖旅行与生产力标杆产品（**Wanderlog**, **Airbnb**, **Apple Maps**, **Linear**, **Flighty**）的核心交互与视觉范式，形成 TripCraft 专属的四大前端设计支柱：
 
@@ -584,7 +602,7 @@ flowchart TD
    - 双向视口联动：左侧滚动使某一 POI 进入视口中央时，右侧地图对应的 Marker 触发微微上浮与光晕呼吸动画；点击右侧地图上的任何 POI 或路线段，左侧时间线以 `scrollIntoView({ behavior: 'smooth', block: 'center' })` 自动滚动居中。
 2. **Airbnb-Style：高视觉张力 POI 展卡与微标签系统 (Immersive POI Cards & Micro-Badges)**：
    - 卡片构造：统一采用 `rounded-2xl`，内嵌 `16:9` 柔和渐变封面图，字体遵循“大字地名（20px Semibold）+ 建议游玩时间徽标 + 核心亮点”三层视觉阶梯。
-   - 特色标签：餐饮点位渲染专属琥珀金标签（`[🍜 舌尖美食 · 必吃老字号]`），景点渲染敦煌金标签（`[🏛️ 历史文化 · 提前预约]`），考斯特通过性渲染状态胶囊（`[🚌 考斯特直达]` 或 `[⚠️ 换乘景区车]`）。
+   - 特色标签：餐饮点位渲染专属琥珀金标签（`[🍜 舌尖美食 · 必吃老字号]`），景点渲染景点类别色标签（`[🏛️ 历史文化 · 提前预约]`，类别色见 §5.1），考斯特通过性渲染状态胶囊（`[🚌 考斯特直达]` 或 `[⚠️ 换乘景区车]`）。
 3. **Apple Maps-Style：液态玻璃悬浮抽屉与多级手势层 (Liquid Glass Floating Drawer)**：
    - 材质规格：背景采用 `backdrop-filter: blur(20px) saturate(180%)`，底色 `rgba(255, 255, 255, 0.72)`（暗色主题下 `rgba(16, 33, 58, 0.75)`），边缘附带 1px 镜面反光线 `border: 1px solid rgba(255, 255, 255, 0.65)`。
    - 多级吸附手势：移动端适配 Apple Maps 经典的三段式吸附高度（Collapsed: 88px 仅露当前节点 / Half: 48vh 半屏看图兼顾看路 / Expanded: 92vh 全屏查看多日详情），配备惯性物理回弹动画（Inertia Spring）。
@@ -679,7 +697,7 @@ sequenceDiagram
 ---
 
 #### 阶段二：智能排程与可视化路书渐进生成 (Progressive Roadbook Generation)
-*对应功能点：F-M02-02 时序日程展卡、F-M02-05 路线沙盘、F-M05-02 路线规划耗时、F-M09-01 官方主题敦煌金*
+*对应功能点：F-M02-02 时序日程展卡、F-M02-05 路线沙盘、F-M05-02 路线规划耗时；会员开通时叠加 F-M09-01 行程皮肤*
 
 ```text
 [ 视口裂变转场 ] ──(折扇展开)──> [ D0~D8 时序卡片群 ] ──(全景俯冲)──> [ 地图 FlyTo 运镜 ] ──(曲线升起)──> [ 高程与考斯特徽标 ]
@@ -689,7 +707,7 @@ sequenceDiagram
    - **动效表现**：对话面板向左平滑压缩折叠为 `360px` 的辅助交互抽屉；中央与右侧主视口从 `scale(0.94)` 伴随高斯模糊消退（`blur(8px) -> 0`）平滑拉伸撑满为高保真路书工作台。
 2. **分镜 2.2：日程时间线卡片群手风琴展开 (`300ms ~ 900ms`)**
    - **动效表现**：左侧时间线骨架屏瞬间解构，D0（兰州集结）至 D8（敦煌返程）共 9 天的日程卡片采用 `staggerChildren (0.07s)` 阶梯式瀑布流自上而下滑入入场。
-   - **弹性形变**：每张天数卡片自带轻微垂直压缩回弹（`translateY(40px) -> 0`, 物理弹性），卡片顶部的「敦煌金」氧化金箔渐变底色柔和点亮。
+   - **弹性形变**：每张天数卡片自带轻微垂直压缩回弹（`translateY(40px) -> 0`, 物理弹性），卡片顶部的路线色条柔和点亮（默认外观用品牌橙；会员的行程皮肤用该皮肤的主色，例如「敦煌金」的氧化金箔渐变）。
 3. **分镜 2.3：地图全景俯冲与 FlyTo 运镜巡航 (`900ms ~ 1800ms`)**
    - **动效表现**：右侧高德/矢量瓦片地图视角由全国视口（Zoom 4）启动全景 `flyTo` 电影级巡航，沿着河西走廊祁连山脉俯冲推进至兰州-张掖-嘉峪关-敦煌主走廊（Zoom 8，Pitch 42° 倾角三维透视）。
    - **POI 图钉点亮**：沿途 18 个核心 POI（兰州黄河铁桥、张掖七彩丹霞、嘉峪关关城、莫高窟、鸣沙山月牙泉）按时间顺序以闪烁光点依次点亮，每个图钉落地时释放双层同心圆声波涟漪波纹（Sonar Ripple）。

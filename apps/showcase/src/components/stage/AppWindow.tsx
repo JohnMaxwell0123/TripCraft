@@ -13,7 +13,7 @@ import type { IconProps } from '@/components/common/Icons';
  * 窄视窗（手机）：不画桌面标题栏，内容铺满，底部是移动端标签栏。
  * 视窗是 container-name: win 的尺寸容器，内部用 cq-sm / cq-md / cq-lg 变体按视窗自身宽度排版（见 tailwind.config.ts）。
  *
- * 视窗里是产品界面（D10 的提案）：只用语义令牌，根节点的 data-ui 是令牌的作用域（globals.css「产品界面令牌」）。
+ * 视窗里是产品界面（D10 已定的 App 外观）：只用语义令牌，根节点的 data-ui 是令牌的作用域（globals.css「产品界面令牌」）。
  * 当前高亮哪个导航项、状态栏写什么、标题栏的时钟显示几点，由 sections 按全局进度分段决定；
  * 导航项可以带演示光标（tap）：章节之间的衔接通过点击真实的导航完成，下一屏就是这次点击的结果。
  */
