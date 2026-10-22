@@ -405,6 +405,14 @@ export function SlidersIcon({ className = 'w-4 h-4', ...props }: IconProps) {
   );
 }
 
+export function ChevronLeftIcon({ className = 'w-4 h-4', ...props }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true" {...props}>
+      <polyline points="15 18 9 12 15 6" />
+    </svg>
+  );
+}
+
 export function ChevronRightIcon({ className = 'w-4 h-4', ...props }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true" {...props}>
@@ -670,5 +678,243 @@ export function SettingsIcon({ className = 'w-4 h-4', ...props }: IconProps) {
       <circle cx="12" cy="12" r="3" />
       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
     </svg>
+  );
+}
+
+/* ── 产品界面（演示舞台视窗内）用到的地点类别与行程标记 ── */
+
+function Stroke({ className = 'w-4 h-4', children, ...props }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true" {...props}>
+      {children}
+    </svg>
+  );
+}
+
+/** 住宿 */
+export function BedIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <path d="M2.5 19V6" />
+      <path d="M2.5 15h19v4" />
+      <path d="M21.5 15v-2.5A3.5 3.5 0 0 0 18 9h-6.5v6" />
+      <circle cx="7" cy="11" r="2" />
+    </Stroke>
+  );
+}
+
+/** 景点（人文） */
+export function LandmarkIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <path d="M3 21h18" />
+      <path d="M5.5 21v-9M10 21v-9M14 21v-9M18.5 21v-9" />
+      <path d="M3 12h18L12 4.5z" />
+    </Stroke>
+  );
+}
+
+/** 自然 */
+export function MountainIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <path d="M2 20 8.5 8l4 6.5 3-4.5L22 20z" />
+    </Stroke>
+  );
+}
+
+/** 午休 / 夜间 */
+export function MoonIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.6 6.6 0 0 0 10.5 10.5z" />
+    </Stroke>
+  );
+}
+
+/** 无障碍 */
+export function AccessibleIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <circle cx="11" cy="4.5" r="1.8" />
+      <path d="M11 8.5v5.5h5l2.5 5.5" />
+      <path d="M7.5 11.2a5.6 5.6 0 1 0 7.8 6.9" />
+    </Stroke>
+  );
+}
+
+/** 台阶 */
+export function StairsIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <path d="M3 20h5v-5h5v-5h5V5h3" />
+    </Stroke>
+  );
+}
+
+/** 高度 / 限高 */
+export function HeightIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <path d="M5 3h14M5 21h14" />
+      <path d="M12 6.5v11" />
+      <path d="m9 9.5 3-3 3 3M9 14.5l3 3 3-3" />
+    </Stroke>
+  );
+}
+
+/** 停车 */
+export function ParkingIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <rect x="3" y="3" width="18" height="18" rx="4" />
+      <path d="M9.5 17V7h3.5a3 3 0 0 1 0 6H9.5" />
+    </Stroke>
+  );
+}
+
+/** 航班 */
+export function PlaneIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <path d="M12 2.5c.9 0 1.5.8 1.5 1.8v5l7 4.2v2l-7-2.1v4.4l2.3 1.7v1.8L12 20.4l-3.8.9v-1.8l2.3-1.7v-4.4l-7 2.1v-2l7-4.2v-5c0-1 .6-1.8 1.5-1.8z" />
+    </Stroke>
+  );
+}
+
+/** 服务区 / 休息 */
+export function CoffeeIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z" />
+      <path d="M16 10.5h1.5a2.5 2.5 0 0 1 0 5H16" />
+      <path d="M8 3v3M12 3v3" />
+    </Stroke>
+  );
+}
+
+/** 接驳车 */
+export function BusIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <rect x="4" y="3" width="16" height="15" rx="3" />
+      <path d="M4 11h16" />
+      <path d="M7.5 21v-3M16.5 21v-3" />
+      <path d="M8 14.5h.01M16 14.5h.01" />
+    </Stroke>
+  );
+}
+
+/** 已认证（持证主体） */
+export function ShieldCheckIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <path d="m8.5 12 2.5 2.5 4.5-5" />
+    </Stroke>
+  );
+}
+
+/** 地图控件：定位 */
+export function LocateIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <circle cx="12" cy="12" r="7" />
+      <circle cx="12" cy="12" r="2.5" />
+      <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+    </Stroke>
+  );
+}
+
+/** 路线 / 里程 */
+export function RouteIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <circle cx="6" cy="19" r="2.5" />
+      <circle cx="18" cy="5" r="2.5" />
+      <path d="M8.5 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5" />
+    </Stroke>
+  );
+}
+
+/** 同行人（实心剪影）：成人、长者（拄杖）、儿童 */
+export function PersonGlyph({ kind = 'adult', className = 'w-4 h-4', ...props }: IconProps & { kind?: 'adult' | 'elder' | 'child' }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true" {...props}>
+      {kind === 'child' ? (
+        <>
+          <circle cx="12" cy="8.2" r="3.4" />
+          <path d="M7.4 21v-5.6a4.6 4.6 0 0 1 9.2 0V21z" />
+        </>
+      ) : kind === 'elder' ? (
+        <>
+          <circle cx="10.5" cy="4.8" r="3" />
+          <path d="M6 21v-7.2A5 5 0 0 1 11 8.8h.2a4.8 4.8 0 0 1 4.3 2.7L15 21z" />
+          <path d="M17.5 13.5V21" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+          <path d="M17.5 13.5h1.6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+        </>
+      ) : (
+        <>
+          <circle cx="12" cy="4.8" r="3" />
+          <path d="M7 21v-7.4a5 5 0 0 1 10 0V21z" />
+        </>
+      )}
+    </svg>
+  );
+}
+
+/** 带宠物 */
+export function PawIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <circle cx="6" cy="10" r="1.8" />
+      <circle cx="10" cy="6" r="1.8" />
+      <circle cx="14" cy="6" r="1.8" />
+      <circle cx="18" cy="10" r="1.8" />
+      <path d="M8.5 17.5c0-2.6 1.6-4.5 3.5-4.5s3.5 1.9 3.5 4.5c0 1.6-1.2 2.5-2.4 2-.8-.3-1.4-.3-2.2 0-1.2.5-2.4-.4-2.4-2z" />
+    </Stroke>
+  );
+}
+
+/** 节奏（强度条） */
+export function PaceIcon({ level = 1, ...props }: IconProps & { level?: 1 | 2 | 3 }) {
+  return (
+    <Stroke {...props}>
+      <path d="M5 19v-4" opacity={1} />
+      <path d="M12 19v-8" opacity={level >= 2 ? 1 : 0.3} />
+      <path d="M19 19V7" opacity={level >= 3 ? 1 : 0.3} />
+    </Stroke>
+  );
+}
+
+/** 锁（尚未授权可见的信息） */
+export function LockIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <rect x="5" y="11" width="14" height="10" rx="2.5" />
+      <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+    </Stroke>
+  );
+}
+
+/** 步行 */
+export function WalkIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <circle cx="13" cy="4.5" r="1.8" />
+      <path d="m9 21 2.5-6.5L14 16v5" />
+      <path d="M8 11.5 10.5 8h3l2.5 3.5 2.5 1" />
+      <path d="M11.5 14.5 10.5 8" />
+    </Stroke>
+  );
+}
+
+/** 门票 */
+export function TicketIcon(props: IconProps) {
+  return (
+    <Stroke {...props}>
+      <path d="M3 8.5V6a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2.5a2.5 2.5 0 0 0 0 5V16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-2.5a2.5 2.5 0 0 0 0-5z" />
+      <path d="M14.5 5v2M14.5 10.5v3M14.5 17v2" />
+    </Stroke>
   );
 }

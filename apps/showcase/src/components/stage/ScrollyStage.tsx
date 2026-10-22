@@ -3,7 +3,9 @@
 import { ACTS, CHAPTER_POINTS, ACT_ORDER, T, type ActId } from './timeline';
 import { StageShell, type StageChapter } from './StageShell';
 import { AppWindow, type WindowNavItem, type WindowSection } from './AppWindow';
-import { Avatar } from './primitives';
+import { Avatar, Grow } from './primitives';
+import { RouteGlyph } from './RouteGlyph';
+import { TRIPS, type TripSummary } from '@/data/trip';
 import { DialogueScene } from './DialogueScene';
 import { Workspace } from './Workspace';
 import { MatchScene } from './MatchScene';
@@ -94,7 +96,8 @@ export function ScrollyStage() {
         product="TripCraft"
         nav={NAV}
         sections={SECTIONS}
-        account={{ avatar: <Avatar name="我" tone="gold" size={24} />, name: '我', note: '3 台设备已登录' }}
+        account={{ avatar: <Avatar name="我" tone="violet" size={24} />, name: '我', note: '3 台设备已登录' }}
+        sidebarExtra={<TripList />}
         ariaLabel="TripCraft 旅客端界面演示，内容随左侧章节变化"
       >
         <DialogueScene />
@@ -104,5 +107,35 @@ export function ScrollyStage() {
         <TripSpaceScene />
       </AppWindow>
     </StageShell>
+  );
+}
+
+/* ── 侧栏的行程列表：账号里其他目的地的行程一直在；「西行计划」在 02 幕保存草案时出现在最上面 ── */
+function TripList() {
+  const [current, ...others] = TRIPS;
+  return (
+    <div>
+      <p className="px-2 text-xs font-medium text-ui-ink-3">我的行程</p>
+      <div className="mt-1 flex flex-col">
+        <Grow at={[T.saveClick, T.saveClick + 0.006]} max={44}>
+          <TripRow trip={current} highlight />
+        </Grow>
+        {others.map((t) => (
+          <TripRow key={t.id} trip={t} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TripRow({ trip, highlight = false }: { trip: TripSummary; highlight?: boolean }) {
+  return (
+    <div className={`flex items-center gap-2 rounded-ui-ctl px-1.5 py-1 ${highlight ? 'bg-ui-surface/70' : ''}`}>
+      <RouteGlyph trip={trip} className="h-8 w-8 shrink-0 rounded-[8px]" />
+      <span className="min-w-0">
+        <span className="block truncate text-xs font-medium text-ui-ink">{trip.name}</span>
+        <span className="block truncate text-xs text-ui-ink-3">{trip.sub}</span>
+      </span>
+    </div>
   );
 }

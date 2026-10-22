@@ -5,7 +5,7 @@ import { motion, useMotionValue, type MotionValue } from 'framer-motion';
 import { ReducedMotionContext, useMediaQuery } from '@/lib/motion';
 import { ProgressContext } from './primitives';
 import type { Range } from './acts';
-import { PauseIcon, PlayIcon, RotateCcwIcon } from '@/components/common/Icons';
+import { ChevronLeftIcon, ChevronRightIcon, PauseIcon, PlayIcon, RotateCcwIcon } from '@/components/common/Icons';
 
 /**
  * 演示舞台外壳（C 端旅客流程与 B 端旅行社工作室共用）
@@ -63,6 +63,12 @@ interface StageShellProps {
 
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
+/**
+ * 播放速率：时间轴按 1 倍书写（章节时长、关键帧都以「时间轴秒」计），时钟按这个速率推进。
+ * 0.9 = 整体放慢到 0.9 倍：C 端 66 → 约 73 秒，B 端 61 → 约 68 秒。调整整体节奏只改这里，不动关键帧。
+ */
+export const PLAYBACK_RATE = 0.9;
+
 function useStageClock(chapters: readonly StageChapter[], debugHook: string, reduced: boolean) {
   const progress = useMotionValue(0);
   const chapterProgress = useMotionValue(0);
@@ -106,7 +112,7 @@ function useStageClock(chapters: readonly StageChapter[], debugHook: string, red
       if (statusRef.current === 'playing' && inViewRef.current) {
         const i = activeRef.current;
         const ch = chapters[i];
-        elapsedRef.current += dt;
+        elapsedRef.current += dt * PLAYBACK_RATE;
         const l = elapsedRef.current / ch.duration;
         if (l < 1) {
           chapterProgress.set(l);
@@ -210,7 +216,6 @@ const INK = {
     done: 'bg-[#241E20]/30',
     rule: 'border-[#241E20]/[0.12]',
     btn: 'border-[#241E20]/15 bg-[#FFFFF9] text-[#241E20] hover:border-[#241E20]/40',
-    quiet: 'text-[#241E20]/70 hover:text-[#241E20] hover:bg-[#241E20]/[0.05]',
   },
   band: {
     eyebrow: 'text-[#FFFFF9]/85',
@@ -224,7 +229,6 @@ const INK = {
     done: 'bg-[#FFFFF9]/40',
     rule: 'border-[#FFFFF9]/[0.14]',
     btn: 'border-[#FFFFF9]/25 bg-[#FFFFF9]/[0.06] text-[#FFFFF9] hover:border-[#FFFFF9]/50',
-    quiet: 'text-[#FFFFF9]/75 hover:text-[#FFFFF9] hover:bg-[#FFFFF9]/[0.08]',
   },
 } as const;
 
@@ -417,13 +421,15 @@ function Controls({
 }) {
   const label = status === 'playing' ? '暂停' : status === 'ended' ? '重新播放' : '播放';
   const Icon = status === 'playing' ? PauseIcon : status === 'ended' ? RotateCcwIcon : PlayIcon;
+  // 紧凑排布：iPad 横屏（1024–1279px）时左栏只有 300px，「上一章 / 下一章」用图标按钮，整行不折行
+  const step = `flex h-10 w-10 shrink-0 items-center justify-center rounded-[5px] border transition-colors disabled:pointer-events-none disabled:opacity-35 ${ink.btn}`;
   return (
-    <div className={`items-center justify-between border-t pt-5 ${ink.rule} ${className}`}>
-      <div className="flex items-center gap-3">
+    <div className={`items-center justify-between gap-3 whitespace-nowrap border-t pt-5 ${ink.rule} ${className}`}>
+      <div className="flex min-w-0 items-center gap-3">
         <button
           type="button"
           onClick={onToggle}
-          className={`inline-flex h-10 items-center gap-2 rounded-[5px] border px-3.5 text-sm font-medium transition-colors ${ink.btn}`}
+          className={`inline-flex h-10 shrink-0 items-center gap-2 rounded-[5px] border px-3.5 text-sm font-medium transition-colors ${ink.btn}`}
         >
           <Icon className="h-3.5 w-3.5 text-[#FE3C01]" />
           {label}
@@ -432,22 +438,12 @@ function Controls({
           {String(active + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
         </span>
       </div>
-      <div className="flex items-center gap-1 text-sm">
-        <button
-          type="button"
-          disabled={active === 0}
-          onClick={() => onSelect(active - 1)}
-          className={`h-10 rounded-[5px] px-2.5 transition-colors disabled:pointer-events-none disabled:opacity-35 ${ink.quiet}`}
-        >
-          ← 上一章
+      <div className="flex shrink-0 items-center gap-2">
+        <button type="button" aria-label="上一章" title="上一章" disabled={active === 0} onClick={() => onSelect(active - 1)} className={step}>
+          <ChevronLeftIcon className="h-4 w-4" />
         </button>
-        <button
-          type="button"
-          disabled={active === total - 1}
-          onClick={() => onSelect(active + 1)}
-          className={`h-10 rounded-[5px] px-2.5 transition-colors disabled:pointer-events-none disabled:opacity-35 ${ink.quiet}`}
-        >
-          下一章 →
+        <button type="button" aria-label="下一章" title="下一章" disabled={active === total - 1} onClick={() => onSelect(active + 1)} className={step}>
+          <ChevronRightIcon className="h-4 w-4" />
         </button>
       </div>
     </div>

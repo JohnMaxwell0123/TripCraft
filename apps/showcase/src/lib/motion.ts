@@ -131,15 +131,34 @@ export function useVisibility(
 export const useAfter = (progress: MotionValue<number>, t: number) => useStep(progress, [t]) === 1;
 
 /**
+ * 透明度为 0 时同时隐藏（visibility: hidden）。
+ * iPad Safari 有时不重绘透明度为 0 的合成层，层里留着上一次画上去的字——需求画像空状态里出现过
+ * 「少山日落」「8–10 天」这样的残影。隐藏之后 WebKit 不再绘制这一层，残影无处可留。
+ * 凡是只靠透明度隐藏的元素，都把它和 opacity 一起绑上。
+ */
+export function useFadeVisibility(opacity: MotionValue<number>): MotionValue<'visible' | 'hidden'> {
+  return useTransform(opacity, (v) => (v <= 0.001 ? 'hidden' : 'visible'));
+}
+
+/** useFade + useFadeVisibility：直接展开进 style={{ ...fade }} */
+export function useFadeStyle(progress: MotionValue<number>, a: number, b: number, c?: number, d?: number) {
+  const opacity = useFade(progress, a, b, c, d);
+  const visibility = useFadeVisibility(opacity);
+  return { opacity, visibility };
+}
+
+/**
  * 滚动驱动的打字机：直接写 textContent，不经过 React 渲染。
  * SSR 与首帧渲染完整文本（利于 SEO / 无 JS 可读），挂载后按进度裁切。
  * 引入 lastN 缓存，在非活跃区间与重复帧下 0 DOM 读写。
+ * clearAt：到这一刻清空（输入框发送之后文字进入气泡，输入框回到空白的一行）。
  */
 export function useScrollTypewriter(
   progress: MotionValue<number>,
   text: string,
   a: number,
   b: number,
+  clearAt?: number,
 ) {
   const ref = useRef<HTMLSpanElement>(null);
   const chars = useRef(Array.from(text));
@@ -148,7 +167,7 @@ export function useScrollTypewriter(
   const apply = (v: number) => {
     const el = ref.current;
     if (!el) return;
-    const n = Math.round(local(v, a, b) * chars.current.length);
+    const n = clearAt !== undefined && v >= clearAt ? 0 : Math.round(local(v, a, b) * chars.current.length);
     if (n === lastN.current) return;
     lastN.current = n;
     el.textContent = chars.current.slice(0, n).join('');

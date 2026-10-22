@@ -415,6 +415,153 @@ body {
   }
 }
 
+/* ==========================================================================
+ * 产品界面令牌：演示舞台应用视窗的内部（产品 UI 的提案；D10 仍待业主决定，PRD-01 §9）
+ *
+ * 2026-10-21 业主在两套样张中选定：以「暖白 · 品牌橙」为主，叠在地图上的浮层（概要胶囊、地图按钮、底部抽屉）
+ * 用玻璃材质，并保留实色退路。视觉语言与示例线路无关——配色、图标、地图样式、插画都不取材于某条线路的地貌，
+ * 换成任何目的地都成立。颜色来自三处：中性的界面底色；品牌橙（路线、发送键、需要注意的信号）；
+ * 内容自带的颜色（地点类别、地图要素、行程封面）。
+ * 组件只用语义令牌（tailwind.config.ts 的 ui-*）；色值是 RGB 三元组，便于 bg-ui-accent/10 这样的透明度写法。
+ * ======================================================================== */
+[data-ui] {
+  --ui-shell: 243 242 238;
+  --ui-panel: 255 255 255;
+  --ui-surface: 255 255 255;
+  --ui-sunken: 246 245 241;
+  --ui-line: 233 231 225;
+  --ui-line-strong: 213 210 202;
+  --ui-ink: 36 30 32;
+  --ui-ink-2: 90 85 87;
+  --ui-ink-3: 117 112 114;
+  /* 品牌橙：图形与大字用 accent，12–13px 的橙字用加深的 accent-ink（白底对比度 ≥ 4.5:1） */
+  --ui-accent: 254 60 1;
+  --ui-accent-ink: 196 50 0;
+  --ui-primary: 36 30 32;
+  --ui-on-primary: 255 255 249;
+  --ui-signal: 254 60 1;
+  --ui-signal-ink: 196 50 0;
+  --ui-success: 14 122 90;
+  --ui-route: 254 60 1;
+  --ui-bubble-user: 241 239 233;
+  --ui-on-bubble-user: 36 30 32;
+
+  /* 地点类别：沿用地图 App 的通行约定（景点紫、自然绿、餐饮橙、住宿品红、交通蓝、服务区青） */
+  --ui-cat-sight: 109 91 208;
+  --ui-cat-nature: 39 150 86;
+  --ui-cat-food: 226 108 10;
+  --ui-cat-stay: 190 62 134;
+  --ui-cat-transport: 58 120 210;
+  --ui-cat-service: 13 140 135;
+
+  /* 地图：浅灰陆地、蓝色水系、绿色保护地、浅黄高速——通用的地图 App 配色 */
+  --ui-map-land: 241 240 236;
+  --ui-map-urban: 229 227 221;
+  --ui-map-water: 172 205 234;
+  --ui-map-water-ink: 46 104 156;
+  --ui-map-green: 208 229 200;
+  --ui-map-green-ink: 54 112 66;
+  --ui-map-road: 255 255 255;
+  --ui-map-casing: 222 219 211;
+  --ui-map-highway: 255 234 168;
+  --ui-map-highway-casing: 232 196 104;
+
+  --ui-r-panel: 14px;
+  --ui-r-card: 12px;
+  --ui-r-ctl: 8px;
+  --ui-r-btn: 8px;
+  --ui-shadow-card: 0 1px 2px rgb(36 30 32 / 0.05);
+  --ui-shadow-float: 0 1px 2px rgb(36 30 32 / 0.06), 0 12px 32px -8px rgb(36 30 32 / 0.18);
+  --ui-shadow-pop: 0 2px 4px rgb(36 30 32 / 0.05), 0 22px 48px -12px rgb(36 30 32 / 0.26);
+}
+
+@layer components {
+  /* 视窗外壳底色（标题栏 + 侧栏） */
+  .ui-shell {
+    background: rgb(var(--ui-shell));
+  }
+
+  /* 浮层：弹出层、对话里的抽屉、提示卡（实色） */
+  .ui-float {
+    background: rgb(var(--ui-surface));
+    border: 1px solid rgb(var(--ui-line));
+    box-shadow: var(--ui-shadow-float);
+  }
+
+  /* 地图浮层：叠在地图上的概要胶囊、地图按钮、底部抽屉——玻璃材质，地图透出来；不支持时退回实色（见文件末尾） */
+  .ui-glass {
+    background: rgb(255 255 255 / 0.72);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgb(255 255 255 / 0.75);
+    box-shadow: 0 1px 2px rgb(36 30 32 / 0.06), 0 12px 32px -10px rgb(36 30 32 / 0.2), inset 0 1px 0 rgb(255 255 255 / 0.9);
+  }
+
+  /* 卡片：内容区里的一张卡 */
+  .ui-card {
+    background: rgb(var(--ui-surface));
+    border: 1px solid rgb(var(--ui-line));
+    border-radius: var(--ui-r-card);
+    box-shadow: var(--ui-shadow-card);
+  }
+
+  /* 按钮：32px 高，13px / 500 */
+  .ui-btn {
+    display: inline-flex;
+    height: 32px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+    border-radius: var(--ui-r-btn);
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1;
+  }
+  .ui-btn-primary {
+    background: rgb(var(--ui-primary));
+    color: rgb(var(--ui-on-primary));
+  }
+  .ui-btn-secondary {
+    background: rgb(var(--ui-surface));
+    color: rgb(var(--ui-ink));
+    box-shadow: inset 0 0 0 1px rgb(var(--ui-line-strong));
+  }
+  .ui-btn-quiet {
+    color: rgb(var(--ui-ink-2));
+    padding: 0 8px;
+  }
+
+  /* 上下文面板（对话旁的需求画像、筛选面板等）：贴边的一栏 */
+  .ui-aside {
+    background: rgb(var(--ui-surface));
+    border-left: 1px solid rgb(var(--ui-line));
+  }
+
+  /* 侧栏当前项 */
+  .ui-nav-active {
+    background: rgb(var(--ui-surface));
+    box-shadow: inset 0 0 0 1px rgb(var(--ui-line)), var(--ui-shadow-card);
+  }
+
+  /* 胶囊标签：图标 + 文字（条件方块、快捷回复、画像里的取值） */
+  .ui-chip {
+    display: inline-flex;
+    height: 26px;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+    border-radius: 999px;
+    padding: 0 10px;
+    font-size: 12px;
+    color: rgb(var(--ui-ink));
+    background: rgb(var(--ui-sunken));
+  }
+}
+
 @layer utilities {
   .gpu-layer {
     transform: translateZ(0);
@@ -425,6 +572,7 @@ body {
 
 /* 弱 GPU / 不支持 backdrop-filter：回退高对比半透明实色（SHOWCASE §6.3-3） */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .ui-glass { background: rgb(var(--ui-surface)); border-color: rgb(var(--ui-line)); }
   .glass { background: rgb(var(--tc-glass-bg) / 0.94); }
   .glass-strong { background: rgb(var(--tc-glass-bg) / 0.97); }
   .glass-dark { background: rgb(var(--tc-lapis-deep) / 0.92); }
@@ -470,6 +618,16 @@ html[data-scrolling='true'] .glass-sub {
 }
 html[data-scrolling='true'] .modal-backdrop {
   background: rgb(var(--tc-lapis-deep) / 0.35) !important;
+}
+
+/* 系统要求减少透明度：地图浮层退回实色 */
+@media (prefers-reduced-transparency: reduce) {
+  .ui-glass {
+    background: rgb(var(--ui-surface));
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    border-color: rgb(var(--ui-line));
+  }
 }
 
 /* 减弱动态效果：关闭装饰性循环动画（滚动联动的平移/缩放在 JS 层降级为纯淡入） */
