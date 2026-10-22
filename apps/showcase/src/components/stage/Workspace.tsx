@@ -324,9 +324,9 @@ function CrossHint() {
         </Ring>
         <div className="min-w-0 flex-1">
           <p className="text-[13px] font-medium leading-snug text-ui-ink">
-            同一份画像也匹配到 <b className="font-semibold tabular-nums">23 条</b>旅行社线路
+            同一份需求画像，也匹配到 <b className="font-semibold tabular-nums">23 条</b>旅行社线路
           </p>
-          <p className="mt-0.5 truncate text-xs text-ui-ink-3">其中 5 条与这份草案相似 · 最高匹配 91%</p>
+          <p className="mt-0.5 truncate text-xs text-ui-ink-3">其中 5 条与这份自驾草案相似 · 最高匹配 91%</p>
         </div>
         <motion.span className={`${btn.primary} relative`} style={{ scale: press }}>
           {opening ? (

@@ -42,17 +42,19 @@ TripCraft 仍在设计与原型阶段：演示用的是示例数据，「设计�
 演示区由两段互相独立的舞台组成，讲的是同一家人、同一条线路，详细规格见 [`docs/SHOWCASE-web-design.md` §4](../../docs/SHOWCASE-web-design.md)：
 
 ```text
-C 端 · 旅客的完整使用流（ScrollyStage，#demo，66 秒）
+C 端 · 旅客的完整使用流（ScrollyStage，#demo，约 73 秒）
   01 AI 对话与需求画像 → 02 路径 A · AI 规划自驾 → 03 路径 B · 线路筛选与详情 → 04 行程空间 · 共享与同步
 
-B 端 · 定制师的一天（AgencyStage，#agency，61 秒，黄昏氛围带）
+B 端 · 定制师的一天（AgencyStage，#agency，约 68 秒，黄昏氛围带）
   09:30 导入行程单 → 10:40 填写上架信息 → 14:00 生成路书与路线动画 → 16:20 咨询、报价与交付
 ```
 
 - **幕间因果衔接**：每一幕以一次点击结束，下一幕开头就是它的结果（例：03 幕发出咨询后点侧栏「行程空间」，04 幕的行程空间里放着自驾草案与这条咨询）；B 端 16:20 收到的正是 C 端那一家人的咨询。衔接表与数据线见 SHOWCASE §4.0。
 - **共用外壳**：`StageShell.tsx`（rAF 时钟、章节导航、播放控制；`tone="band"` 深色氛围带）与 `AppWindow.tsx`（标题栏与时钟、侧栏、状态栏、手机标签栏；导航项可带角标与演示光标）；章节按时长首尾相接（`acts.ts`），只播放一遍，离开视口时挂起，播放过程 0 React 重渲染。
 - **换章版面不动**：各章说明同时收放、手机说明固定高度，避免浏览器滚动锚定把整页滚走。
-- **时间轴**：C 端 `timeline.ts`、B 端 `agencyTimeline.ts`；关键帧以全局进度书写，调整节奏只改这两份文件。
+- **时间轴**：C 端 `timeline.ts`、B 端 `agencyTimeline.ts`；关键帧以全局进度、按「时间轴秒」书写，调整某一章的节奏只改这两份文件；整体快慢只改 `StageShell.tsx` 的 `PLAYBACK_RATE`（2026-10-21 起 0.9）。
+- **视窗里的产品界面**（SHOWCASE §4.1「视窗界面规范」，D10 的提案）：暖白 · 品牌橙为主，叠在地图上的浮层用玻璃（`.ui-glass`，不支持时退回实色）；组件只用 `globals.css`「产品界面令牌」与 `tailwind.config.ts` 的 `ui-*`。视觉语言与示例线路无关：示意矢量底图（`MapCanvas` + `data/basemap.ts`）、用路线形状生成的封面（`RouteGlyph`）、地点类别配色与图形（`ui.tsx`）。
+- **透明度为 0 时同时隐藏**：只靠透明度隐藏的元素用 `useFadeVisibility` / `useFadeStyle` 绑上 `visibility`，iPad Safari 不留残影。
 - **按视窗宽度排版**：视窗是 `container-name: win` 的容器，内部用 `cq-sm / cq-md / cq-lg` 变体（见 `tailwind.config.ts`）。
 - **减弱动态效果**：`prefers-reduced-motion` 下不自动播放，每章展示一张静帧。
 - **视觉巡检**：控制台执行 `window.__setStageProgress(v)` 或 `window.__setAgencyProgress(v)` 跳到任意帧并暂停。
