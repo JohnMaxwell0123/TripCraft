@@ -19,7 +19,7 @@
 | A-04 | 白标交付可提升客单价 ¥1000+ / 溢价 50% | [白皮书 §2.2](WHITEPAPER.md#22-破局路径一做线下从业者的数字化外骨骼b2b2c-赋能模式)、[§2.5](WHITEPAPER.md#25-核心差异化壁垒二与线下旅行社车队深度共生--实体资源白标与履约飞轮) | 价值主张失去数字支撑 | 同上，加对照案例 | | 未验证 | 市场规模数据参见 [docs/13 §13.8.2](13-agency-partnership-design.md#1382-可溯源的市场规模与结构判断) |
 | A-05 | 手车互联可把手机端高德路线同步到车机 | [白皮书 §5.7](WHITEPAPER.md#57-维度-6智能座舱交付与全天路线批量下发-ev-smart-cockpit) | 座舱投递的"零开发路径"失效 | 实车验证（对应 `docs/02` 的 TV-09） | | 未验证 | [docs/02 TV-09](02-cockpit-protocol.md#210-待验证项todop0) |
 | A-06 | 深链可一次投递多个途经点到车机导航 | [docs/02 §2.3](02-cockpit-protocol.md#23-tier-0-详解真正的交付主力) | 全天批量投递能力失效 | 按 `docs/02` 的实测档案复核 | | 部分收敛（格式已定，上限未测） | [docs/02 TV-07b/TV-07d](02-cockpit-protocol.md#210-待验证项todop0) |
-| A-07 | 用户愿为 VIP 分层付费 | [白皮书 §5](WHITEPAPER.md#五商业化价值分层普通版-vs-vip-尊享版体系-standard-vs-vip-tiering) | 变现分层失效 | 最小付费测试 | | 未验证 | |
+| A-07 | 用户愿为 VIP 分层付费 | [白皮书 §5](WHITEPAPER.md#五商业化价值分层普通版-vs-vip-尊享版体系-standard-vs-vip-tiering) | 变现分层失效 | 最小付费测试：在分享卡片与导出路书时展示按路线生成的行程皮肤预览，测预览 → 开通转化；对比按月订阅与单趟解锁；跟踪带皮肤的分享带来的新用户 | | 未验证 | [docs/09 §9.0.6](09-visual-design-system.md#906-上线范围与商业化) |
 | A-08 | 所选同步模型在弱网场景下可满足协作体验 | [ARC-03](architecture/ARC-03-offline-sync.md) | 行中协同体验受挫 | 弱网丢包模拟与无人区实车拉偏测试 | | 未验证 | |
 | A-09 | 地图 / 路线服务商的商用条款与成本可承受 | [ADR-005](architecture/adr/ADR-005-map-navigation-abstraction.md) | 运营成本超出预算 | 商用授权谈判与计费模型核算 | | 未验证 | |
 | A-10 | 机构愿意提供资质与资源并接受平台审核 | [ARC-06](architecture/ARC-06-multitenancy-whitelabel.md) | B 端入驻阻力大 | 3~5 家地接社意向访谈与试点签约 | | 未验证 | |

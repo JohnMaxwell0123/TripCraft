@@ -152,5 +152,5 @@ flowchart TB
 | **D6** | 平台是否在后续阶段代收团款（站内交易） | 阶段 1–2 不做；阶段 3 前重新评估 | 法律身份、PRD-05 收入结构 |
 | **D7** | 路径 B 的收费方式（线索费 / 上架订阅 / 成交佣金） | 上架订阅 + 线索包为主，不收成交佣金（不经手资金时无法核实成交） | PRD-05、docs/17 |
 | **D8** | MVP 切分 | 见 DLV-01 v3：阶段 1 = 对话 + 路径 A + 共享同步 + 首批线路上架；阶段 2 = 路径 B 匹配与筛选、AI 路书与透明报价 | DLV-01、团队配置 |
-| **D9** | C 端是否收费 | 基础免费；平台模型调用设免费额度，超额可订阅或改用自带 API | PRD-05、A-16 |
-| **D10** | 产品 UI 的视觉体系：[docs/09](../09-visual-design-system.md) 的五主题 + 液态玻璃，还是演示站使用的 Unify GTM 暖纸风格 | **无默认值**：两套规范目前都声称适用于产品界面。决定前，docs/09 是产品 UI 依据，Unify GTM 只约束演示站 | docs/09、`.agents/rules/`、`.agents/skills/frontend-design-system`、ARC-10 §5 |
+| **D9** | C 端是否收费 | 基础免费；平台模型调用设免费额度，超额可订阅或改用自带 API。会员权益另含按路线生成的行程皮肤（[docs/09 §9.0](../09-visual-design-system.md#90-两层app-外观与行程皮肤)），并评估「单趟解锁」 | PRD-05、A-16、A-07 |
+| **D10** | 产品 UI 的视觉体系：[docs/09](../09-visual-design-system.md) 的五主题 + 液态玻璃，还是演示站使用的 Unify GTM 暖纸风格 | ✅ **已决定（2026-10-22）**：两者都不直接采用，而是统一的 App 外观——[SHOWCASE §4.1](../SHOWCASE-web-design.md#41-共用外壳与应用视窗) 的方案（暖白 · 品牌橙，地图浮层用玻璃），与目的地无关；docs/09 的主题与流派改为会员功能「行程皮肤」，只作用于行程页与产出物（docs/09 §9.0）。Unify GTM 只约束演示站的营销页面 | docs/09、ARC-10 §5、docs/04 §4.6、`.agents/rules/`、`.agents/skills/frontend-design-system` |
