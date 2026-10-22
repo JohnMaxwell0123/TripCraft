@@ -1,12 +1,12 @@
 ---
 name: frontend-design-system
 description: >-
-  Use this skill when developing, refactoring, or reviewing frontend UI components, styling, responsive layouts, Tailwind CSS tokens, the two-layer appearance model (unified App tokens + member trip skins), liquid glass on map overlays, or accessibility (WCAG AA & Senior Mode).
+  Use this skill when developing, refactoring, or reviewing frontend UI components, styling, responsive layouts, Tailwind CSS tokens, the two-layer appearance model (unified App tokens + route-generated trip skins), liquid glass on map overlays, or accessibility (WCAG AA & Senior Mode).
 ---
 
 # 前端设计系统与现代 UI 开发规范 (Frontend Design System)
 
-本 Skill 提供现代前端界面构建、样式系统与视觉质感落地指导，重点覆盖 Tailwind CSS、两层令牌（统一的 App 外观 + 会员行程皮肤）、地图浮层的液态玻璃与全端自适应布局。
+本 Skill 提供现代前端界面构建、样式系统与视觉质感落地指导，重点覆盖 Tailwind CSS、两层令牌（统一的 App 外观 + 行程皮肤）、地图浮层的液态玻璃与全端自适应布局。
 
 ---
 
@@ -21,7 +21,7 @@ description: >-
 - 语义色锁定、任何皮肤都不覆盖：成功 `#0E7A5A`；地点类别色 景点 `#6D5BD0` · 自然 `#279656` · 餐饮 `#E26C0A` · 住宿 `#BE3E86` · 交通 `#3A78D2` · 服务区 `#0D8C87`。
 - 组件只引用语义令牌，不写死色值；不要按目的地切换 App 的配色。
 
-### 1.2 行程皮肤（会员功能，只挂在行程内容根节点）
+### 1.2 行程皮肤（只挂在行程内容根节点；AI 自动生成一套所有人免费，深度定制属会员）
 五个主题族（[docs/09 §9.2](../../../docs/09-visual-design-system.md#92-五大主题的完整设计)，`themeId` 即 DSL 枚举）：
 - **敦煌金** `dunhuang-gold`：主色 `#B8863B`，底 `#F2E8D5`
 - **赛博蓝** `cyber-blue`：主色 `#00A3FF`，底 `#0A1628`（深蓝黑，不是纯黑）

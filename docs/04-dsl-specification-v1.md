@@ -87,7 +87,7 @@ flowchart TB
 | `meta` | `object` | ✔ | 标题、副标题、层级、作者 |
 | `party` | `object` | ✔ | 人群画像 —— 驱动第 1 章的人群裁决引擎 |
 | `vehicle` | `object` | | 载具信息 —— 驱动通达性过滤 |
-| `theme` | `object` | | 行程皮肤 —— 缺省时用默认外观；按路线自动生成是会员功能（[docs/09 §9.0](09-visual-design-system.md#90-两层app-外观与行程皮肤)） |
+| `theme` | `object` | | 行程皮肤 —— 方案形成后由 AI 按路线自动生成一套（所有人）；手动定制属会员（[docs/09 §9.0](09-visual-design-system.md#90-两层app-外观与行程皮肤)） |
 | `constraints` | `object` | | 全局硬约束 |
 | `days` | `array` | ✔ | 分天行程，**至少 1 天** |
 | `privileges` | `array` | | 特许资源清单 |
@@ -692,7 +692,7 @@ flowchart TB
 
 ## 4.6 `theme` —— 视觉主题
 
-> **2026-10-22 定位**（D10，[docs/09 §9.0](09-visual-design-system.md#90-两层app-外观与行程皮肤)）：`theme` 是**这趟行程的皮肤**，只作用于行程页、路书阅读、分享卡片、单文件导出与回忆录，不改变 App 外观。缺省（或免费版）时行程用默认外观；`detection.mode = "auto"` 表示这套皮肤是会员「按路线生成」得到的，`manual` 表示会员手动选定。`accessibility` 与 `motion` 对所有人生效，不属于会员权益；长辈模式开启时压过皮肤。
+> **2026-10-22 定位**（D10，[docs/09 §9.0](09-visual-design-system.md#90-两层app-外观与行程皮肤)）：`theme` 是**这趟行程的皮肤**，只作用于行程页、路书阅读、分享卡片、单文件导出与回忆录，不改变 App 外观。方案形成后由 AI 按路线自动生成一套，所有人免费（`detection.mode = "auto"`）；`manual` 表示会员手动定制过；还没生成时行程用默认外观。`accessibility` 与 `motion` 对所有人生效，不属于会员权益；长辈模式开启时压过皮肤。
 
 ```jsonc
 {
@@ -731,7 +731,7 @@ flowchart TB
 | `swiss-minimal` | 极简 | 瑞士国际主义扁平 | 会员 |
 | `cyber-hud` | 夜航 | 赛博夜巡仪表盘 | 会员（首批） |
 
-`themeId` 为其他值、`designSystem` 不是 `apple-glass` 的行程，只有会员能生成或更换；会员到期后已写入的 `theme` 保留并照常渲染（只是不能再改），校验不因会员状态而失败。
+自动生成写入的 `themeId` 对所有人有效；手动更换 `themeId`、选择 `apple-glass` 以外的 `designSystem`、重新生成，只有会员能做；会员到期后已写入的 `theme` 保留并照常渲染（只是不能再改），校验不因会员状态而失败。
 
 > ⚠️ **`overrides` 只允许覆盖语义 Token**（`accentPrimary` / `bgDeep` / `radiusLg`…），**禁止**出现 `"css": ".foo{...}"` 这类裸样式注入。原因：裸样式会绕过主题系统、破坏大字模式的可访问性保证、且使得未来主题升级不可能。这条限制必须在 Schema 层面用 `additionalProperties: false` 硬性卡死。
 
