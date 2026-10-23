@@ -11,15 +11,19 @@ import { SELF_DRIVE_ROUTE } from '@/data/trip';
  * 幕与幕之间按因果衔接：每幕最后一下点击，下一幕开头就是它的结果——
  *   01 点「AI 规划自驾路线」→ 02 自驾草案；02 存进行程空间后点「看旅行社线路」（同一份画像）→ 03 已套用画像的筛选页；
  *   03 咨询发出、侧栏「行程空间」出现角标，点它 → 04 行程空间里并排放着自驾草案与这条咨询。
+ * 04 幕的终帧是全片的收尾（PRD-03 S-C10）：领队点「做成可分享的路书」→ AI 按路线生成皮肤与分享卡片 → 分享到家庭群 →
+ *   亲友点开分享页、点「我也做一份」→ 回到 AI 对话的入口，和 01 幕的开场是同一个画面。
  *
  * 四幕按时长比例首尾相接（acts.ts），调整节奏只改这里：幕时长改 ACT_ORDER，幕内节拍改 T。
+ * 04 幕 2026-10-23 由 18 秒加到 20 秒（实际播放约 22 秒）：共享与同步的节拍压缩约 3.5 秒，仍不够放下分享路书的三次点击，
+ * 整段 C 端约 76 秒。
  */
 
 export const ACT_ORDER = [
   ['dialogue', 13000],
   ['drive', 14000],
   ['match', 21000],
-  ['share', 18000],
+  ['share', 20000],
 ] as const;
 
 export type ActId = (typeof ACT_ORDER)[number][0];
@@ -54,6 +58,9 @@ const T_DH = drawTime(HOLD_D0 + MOVING * arc('dh'));
 const T_DH_END = T_DH + (DRAW_TO - DRAW_FROM) * HOLD_DH;
 
 const sceneIn = (at: number) => [at, at + FADE] as const;
+
+/** 04 幕：领队点「做成可分享的路书」的时刻（行程空间一屏在分享路书一屏盖住它之后隐藏） */
+const SHARE_CLICK = s(0.695);
 
 /** 关键帧（命名即语义，数值为全局进度） */
 export const T = {
@@ -128,29 +135,48 @@ export const T = {
   spaceCursor: [m(0.92), m(0.96)] as const,
   spaceClick: m(0.975),
 
-  /* ── 04 行程空间 · 共享与同步（Collab / Recommend / SyncFinale） ─────── */
-  shareScene: [...sceneIn(s(0))] as const,
+  /* ── 04 行程空间 · 共享与同步（Collab / Recommend / SyncFinale）；幕时长 20 秒，s(0.05) = 1 秒 ─────── */
+  /** 分享路书一屏盖住行程空间后，行程空间再隐藏 */
+  shareScene: [...sceneIn(s(0)), ...cover(SHARE_CLICK + FADE)] as const,
   /** 打开行程空间：自驾草案与刚发出的咨询并排出现 */
-  planIn: [s(0.02), s(0.07)] as const,
-  inviteCursor: [s(0.08), s(0.11)] as const,
-  inviteClick: s(0.12),
-  invitePopover: [s(0.12), s(0.14), s(0.27), s(0.29)] as const,
-  copyCursor: [s(0.17), s(0.2)] as const,
-  copyClick: s(0.21),
-  joinAJie: [s(0.3), s(0.33)] as const,
-  toastAJie: [s(0.3), s(0.32), s(0.37), s(0.39)] as const,
-  joinXiaoyu: [s(0.37), s(0.4)] as const,
-  toastXiaoyu: [s(0.38), s(0.4), s(0.46), s(0.48)] as const,
-  nominationIn: [s(0.49), s(0.53)] as const,
-  evalRows: [s(0.55), s(0.58), s(0.61)] as const,
-  applyCursor: [s(0.64), s(0.69)] as const,
-  applyClick: s(0.71),
+  planIn: [s(0.02), s(0.065)] as const,
+  inviteCursor: [s(0.07), s(0.095)] as const,
+  inviteClick: s(0.105),
+  invitePopover: [s(0.105), s(0.123), s(0.21), s(0.228)] as const,
+  copyCursor: [s(0.14), s(0.162)] as const,
+  copyClick: s(0.17),
+  joinAJie: [s(0.232), s(0.257)] as const,
+  toastAJie: [s(0.232), s(0.25), s(0.3), s(0.318)] as const,
+  joinXiaoyu: [s(0.27), s(0.295)] as const,
+  toastXiaoyu: [s(0.275), s(0.293), s(0.34), s(0.358)] as const,
+  nominationIn: [s(0.355), s(0.385)] as const,
+  evalRows: [s(0.4), s(0.425), s(0.45)] as const,
+  applyCursor: [s(0.47), s(0.5)] as const,
+  applyClick: s(0.512),
   /** 手机：提名以底部抽屉出现，领队确认后收起 */
-  nominationSheetOut: [s(0.73), s(0.76)] as const,
-  insertRow: [s(0.72), s(0.77)] as const,
-  version: s(0.75),
-  syncIn: [s(0.79), s(0.82)] as const,
-  syncRows: [s(0.83), s(0.87), s(0.91)] as const,
+  nominationSheetOut: [s(0.53), s(0.552)] as const,
+  insertRow: [s(0.52), s(0.555)] as const,
+  version: s(0.54),
+  /** 宽视窗：提名处理完收成一行，给同步列表让出位置（右栏放不下整张提名卡 + 三台设备） */
+  nominationFold: [s(0.556), s(0.58)] as const,
+  syncIn: [s(0.572), s(0.595)] as const,
+  syncRows: [s(0.605), s(0.625), s(0.645)] as const,
+
+  /* ── 04 幕收尾 · 做成可分享的路书（ShareRoadbook，PRD-03 S-C10、docs/09 §9.0） ─────── */
+  /** 全家都同步到 v1.1 后，领队点标题栏的「做成可分享的路书」 */
+  shareCursor: [s(0.66), s(0.685)] as const,
+  shareClick: SHARE_CLICK,
+  sharePageScene: [...sceneIn(SHARE_CLICK)] as const,
+  /** 卡片先是 App 的默认外观，随后换上按路线生成的皮肤（河西走廊 → 敦煌金） */
+  skinWash: [s(0.725), s(0.75)] as const,
+  /** 分享到家庭群 → 亲友的手机上打开分享页 */
+  postCursor: [s(0.82), s(0.845)] as const,
+  postClick: s(0.855),
+  visitorIn: [s(0.86), s(0.885)] as const,
+  /** 访客点「我也做一份」→ AI 对话的入口（S-C01） */
+  makeMineCursor: [s(0.895), s(0.918)] as const,
+  makeMineClick: s(0.928),
+  chatIn: [s(0.932), s(0.952)] as const,
 
   /* ── 已不挂载的旧场景（ChatScene / CockpitScene / Deliver）仍引用的键，取值在全局进度之外，保持静止 ── */
   ...legacyKeys(),
@@ -184,5 +210,6 @@ export const CHAPTER_POINTS: Record<ActId, { enter: number; still: number }> = {
   dialogue: { enter: 0, still: 0.78 },
   drive: { enter: (FADE + sec(0.05)) / (ACTS.drive[1] - ACTS.drive[0]), still: 0.86 },
   match: { enter: (FADE + sec(0.05)) / (ACTS.match[1] - ACTS.match[0]), still: 0.91 },
-  share: { enter: (FADE + sec(0.05)) / (ACTS.share[1] - ACTS.share[0]), still: 0.97 },
+  // 静帧取全片终帧：左边是换上皮肤的分享卡片，亲友的手机上是「我也做一份」打开的 AI 对话入口
+  share: { enter: (FADE + sec(0.05)) / (ACTS.share[1] - ACTS.share[0]), still: 0.985 },
 };

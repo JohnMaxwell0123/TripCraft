@@ -7,6 +7,7 @@ import { COVER_PALETTES, smoothPath, type TripSummary } from '@/data/trip';
  * 行程封面：用这趟行程自己的路线形状画成一张图（渐变底 + 经纬点阵 + 白色路线），不用照片。
  * 每条路线形状不同，封面自然各不相同；配色取自一组与目的地无关的渐变，换任何目的地都成立。
  * 没有实拍素材，也不用 AI 生成的风景冒充实拍：封面大到能放字时，右上角标「示意」（docs/17 §17.6.3）。
+ * colors 覆盖默认配色：分享卡片上用按路线生成的行程皮肤（例如 rgb(var(--trip-primary))），写进 style 才能解析 CSS 变量。
  */
 
 const W = 120;
@@ -28,9 +29,19 @@ function layout(shape: TripSummary['shape'], pad = 0.2) {
   return raw.map(([x, y]) => [ox + (x - x0) * s, oy + (y - y0) * s] as const);
 }
 
-export function RouteGlyph({ trip, className = '', tag = false }: { trip: TripSummary; className?: string; tag?: boolean }) {
+export function RouteGlyph({
+  trip,
+  className = '',
+  tag = false,
+  colors,
+}: {
+  trip: TripSummary;
+  className?: string;
+  tag?: boolean;
+  colors?: readonly [string, string];
+}) {
   const id = useId().replace(/:/g, '');
-  const [c0, c1] = COVER_PALETTES[trip.palette];
+  const [c0, c1] = colors ?? COVER_PALETTES[trip.palette];
   const pts = layout(trip.shape);
   const d = smoothPath(pts, 0.45);
   const start = pts[0];
@@ -42,8 +53,8 @@ export function RouteGlyph({ trip, className = '', tag = false }: { trip: TripSu
       <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full" aria-hidden>
         <defs>
           <linearGradient id={`g${id}`} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor={c0} />
-            <stop offset="1" stopColor={c1} />
+            <stop offset="0" style={{ stopColor: c0 }} />
+            <stop offset="1" style={{ stopColor: c1 }} />
           </linearGradient>
           <pattern id={`p${id}`} width="6" height="6" patternUnits="userSpaceOnUse">
             <circle cx="1.5" cy="1.5" r="0.55" fill="#fff" fillOpacity="0.22" />
@@ -54,7 +65,7 @@ export function RouteGlyph({ trip, className = '', tag = false }: { trip: TripSu
         <path d={d} fill="none" stroke="#fff" strokeOpacity="0.28" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
         <path d={d} fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         <circle cx={start[0]} cy={start[1]} r="2.6" fill="#fff" />
-        {loop ? null : <circle cx={end[0]} cy={end[1]} r="2.6" fill={c1} stroke="#fff" strokeWidth="1.6" />}
+        {loop ? null : <circle cx={end[0]} cy={end[1]} r="2.6" style={{ fill: c1 }} stroke="#fff" strokeWidth="1.6" />}
       </svg>
       {tag ? <span className="absolute right-1.5 top-1.5 rounded-full bg-black/25 px-1.5 text-xs leading-5 text-white backdrop-blur-sm">示意</span> : null}
     </span>

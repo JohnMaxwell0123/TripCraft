@@ -91,6 +91,14 @@ const config: Config = {
           'cat-transport': withVar('--ui-cat-transport'),
           'cat-service': withVar('--ui-cat-service'),
         },
+        // 行程皮肤令牌（globals.css「行程皮肤令牌」）：只在 .trip-surface 里用，缺省回落到产品界面令牌
+        trip: {
+          canvas: withVar('--trip-canvas'),
+          ink: withVar('--trip-ink'),
+          primary: withVar('--trip-primary'),
+          secondary: withVar('--trip-secondary'),
+          accent: withVar('--trip-accent'),
+        },
         unify: {
           bg: '#FFFFF9',
           text: '#241E20',

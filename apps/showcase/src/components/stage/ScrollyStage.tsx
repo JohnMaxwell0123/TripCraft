@@ -11,6 +11,7 @@ import { Workspace } from './Workspace';
 import { MatchScene } from './MatchScene';
 import { RouteDetail } from './RouteDetail';
 import { TripSpaceScene } from './Collab';
+import { ShareRoadbookScene } from './ShareRoadbook';
 import { BuildingIcon, MapIcon, MessageIcon } from '@/components/common/Icons';
 
 /**
@@ -18,7 +19,8 @@ import { BuildingIcon, MapIcon, MessageIcon } from '@/components/common/Icons';
  *
  * 01 AI 对话与需求画像 → 02 路径 A · AI 规划自驾 → 03 路径 B · 线路筛选与详情 → 04 行程空间 · 共享与同步。
  * 一家人、一份需求画像贯穿四幕：01 的画像同时是 02 的规划输入与 03 的筛选条件；02 存下的草案与 03 发出的咨询，
- * 在 04 的行程空间里并排出现。旅行社线路工作室在下方另一段舞台（AgencyStage），不插在旅客流程中间。
+ * 在 04 的行程空间里并排出现。04 的终帧是「做成可分享的路书」：亲友点「我也做一份」，回到 01 开场的对话入口（S-C10）。
+ * 旅行社线路工作室在下方另一段舞台（AgencyStage），不插在旅客流程中间。
  */
 
 const COPY: Record<ActId, { title: string; short: string; desc: string }> = {
@@ -40,7 +42,7 @@ const COPY: Record<ActId, { title: string; short: string; desc: string }> = {
   share: {
     title: '行程空间 · 共享与同步',
     short: '共享同步',
-    desc: '等旅行社回复时，全家在行程空间里商量：链接加入、提名地点，领队确认后，新版本同步到每个人的设备。',
+    desc: '等旅行社回复时，全家用链接加入、提名地点，领队确认后同步到每台设备；再一键做成可分享的路书，亲友也能做一份。',
   },
 };
 
@@ -73,6 +75,9 @@ const SECTIONS: WindowSection[] = [
   { at: T.sendClick, nav: 'routes', status: '咨询已发出 · 只含你勾选的信息', statusRight: '回复会出现在行程空间' },
   { at: T.spaceClick, nav: 'trips', status: '行程空间 · 3 人可查看与提名', statusRight: '改动由领队确认后生效' },
   { at: T.version, nav: 'trips', status: 'v1.1 · 已同步到 3 台设备', statusRight: '离线可读' },
+  { at: T.shareClick, nav: 'trips', status: '皮肤与封面由 AI 按路线生成 · 只作用于这趟行程', statusRight: '自动生成的一套对所有人免费' },
+  { at: T.postClick, nav: 'trips', status: '只读链接 · 亲友不用注册就能看', statusRight: '分享页已隐去证件、房号与手机号' },
+  { at: T.makeMineClick, nav: 'trips', status: '「我也做一份」从 AI 对话开始', statusRight: '只记录来源，不带分享者的个人信息' },
 ];
 
 export function ScrollyStage() {
@@ -105,6 +110,7 @@ export function ScrollyStage() {
         <MatchScene />
         <RouteDetail />
         <TripSpaceScene />
+        <ShareRoadbookScene />
       </AppWindow>
     </StageShell>
   );
