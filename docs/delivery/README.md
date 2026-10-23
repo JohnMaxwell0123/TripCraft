@@ -1,6 +1,6 @@
 # TripCraft · 交付规划与风险管理包 (Delivery Package)
 
-> 本目录归档 TripCraft 分阶段路线图、项目风险登记册、需求与架构追溯矩阵（DLV-01 ~ DLV-03）。设计状态：`Draft v3（按 2026-10-17 产品基线修订，待 owner 评审）`。
+> 本目录归档 TripCraft 分阶段路线图、项目风险登记册、需求与架构追溯矩阵、假设验证的指标与数据收集方案（DLV-01 ~ DLV-04）。设计状态：`Draft v3（按 2026-10-17 产品基线修订，待 owner 评审）`。
 
 ---
 
@@ -11,6 +11,7 @@
 | **DLV-01** | 路线图与 MVP 边界 | [`DLV-01-roadmap-mvp.md`](DLV-01-roadmap-mvp.md) | 阶段 1~5 规划（阶段 1：对话 + 路径 A + 共享同步 + 首批线路上架；阶段 2：路径 B + 线路工作室）、退出标准、Non-Goals、v3 优先级调整记录 |
 | **DLV-02** | 项目风险登记册 | [`DLV-02-risk-register.md`](DLV-02-risk-register.md) | 12 条核心风险、概率与影响象限图、缓解措施 |
 | **DLV-03** | 需求与架构追溯矩阵 | [`DLV-03-traceability-matrix.md`](DLV-03-traceability-matrix.md) | 场景 (S-) ➔ 功能 (F-) ➔ 模块 ➔ 决策 (ADR-) ➔ 阶段全链路追溯表 |
+| **DLV-04** | 假设验证的指标与数据收集方案 | [`DLV-04-metrics-and-data-collection.md`](DLV-04-metrics-and-data-collection.md) | A-19（分享获客）与 A-20（成交服务费）的指标定义、事件清单、隐私与合规做法、建议的通过 / 淘汰标准、阶段 2 上线前的准备清单、试点旅行社访谈提纲 |
 
 ---
 
