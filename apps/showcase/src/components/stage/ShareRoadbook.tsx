@@ -168,7 +168,7 @@ function ShareOptions() {
             </>
           )}
         </div>
-        <p className="mt-0.5 hidden text-xs leading-relaxed text-ui-ink-3 cq-sm:block">途经甘肃 · 丝路沿线，出行在秋季；只作用于这趟行程的页面与分享</p>
+        <p className="mt-0.5 hidden text-xs leading-relaxed text-ui-ink-3 cq-sm:block">途经甘肃 · 丝路沿线，出行在秋季</p>
       </div>
 
       <div className="hidden flex-col border-t border-ui-line pt-3 cq-sm:flex">

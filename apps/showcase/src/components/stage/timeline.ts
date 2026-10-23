@@ -210,6 +210,6 @@ export const CHAPTER_POINTS: Record<ActId, { enter: number; still: number }> = {
   dialogue: { enter: 0, still: 0.78 },
   drive: { enter: (FADE + sec(0.05)) / (ACTS.drive[1] - ACTS.drive[0]), still: 0.86 },
   match: { enter: (FADE + sec(0.05)) / (ACTS.match[1] - ACTS.match[0]), still: 0.91 },
-  // 静帧取全片终帧：左边是换上皮肤的分享卡片，亲友的手机上是「我也做一份」打开的 AI 对话入口
-  share: { enter: (FADE + sec(0.05)) / (ACTS.share[1] - ACTS.share[0]), still: 0.985 },
+  // 静帧取亲友刚打开分享页的一刻：换上皮肤的分享卡片、角标与 AI 标识、「我也做一份」都在画面里（手机宽度也看得到皮肤）
+  share: { enter: (FADE + sec(0.05)) / (ACTS.share[1] - ACTS.share[0]), still: 0.89 },
 };

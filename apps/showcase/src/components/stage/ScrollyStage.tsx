@@ -75,7 +75,7 @@ const SECTIONS: WindowSection[] = [
   { at: T.sendClick, nav: 'routes', status: '咨询已发出 · 只含你勾选的信息', statusRight: '回复会出现在行程空间' },
   { at: T.spaceClick, nav: 'trips', status: '行程空间 · 3 人可查看与提名', statusRight: '改动由领队确认后生效' },
   { at: T.version, nav: 'trips', status: 'v1.1 · 已同步到 3 台设备', statusRight: '离线可读' },
-  { at: T.shareClick, nav: 'trips', status: '皮肤与封面由 AI 按路线生成 · 只作用于这趟行程', statusRight: '自动生成的一套对所有人免费' },
+  { at: T.shareClick, nav: 'trips', status: '皮肤只作用于这趟行程的页面与分享', statusRight: '自动生成的一套对所有人免费' },
   { at: T.postClick, nav: 'trips', status: '只读链接 · 亲友不用注册就能看', statusRight: '分享页已隐去证件、房号与手机号' },
   { at: T.makeMineClick, nav: 'trips', status: '「我也做一份」从 AI 对话开始', statusRight: '只记录来源，不带分享者的个人信息' },
 ];
