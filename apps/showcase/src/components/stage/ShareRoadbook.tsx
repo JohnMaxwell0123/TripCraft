@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { TRIPS } from '@/data/trip';
-import { ease, useFadeStyle, useFadeVisibility, useRange, useStep } from '@/lib/motion';
+import { ease, useFadeStyle, useRange, useStep, useVisibility } from '@/lib/motion';
 import { T, sec } from './timeline';
 import { Scene, TapCursor, useProgress } from './primitives';
 import { Badge, Chip, Switch, btn } from './ui';
@@ -82,9 +82,9 @@ function SkinWash() {
   const p = useProgress();
   const [a, b] = T.skinWash;
   const skin = useFadeStyle(p, a, b);
-  // 皮肤完全盖住之后，下面的默认外观隐藏
+  // 默认外观只在这一屏出现到皮肤完全盖住为止；其余时刻隐藏（这一屏还没出现时也不留 visible，重播时 iPad 不留残影）
   const plain = useRange(p, [b, b + sec(0.02)], [1, 0]);
-  const plainVisibility = useFadeVisibility(plain);
+  const plainVisibility = useVisibility(p, T.sharePageScene[0] - sec(0.05), b + sec(0.02));
   return (
     <div className="relative">
       <motion.div style={{ opacity: plain, visibility: plainVisibility }}>
@@ -262,7 +262,8 @@ function VisitorPhone() {
 function SharePage() {
   const p = useProgress();
   const out = useRange(p, [T.chatIn[0], T.chatIn[1]], [1, 0]);
-  const outVisibility = useFadeVisibility(out);
+  // 只在手机出现之后、对话入口完全盖住之前可见
+  const outVisibility = useVisibility(p, T.visitorIn[0], T.chatIn[1]);
   const press = useRange(p, [T.makeMineClick - sec(0.12), T.makeMineClick, T.makeMineClick + sec(0.12)], [1, 0.95, 1]);
 
   return (
