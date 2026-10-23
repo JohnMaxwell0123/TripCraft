@@ -10,7 +10,7 @@ import { Badge, CatMark, CatTile, btn } from './ui';
 import { RouteGlyph } from './RouteGlyph';
 import { NominationCard } from './Recommend';
 import { DeviceSync } from './SyncFinale';
-import { CarIcon, CheckIcon, ClockIcon, CopyIcon, LinkIcon, SparklesIcon } from '@/components/common/Icons';
+import { CarIcon, CheckIcon, ClockIcon, CopyIcon, LinkIcon, ShareIcon, SparklesIcon } from '@/components/common/Icons';
 
 /**
  * 04 幕 · 行程空间：多人共享与多端同步（docs/15、PRD-01 支柱 3）
@@ -18,7 +18,8 @@ import { CarIcon, CheckIcon, ClockIcon, CopyIcon, LinkIcon, SparklesIcon } from 
  * 03 幕末尾点了侧栏「行程空间」，这一屏就是它的结果：02 幕存下的自驾草案与 03 幕刚发出的咨询并排放着
  * （PRD-01 §2：两条路径都落到行程空间），两张方案卡各带自己的路线封面。等旅行社回复的时候——
  * 领队用链接邀请家人（加入后可查看与提名，改动由领队确认）→ 阿杰、小雨加入 →
- * 阿杰提名一个地点，AI 评估代价 → 领队确认，D0 晚上插入新安排，版本 v1.0 → v1.1 → 逐台设备同步。
+ * 阿杰提名一个地点，AI 评估代价 → 领队确认，D0 晚上插入新安排，版本 v1.0 → v1.1 → 逐台设备同步 →
+ * 领队点标题栏的「做成可分享的路书」，下一屏就是它的结果（ShareRoadbook.tsx）。
  */
 
 const QR = qrPath();
@@ -38,6 +39,7 @@ export function TripSpaceScene() {
         </div>
         <Members />
         <InviteButton />
+        <ShareButton />
       </header>
 
       <div className="relative flex min-h-0 flex-1">
@@ -141,6 +143,19 @@ function InviteButton() {
       <LinkIcon className="h-3.5 w-3.5" />
       邀请
       <TapCursor approach={T.inviteCursor} clickAt={T.inviteClick} hideAt={T.inviteClick + sec(0.4)} className="left-8 top-4" />
+    </motion.span>
+  );
+}
+
+/* ── 做成可分享的路书（S-C10）：手机宽度只留图标，下一屏的标题写明这一步 ── */
+function ShareButton() {
+  const p = useProgress();
+  const press = useRange(p, [T.shareClick - sec(0.12), T.shareClick, T.shareClick + sec(0.12)], [1, 0.95, 1]);
+  return (
+    <motion.span className={`${btn.secondary} relative w-8 !px-0 cq-sm:w-auto cq-sm:!px-3`} style={{ scale: press }} title="做成可分享的路书">
+      <ShareIcon className="h-3.5 w-3.5" />
+      <span className="hidden cq-sm:inline">做成可分享的路书</span>
+      <TapCursor approach={T.shareCursor} clickAt={T.shareClick} hideAt={T.shareClick + sec(0.4)} className="left-1/2 top-4" />
     </motion.span>
   );
 }
@@ -262,9 +277,16 @@ function NominationPanel() {
   const emptyOpacity = useRange(p, [T.nominationIn[0] - sec(0.2), T.nominationIn[0]], [1, 0]);
   const emptyVisibility = useFadeVisibility(emptyOpacity);
   const [a, b] = T.nominationIn;
-  const fade = useFadeStyle(p, a, b);
   const y = useRange(p, [a, b], [10, 0], { easing: ease.out, rest: 0 });
   const pending = useStep(p, [a, T.applyClick]);
+  // 处理完收成一行：整张卡淡出并收起高度，「已加入 D0」一行长出来，下面的同步列表才放得下三台设备
+  const [f0, f1] = T.nominationFold;
+  const fMid = f0 + (f1 - f0) * 0.5;
+  const cardOpacity = useRange(p, [a, b, f0, fMid], [0, 1, 1, 0]);
+  const cardVisibility = useFadeVisibility(cardOpacity);
+  const cardMax = useRange(p, [f0, f1], [360, 0]);
+  const doneFade = useFadeStyle(p, fMid, f1);
+  const doneMax = useRange(p, [f0, f1], [0, 48]);
 
   return (
     <div className="relative">
@@ -279,8 +301,20 @@ function NominationPanel() {
         >
           同行人提名的地点会出现在这里，由你确认后再加入行程。
         </motion.p>
-        <motion.div style={{ ...fade, y }}>
-          <NominationCard />
+        <motion.div className="overflow-hidden" style={{ maxHeight: cardMax }}>
+          <motion.div style={{ opacity: cardOpacity, visibility: cardVisibility, y }}>
+            <NominationCard />
+          </motion.div>
+        </motion.div>
+        <motion.div className="overflow-hidden" style={{ maxHeight: doneMax }}>
+          <motion.div className="ui-card flex items-center gap-2.5 p-2" style={doneFade}>
+            <CatTile cat="food" size={28} />
+            <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-ui-ink">正宁路夜市 · 赵记醪糟</span>
+            <span className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-ui-success">
+              <CheckIcon className="h-3 w-3" />
+              已加入 D0
+            </span>
+          </motion.div>
         </motion.div>
       </div>
     </div>
