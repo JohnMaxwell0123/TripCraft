@@ -482,6 +482,12 @@ flowchart LR
 | **OI-023** | **AI 生成路书与路线动画的内容标识**：显式标识与导出文件隐式标识的具体做法 | 路线动画会被旅行社下载并在自有渠道传播 | 执业律师意见 + 对照标识办法的配套标准 | §17.6.3 | P1 | ⏳ 新增（法务动作） |
 | **OI-024** | ⚠️ **需求画像与上架信封没有数据契约** | [铁律 6](#铁律-6--dsl-是唯一真相源-single-source-of-truth) 要求跨层数据有契约；当前画像与上架信封只存在于 [§16.3.1](16-planning-paths-and-route-matching.md#1631-特征点清单) 与 [§17.4](17-agency-route-studio.md#174-上架线路包含什么) 的字段表中 | 新增 `profile.schema.json` 与 `listing.schema.json`（复用 `trip.schema.json` 的 `party` / `constraints` 定义），并纳入 `npm run validate`；与 OI-019 / OI-020 的约束定义改动一起评审 | §16.3 / §17.4 / §4 | P1 | ✅ **已收敛（2026-10-17）**：[`spec/profile.schema.json`](../spec/profile.schema.json) 与 [`spec/listing.schema.json`](../spec/listing.schema.json) 已落地，示例见 [`examples/dunhuang-silkroad-9d/`](../examples/dunhuang-silkroad-9d/)，`npm run validate` 做元校验、实例校验与 `tripRef` 跨文件校验，GitHub Actions 在 push / PR 时运行 `npm run check`。顺带放开 `softConstraint.scope`（OI-019 ②）；OI-019 / OI-020 其余部分仍开放 |
 
+#### ★ 商业化决策引出的未决项（2026-10-23 新增）
+
+| ID | 问题 | 为什么它是问题 | 收敛方式 | 出处 | 优先级 | 状态 |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **OI-025** | **D6 站内交易的法律、支付与税务边界**：「在平台上签电子合同、按已确认成交收服务费、团款仍由旅客直接付给旅行社」（方案 B）与「持牌支付机构分账」（方案 C），会不会让平台被认定为经营旅行社业务或变相从事支付业务？出团前取消、旅行社违约或倒闭时平台担什么责任？服务费怎么公示、怎么开票？ | D6 须在阶段 3 开工前定下，它是成交服务费（D7、`F-M12-04`）的前提；结论决定 [§3.7.1](03-b2b-agency-operations.md#371--首要合规约束平台不经手游客资金)、ARC-05、ARC-07 的资金条款怎么改。平台自行代收代付（方案 D）已判断为不可行 | ★ **执业律师出具意见**，问题清单见 [D6 决策材料 §6](product/DEC-D6-onsite-transaction.md#6-律师问题清单建议与-oi-021-同一次咨询)，**与 OI-021 / OI-016 / OI-017 同一次咨询**；税务部分同时问税务师；支付产品能力向持牌支付机构询价核实。意见出具前不开发 `F-M12-04` | [DEC-D6](product/DEC-D6-onsite-transaction.md) / §3.7.1 | P1（阶段 3 开工前须收敛） | ⏳ 新增（法务动作） |
+
 ### 状态含义
 
 | 标记 | 含义 |
