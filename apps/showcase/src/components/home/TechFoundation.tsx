@@ -6,7 +6,7 @@ import { useState, type KeyboardEvent } from 'react';
  * 技术底座（产品基线 v3 的四条工程主张）
  *
  * 数字与代码都来自仓库本身：spec/ 下的 6 份 JSON Schema、`npm run check` 的 4 道门禁、10 份 ADR、
- * PRD-03 / PRD-04 的 20 个场景与 76 项功能。代码窗口里是契约文件的节选（删去了部分描述），不是示意代码。
+ * PRD-03 / PRD-04 的 21 个场景与 79 项功能。代码窗口里是契约文件的节选（删去了部分描述），不是示意代码。
  * 版式学 Unify：数字卡用衬线常规字重的大数字；四条主张用左侧选项卡（进度条在留白里）+ 右侧炭黑代码窗口。
  * 本段以圆角纸面压在页脚的氛围带上（rounded-b + relative z-10）。
  */
@@ -17,7 +17,7 @@ const NUMBERS = [
   { value: '6', label: '份 JSON Schema 契约', source: 'spec/*.schema.json' },
   { value: '4', label: '道 CI 门禁', source: '契约 · 链接 · BR-025 · 追溯' },
   { value: '10', label: '份架构决策记录', source: 'ADR-001 – ADR-010' },
-  { value: '20 / 76', label: '个场景 / 项功能，双向追溯', source: 'PRD-03 · PRD-04 · DLV-03' },
+  { value: '21 / 79', label: '个场景 / 项功能，双向追溯', source: 'PRD-03 · PRD-04 · DLV-03' },
 ];
 
 interface Pillar {

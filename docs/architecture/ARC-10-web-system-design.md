@@ -898,5 +898,5 @@ gantt
 1. **契约校验**：所有出入库数据必须通过 `npm run validate`（AJV Schema 门禁）。
 2. **跨文件链路**：所有文档与页面路由必须通过 `npm run check-links`。
 3. **红线扫描**：产物严禁包含超过 50 点的外部算路几何，必须通过 `npm run check-br025`。
-4. **追溯闭环**：[PRD-03](../product/PRD-03-scenarios.md) 定义的全部业务场景与 [PRD-04](../product/PRD-04-functional-architecture.md) 定义的全部功能点（v3 起为 20 个场景、76 项功能）必须保持 `npm run check-trace` 全绿通过。
+4. **追溯闭环**：[PRD-03](../product/PRD-03-scenarios.md) 定义的全部业务场景与 [PRD-04](../product/PRD-04-functional-architecture.md) 定义的全部功能点（2026-10-23 为 21 个场景、79 项功能）必须保持 `npm run check-trace` 全绿通过。
 
