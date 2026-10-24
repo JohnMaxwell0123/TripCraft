@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { TRIPS } from '@/data/trip';
-import { ease, useFadeStyle, useRange, useStep, useVisibility } from '@/lib/motion';
+import { ease, useFadeStyle, useFadeVisibility, useRange, useStep } from '@/lib/motion';
 import { T, sec } from './timeline';
 import { Scene, TapCursor, useProgress } from './primitives';
 import { Badge, Chip, Switch, btn } from './ui';
@@ -82,9 +82,9 @@ function SkinWash() {
   const p = useProgress();
   const [a, b] = T.skinWash;
   const skin = useFadeStyle(p, a, b);
-  // 默认外观只在这一屏出现到皮肤完全盖住为止；其余时刻隐藏（这一屏还没出现时也不留 visible，重播时 iPad 不留残影）
+  // 默认外观只显示到皮肤完全盖住为止；这一屏还没出现时，跟着 Scene 一起隐藏（inherit）
   const plain = useRange(p, [b, b + sec(0.02)], [1, 0]);
-  const plainVisibility = useVisibility(p, T.sharePageScene[0] - sec(0.05), b + sec(0.02));
+  const plainVisibility = useFadeVisibility(plain);
   return (
     <div className="relative">
       <motion.div style={{ opacity: plain, visibility: plainVisibility }}>
@@ -107,7 +107,9 @@ function ShareCard({ skinned = false }: { skinned?: boolean }) {
       className="trip-surface overflow-hidden rounded-ui-card border border-ui-line bg-trip-canvas shadow-ui-float"
       data-trip-theme={skinned ? 'dunhuang-gold' : undefined}
     >
-      <RouteGlyph trip={XIXING} tag colors={skinned ? SKIN_COVER : undefined} className="h-[104px] w-full cq-sm:h-[128px] cq-md:h-[148px]" />
+      {/* 窄视窗里封面很扁，按比例裁切会切掉路线的起终点：纵向多留白 */}
+      <RouteGlyph trip={XIXING} tag colors={skinned ? SKIN_COVER : undefined} padY={0.3} className="h-[104px] w-full cq-sm:hidden" />
+      <RouteGlyph trip={XIXING} tag colors={skinned ? SKIN_COVER : undefined} className="hidden h-[128px] w-full cq-sm:block cq-md:h-[148px]" />
       <div className="px-3.5 pb-3 pt-2.5">
         <p className="truncate text-xs font-medium text-trip-accent">河西走廊 · 9 天 · 9/24–10/2</p>
         <p className={`mt-0.5 truncate text-xl font-semibold leading-7 text-trip-ink ${skinned ? 'font-serif' : ''}`}>西行计划</p>
@@ -262,8 +264,8 @@ function VisitorPhone() {
 function SharePage() {
   const p = useProgress();
   const out = useRange(p, [T.chatIn[0], T.chatIn[1]], [1, 0]);
-  // 只在手机出现之后、对话入口完全盖住之前可见
-  const outVisibility = useVisibility(p, T.visitorIn[0], T.chatIn[1]);
+  // 对话入口完全盖住之后隐藏；手机出现之前跟着 VisitorPhone 一起隐藏（inherit）
+  const outVisibility = useFadeVisibility(out);
   const press = useRange(p, [T.makeMineClick - sec(0.12), T.makeMineClick, T.makeMineClick + sec(0.12)], [1, 0.95, 1]);
 
   return (

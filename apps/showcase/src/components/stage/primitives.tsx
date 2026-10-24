@@ -2,7 +2,7 @@
 
 import { createContext, useContext, type ReactNode } from 'react';
 import { motion, useTransform, type MotionValue } from 'framer-motion';
-import { useFade, useFadeVisibility, useRange, useVisibility, interp, ease } from '@/lib/motion';
+import { useFade, useFadeVisibility, useRange, interp, ease } from '@/lib/motion';
 import { CheckIcon } from '@/components/common/Icons';
 
 /* -------------------------------------------------------------------------- */
@@ -43,7 +43,7 @@ export function FakeCursor({ times, xs, ys, clickAt, hideAt, label, tempo = 1 }:
   const t0 = times[0];
   const end = hideAt ?? clickAt + 0.012 * tempo;
   const fade = 0.004 * tempo;
-  const visibility = useTransform(p, (v) => (v >= t0 - fade - 0.001 && v <= end ? 'visible' : 'hidden'));
+  const visibility = useTransform(p, (v) => (v >= t0 - fade - 0.001 && v <= end ? 'inherit' : 'hidden'));
   const opacity = useRange(p, [t0 - fade, t0, end - fade, end], [0, 1, 1, 0]);
   const x = useTransform(p, (v) => {
     if (v < t0 - fade - 0.001 || v > end) return `${xs[0]}cqw`;
@@ -201,7 +201,8 @@ export function Scene({
   const p = useProgress();
   const out = range.length === 4;
   const opacity = useRange(p, range, out ? [0, 1, 1, 0] : [0, 1]);
-  const visibility = useVisibility(p, range[0] - 0.0005, out ? range[3] + 0.0005 : 2);
+  // 透明度为 0 的时段一律隐藏（淡入前、淡出后），不再前后多留可见的余量
+  const visibility = useFadeVisibility(opacity);
   return (
     <motion.section
       aria-label={label}

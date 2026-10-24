@@ -256,7 +256,7 @@ export function StageShell({ id, ariaLabel, eyebrow, title, intro, chapters, deb
             <p className={`mt-4 max-w-xl text-base leading-relaxed ${ink.body}`}>{intro}</p>
 
             <ChapterList id={id} chapters={chapters} active={active} chapterProgress={chapterProgress} ink={ink} onSelect={select} />
-            <Controls className="mt-8 hidden lg:flex" active={active} total={chapters.length} status={status} ink={ink} onToggle={toggle} onSelect={select} />
+            <Controls className="mt-6 hidden lg:flex xl:mt-8" active={active} total={chapters.length} status={status} ink={ink} onToggle={toggle} onSelect={select} />
             <ChapterStrip id={id} chapters={chapters} active={active} chapterProgress={chapterProgress} ink={ink} onSelect={select} />
           </div>
 

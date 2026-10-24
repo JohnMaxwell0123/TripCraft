@@ -115,7 +115,7 @@ export function useStep(progress: MotionValue<number>, thresholds: readonly numb
 }
 
 /**
- * 视口离屏剔除：在活跃区间外返回 'hidden'，区间内返回 'visible'。
+ * 视口离屏剔除：在活跃区间外返回 'hidden'，区间内返回 'inherit'（跟随祖先，见 useFadeVisibility）。
  * 直接绑定至 Framer Motion 原生 style={{ visibility }}，
  * 彻底卸载非活跃阶段的 GPU 合成与模糊光栅化，完全绕过 React 重渲染。
  */
@@ -123,8 +123,8 @@ export function useVisibility(
   progress: MotionValue<number>,
   start: number,
   end: number,
-): MotionValue<'visible' | 'hidden'> {
-  return useTransform(progress, (v) => (v >= start && v <= end ? 'visible' : 'hidden'));
+): MotionValue<'inherit' | 'hidden'> {
+  return useTransform(progress, (v) => (v >= start && v <= end ? 'inherit' : 'hidden'));
 }
 
 /** 布尔阈值 */
@@ -135,9 +135,11 @@ export const useAfter = (progress: MotionValue<number>, t: number) => useStep(pr
  * iPad Safari 有时不重绘透明度为 0 的合成层，层里留着上一次画上去的字——需求画像空状态里出现过
  * 「少山日落」「8–10 天」这样的残影。隐藏之后 WebKit 不再绘制这一层，残影无处可留。
  * 凡是只靠透明度隐藏的元素，都把它和 opacity 一起绑上。
+ * 显示时写 'inherit' 而不是 'visible'：'visible' 会盖掉祖先的 hidden，已经隐藏的一屏里会留下
+ * 上百个透明度为 0 却仍然可见的文字（2026-10-24 WebKit 巡检），重播时同样可能留下残影。
  */
-export function useFadeVisibility(opacity: MotionValue<number>): MotionValue<'visible' | 'hidden'> {
-  return useTransform(opacity, (v) => (v <= 0.001 ? 'hidden' : 'visible'));
+export function useFadeVisibility(opacity: MotionValue<number>): MotionValue<'inherit' | 'hidden'> {
+  return useTransform(opacity, (v) => (v <= 0.001 ? 'hidden' : 'inherit'));
 }
 
 /** useFade + useFadeVisibility：直接展开进 style={{ ...fade }} */

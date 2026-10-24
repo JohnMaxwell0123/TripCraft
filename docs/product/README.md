@@ -13,7 +13,7 @@
 | **PRD-01** | 愿景、定位与能力边界（产品基线 v3） | [`PRD-01-vision-positioning.md`](PRD-01-vision-positioning.md) | 一句话定位、核心流程（对话 → 画像 → 双路径 → 共享同步）、三大支柱与 B 端线、能力边界、被取代的旧口径、待决策事项 D5–D10 |
 | **PRD-02** | 用户与客户模型 | [`PRD-02-personas-segments.md`](PRD-02-personas-segments.md) | C 端与旅行社细分、10 个角色、3 张虚构人物卡、双边价值流与客户归属 |
 | **PRD-03** | 业务与使用场景 | [`PRD-03-scenarios.md`](PRD-03-scenarios.md) | 20 个端到端场景：主线 S-C01 / S-C08 / S-C09 / S-C02、旅行社主线 S-B06 ~ S-B08、治理 S-P02，以及支撑场景 |
-| **PRD-04** | 功能架构与功能规格 | [`PRD-04-functional-architecture.md`](PRD-04-functional-architecture.md) | M01–M18 共 76 项功能、P0~P2 优先级、全部 P0 功能验收卡（Given/When/Then） |
+| **PRD-04** | 功能架构与功能规格 | [`PRD-04-functional-architecture.md`](PRD-04-functional-architecture.md) | M01–M18 共 79 项功能、P0~P2 优先级、全部 P0 功能验收卡（Given/When/Then） |
 | **PRD-05** | 商业模式与商业化设计 | [`PRD-05-business-model.md`](PRD-05-business-model.md) | 收入来源（旅行社为主）、定价分界、双边冷启动策略、北极星指标、单位经济骨架、竞争对照 |
 | **DEC-D6** | D6 决策材料：平台是否代收团款（站内交易） | [`DEC-D6-onsite-transaction.md`](DEC-D6-onsite-transaction.md) | 方案 A–D 并排比较（法律身份、资金与退款责任、核实成交、旅客信任、旅行社接受度、税务、成本、外部合作方）、相关法规要点、推荐路线与退出条件、届时要改的约束、律师问题清单；**待业主决定** |
 
