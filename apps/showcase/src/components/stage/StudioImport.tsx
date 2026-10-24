@@ -189,7 +189,7 @@ function ExtractHeader() {
 function UploadState() {
   const p = useProgress();
   const opacity = useFade(p, AT.dropFile[0], AT.dropFile[0] + bsec(0.2), AT.dayRows[0] - bsec(0.2), AT.dayRows[0]);
-  const visibility = useVisibility(p, -1, AT.dayRows[0]);
+  const visibility = useFadeVisibility(opacity);
   const upload = useRange(p, AT.upload, [0, 1]);
   const parsing = useStep(p, [AT.parsing[0]]) === 1;
   const bar = useRange(p, AT.parsing, [0, 1]);

@@ -3,7 +3,7 @@
 import type { ComponentType, ReactNode, RefObject } from 'react';
 import { motion } from 'framer-motion';
 import { LISTING_COVERS } from '@/data/trip';
-import { ease, useFadeStyle, useFadeVisibility, useRange, useScrollTypewriter, useStep, useVisibility } from '@/lib/motion';
+import { ease, useFadeStyle, useFadeVisibility, useRange, useScrollTypewriter, useStep } from '@/lib/motion';
 import { AT, bsec } from './agencyTimeline';
 import { Scene, TapCursor, useProgress } from './primitives';
 import { Badge, PageHeader, Ring, Segmented, Steps, btn } from './ui';
@@ -184,7 +184,7 @@ function Section({ index, children }: { index: number; children: ReactNode }) {
   const range = end === undefined ? [start - f, start] : [start - f, start, end - f, end];
   const opacity = useRange(p, range, end === undefined ? [0, 1] : [0, 1, 1, 0]);
   const y = useRange(p, [start - f, start], [8, 0], { easing: ease.out, rest: 0 });
-  const visibility = useVisibility(p, start - f, end ?? 2);
+  const visibility = useFadeVisibility(opacity);
   return (
     <motion.div className="absolute inset-0 overflow-hidden" style={{ opacity, y, visibility }}>
       <p className="hidden text-[15px] font-semibold text-ui-ink cq-lg:block">{SECTIONS[index]}</p>

@@ -13,8 +13,8 @@ import { COVER_PALETTES, smoothPath, type TripSummary } from '@/data/trip';
 const W = 120;
 const H = 72;
 
-/** 经纬度 → 封面坐标：按纬度余弦校正后等比收进画框，四周留白 */
-function layout(shape: TripSummary['shape'], pad = 0.2) {
+/** 经纬度 → 封面坐标：按纬度余弦校正后等比收进画框，四周留白（padY 默认同 pad） */
+function layout(shape: TripSummary['shape'], pad = 0.2, padY = pad) {
   const lat0 = shape.reduce((s, [, lat]) => s + lat, 0) / shape.length;
   const k = Math.cos((lat0 * Math.PI) / 180);
   const raw = shape.map(([lon, lat]) => [lon * k, -lat] as const);
@@ -22,7 +22,7 @@ function layout(shape: TripSummary['shape'], pad = 0.2) {
   const ys = raw.map((p) => p[1]);
   const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
   const bw = W * (1 - pad * 2);
-  const bh = H * (1 - pad * 2);
+  const bh = H * (1 - padY * 2);
   const s = Math.min(bw / (x1 - x0 || 1), bh / (y1 - y0 || 1));
   const ox = (W - (x1 - x0) * s) / 2;
   const oy = (H - (y1 - y0) * s) / 2;
@@ -34,15 +34,18 @@ export function RouteGlyph({
   className = '',
   tag = false,
   colors,
+  padY,
 }: {
   trip: TripSummary;
   className?: string;
   tag?: boolean;
   colors?: readonly [string, string];
+  /** 纵向留白（占高度的比例）。封面比 120:72 扁很多时，按比例裁切会切掉上下两端，调大它让路线留在中间 */
+  padY?: number;
 }) {
   const id = useId().replace(/:/g, '');
   const [c0, c1] = colors ?? COVER_PALETTES[trip.palette];
-  const pts = layout(trip.shape);
+  const pts = layout(trip.shape, 0.2, padY);
   const d = smoothPath(pts, 0.45);
   const start = pts[0];
   const end = pts[pts.length - 1];

@@ -56,7 +56,7 @@ B 端 · 定制师的一天（AgencyStage，#agency，约 68 秒，黄昏氛围�
 - **时间轴**：C 端 `timeline.ts`、B 端 `agencyTimeline.ts`；关键帧以全局进度、按「时间轴秒」书写，调整某一章的节奏只改这两份文件；整体快慢只改 `StageShell.tsx` 的 `PLAYBACK_RATE`（2026-10-21 起 0.9）。
 - **视窗里的产品界面**（SHOWCASE §4.1「视窗界面规范」，D10 已定的 App 外观）：暖白 · 品牌橙为主，叠在地图上的浮层用玻璃（`.ui-glass`，不支持时退回实色）；组件只用 `globals.css`「产品界面令牌」与 `tailwind.config.ts` 的 `ui-*`。视觉语言与示例线路无关：示意矢量底图（`MapCanvas` + `data/basemap.ts`）、用路线形状生成的封面（`RouteGlyph`）、地点类别配色与图形（`ui.tsx`）。
 - **行程皮肤只在分享卡片里**（docs/09 §9.0）：04 幕收尾的分享卡片与分享页换上 AI 按路线自动生成的一套皮肤（河西走廊 → 敦煌金 `dunhuang-gold`，免费）；皮肤令牌在 `globals.css`「行程皮肤令牌」与 `tailwind.config.ts` 的 `trip-*`，只挂在 `.trip-surface[data-trip-theme]` 上，视窗外壳、按钮与「用 TripCraft 制作」角标、「AI 生成」标识仍用产品界面令牌。
-- **透明度为 0 时同时隐藏**：只靠透明度隐藏的元素用 `useFadeVisibility` / `useFadeStyle` 绑上 `visibility`，iPad Safari 不留残影。
+- **透明度为 0 时同时隐藏**：只靠透明度隐藏的元素用 `useFadeVisibility` / `useFadeStyle` 绑上 `visibility`，iPad Safari 不留残影；显示时取 `inherit`（跟随祖先），不用 `visible`。
 - **按视窗宽度排版**：视窗是 `container-name: win` 的容器，内部用 `cq-sm / cq-md / cq-lg` 变体（见 `tailwind.config.ts`）。
 - **减弱动态效果**：`prefers-reduced-motion` 下不自动播放，每章展示一张静帧（04 幕是亲友刚打开分享页的一刻）。
 - **视觉巡检**：控制台执行 `window.__setStageProgress(v)` 或 `window.__setAgencyProgress(v)` 跳到任意帧并暂停。
