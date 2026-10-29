@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { motion, useTransform, type MotionValue } from 'framer-motion';
+import { motion, useTransform } from 'framer-motion';
 import { TRIPS } from '@/data/trip';
 import { clamp01, ease, useFadeStyle, useFadeVisibility, useRange, useReduced } from '@/lib/motion';
 import { T, STAGE_CAMERA, sec } from './timeline';
@@ -27,8 +27,8 @@ import { CarIcon, CheckIcon, HeightIcon, NavigationIcon, ParkingIcon, WalkIcon }
  * 车机导航不是 TripCraft：界面用中性的样式，路线是交通类的蓝色，只在角上标「来自 TripCraft」。
  *
  * 版式：宽视窗按 840×660 的设计稿排、整体按视窗宽度缩放；手机布局按 335×620 另排一套（视窗本身就是「我的手机」，
- * 先在视窗里做决定，点下的一刻才拉远，各台设备随波前亮起）。设备里的字按设计稿写（≥ 12px），
- * 拉远时是画面、推近时恢复原大；每块屏下面的标签不随设计稿缩放，任何时候都清楚。
+ * 提名与「今天的路线」以视窗里的底部抽屉出现，镜头推近这扇缩小的视窗时它恢复接近原大）。两种布局同一套节拍。
+ * 设备里的字按设计稿写（≥ 12px），拉远时是画面、推近时恢复原大；每块屏下面的标签不随设计稿缩放，任何时候都清楚。
  * 视窗满幅时这一层完全透明，视窗与之前一模一样；减弱动态效果时揭幕与回到电脑都是硬切，静帧停在全景。
  */
 
@@ -115,10 +115,10 @@ const ConstellationContext = createContext<ConstellationValue>({
 export const useConstellation = () => useContext(ConstellationContext);
 
 /** 揭幕程度：0 = 视窗满幅，1 = 缩进「我的电脑」的位置。减弱动态效果时在区间中点硬切 */
-function useReveal(narrow: boolean) {
+function useReveal() {
   const p = useProgress();
   const reduced = useReduced();
-  const [a, b] = narrow ? T.revealNarrow : T.reveal;
+  const [a, b] = T.reveal;
   const [c, d] = T.return;
   return useTransform(p, (v) => {
     if (reduced) return v >= (a + b) / 2 && v < (c + d) / 2 ? 1 : 0;
@@ -158,7 +158,7 @@ export function ConstellationStage({ children }: { children: ReactNode }) {
   const geom = useRef({ tx: 0, ty: 0, s: 1 });
   geom.current = { tx: slot.x + (slot.w - box.w * ws) / 2, ty: slot.y, s: ws };
 
-  const reveal = useReveal(narrow);
+  const reveal = useReveal();
   const winX = useTransform(reveal, (r) => geom.current.tx * r);
   const winY = useTransform(reveal, (r) => geom.current.ty * r);
   const winScale = useTransform(reveal, (r) => 1 + (geom.current.s - 1) * r);
@@ -174,7 +174,7 @@ export function ConstellationStage({ children }: { children: ReactNode }) {
     [narrow],
   );
 
-  const flights = useMemo(() => stageFlights(narrow), [narrow]);
+  const flights = useMemo(() => stageFlights(), []);
 
   return (
     <ConstellationContext.Provider value={value}>
@@ -254,11 +254,10 @@ const LABELS: Record<DeviceId, { who: string; wide?: string; narrow?: string }> 
   car: { who: '车机导航 · 腾势 D9' },
 };
 
-/** 设备出现：宽视窗随揭幕依次出现；手机布局随波前亮起 */
-function useAppear(id: DeviceId, index: number) {
+/** 设备随揭幕依次出现 */
+function useAppear(index: number) {
   const p = useProgress();
-  const { narrow, updateAt } = useConstellation();
-  const at = narrow ? updateAt(id) - sec(0.05) : T.reveal[0] + sec(0.45) + sec(0.12) * index;
+  const at = T.reveal[0] + sec(0.45) + sec(0.12) * index;
   const [out] = T.return;
   const opacity = useRange(p, [at, at + sec(0.3), out, out + sec(0.35)], [0, 1, 1, 0]);
   const y = useRange(p, [at, at + sec(0.4)], [14, 0], { easing: ease.out, rest: 0 });
@@ -268,7 +267,7 @@ function useAppear(id: DeviceId, index: number) {
 
 function Device({ id, rect, k, index }: { id: Exclude<DeviceId, 'window'>; rect: Rect; k: number; index: number }) {
   const { narrow } = useConstellation();
-  const appear = useAppear(id, index);
+  const appear = useAppear(index);
   const design = (narrow ? NARROW : WIDE).devices[id]!;
   return (
     <>
@@ -280,7 +279,7 @@ function Device({ id, rect, k, index }: { id: Exclude<DeviceId, 'window'>; rect:
       >
         <div className="absolute left-0 top-0" style={{ width: design.w, height: design.h, transform: `scale(${k})`, transformOrigin: '0 0' }}>
           {id === 'hero' ? <HeroPhone /> : null}
-          {id === 'ajie' ? <AjiePhone small={narrow} /> : null}
+          {id === 'ajie' ? <AjiePhone /> : null}
           {id === 'xiaoyu' ? <Tablet compact={narrow} /> : null}
           {id === 'laptop' ? <MiniLaptop /> : null}
           {id === 'car' ? <CarNav compact={narrow} /> : null}
@@ -295,7 +294,7 @@ function Device({ id, rect, k, index }: { id: Exclude<DeviceId, 'window'>; rect:
 function DeviceLabel({ id, rect, appear }: { id: DeviceId; rect: Rect; appear?: ReturnType<typeof useAppear> }) {
   const p = useProgress();
   const { narrow, updateAt } = useConstellation();
-  const reveal = useReveal(narrow);
+  const reveal = useReveal();
   const own = useFadeVisibility(reveal);
   const at = id === 'car' ? T.carRoute[0] : updateAt(id);
   const v11 = useRange(p, [at - sec(0.02), at], [0, 1]);
@@ -365,10 +364,10 @@ function MiniHeader({ id, size = 'md' }: { id: DeviceId; size?: 'sm' | 'md' }) {
       <span className={`min-w-0 flex-1 truncate font-semibold ${size === 'md' ? 'text-[15px]' : 'text-xs'}`}>西行计划</span>
       <span className="relative inline-flex">
         <motion.span style={{ opacity: v10, visibility: v10Visibility }}>
-          <Badge>v1.0</Badge>
+          {size === 'md' ? <Badge>v1.0</Badge> : <span className="text-xs tabular-nums text-ui-ink-3">v1.0</span>}
         </motion.span>
         <motion.span className="absolute right-0 top-0" style={{ opacity: v11, visibility: v11Visibility }}>
-          <Badge tone="success">v1.1</Badge>
+          {size === 'md' ? <Badge tone="success">v1.1</Badge> : <span className="text-xs font-medium tabular-nums text-ui-success">v1.1</span>}
         </motion.span>
       </span>
     </div>
@@ -600,9 +599,11 @@ function HeroRoute() {
           <span className="min-w-0 truncate font-medium">黄河边酒店 · 地面停车场入口</span>
         </li>
       </ol>
-      <p className="mt-1 inline-flex items-center gap-1 rounded-full bg-ui-accent/10 px-2 text-xs leading-5 text-ui-accent-ink">
-        <HeightIcon className="h-3 w-3" />
-        车高 2.28 m（画像）· 不进 2.0 m 地库
+      <p className="mt-1 flex flex-wrap items-center gap-x-1 rounded-ui-ctl bg-ui-accent/10 px-2 py-0.5 text-xs leading-5 text-ui-accent-ink">
+        <HeightIcon className="h-3 w-3 shrink-0" />
+        {/* 只在两段之间折行，「2.0 m」这样的数字和单位不拆开 */}
+        <span className="whitespace-nowrap">车高 2.28 m（画像）</span>
+        <span className="whitespace-nowrap">· 不进 2.0 m 地库</span>
       </p>
       <div className="relative mt-2.5">
         <TwoState
@@ -626,13 +627,12 @@ function HeroRoute() {
   );
 }
 
-/* ── 阿杰的手机：宽视窗先在这里提名，信物飞向领队的手机；随后跟着波前更新 ── */
+/* ── 阿杰的手机：先在这里提名，信物飞向领队的手机；随后跟着波前更新 ── */
 
-function AjiePhone({ small }: { small: boolean }) {
+function AjiePhone() {
   const p = useProgress();
   const { updateAt } = useConstellation();
   const [c0, c1] = T.ajieCompose;
-  // 提名卡：宽视窗才有（手机布局里设备是随波前才亮起的）
   const compose = useRange(p, [c0, c1, T.ajieTap + sec(0.5), T.ajieTap + sec(0.8)], [0, 1, 1, 0]);
   const composeVisibility = useFadeVisibility(compose);
   const at = updateAt('ajie');
@@ -641,19 +641,17 @@ function AjiePhone({ small }: { small: boolean }) {
     <PhoneFrame small>
       <MiniHeader id="ajie" size="sm" />
       <MiniD0 id="ajie" size="sm" />
-      {small ? null : (
-        <motion.div className="ui-float absolute inset-x-1.5 bottom-2 z-20 rounded-[12px] p-2" style={{ opacity: compose, visibility: composeVisibility }}>
-          <p className="truncate text-xs font-semibold">提名 · 正宁路夜市</p>
-          <div className="relative mt-1.5">
-            <TwoState
-              at={T.ajieTap}
-              before={<span className="ui-btn ui-btn-primary !h-7 w-full !px-2 !text-xs">提交</span>}
-              after={<span className="ui-btn ui-btn-secondary !h-7 w-full !px-2 !text-xs">已提交</span>}
-            />
-            <Touch approach={[T.ajieTap - sec(0.35), T.ajieTap - sec(0.08)]} at={T.ajieTap} className="left-1/2 top-1/2" />
-          </div>
-        </motion.div>
-      )}
+      <motion.div className="ui-float absolute inset-x-1.5 bottom-2 z-20 rounded-[12px] p-2" style={{ opacity: compose, visibility: composeVisibility }}>
+        <p className="truncate text-xs font-semibold">提名 · 正宁路夜市</p>
+        <div className="relative mt-1.5">
+          <TwoState
+            at={T.ajieTap}
+            before={<span className="ui-btn ui-btn-primary !h-7 w-full !px-2 !text-xs">提交</span>}
+            after={<span className="ui-btn ui-btn-secondary !h-7 w-full !px-2 !text-xs">已提交</span>}
+          />
+          <Touch approach={[T.ajieTap - sec(0.35), T.ajieTap - sec(0.08)]} at={T.ajieTap} className="left-1/2 top-1/2" />
+        </div>
+      </motion.div>
       <motion.p className="absolute inset-x-2 bottom-2 flex items-center gap-1 text-xs font-medium text-ui-success" style={joined}>
         <CheckIcon className="h-3 w-3 shrink-0" />
         <span className="truncate">已加入 D0</span>
@@ -668,7 +666,8 @@ function Tablet({ compact }: { compact: boolean }) {
   return (
     <div className="absolute inset-0 rounded-[16px] bg-[#241E20] p-[5px] shadow-[0_18px_36px_-18px_rgba(36,30,32,0.4)]">
       <div className="relative flex h-full w-full gap-2 overflow-hidden rounded-[12px] bg-ui-panel p-2">
-        <RouteGlyph trip={TRIPS[0]} className={`shrink-0 rounded-[8px] ${compact ? 'h-[52px] w-[52px]' : 'h-16 w-16'}`} />
+        {/* 封面留出右边的宽度：「西行计划 v1.1」一行放得下，版本号翻转看得见 */}
+        <RouteGlyph trip={TRIPS[0]} className={`shrink-0 rounded-[8px] ${compact ? 'h-10 w-10' : 'h-12 w-12'}`} />
         <div className="min-w-0 flex-1">
           <MiniHeaderInline id="xiaoyu" />
           <MiniD0Inline id="xiaoyu" />
@@ -836,7 +835,7 @@ function TimeCard() {
 
 /* ═════════════════════ 舞台上的飞行 ═════════════════════ */
 
-function stageFlights(narrow: boolean): FlightSpec[] {
+function stageFlights(): FlightSpec[] {
   const route: FlightSpec = {
     id: 'to-car',
     from: 'dev-hero',
@@ -853,7 +852,6 @@ function stageFlights(narrow: boolean): FlightSpec[] {
       </span>
     ),
   };
-  if (narrow) return [route];
   return [
     {
       id: 'nominate',

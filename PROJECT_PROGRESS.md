@@ -1,6 +1,6 @@
 # TripCraft · 项目进度与会话交接备忘 (PROJECT_PROGRESS.md)
 
-> 本文件用于在新建 AI 对话（本机或云端会话）或多人协作时快速恢复项目上下文与执行进度。最后更新：2026-10-24。
+> 本文件用于在新建 AI 对话（本机或云端会话）或多人协作时快速恢复项目上下文与执行进度。最后更新：2026-10-29。
 
 ---
 
@@ -30,7 +30,7 @@
 | [`docs/00-overview-and-glossary.md`](docs/00-overview-and-glossary.md) | 宪法层 | 十条铁律、三条责任边界、术语表、未决事项 OI-001 ~ OI-025 |
 | [`spec/`](spec/) | 数据契约 | trip / node / brand / patch / profile / listing 六份 Schema |
 | [`tools/`](tools/) | 门禁 | validate-schemas、check-links、check-br025、check-trace |
-| [`apps/showcase/`](apps/showcase/) | 演示站 | Next.js 16 + React 19 静态导出；C 端四幕（约 76 秒）+ B 端四章（约 68 秒） |
+| [`apps/showcase/`](apps/showcase/) | 演示站 | Next.js 16 + React 19 静态导出；C 端四幕（约 61 秒，2026-10-29 导演版：镜头、字幕、飞行与 04 幕「全家的每一块屏幕」）+ B 端四章（约 68 秒） |
 | [`docs/WHITEPAPER.md`](docs/WHITEPAPER.md) | 历史文档 | 早期白皮书，不作为现行口径 |
 | [`TRIPCRAFT_ARCH_PLAN_v2.md`](TRIPCRAFT_ARCH_PLAN_v2.md)、[`tripcraft_showcase_agent_refactoring_spec.md`](tripcraft_showcase_agent_refactoring_spec.md) | 历史任务书 | 已执行完毕，已标注历史 |
 | `TripCraft 商业可行性尽调…诊断报告.md` | AI 模拟报告 | **不是真实第三方尽调**，不得对外引用 |

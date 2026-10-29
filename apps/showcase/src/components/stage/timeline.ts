@@ -192,12 +192,11 @@ export const T = {
 
   /* ── 04 幕 · 全家的每一块屏幕（Constellation，导演版 B）─────── */
   /**
-   * 揭幕：看了五十秒的窗口缩成「我的电脑」，全家的屏幕一块块亮起。
-   * 宽视窗先揭幕、再在「我的手机」上做决定；手机布局（视窗本身就是「我的手机」）先在视窗里做决定，点下的一刻才拉远。
+   * 揭幕：看了五十秒的窗口缩成「我的电脑」（手机布局里视窗本身就是「我的手机」），全家的屏幕一块块亮起；
+   * 随后镜头推近领队的手机做决定，点下之后拉远看涟漪。两种布局同一套节拍。
    */
   reveal: [S(4.0), S(5.1)] as const,
-  revealNarrow: [APPLY, APPLY + sec(0.7)] as const,
-  /** 宽视窗：阿杰在自己的手机上提名，信物飞到领队的手机 */
+  /** 阿杰在自己的手机上提名，信物飞到领队的手机 */
   ajieCompose: [S(5.1), S(5.35)] as const,
   ajieTap: S(5.6),
   ajieFlight: [S(5.65), S(6.1)] as const,
@@ -269,12 +268,14 @@ export const CAMERA: readonly CameraShot[] = [
 
 /**
  * 04 幕「全家的每一块屏幕」的舞台镜头（Constellation 的摄影机，对准各台设备的 data-cam）：
- * 揭幕后推近领队的手机看清提名与 AI 评估，点下之后拉远看涟漪；投递时推向车机，最后拉远停在全景。
- * 手机布局只在车机这一下推近。
+ * 揭幕后推近领队的手机看清提名与 AI 评估，点下之后拉远看涟漪；出发当天再推近这部手机点「投递到车机导航」，
+ * 镜头跟着信物移到车机，最后拉远停在全景。手机布局里「领队的手机」就是缩进去的视窗，推近后恢复接近原大，字不小于 12px。
  */
+const HERO_SHOT = { target: 'dev-hero', zoom: 2, zoomNarrow: 2.2, pad: 6 } as const;
 export const STAGE_CAMERA: readonly CameraShot[] = [
-  { t: [S(5.85), S(6.4)], target: 'dev-hero', zoom: 2, pad: 14 },
+  { t: [S(5.85), S(6.4)], ...HERO_SHOT },
   { t: [APPLY + sec(0.05), APPLY + sec(0.65)] },
+  { t: [S(10.95), S(11.45)], ...HERO_SHOT },
   { t: [S(12.3), S(12.85)], target: 'dev-car', zoom: 1.8, zoomNarrow: 1.35, pad: 18 },
   { t: [S(13.5), S(14.1)] },
 ];

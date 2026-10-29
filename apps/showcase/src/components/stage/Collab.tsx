@@ -358,9 +358,11 @@ function TodayRoute() {
           黄河边酒店 · 地面停车场入口
         </li>
       </ol>
-      <p className="mt-1 inline-flex items-center gap-1 rounded-full bg-ui-accent/10 px-2 text-xs leading-5 text-ui-accent-ink">
-        <HeightIcon className="h-3 w-3" />
-        车高 2.28 m（画像）· 不进 2.0 m 地库
+      <p className="mt-1 flex flex-wrap items-center gap-x-1 rounded-ui-ctl bg-ui-accent/10 px-2 py-0.5 text-xs leading-5 text-ui-accent-ink">
+        <HeightIcon className="h-3 w-3 shrink-0" />
+        {/* 只在两段之间折行，「2.0 m」这样的数字和单位不拆开 */}
+        <span className="whitespace-nowrap">车高 2.28 m（画像）</span>
+        <span className="whitespace-nowrap">· 不进 2.0 m 地库</span>
       </p>
       <motion.span className={`${sent ? `${btn.secondary} !text-ui-success` : btn.primary} relative mt-3 h-10 w-full`} style={{ scale: press }}>
         {sent ? <CheckIcon className="h-3.5 w-3.5" /> : <NavigationIcon className="h-3.5 w-3.5" />}
