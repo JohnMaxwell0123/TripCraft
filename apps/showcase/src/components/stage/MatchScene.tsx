@@ -1,7 +1,7 @@
 'use client';
 
 import type { ComponentType } from 'react';
-import { motion, useTransform, type MotionValue } from 'framer-motion';
+import { motion, useMotionValue, useTransform, type MotionValue } from 'framer-motion';
 import { LISTING_COVERS, type TripSummary } from '@/data/trip';
 import { ease, useFade, useFadeStyle, useFadeVisibility, useRange, useScrollCounter, useStep, useVisibility } from '@/lib/motion';
 import { T, sec } from './timeline';
@@ -32,6 +32,9 @@ import {
  * 分布图一开始就在，画像里的预算区间与天数范围随后着色，来自画像的条件方块依次选中并带 ★。
  * 结果卡：线路封面（用线路自己的路线形状画成）、匹配度环、旅行社与认证、3 条理由与 1 条差距、人均起价与全家预估。
  * 「问 AI」后价格上限移到 ¥8,000，结果数变化，但匹配度不变——筛选是硬过滤，画像是软评分。
+ *
+ * 导演版（2026-10-29）：上一屏的 91% 环飞落成第一张结果卡的环，卡片在它周围出现；画像随后着色、方块依次选中。
+ * 「问 AI」的浮层挂在按钮下面；说完「预算可以到 8000」，镜头贴近价格分布与结果数：把手划过、柱子逐根点亮、23 → 27。
  */
 
 const fmt = (n: number) => `¥${Math.round(n).toLocaleString('en-US')}`;
@@ -172,7 +175,7 @@ function ProfileBar() {
 /* ═════════════════════ 「问 AI」：与对话双向联动（§16.7.4） ═════════════════════ */
 function AskAiButton() {
   const p = useProgress();
-  const press = useRange(p, [T.askClick - 0.003, T.askClick, T.askClick + 0.003], [1, 0.94, 1]);
+  const press = useRange(p, [T.askClick - sec(0.12), T.askClick, T.askClick + sec(0.12)], [1, 0.94, 1]);
   return (
     <motion.span className={`${btn.secondary} relative`} style={{ scale: press }}>
       <SparklesIcon className="h-3.5 w-3.5 text-ui-accent" />
@@ -193,7 +196,7 @@ function AskAiPopover() {
   return (
     <motion.div
       role="status"
-      className="ui-float absolute bottom-4 right-4 z-40 w-[min(300px,calc(100%-2rem))] rounded-ui-card p-3 !shadow-ui-pop"
+      className="ui-float absolute right-4 top-2 z-40 w-[min(300px,calc(100%-2rem))] rounded-ui-card p-3 !shadow-ui-pop"
       style={{ opacity, y, visibility }}
     >
       <p className="ml-auto w-fit rounded-[16px] rounded-br-[6px] bg-ui-bubble-user px-3 py-1.5 text-[13px] text-ui-on-bubble-user">预算可以到 8000</p>
@@ -283,7 +286,7 @@ function PriceFilter() {
   const hiRef = useScrollCounter(p, BUDGET[1], 8000, T.budgetDrag[0], T.budgetDrag[1], 0, fmt, ease.smooth);
 
   return (
-    <div>
+    <div data-cam="price-filter">
       <div className="flex items-center justify-between">
         <p className="text-[13px] font-semibold text-ui-ink">价格</p>
         <Segmented options={['人均', '全家']} active={0} />
@@ -403,7 +406,7 @@ function ResultsPanel() {
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col">
       <motion.div className="flex shrink-0 items-baseline justify-between gap-2" style={header}>
-        <p className="text-[13px] text-ui-ink">
+        <p data-cam="results-count" className="text-[13px] text-ui-ink">
           <b className="text-base font-semibold tabular-nums">{widened ? 27 : 23}</b> 条线路符合
           <span className="text-ui-ink-3"> · 共 68 条</span>
         </p>
@@ -450,14 +453,16 @@ function ResultCard({ result, index, first, className = '' }: { result: Result; 
   const desktop = useFadeStyle(p, desktopAt, desktopAt + sec(0.35));
   const mobile = useFadeStyle(p, mobileAt, mobileAt + sec(0.35));
   const y = useRange(p, [desktopAt, desktopAt + sec(0.4)], [10, 0], { easing: ease.out, rest: 0 });
-  const ring = useRange(p, [desktopAt, desktopAt + T.ringDur], [0, result.score / 100], { easing: ease.out });
+  const fill = useRange(p, [desktopAt, desktopAt + T.ringDur], [0, result.score / 100], { easing: ease.out });
   const picked = useStep(p, [T.pickClick]) === 1 && first;
+  // 第一张卡的环是从上一屏飞来的：落地之前这里留空，落地时已是满的 91%
+  const landed = useRange(p, [T.ringLand - sec(0.05), T.ringLand], [0, 1]);
 
   return (
     <motion.article className={`relative shrink-0 ${className}`} style={{ y }}>
       {/* 两套透明度分别给宽 / 窄视窗用，同一时间只有一套可见 */}
       <motion.div className="hidden cq-md:block" style={desktop}>
-        <CardBody result={result} picked={picked} ring={ring} />
+        <CardBody result={result} picked={picked} ring={first ? result.score / 100 : fill} ringIn={first ? landed : undefined} ringCam={first ? 'result-ring-0' : undefined} />
       </motion.div>
       <motion.div className="cq-md:hidden" style={mobile}>
         <CardBody result={result} picked={picked} ring={result.score / 100} />
@@ -467,7 +472,20 @@ function ResultCard({ result, index, first, className = '' }: { result: Result; 
   );
 }
 
-function CardBody({ result, picked, ring }: { result: Result; picked: boolean; ring: number | MotionValue<number> }) {
+function CardBody({
+  result,
+  picked,
+  ring,
+  ringIn,
+  ringCam,
+}: {
+  result: Result;
+  picked: boolean;
+  ring: number | MotionValue<number>;
+  /** 环的透明度（第一张卡：等飞来的环落地） */
+  ringIn?: MotionValue<number>;
+  ringCam?: string;
+}) {
   return (
     <div
       className={`ui-card flex gap-3 p-2.5 transition-[border-color,box-shadow] duration-200 ${
@@ -491,9 +509,7 @@ function CardBody({ result, picked, ring }: { result: Result; picked: boolean; r
               </span>
             </p>
           </div>
-          <Ring value={ring} size={38} stroke={3.5}>
-            <span className="text-xs font-semibold tabular-nums text-ui-ink">{result.score}</span>
-          </Ring>
+          <CardRing value={ring} score={result.score} opacity={ringIn} cam={ringCam} />
         </div>
         <p className="mt-1.5 flex min-w-0 items-center gap-2 overflow-hidden whitespace-nowrap text-xs text-ui-ink">
           {result.reasons.map((r, i) => (
@@ -511,6 +527,19 @@ function CardBody({ result, picked, ring }: { result: Result; picked: boolean; r
         </p>
       </div>
     </div>
+  );
+}
+
+function CardRing({ value, score, opacity, cam }: { value: number | MotionValue<number>; score: number; opacity?: MotionValue<number>; cam?: string }) {
+  const still = useMotionValue(1);
+  const o = opacity ?? still;
+  const visibility = useFadeVisibility(o);
+  return (
+    <motion.span data-cam={cam} className="flex shrink-0" style={{ opacity: o, visibility }}>
+      <Ring value={value} size={38} stroke={3.5}>
+        <span className="text-xs font-semibold tabular-nums text-ui-ink">{score}</span>
+      </Ring>
+    </motion.span>
   );
 }
 

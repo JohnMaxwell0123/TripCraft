@@ -87,6 +87,20 @@ function useStageClock(chapters: readonly StageChapter[], debugHook: string, red
     setStatus(s);
   }, []);
 
+  /**
+   * 暂停时跳到某一帧之后，再轻推两帧进度（差一亿分之一）：几个派生值合成的样式（镜头、地图跟拍）
+   * 在同一帧里可能先于某个输入算完，播放时下一帧就会更正，暂停时却会一直停在旧值上。
+   */
+  const settle = useCallback(() => {
+    let n = 0;
+    const nudge = () => {
+      if (statusRef.current === 'playing') return;
+      progress.set(progress.get() + 1e-9);
+      if (++n < 2) requestAnimationFrame(nudge);
+    };
+    requestAnimationFrame(nudge);
+  }, [progress]);
+
   /** 定位到第 index 章的局部进度 local */
   const place = useCallback(
     (index: number, local: number) => {
@@ -99,8 +113,9 @@ function useStageClock(chapters: readonly StageChapter[], debugHook: string, red
       elapsedRef.current = l * ch.duration;
       chapterProgress.set(l);
       progress.set(ch.range[0] + (ch.range[1] - ch.range[0]) * l);
+      settle();
     },
-    [chapters, chapterProgress, progress],
+    [chapters, chapterProgress, progress, settle],
   );
 
   // 时钟
@@ -169,11 +184,12 @@ function useStageClock(chapters: readonly StageChapter[], debugHook: string, red
       changeStatus('paused');
       place(idx, e > s ? (v - s) / (e - s) : 1);
       progress.set(v);
+      settle();
     };
     return () => {
       delete win[debugHook];
     };
-  }, [chapters, debugHook, place, progress, changeStatus]);
+  }, [chapters, debugHook, place, progress, changeStatus, settle]);
 
   const select = useCallback(
     (index: number) => {

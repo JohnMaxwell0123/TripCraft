@@ -2,9 +2,10 @@
 
 import type { ComponentType, ReactNode } from 'react';
 import { motion, useTransform } from 'framer-motion';
-import { useFade, useFadeStyle, useFadeVisibility, useRange, useScrollTypewriter, useStep, useVisibility, ease } from '@/lib/motion';
-import { T } from './timeline';
+import { useFadeStyle, useFadeVisibility, useRange, useScrollTypewriter, useStep, useVisibility, ease } from '@/lib/motion';
+import { T, sec } from './timeline';
 import { Grow, Scene, TapCursor, useProgress } from './primitives';
+import type { FlightSpec } from './flight';
 import { Badge, CatMark, Chip, Ring, btn } from './ui';
 import {
   BuildingIcon,
@@ -15,12 +16,10 @@ import {
   CompassIcon,
   ElderIcon,
   HeightIcon,
-  KeyIcon,
   MoonIcon,
   PaperclipIcon,
   PersonGlyph,
   PinIcon,
-  PlusIcon,
   SparklesIcon,
   StairsIcon,
   UsersIcon,
@@ -31,21 +30,69 @@ import {
 /**
  * 01 幕 · AI 对话与需求画像（docs/16 §16.2–§16.4）
  *
- * 对话框即入口：模型选择器（平台模型 / 自带 API）→ 用户说需求 → 每轮一个追问 →
- * 需求画像在右侧逐项填入：每一项用图形表达（同行人剪影、必去地点、日期条、车高、预算区间），
- * 先显示空位，对话提到一项填一项；推断项单独标出。收敛后同时给出路径 A / 路径 B 两个入口。
- * 手机上画像的进度显示在顶部的胶囊里，收敛后以底部抽屉弹出。
+ * 对话框即入口：用户说需求 → AI 从这段话里逐项整理出需求画像 → 每轮一个追问 → 收敛后同时给出路径 A / 路径 B 两个入口。
+ * 字句化形（导演版，2026-10-29）：句子发出后，被理解的短语逐个画上一道橙色下划线，化成小签飞进右侧画像的空位，
+ * 落地时那一项才填上——观众看见的是「这句话变成了这份画像」。只有预算没有来源词：它是推断的，直接以虚线区间出现。
+ * 追问得到的「总高 2.28 m」落位时亮一下，这是全片的伏笔（02 幕的地面车位、04 幕的限高地库都从它来）。
+ * 画像的每一项用图形表达（同行人剪影、必去地点、日期条、车高、预算区间），先显示空位，聊到一项填一项。
+ * 手机上没有右侧面板：短语飞进标题栏的画像进度环，收敛后画像以底部抽屉弹出。
+ * 模型来源（平台模型 / 自带 API）留在输入框的胶囊里，自带 API 的细节在能力画廊讲，开场不再展开菜单。
  */
 
-const USER_TEXT =
-  '全家 5 口国庆前后去河西走廊，玩 9 天左右。带 70 岁的爷爷和 4 岁的女儿，爷爷膝盖做过手术不能爬高台阶，孩子每天要午休。想看莫高窟和鸣沙山日落，别太赶。自己开车或者找旅行社都行。';
+type PhraseId = keyof typeof T.phrase;
 
-const REPLY_TEXT = '租腾势 D9，加了车顶箱，总高 2.28 米。';
+/** 每个短语落进画像的哪一项 */
+const PHRASE_FIELD: Record<PhraseId, string> = {
+  date: 'field-date',
+  people: 'field-people',
+  body: 'field-body',
+  nap: 'field-body',
+  sights: 'field-sights',
+  mode: 'field-mode',
+  height: 'field-vehicle',
+};
 
-const MODELS = [
-  { name: '平台模型', note: '默认 · 今日剩余 18 / 20 次', selected: true },
-  { name: '我的 Claude', note: '自带 API · Anthropic 接口' },
-  { name: '我的 DeepSeek', note: '自带 API · OpenAI 兼容接口' },
+/** 用户的需求：被理解的短语带 id，发出后依次画下划线、飞进画像（拼起来就是完整原文，打字机按原文逐字输入） */
+const USER_SEGMENTS: readonly (string | { id: PhraseId; text: string })[] = [
+  '全家 5 口',
+  { id: 'date', text: '国庆前后' },
+  '去河西走廊，玩 9 天左右。带 ',
+  { id: 'people', text: '70 岁的爷爷和 4 岁的女儿' },
+  '，爷爷膝盖做过手术',
+  { id: 'body', text: '不能爬高台阶' },
+  '，孩子',
+  { id: 'nap', text: '每天要午休' },
+  '。想看',
+  { id: 'sights', text: '莫高窟和鸣沙山日落' },
+  '，别太赶。',
+  { id: 'mode', text: '自己开车或者找旅行社都行' },
+  '。',
+];
+
+const USER_TEXT = USER_SEGMENTS.map((s) => (typeof s === 'string' ? s : s.text)).join('');
+
+/** 追问的回答：「总高 2.28 米」是最后一个飞进画像的短语 */
+const REPLY_HEIGHT = '总高 2.28 米';
+
+/** 飞行中的小签：短语原文，白底、品牌橙字 */
+function PhraseToken({ text }: { text: string }) {
+  return <span className="ui-chip !h-7 !bg-ui-surface !text-ui-accent-ink shadow-ui-float ring-1 ring-ui-accent/25">{text}</span>;
+}
+
+/** 01 幕的飞行：宽视窗落到对应的画像项，窄视窗（没有右侧面板）落进标题栏的画像进度环 */
+export const DIALOGUE_FLIGHTS: FlightSpec[] = [
+  ...USER_SEGMENTS.flatMap((s) =>
+    typeof s === 'string'
+      ? []
+      : [{ id: `ph-${s.id}`, from: `ph-${s.id}`, to: [PHRASE_FIELD[s.id], 'profile-ring'], t: [T.phrase[s.id], T.phrase[s.id] + T.phraseFly] as const, token: <PhraseToken text={s.text} /> }],
+  ),
+  {
+    id: 'ph-height',
+    from: 'ph-height',
+    to: ['field-vehicle', 'profile-ring'],
+    t: [T.phrase.height, T.phrase.height + T.phraseFly],
+    token: <PhraseToken text={REPLY_HEIGHT} />,
+  },
 ];
 
 const FIELD_COUNT = 7;
@@ -59,7 +106,7 @@ export function DialogueScene() {
         <StatusBadge />
       </header>
       <div className="relative flex min-h-0 flex-1">
-        <div className="relative flex min-w-0 flex-1 flex-col px-4 pb-4">
+        <div data-cam="chat-col" className="relative flex min-w-0 flex-1 flex-col px-4 pb-4">
           <Thread />
           <Composer />
         </div>
@@ -92,7 +139,7 @@ function Thread() {
   return (
     <div className="relative flex min-h-0 flex-1 flex-col justify-end overflow-hidden pb-4 pt-1">
       {/* AI 开场 + 零输入建议：示例说法与目的地无关 */}
-      <AssistantTurn>
+      <AssistantTurn cam="chat-opener">
         <p>说说你想怎么玩？可以很随意，比如「周末带爸妈去海边住两晚，别太累」。</p>
         <div className="mt-2.5 hidden flex-wrap gap-1.5 cq-sm:flex">
           <Chip Icon={ElderIcon} tone="outline">带长辈</Chip>
@@ -102,9 +149,19 @@ function Thread() {
         </div>
       </AssistantTurn>
 
-      {/* 用户需求 */}
+      {/* 用户需求：被理解的短语画上下划线，随后飞进画像 */}
       <Grow at={T.askBubble} max={200}>
-        <UserBubble>{USER_TEXT}</UserBubble>
+        <UserBubble>
+          {USER_SEGMENTS.map((seg, i) =>
+            typeof seg === 'string' ? (
+              seg
+            ) : (
+              <Mark key={i} id={`ph-${seg.id}`} at={T.phrase[seg.id]}>
+                {seg.text}
+              </Mark>
+            ),
+          )}
+        </UserBubble>
       </Grow>
 
       {/* 追问：每轮只问一个问题 */}
@@ -130,13 +187,19 @@ function Thread() {
         </AssistantTurn>
       </Grow>
 
-      {/* 用户回答 */}
+      {/* 用户回答：「总高 2.28 米」飞进画像的「车辆」 */}
       <Grow at={T.followUpReply} max={72}>
-        <UserBubble className="w-fit">{REPLY_TEXT}</UserBubble>
+        <UserBubble className="w-fit">
+          租腾势 D9，加了车顶箱，
+          <Mark id="ph-height" at={T.phrase.height}>
+            {REPLY_HEIGHT}
+          </Mark>
+          。
+        </UserBubble>
       </Grow>
 
       {/* 画像收敛 */}
-      <Grow at={[T.profileFields[6], T.profileReady[0]]} max={96}>
+      <Grow at={T.closing} max={96}>
         <AssistantTurn className="mt-4">
           需求整理好了。预算是我按人数和住宿档次<b className="font-semibold text-ui-signal-ink">推断</b>的，请确认；两条路径共用这份画像，都可以看。
         </AssistantTurn>
@@ -145,10 +208,35 @@ function Thread() {
   );
 }
 
-/** AI 的一轮：品牌标记 + 不加气泡的正文（与 ChatGPT / Claude 的读法一致） */
-function AssistantTurn({ children, className = '' }: { children: ReactNode; className?: string }) {
+/**
+ * 被理解的短语：起飞前画上一道品牌橙的下划线（从左向右划出），之后一直留着——这句话里哪些被读懂了，一眼可见。
+ * 用背景渐变画线（box-decoration-break: clone），短语折行时每一行各画一段。
+ */
+function Mark({ id, at, children }: { id: string; at: number; children: ReactNode }) {
+  const p = useProgress();
+  const sweep = useRange(p, [at - sec(0.14), at + sec(0.06)], [0, 100]);
+  const backgroundSize = useTransform(sweep, (v) => `${v.toFixed(1)}% 2px`);
   return (
-    <div className={`flex shrink-0 items-start gap-2.5 ${className}`}>
+    <motion.span
+      data-cam={id}
+      style={{
+        backgroundImage: 'linear-gradient(rgb(var(--ui-accent) / 0.8), rgb(var(--ui-accent) / 0.8))',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: '0 100%',
+        backgroundSize,
+        WebkitBoxDecorationBreak: 'clone',
+        boxDecorationBreak: 'clone',
+      }}
+    >
+      {children}
+    </motion.span>
+  );
+}
+
+/** AI 的一轮：品牌标记 + 不加气泡的正文（与 ChatGPT / Claude 的读法一致） */
+function AssistantTurn({ children, className = '', cam }: { children: ReactNode; className?: string; cam?: string }) {
+  return (
+    <div data-cam={cam} className={`flex shrink-0 items-start gap-2.5 ${className}`}>
       <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-[7px] bg-[#241E20] text-xs font-bold text-[#FFFFF9]">旅</span>
       <div className="min-w-0 flex-1 text-[13px] leading-relaxed text-ui-ink">{children}</div>
     </div>
@@ -179,11 +267,10 @@ function Composer() {
   // 光标只在打字时闪
   const caret = useFadeStyle(p, T.askType[0] - 0.001, T.askType[0], T.askSend - 0.001, T.askSend);
   const sent = useStep(p, [T.askSend]) === 1;
-  const sendScale = useRange(p, [T.askSend - 0.002, T.askSend, T.askSend + 0.002], [1, 0.88, 1]);
+  const sendScale = useRange(p, [T.askSend - sec(0.1), T.askSend, T.askSend + sec(0.1)], [1, 0.88, 1]);
 
   return (
-    <div className="relative shrink-0">
-      <ModelMenu />
+    <div data-cam="composer" className="relative shrink-0">
       <div className="ui-card relative px-3 pb-2 pt-2.5 !shadow-ui-float">
         {/* 文本区：一行 20px，最多 6 行（120px），超出后裁掉最上面的行 */}
         <div className="relative flex max-h-[120px] min-h-5 flex-col justify-end overflow-hidden text-[13px] leading-5 text-ui-ink">
@@ -198,12 +285,11 @@ function Composer() {
         </div>
 
         <div className="mt-2 flex items-center gap-1.5">
-          {/* 模型选择器 */}
+          {/* 模型选择器：平台模型或自带 API（细节在能力画廊） */}
           <span className="relative inline-flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-ui-sunken px-2.5 text-xs font-medium text-ui-ink">
             <SparklesIcon className="h-3.5 w-3.5 text-ui-accent" />
             平台模型
             <ChevronDownIcon className="h-3 w-3 text-ui-ink-3" />
-            <TapCursor approach={T.modelCursor} clickAt={T.modelMenu[0]} hideAt={T.modelMenu[1] + 0.004} className="left-8 top-4" />
           </span>
           <span className="ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-ui-ink-3" title="附件：截图、行程 PDF、聊天记录">
             <PaperclipIcon className="h-4 w-4" />
@@ -213,54 +299,11 @@ function Composer() {
               <path d="M12 19V5" />
               <path d="m5 12 7-7 7 7" />
             </svg>
-            <TapCursor approach={[T.askType[1] - 0.006, T.askSend - 0.001]} clickAt={T.askSend} hideAt={T.askSend + 0.008} className="left-4 top-4" />
+            <TapCursor approach={[T.askSend - sec(0.4), T.askSend - sec(0.03)]} clickAt={T.askSend} hideAt={T.askSend + sec(0.4)} className="left-4 top-4" />
           </motion.span>
         </div>
       </div>
     </div>
-  );
-}
-
-function ModelMenu() {
-  const p = useProgress();
-  const [a, b, c, dd] = T.modelMenu;
-  const opacity = useFade(p, a, b, c, dd);
-  const y = useRange(p, [a, b, c, dd], [8, 0, 0, 6], { easing: ease.out, rest: 0 });
-  const visibility = useVisibility(p, a, dd);
-  // 高亮从「平台模型」移到「自带 API」再回到默认项
-  const hover = useStep(p, [b + (c - b) * 0.25, b + (c - b) * 0.55, b + (c - b) * 0.85]);
-  const hoverIndex = [0, 1, 3, 0][hover];
-
-  return (
-    <motion.div
-      role="listbox"
-      aria-label="选择模型"
-      className="ui-float absolute bottom-full left-0 z-30 mb-2 w-[min(288px,100%)] overflow-hidden rounded-ui-card p-1 !shadow-ui-pop"
-      style={{ opacity, y, visibility }}
-    >
-      {MODELS.map((mdl, i) => (
-        <div key={mdl.name} className={`flex items-center gap-2.5 rounded-ui-ctl px-2 py-1.5 transition-colors duration-150 ${hoverIndex === i ? 'bg-ui-sunken' : ''}`}>
-          <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${i === 0 ? 'bg-ui-accent/10 text-ui-accent-ink' : 'bg-ui-sunken text-ui-ink-2'}`}>
-            {i === 0 ? <SparklesIcon className="h-3.5 w-3.5" /> : <KeyIcon className="h-3.5 w-3.5" />}
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-[13px] font-medium text-ui-ink">{mdl.name}</span>
-            <span className="block truncate text-xs text-ui-ink-3">{mdl.note}</span>
-          </span>
-          {mdl.selected ? <CheckIcon className="h-4 w-4 shrink-0 text-ui-accent-ink" /> : null}
-        </div>
-      ))}
-      <div className={`flex items-center gap-2.5 rounded-ui-ctl px-2 py-1.5 text-[13px] font-medium text-ui-ink transition-colors duration-150 ${hoverIndex === 3 ? 'bg-ui-sunken' : ''}`}>
-        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-dashed border-ui-line-strong text-ui-ink-2">
-          <PlusIcon className="h-3.5 w-3.5" />
-        </span>
-        添加自己的 API
-      </div>
-      <p className="mt-1 flex items-center gap-1.5 border-t border-ui-line px-2 pb-1 pt-2 text-xs text-ui-ink-2">
-        <KeyIcon className="h-3 w-3 shrink-0" />
-        自带 Key 只存在本机，请求直连服务商
-      </p>
-    </motion.div>
   );
 }
 
@@ -269,8 +312,12 @@ function ModelMenu() {
 interface ProfileField {
   label: string;
   Icon: ComponentType<IconProps>;
-  /** 在 T.profileFields 中的出现顺序（按对话提及的先后） */
+  /** 在 T.profileFields 中的出现顺序（按落地先后） */
   order: number;
+  /** 镜头与飞行的落点（data-cam） */
+  cam: string;
+  /** 空位虚线的宽度（%） */
+  empty: number;
   inferred?: boolean;
   full: ReactNode;
   compact: ReactNode;
@@ -318,6 +365,25 @@ function DateBar() {
   );
 }
 
+/**
+ * 车高：追问得到的「总高 2.28 m」落位时亮一下（只亮一次，不循环）。这是全片的伏笔：
+ * 02 幕 D0 的地面车位、04 幕夜市的限高地库，都是因为这一项。
+ */
+function HeightChip() {
+  const p = useProgress();
+  const landed = T.profileFields[5];
+  const glow = useRange(p, [landed, landed + sec(0.25), landed + sec(1.6)], [0, 1, 0]);
+  const glowVisibility = useFadeVisibility(glow);
+  return (
+    <span className="relative inline-flex">
+      <motion.span aria-hidden className="absolute -inset-1 rounded-full ring-2 ring-ui-accent/45" style={{ opacity: glow, visibility: glowVisibility }} />
+      <Chip Icon={HeightIcon} tone="accent">
+        总高 2.28 m
+      </Chip>
+    </span>
+  );
+}
+
 /** 预算：推断的人均区间（虚线框），刻度 ¥0–12k */
 function BudgetBar() {
   return (
@@ -339,11 +405,13 @@ const FIELDS: { title: string; fields: ProfileField[] }[] = [
   {
     title: '必须满足',
     fields: [
-      { label: '同行', Icon: UsersIcon, order: 0, full: <Travelers />, compact: '3 成人 · 1 长者 70+ · 1 儿童 4 岁' },
+      { label: '同行', Icon: UsersIcon, order: 1, cam: 'field-people', empty: 72, full: <Travelers />, compact: '3 成人 · 1 长者 70+ · 1 儿童 4 岁' },
       {
         label: '必去',
         Icon: PinIcon,
-        order: 1,
+        order: 3,
+        cam: 'field-sights',
+        empty: 58,
         full: (
           <span className="flex flex-wrap gap-1.5">
             <Chip>
@@ -361,7 +429,9 @@ const FIELDS: { title: string; fields: ProfileField[] }[] = [
       {
         label: '身体',
         Icon: ElderIcon,
-        order: 3,
+        order: 2,
+        cam: 'field-body',
+        empty: 50,
         full: (
           <span className="flex flex-wrap gap-1.5">
             <Chip Icon={StairsIcon}>少走台阶</Chip>
@@ -374,12 +444,12 @@ const FIELDS: { title: string; fields: ProfileField[] }[] = [
         label: '车辆',
         Icon: CarIcon,
         order: 5,
+        cam: 'field-vehicle',
+        empty: 46,
         full: (
           <span className="flex flex-wrap items-center gap-1.5">
             <span className="text-[13px] text-ui-ink">腾势 D9 · 车顶箱</span>
-            <Chip Icon={HeightIcon} tone="accent">
-              总高 2.28 m
-            </Chip>
+            <HeightChip />
           </span>
         ),
         compact: '腾势 D9 · 总高 2.28 m',
@@ -389,11 +459,13 @@ const FIELDS: { title: string; fields: ProfileField[] }[] = [
   {
     title: '偏好',
     fields: [
-      { label: '日期', Icon: CalendarIcon, order: 2, full: <DateBar />, compact: '国庆前后 · 8–10 天' },
+      { label: '日期', Icon: CalendarIcon, order: 0, cam: 'field-date', empty: 64, full: <DateBar />, compact: '国庆前后 · 8–10 天' },
       {
         label: '方式',
         Icon: CompassIcon,
         order: 4,
+        cam: 'field-mode',
+        empty: 80,
         full: (
           <span className="flex flex-wrap gap-1.5">
             <Chip Icon={CheckIcon}>自驾</Chip>
@@ -402,7 +474,7 @@ const FIELDS: { title: string; fields: ProfileField[] }[] = [
         ),
         compact: '自驾或旅行社都可以',
       },
-      { label: '预算', Icon: WalletIcon, order: 6, inferred: true, full: <BudgetBar />, compact: '人均 ¥5,000–7,000' },
+      { label: '预算', Icon: WalletIcon, order: 6, cam: 'field-budget', empty: 68, inferred: true, full: <BudgetBar />, compact: '人均 ¥5,000–7,000' },
     ],
   },
 ];
@@ -414,7 +486,7 @@ function useProfileCount() {
   const input: number[] = [];
   const output: number[] = [];
   T.profileFields.forEach((t, i) => {
-    input.push(t, t + 0.004);
+    input.push(t, t + sec(0.2));
     output.push(i / FIELD_COUNT, (i + 1) / FIELD_COUNT);
   });
   const ring = useRange(p, input, output);
@@ -456,10 +528,10 @@ function ProfilePanel() {
 function FieldRow({ field }: { field: ProfileField }) {
   const p = useProgress();
   const at = T.profileFields[field.order];
-  const opacity = useRange(p, [at, at + 0.006], [0, 1]);
+  const opacity = useRange(p, [at - sec(0.06), at + sec(0.28)], [0, 1]);
   const visibility = useFadeVisibility(opacity);
-  const y = useRange(p, [at, at + 0.008], [6, 0], { easing: ease.out, rest: 0 });
-  const empty = useRange(p, [at - 0.002, at + 0.002], [1, 0]);
+  const y = useRange(p, [at - sec(0.06), at + sec(0.4)], [6, 0], { easing: ease.out, rest: 0 });
+  const empty = useRange(p, [at - sec(0.1), at + sec(0.1)], [1, 0]);
   const emptyVisibility = useFadeVisibility(empty);
 
   return (
@@ -468,12 +540,12 @@ function FieldRow({ field }: { field: ProfileField }) {
         <field.Icon className="h-3.5 w-3.5 shrink-0" />
         {field.label}
       </span>
-      <span className="relative flex min-h-6 min-w-0 flex-1 items-center">
+      <span data-cam={field.cam} className="relative flex min-h-6 min-w-0 flex-1 items-center">
         {/* 空位：还没聊到这一项 */}
         <motion.span
           aria-hidden
           className="absolute left-0 top-1 h-4 rounded-full border border-dashed border-ui-line-strong"
-          style={{ width: `${[72, 58, 64, 50, 80, 46, 68][field.order]}%`, opacity: empty, visibility: emptyVisibility }}
+          style={{ width: `${field.empty}%`, opacity: empty, visibility: emptyVisibility }}
         />
         <motion.span className="block w-full" style={{ opacity, visibility, y }}>
           {field.full}
@@ -489,10 +561,10 @@ function PathButtons() {
   const fade = useFadeStyle(p, T.profileReady[0], T.profileReady[1]);
   const y = useRange(p, T.profileReady, [8, 0], { rest: 0 });
   const picked = useStep(p, [T.pathClick]) === 1;
-  const press = useRange(p, [T.pathClick - 0.003, T.pathClick, T.pathClick + 0.003], [1, 0.96, 1]);
+  const press = useRange(p, [T.pathClick - sec(0.12), T.pathClick, T.pathClick + sec(0.12)], [1, 0.96, 1]);
 
   return (
-    <motion.div className="flex shrink-0 flex-col gap-2 pt-3" style={{ ...fade, y }}>
+    <motion.div data-cam="path-buttons" className="flex shrink-0 flex-col gap-2 pt-3" style={{ ...fade, y }}>
       <motion.span className={`${btn.primary} relative h-10 w-full`} style={{ scale: press }}>
         {picked ? (
           <>
@@ -522,10 +594,13 @@ function PathButtons() {
 function HeaderProgress() {
   const p = useProgress();
   const { count, ring } = useProfileCount();
-  const fade = useFadeStyle(p, T.profileFields[0], T.profileFields[0] + 0.004);
+  // 第一个短语起飞前就出现：手机上短语飞进的就是这个环
+  const fade = useFadeStyle(p, T.phrase.date - sec(0.25), T.phrase.date);
   return (
     <motion.span className="flex shrink-0 items-center gap-1.5 text-xs text-ui-ink-2 cq-md:hidden" style={fade}>
-      <Ring value={ring} size={20} stroke={2.5} />
+      <span data-cam="profile-ring" className="inline-flex">
+        <Ring value={ring} size={20} stroke={2.5} />
+      </span>
       画像
       <span className="tabular-nums">
         {count}/{FIELD_COUNT}
@@ -536,9 +611,9 @@ function HeaderProgress() {
 
 function MobileProfileSheet() {
   const p = useProgress();
-  const y = useRange(p, [T.profileReady[0] - 0.012, T.profileReady[1]], [105, 0], { easing: ease.out });
+  const y = useRange(p, [T.profileReady[0] - sec(0.6), T.profileReady[1]], [105, 0], { easing: ease.out });
   const yPct = useTransform(y, (n) => `${n}%`);
-  const visibility = useVisibility(p, T.profileReady[0] - 0.012, 2);
+  const visibility = useVisibility(p, T.profileReady[0] - sec(0.6), 2);
 
   return (
     <motion.div className="ui-float absolute inset-x-0 bottom-0 z-30 rounded-t-ui-panel !border-x-0 !border-b-0 px-4 pb-4 pt-2 cq-md:hidden" style={{ y: yPct, visibility }}>

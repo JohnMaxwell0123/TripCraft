@@ -8,6 +8,7 @@ import { T, sec } from './timeline';
 import { Scene, TapCursor, Toast, useProgress } from './primitives';
 import { Badge, CatTile, Checkbox, Ring, Switch, btn } from './ui';
 import { MapCanvas } from './MapCanvas';
+import type { FlightSpec } from './flight';
 import {
   ArrowLeftIcon,
   CalendarIcon,
@@ -15,6 +16,7 @@ import {
   CheckIcon,
   ElderIcon,
   LockIcon,
+  MessageIcon,
   PersonGlyph,
   PlayIcon,
   ShieldCheckIcon,
@@ -33,7 +35,30 @@ import {
  * 详情页由旅行社在线路工作室生成：路线动画（封面是线路在地图上的完整走向）、逐日安排、透明报价（本线路选「分项明细」档）。
  * 旅客打开一个可调选项，预估价随之更新（一律标注「预估」，以旅行社正式报价为准），
  * 再「向旅行社咨询」——发送前由旅客确认把哪些信息发给这家旅行社（§16.8，默认不含姓名与联系方式）。
+ *
+ * 导演版（2026-10-29）：镜头依次贴近可调选项与预估价、咨询按钮、发送前的确认面板；
+ * 发出后确认面板收成一张小卡，飞向侧栏的「行程空间」，角标在它落地时出现——下一幕就从那里打开。
  */
+
+/** 03 幕的飞行：发出的咨询飞向「行程空间」（侧栏或手机标签栏） */
+export const DETAIL_FLIGHTS: FlightSpec[] = [
+  {
+    id: 'inquiry',
+    from: 'consent-sheet',
+    to: 'nav-trips',
+    t: T.inquiryFlight,
+    lift: 70,
+    scale: [1, 0.7],
+    token: (
+      <span className="ui-float inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-full pl-1.5 pr-3 text-[13px] font-medium text-ui-ink !shadow-ui-pop">
+        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-ui-primary text-ui-on-primary">
+          <MessageIcon className="h-3.5 w-3.5" />
+        </span>
+        咨询 · 敦煌某国际旅行社
+      </span>
+    ),
+  },
+];
 
 const fmt = (n: number) => `¥${Math.round(n).toLocaleString('en-US')}`;
 
@@ -179,7 +204,7 @@ function PriceCard() {
       </p>
 
       <p className="mt-3 text-xs font-medium text-ui-ink-2">可调整</p>
-      <ul className="mt-1 flex flex-col">
+      <ul data-cam="price-adjust" className="mt-1 flex flex-col">
         <li className="relative flex h-10 items-center gap-3 border-b border-ui-line">
           <span className="min-w-0 flex-1 truncate text-[13px] text-ui-ink">敦煌 2 晚升级高档酒店</span>
           <span className="shrink-0 text-xs tabular-nums text-ui-ink-2">+¥760 / 人</span>
@@ -195,7 +220,7 @@ function PriceCard() {
         </li>
       </ul>
 
-      <div className="relative mt-3 rounded-ui-card bg-ui-sunken px-3 py-2.5">
+      <div data-cam="price-estimate" className="relative mt-3 rounded-ui-card bg-ui-sunken px-3 py-2.5">
         <motion.span aria-hidden className="absolute inset-0 rounded-ui-card ring-2 ring-ui-accent/40" style={{ opacity: flash, visibility: flashVisibility }} />
         <div className="flex items-baseline justify-between gap-2">
           <span className="text-xs text-ui-ink-2">成人预估</span>
@@ -233,7 +258,7 @@ function PriceCard() {
         </p>
       </div>
 
-      <div className="mt-auto pt-3">
+      <div data-cam="inquiry-btn" className="mt-auto pt-3">
         <motion.span className={`${btn.primary} relative h-10 w-full`} style={{ scale: press }}>
           向旅行社咨询
           <TapCursor approach={T.inquiryCursor} clickAt={T.inquiryClick} hideAt={T.inquiryClick + sec(0.4)} className="right-1/4 top-5" />
@@ -261,6 +286,7 @@ function ConsentSheet() {
       <motion.div
         role="dialog"
         aria-label="发送给旅行社的信息"
+        data-cam="consent-sheet"
         className="ui-float relative w-full rounded-t-ui-panel p-4 !shadow-ui-pop cq-md:w-[420px] cq-md:rounded-ui-panel"
         style={{ opacity, y }}
       >

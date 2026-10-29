@@ -2,12 +2,14 @@
 
 import type { ComponentType } from 'react';
 import { motion, useTransform } from 'framer-motion';
-import { DAYS, SELF_DRIVE_ROUTE, type DayPlan, type DayTagIcon } from '@/data/trip';
-import { ease, useFadeStyle, useRange, useStep } from '@/lib/motion';
+import { DAYS, SELF_DRIVE_ROUTE, TRIPS, type DayPlan, type DayTagIcon } from '@/data/trip';
+import { ease, useFadeStyle, useFadeVisibility, useRange, useStep } from '@/lib/motion';
 import { T, sec } from './timeline';
 import { Scene, TapCursor, Toast, useProgress } from './primitives';
 import { CatTile, Ring, btn } from './ui';
-import { MapCanvas } from './MapCanvas';
+import { MapCanvas, type MapCallout } from './MapCanvas';
+import { RouteGlyph } from './RouteGlyph';
+import type { FlightSpec } from './flight';
 import {
   AccessibleIcon,
   ArrowRightIcon,
@@ -33,7 +35,48 @@ import {
  * 下方是带交通段的日程时间轴（宽视窗横排、手机是底部抽屉里的竖排），当天随线头高亮并滚到视野里。
  * 每天用图形标签写清它怎样照顾到画像（午休、台阶、车高、日落）。
  * 画完先「保存到行程空间」（04 幕里全家看到的就是它），随后底部提示同一份画像也匹配到旅行社线路，点击进入路径 B。
+ *
+ * 导演版（2026-10-29）：地图像导航 App 一样跟拍——推近兰州、跟着线头飞过乌鞘岭与瓜州，画完再拉远露出 1,980 km 全线；
+ * 线头经过的途经点旁亮起玻璃小签，说这一站怎样照顾到画像。保存时路线缩成封面飞进侧栏「我的行程」；
+ * 点「看旅行社线路」后，交叉提示里的 91% 环飞落成下一屏第一张结果卡的环（匹配剪辑）。
  */
+
+const [XIXING] = TRIPS;
+
+/** 线头经过时亮起的标注：都来自日程里照顾画像的那一条（DAYS 的 tags） */
+const CALLOUTS: readonly MapCallout[] = [
+  { stop: 'wsl', text: '车上通过最高点', Icon: MountainIcon, range: T.callouts.wsl, side: 'right' },
+  { stop: 'gz', text: '13:00 服务区午休', Icon: CoffeeIcon, range: T.callouts.gz, side: 'top' },
+  { stop: 'dh', text: '无障碍接驳 · 只看平层窟', Icon: AccessibleIcon, range: T.callouts.dh, side: 'top' },
+];
+
+/** 02 幕的飞行：保存时路线缩成封面飞进侧栏（窄一些的视窗没有「我的行程」列表，落到导航的「行程空间」）；匹配度环飞向下一屏 */
+export const DRIVE_FLIGHTS: FlightSpec[] = [
+  {
+    id: 'save-route',
+    from: 'drive-map',
+    to: ['trip-row', 'nav-trips'],
+    t: T.saveFlight,
+    lift: 60,
+    scale: [2.2, 0.68],
+    token: <RouteGlyph trip={XIXING} className="h-12 w-12 rounded-[10px] shadow-ui-pop ring-2 ring-white" />,
+  },
+  {
+    id: 'match-ring',
+    from: 'cross-ring',
+    to: 'result-ring-0',
+    t: T.ringFlight,
+    lift: 90,
+    scale: [1, 0.86],
+    token: (
+      <span className="flex rounded-full bg-ui-surface p-0.5 shadow-ui-pop">
+        <Ring value={0.91} size={44} stroke={3.5} tone="accent">
+          <span className="text-xs font-semibold tabular-nums text-ui-ink">91%</span>
+        </Ring>
+      </span>
+    ),
+  },
+];
 
 const TAG_ICON: Record<DayTagIcon, ComponentType<IconProps>> = {
   parking: ParkingIcon,
@@ -49,6 +92,7 @@ const TAG_ICON: Record<DayTagIcon, ComponentType<IconProps>> = {
 export function Workspace() {
   const p = useProgress();
   const draw = useRange(p, T.routeDraw.t, T.routeDraw.v, { easing: ease.linear });
+  const follow = useRange(p, T.follow.t, T.follow.v);
 
   return (
     <Scene range={T.driveScene} label="路径 A：AI 规划的自驾草案">
@@ -66,10 +110,13 @@ export function Workspace() {
 
       <div className="relative flex min-h-0 flex-1 flex-col">
         {/* 地图：宽视窗占上半部；手机铺满，下半部被日程抽屉盖住 */}
-        <div className="relative min-h-0 flex-1">
+        <div data-cam="drive-map" className="relative min-h-0 flex-1">
           <MapCanvas
             route={SELF_DRIVE_ROUTE}
             draw={draw}
+            follow={follow}
+            zoom={1.8}
+            callouts={CALLOUTS}
             labels={['lz', 'zy', 'jyg', 'dh', 'yd']}
             frame="left-3 right-3 top-11 bottom-[57%] cq-sm:left-4 cq-sm:right-14 cq-sm:top-12 cq-sm:bottom-3"
             controls="right-3 top-3 hidden cq-sm:flex"
@@ -303,6 +350,14 @@ function MobileDayRow({ day, index, active }: { day: DayPlan; index: number; act
   );
 }
 
+function CrossRing() {
+  return (
+    <Ring value={0.91} size={44} stroke={3.5} tone="accent">
+      <span className="text-xs font-semibold tabular-nums text-ui-ink">91%</span>
+    </Ring>
+  );
+}
+
 /* ── 结果页底部：同一份需求画像也匹配到旅行社线路（§16.5.2 交叉提示，带画像进入筛选页）──
  * 宽视窗：换下底部的日程条（地图不被遮挡）；手机：浮在日程抽屉底部。 */
 function CrossHint() {
@@ -312,6 +367,9 @@ function CrossHint() {
   const y = useRange(p, [a, b], [12, 0], { easing: ease.out, rest: 0 });
   const press = useRange(p, [T.crossClick - sec(0.12), T.crossClick, T.crossClick + sec(0.12)], [1, 0.96, 1]);
   const opening = useStep(p, [T.crossClick]) === 1;
+  // 环飞走之后这里留空：飞行中的环就是它
+  const ringOut = useRange(p, [T.ringFlight[0], T.ringFlight[0] + sec(0.05)], [1, 0]);
+  const ringVisibility = useFadeVisibility(ringOut);
 
   return (
     <motion.div
@@ -319,9 +377,13 @@ function CrossHint() {
       style={{ ...fade, y }}
     >
       <div className="ui-float flex w-full max-w-[520px] items-center gap-3 rounded-ui-card p-2.5 !shadow-ui-pop cq-sm:gap-4 cq-sm:p-3.5">
-        <Ring value={0.91} size={44} stroke={3.5} tone="accent">
-          <span className="text-xs font-semibold tabular-nums text-ui-ink">91%</span>
-        </Ring>
+        {/* 宽视窗（下一屏有宽版结果卡）环会飞走；窄视窗不飞，环一直在这里 */}
+        <motion.span data-cam="cross-ring" className="hidden shrink-0 cq-md:flex" style={{ opacity: ringOut, visibility: ringVisibility }}>
+          <CrossRing />
+        </motion.span>
+        <span className="flex shrink-0 cq-md:hidden">
+          <CrossRing />
+        </span>
         <div className="min-w-0 flex-1">
           <p className="text-[13px] font-medium leading-snug text-ui-ink">
             同一份需求画像，也匹配到 <b className="font-semibold tabular-nums">23 条</b>旅行社线路

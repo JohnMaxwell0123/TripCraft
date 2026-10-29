@@ -1,15 +1,17 @@
 'use client';
 
-import { ACTS, CHAPTER_POINTS, ACT_ORDER, T, type ActId } from './timeline';
+import { ACTS, CAMERA, CHAPTER_POINTS, ACT_ORDER, CUES, T, type ActId } from './timeline';
 import { StageShell, type StageChapter } from './StageShell';
 import { AppWindow, type WindowNavItem, type WindowSection } from './AppWindow';
 import { Avatar, Grow } from './primitives';
 import { RouteGlyph } from './RouteGlyph';
+import { Captions } from './Captions';
+import type { FlightSpec } from './flight';
 import { TRIPS, type TripSummary } from '@/data/trip';
-import { DialogueScene } from './DialogueScene';
-import { Workspace } from './Workspace';
+import { DIALOGUE_FLIGHTS, DialogueScene } from './DialogueScene';
+import { DRIVE_FLIGHTS, Workspace } from './Workspace';
 import { MatchScene } from './MatchScene';
-import { RouteDetail } from './RouteDetail';
+import { DETAIL_FLIGHTS, RouteDetail } from './RouteDetail';
 import { TripSpaceScene } from './Collab';
 import { ShareRoadbookScene } from './ShareRoadbook';
 import { BuildingIcon, MapIcon, MessageIcon } from '@/components/common/Icons';
@@ -21,23 +23,28 @@ import { BuildingIcon, MapIcon, MessageIcon } from '@/components/common/Icons';
  * 一家人、一份需求画像贯穿四幕：01 的画像同时是 02 的规划输入与 03 的筛选条件；02 存下的草案与 03 发出的咨询，
  * 在 04 的行程空间里并排出现。04 的终帧是「做成可分享的路书」：亲友点「我也做一份」，回到 01 开场的对话入口（S-C10）。
  * 旅行社线路工作室在下方另一段舞台（AgencyStage），不插在旅客流程中间。
+ *
+ * 导演版（2026-10-29）：视窗里有一台虚拟摄影机（timeline.ts 的 CAMERA），每一拍只推近此刻唯一要看的地方；
+ * 视窗下方一行字幕（CUES）用大白话说这一拍；跨区域的因果用「飞行」交代（FLIGHTS，见各场景文件）。
  */
+
+const FLIGHTS: readonly FlightSpec[] = [...DIALOGUE_FLIGHTS, ...DRIVE_FLIGHTS, ...DETAIL_FLIGHTS];
 
 const COPY: Record<ActId, { title: string; short: string; desc: string }> = {
   dialogue: {
     title: 'AI 对话与需求画像',
     short: '对话与画像',
-    desc: '像和大模型聊天一样说出想法，平台模型或自带 API 都行。AI 每轮只追问一个问题，整理出一份需求画像，推断项单独标出。',
+    desc: '像聊天一样说出想法。AI 只追问一个问题，把对话整理成一份需求画像，推断的预算单独标出。',
   },
   drive: {
     title: '路径 A · AI 规划自驾',
     short: '路径 A',
-    desc: '选自驾，AI 按画像编排九天路线，地点经图商核验。草案存进行程空间后，同一份画像也能直接去看旅行社线路。',
+    desc: 'AI 按画像排出九天自驾路线，存进全家的行程空间；同一份画像也能直接去看旅行社线路。',
   },
   match: {
     title: '路径 B · 线路筛选与详情',
     short: '路径 B',
-    desc: '带着同一份画像看持证旅行社的线路：条件自动套用，调整选项看预估价，确认授权信息后再向旅行社咨询。',
+    desc: '画像直接套用成筛选条件。调整选项看预估价，确认要发出的信息后再向旅行社咨询。',
   },
   share: {
     title: '行程空间 · 共享与同步',
@@ -60,6 +67,8 @@ const NAV: WindowNavItem[] = [
     id: 'trips',
     label: '行程空间',
     Icon: MapIcon,
+    // 02 幕保存的草案、03 幕发出的咨询都飞向这里（窄视窗没有「我的行程」列表时）
+    cam: 'nav-trips',
     // 咨询发出后行程空间出现角标，光标点它进入 04 幕
     badge: { text: '1', range: T.spaceBadge },
     tap: { approach: T.spaceCursor, clickAt: T.spaceClick, hideAt: T.shareScene[1] },
@@ -104,6 +113,8 @@ export function ScrollyStage() {
         account={{ avatar: <Avatar name="我" tone="violet" size={24} />, name: '我', note: '3 台设备已登录' }}
         sidebarExtra={<TripList />}
         ariaLabel="TripCraft 旅客端界面演示，内容随左侧章节变化"
+        camera={CAMERA}
+        flights={FLIGHTS}
       >
         <DialogueScene />
         <Workspace />
@@ -112,6 +123,7 @@ export function ScrollyStage() {
         <TripSpaceScene />
         <ShareRoadbookScene />
       </AppWindow>
+      <Captions cues={CUES} />
     </StageShell>
   );
 }
@@ -123,8 +135,9 @@ function TripList() {
     <div>
       <p className="px-2 text-xs font-medium text-ui-ink-3">我的行程</p>
       <div className="mt-1 flex flex-col">
-        <Grow at={[T.saveClick, T.saveClick + 0.006]} max={44}>
-          <TripRow trip={current} highlight />
+        {/* 保存时，路线缩成的封面正好落在这一行的封面上（DRIVE_FLIGHTS） */}
+        <Grow at={T.tripRowIn} max={44}>
+          <TripRow trip={current} highlight cam="trip-row" />
         </Grow>
         {others.map((t) => (
           <TripRow key={t.id} trip={t} />
@@ -134,10 +147,12 @@ function TripList() {
   );
 }
 
-function TripRow({ trip, highlight = false }: { trip: TripSummary; highlight?: boolean }) {
+function TripRow({ trip, highlight = false, cam }: { trip: TripSummary; highlight?: boolean; cam?: string }) {
   return (
     <div className={`flex items-center gap-2 rounded-ui-ctl px-1.5 py-1 ${highlight ? 'bg-ui-surface/70' : ''}`}>
-      <RouteGlyph trip={trip} className="h-8 w-8 shrink-0 rounded-[8px]" />
+      <span data-cam={cam} className="shrink-0">
+        <RouteGlyph trip={trip} className="h-8 w-8 shrink-0 rounded-[8px]" />
+      </span>
       <span className="min-w-0">
         <span className="block truncate text-xs font-medium text-ui-ink">{trip.name}</span>
         <span className="block truncate text-xs text-ui-ink-3">{trip.sub}</span>
