@@ -13,12 +13,15 @@ import { AlertTriangleIcon, CarIcon, CheckIcon, HeightIcon, WalkIcon, type IconP
  *
  * 阿杰提名一个地点并写下理由；AI 只评估代价——顺不顺路、要不要多开车、有没有限高之类的硬约束冲突——
  * 不替大家做决定；由领队确认后才写进行程。
+ *
+ * 导演版（2026-10-29）：宽视窗里领队是在自己的手机上点的（Constellation 的 HeroPhone），视窗（我的电脑）里这张卡
+ * 不画光标，按波前到达电脑的时刻变成「已加入」（appliedAt）；手机布局的视窗就是领队的手机，照常有光标。
  */
 
-export function NominationCard() {
+export function NominationCard({ cursor = true, appliedAt = T.applyClick }: { cursor?: boolean; appliedAt?: number }) {
   const p = useProgress();
-  const applied = useStep(p, [T.applyClick]) === 1;
-  const press = useRange(p, [T.applyClick - sec(0.12), T.applyClick, T.applyClick + sec(0.12)], [1, 0.96, 1]);
+  const applied = useStep(p, [appliedAt]) === 1;
+  const press = useRange(p, [appliedAt - sec(0.12), appliedAt, appliedAt + sec(0.12)], [1, 0.96, 1]);
 
   return (
     <div className="ui-card p-3">
@@ -63,7 +66,7 @@ export function NominationCard() {
           ) : (
             '加入 D0 晚上'
           )}
-          <TapCursor approach={T.applyCursor} clickAt={T.applyClick} hideAt={T.applyClick + sec(0.5)} className="left-1/2 top-4" />
+          {cursor ? <TapCursor approach={T.applyCursor} clickAt={T.applyClick} hideAt={T.applyClick + sec(0.5)} className="left-1/2 top-4" /> : null}
         </motion.span>
       </div>
     </div>

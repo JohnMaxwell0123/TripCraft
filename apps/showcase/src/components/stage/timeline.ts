@@ -28,7 +28,7 @@ export const ACT_ORDER = [
   ['dialogue', 10800],
   ['drive', 11000],
   ['match', 11800],
-  ['share', 20000],
+  ['share', 21500],
 ] as const;
 
 export type ActId = (typeof ACT_ORDER)[number][0];
@@ -50,8 +50,7 @@ const at = (id: ActId) => (n: number) => ACTS[id][0] + sec(n);
 const D = at('dialogue');
 const R = at('drive');
 const M = at('match');
-/** 04 幕仍按章内比例书写；幕时长 20 秒，s(0.05) = 1 秒 */
-const s = (t: number) => actAt('share', t);
+const S = at('share');
 
 /* ── 01 幕：句子里的短语逐个亮起、飞进需求画像（字句化形），按它们在句子里的先后 ── */
 const FLY = sec(0.62);
@@ -74,7 +73,9 @@ const T_DH_END = T_DH + (DRAW_TO - DRAW_FROM) * HOLD_DH;
 const passing = (t: number, hold = 1.25) => [t - sec(0.1), t + sec(0.15), t + sec(hold), t + sec(hold + 0.25)] as const;
 
 /** 04 幕：领队点「做成可分享的路书」的时刻（行程空间一屏在分享路书一屏盖住它之后隐藏） */
-const SHARE_CLICK = s(0.695);
+const SHARE_CLICK = S(15.9);
+/** 04 幕：领队在手机上点「加入 D0 晚上」的一刻——涟漪从这里出发 */
+const APPLY = S(8.3);
 
 /** 关键帧（命名即语义，数值为全局进度） */
 export const T = {
@@ -158,7 +159,7 @@ export const T = {
   caption: [M(4.15), M(4.45)] as const,
   pickCursor: [M(4.75), M(5.15)] as const,
   pickClick: M(5.3),
-  detailScene: [...sceneIn(M(5.4)), ...cover(s(0) + FADE)] as const,
+  detailScene: [...sceneIn(M(5.4)), ...cover(S(0) + FADE)] as const,
   optCursor: [M(6.15), M(6.55)] as const,
   optClick: M(6.7),
   estimate: [M(6.7), M(7.4)] as const,
@@ -174,48 +175,72 @@ export const T = {
   spaceCursor: [M(10.75), M(11.2)] as const,
   spaceClick: M(11.45),
 
-  /* ── 04 行程空间 · 共享与同步（Collab / Recommend / SyncFinale）；幕时长 20 秒，s(0.05) = 1 秒 ─────── */
+  /* ── 04 行程空间 · 共享与同步（Collab / Constellation / ShareRoadbook）─────── */
   /** 分享路书一屏盖住行程空间后，行程空间再隐藏 */
-  shareScene: [...sceneIn(s(0)), ...cover(SHARE_CLICK + FADE)] as const,
-  /** 打开行程空间：自驾草案与刚发出的咨询并排出现 */
-  planIn: [s(0.02), s(0.065)] as const,
-  inviteCursor: [s(0.07), s(0.095)] as const,
-  inviteClick: s(0.105),
-  invitePopover: [s(0.105), s(0.123), s(0.21), s(0.228)] as const,
-  copyCursor: [s(0.14), s(0.162)] as const,
-  copyClick: s(0.17),
-  joinAJie: [s(0.232), s(0.257)] as const,
-  toastAJie: [s(0.232), s(0.25), s(0.3), s(0.318)] as const,
-  joinXiaoyu: [s(0.27), s(0.295)] as const,
-  toastXiaoyu: [s(0.275), s(0.293), s(0.34), s(0.358)] as const,
-  nominationIn: [s(0.355), s(0.385)] as const,
-  evalRows: [s(0.4), s(0.425), s(0.45)] as const,
-  applyCursor: [s(0.47), s(0.5)] as const,
-  applyClick: s(0.512),
-  /** 手机：提名以底部抽屉出现，领队确认后收起 */
-  nominationSheetOut: [s(0.53), s(0.552)] as const,
-  insertRow: [s(0.52), s(0.555)] as const,
-  version: s(0.54),
-  /** 宽视窗：提名处理完收成一行，给同步列表让出位置（右栏放不下整张提名卡 + 三台设备） */
-  nominationFold: [s(0.556), s(0.58)] as const,
-  syncIn: [s(0.572), s(0.595)] as const,
-  syncRows: [s(0.605), s(0.625), s(0.645)] as const,
+  shareScene: [...sceneIn(S(0)), ...cover(SHARE_CLICK + FADE)] as const,
+  /** 打开行程空间：自驾草案与刚飞进来的咨询并排，咨询卡闪一下 */
+  planIn: [S(0.4), S(1.2)] as const,
+  /** 邀请：只留链接与「复制链接」，加入者的权限写在面板里 */
+  inviteCursor: [S(1.3), S(1.65)] as const,
+  inviteClick: S(1.75),
+  invitePopover: [S(1.75), S(2.05), S(2.7), S(2.95)] as const,
+  copyCursor: [S(2.0), S(2.25)] as const,
+  copyClick: S(2.35),
+  joinAJie: [S(2.95), S(3.25)] as const,
+  joinXiaoyu: [S(3.2), S(3.5)] as const,
+  joinToast: [S(2.95), S(3.2), S(3.85), S(4.1)] as const,
+
+  /* ── 04 幕 · 全家的每一块屏幕（Constellation，导演版 B）─────── */
+  /**
+   * 揭幕：看了五十秒的窗口缩成「我的电脑」，全家的屏幕一块块亮起。
+   * 宽视窗先揭幕、再在「我的手机」上做决定；手机布局（视窗本身就是「我的手机」）先在视窗里做决定，点下的一刻才拉远。
+   */
+  reveal: [S(4.0), S(5.1)] as const,
+  revealNarrow: [APPLY, APPLY + sec(0.7)] as const,
+  /** 宽视窗：阿杰在自己的手机上提名，信物飞到领队的手机 */
+  ajieCompose: [S(5.1), S(5.35)] as const,
+  ajieTap: S(5.6),
+  ajieFlight: [S(5.65), S(6.1)] as const,
+  /** 领队的手机收到提名；AI 评估三条代价 */
+  heroBanner: [S(6.0), S(6.25)] as const,
+  nominationIn: [S(6.2), S(6.5)] as const,
+  evalRows: [S(6.7), S(7.0), S(7.3)] as const,
+  applyCursor: [S(7.75), S(8.1)] as const,
+  applyClick: APPLY,
+  /** 涟漪：波前到哪块屏，哪块屏插入 20:00 并翻到 v1.1（各屏的时刻按到手机的距离算，见 Constellation） */
+  wave: [APPLY, APPLY + sec(1.0)] as const,
+  nominationSheetOut: [S(8.6), S(8.9)] as const,
+  /** 时间卡：出发当天；车机屏在它的位置上亮起 */
+  timeCard: [S(9.6), S(9.85), S(10.7), S(11.0)] as const,
+  carIn: [S(9.8), S(10.3)] as const,
+  /** 今天的路线 → 投递到车机导航（领队再点一下，docs/02 Tier 0 深链）→ 车机导航接手；时间卡收起之后才出现 */
+  routeSheet: [S(11.0), S(11.3), S(12.9), S(13.2)] as const,
+  dispatchCursor: [S(11.45), S(11.8)] as const,
+  dispatchClick: S(11.95),
+  carFlight: [S(12.0), S(12.55)] as const,
+  carRoute: [S(12.55), S(13.35)] as const,
+  /** 全景停住，然后回到电脑的窗口 */
+  return: [S(14.6), S(15.3)] as const,
+  /** 窗口里：提名处理完收成一行，同步列表接上（宽视窗右栏）；手机布局以底部抽屉出现 */
+  nominationFold: [S(8.8), S(9.1)] as const,
+  syncIn: [S(9.0), S(9.3)] as const,
+  syncSheet: [S(13.3), S(13.6)] as const,
 
   /* ── 04 幕收尾 · 做成可分享的路书（ShareRoadbook，PRD-03 S-C10、docs/09 §9.0） ─────── */
   /** 全家都同步到 v1.1 后，领队点标题栏的「做成可分享的路书」 */
-  shareCursor: [s(0.66), s(0.685)] as const,
+  shareCursor: [S(15.45), S(15.75)] as const,
   shareClick: SHARE_CLICK,
   sharePageScene: [...sceneIn(SHARE_CLICK)] as const,
   /** 卡片先是 App 的默认外观，随后换上按路线生成的皮肤（河西走廊 → 敦煌金） */
-  skinWash: [s(0.725), s(0.75)] as const,
+  skinWash: [S(16.5), S(16.9)] as const,
   /** 分享到家庭群 → 亲友的手机上打开分享页 */
-  postCursor: [s(0.82), s(0.845)] as const,
-  postClick: s(0.855),
-  visitorIn: [s(0.86), s(0.885)] as const,
+  postCursor: [S(17.3), S(17.65)] as const,
+  postClick: S(17.8),
+  visitorIn: [S(17.85), S(18.3)] as const,
   /** 访客点「我也做一份」→ AI 对话的入口（S-C01） */
-  makeMineCursor: [s(0.895), s(0.918)] as const,
-  makeMineClick: s(0.928),
-  chatIn: [s(0.932), s(0.952)] as const,
+  makeMineCursor: [S(18.6), S(18.9)] as const,
+  makeMineClick: S(19.05),
+  chatIn: [S(19.1), S(19.5)] as const,
 
   /* ── 已不挂载的旧场景（ChatScene / CockpitScene / Deliver）仍引用的键，取值在全局进度之外，保持静止 ── */
   ...legacyKeys(),
@@ -242,6 +267,18 @@ export const CAMERA: readonly CameraShot[] = [
   { t: [M(9.55), M(10.15)] },
 ];
 
+/**
+ * 04 幕「全家的每一块屏幕」的舞台镜头（Constellation 的摄影机，对准各台设备的 data-cam）：
+ * 揭幕后推近领队的手机看清提名与 AI 评估，点下之后拉远看涟漪；投递时推向车机，最后拉远停在全景。
+ * 手机布局只在车机这一下推近。
+ */
+export const STAGE_CAMERA: readonly CameraShot[] = [
+  { t: [S(5.85), S(6.4)], target: 'dev-hero', zoom: 2, pad: 14 },
+  { t: [APPLY + sec(0.05), APPLY + sec(0.65)] },
+  { t: [S(12.3), S(12.85)], target: 'dev-car', zoom: 1.8, zoomNarrow: 1.35, pad: 18 },
+  { t: [S(13.5), S(14.1)] },
+];
+
 /** 字幕：一拍一句大白话（Captions.tsx）；不超过 22 个字，手机上最多两行 */
 export const CUES: readonly Cue[] = [
   { at: 0, text: '像聊天一样，把这趟旅行说出来' },
@@ -258,12 +295,17 @@ export const CUES: readonly Cue[] = [
   { at: M(5.6), text: '打开一个选项，预估价当场更新' },
   { at: M(8.3), text: '发给旅行社之前，自己勾选要发出的信息' },
   { at: M(9.8), text: '咨询发出，回复会出现在行程空间' },
-  { at: s(0.01), text: '自驾草案和旅行社咨询，并排放在行程空间' },
-  { at: s(0.105), text: '家人用一个链接加入' },
-  { at: s(0.355), text: '阿杰提名一个地点，AI 只算代价，不替大家决定' },
-  { at: s(0.512), text: '领队确认，全家的设备同步到 v1.1' },
-  { at: s(0.695), text: '再一键做成可分享的路书' },
-  { at: s(0.855), text: '亲友看完，也能从一句话开始做一份' },
+  { at: S(0.2), text: '自驾草案和旅行社咨询，并排放在行程空间' },
+  { at: S(1.75), text: '家人用一个链接加入' },
+  { at: S(4.0), text: '全家每个人的屏幕上，都是这一份行程' },
+  { at: S(5.15), text: '阿杰在自己的手机上，提名今晚去夜市' },
+  { at: S(6.6), text: 'AI 只算代价，不替大家做决定' },
+  { at: APPLY, text: '领队点一下，每一块屏幕同时变成 v1.1' },
+  { at: S(11.0), text: '出发当天，今天的路线一键交给车机导航' },
+  { at: S(12.55), text: '车高 2.28 米：导航直接开到地面停车场' },
+  { at: S(13.7), text: '一份行程，每一块屏幕都是同一个版本' },
+  { at: SHARE_CLICK, text: '再一键做成可分享的路书' },
+  { at: T.postClick, text: '亲友看完，也能从一句话开始做一份' },
 ];
 
 /**
@@ -298,6 +340,6 @@ export const CHAPTER_POINTS: Record<ActId, { enter: number; still: number }> = {
   drive: { enter: local('drive', R(0) + FADE + sec(0.05)), still: local('drive', R(9.6)) },
   // 静帧：咨询已发出、侧栏「行程空间」出现角标
   match: { enter: local('match', M(0) + FADE + sec(0.05)), still: local('match', M(10.9)) },
-  // 静帧取亲友刚打开分享页的一刻：换上皮肤的分享卡片、角标与 AI 标识、「我也做一份」都在画面里（手机宽度也看得到皮肤）
-  share: { enter: (FADE + sec(0.05)) / (ACTS.share[1] - ACTS.share[0]), still: 0.89 },
+  // 静帧取「全家的每一块屏幕」停住的一刻：五块屏都是 v1.1，车机导航已接手今天的路线（2026-10-29 起，原为亲友打开分享页）
+  share: { enter: local('share', S(0) + FADE + sec(0.05)), still: local('share', S(14.3)) },
 };

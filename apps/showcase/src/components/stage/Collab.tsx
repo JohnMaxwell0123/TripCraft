@@ -2,7 +2,7 @@
 
 import type { ReactNode } from 'react';
 import { motion, useTransform } from 'framer-motion';
-import { DAYS, LISTING_COVERS, TRIPS, qrPath, type PlaceCategory } from '@/data/trip';
+import { DAYS, LISTING_COVERS, TRIPS, type PlaceCategory } from '@/data/trip';
 import { ease, useFade, useFadeStyle, useFadeVisibility, useRange, useStep, useVisibility } from '@/lib/motion';
 import { T, sec } from './timeline';
 import { Avatar, Scene, TapCursor, Toast, useProgress, type AvatarTone } from './primitives';
@@ -10,7 +10,8 @@ import { Badge, CatMark, CatTile, btn } from './ui';
 import { RouteGlyph } from './RouteGlyph';
 import { NominationCard } from './Recommend';
 import { DeviceSync } from './SyncFinale';
-import { CarIcon, CheckIcon, ClockIcon, CopyIcon, LinkIcon, ShareIcon, SparklesIcon } from '@/components/common/Icons';
+import { useConstellation } from './Constellation';
+import { CarIcon, CheckIcon, ClockIcon, CopyIcon, HeightIcon, LinkIcon, NavigationIcon, ShareIcon, SparklesIcon } from '@/components/common/Icons';
 
 /**
  * 04 幕 · 行程空间：多人共享与多端同步（docs/15、PRD-01 支柱 3）
@@ -20,9 +21,12 @@ import { CarIcon, CheckIcon, ClockIcon, CopyIcon, LinkIcon, ShareIcon, SparklesI
  * 领队用链接邀请家人（加入后可查看与提名，改动由领队确认）→ 阿杰、小雨加入 →
  * 阿杰提名一个地点，AI 评估代价 → 领队确认，D0 晚上插入新安排，版本 v1.0 → v1.1 → 逐台设备同步 →
  * 领队点标题栏的「做成可分享的路书」，下一屏就是它的结果（ShareRoadbook.tsx）。
+ *
+ * 导演版（2026-10-29）：家人加入之后，镜头拉远（Constellation）：这扇视窗只是全家的屏幕之一。宽视窗里提名与确认发生在
+ * 领队的手机上，视窗（我的电脑）按波前到达的时刻插入 20:00、翻到 v1.1；手机布局的视窗就是领队的手机，提名与「今天的路线 →
+ * 投递到车机导航」都以底部抽屉出现在这里。邀请只留链接（二维码面板删了），两人加入合成一条提示。
  */
 
-const QR = qrPath();
 const [XIXING] = TRIPS;
 
 export function TripSpaceScene() {
@@ -54,16 +58,19 @@ export function TripSpaceScene() {
         </aside>
 
         <InvitePopover />
+        {/* 手机布局：视窗就是领队的手机——提名、今天的路线与同步都以底部抽屉出现 */}
         <MobileSheet range={[T.nominationIn[0], T.nominationIn[1], T.nominationSheetOut[0], T.nominationSheetOut[1]]}>
           <NominationCard />
         </MobileSheet>
-        <MobileSheet range={[T.syncIn[0], T.syncIn[1]]}>
+        <MobileSheet range={T.routeSheet}>
+          <TodayRoute />
+        </MobileSheet>
+        <MobileSheet range={[T.syncSheet[0], T.syncSheet[1]]}>
           <DeviceSync />
         </MobileSheet>
 
         <div className="pointer-events-none absolute inset-x-4 top-3 z-50 flex flex-col items-center gap-2">
-          <Toast range={T.toastAJie}>阿杰 通过邀请链接加入</Toast>
-          <Toast range={T.toastXiaoyu}>小雨 通过邀请链接加入</Toast>
+          <Toast range={T.joinToast}>阿杰、小雨 通过邀请链接加入</Toast>
         </div>
       </div>
     </Scene>
@@ -106,7 +113,8 @@ function PlanStrip() {
 /* ── 版本号：领队确认后 v1.0 → v1.1 ── */
 function VersionBadge() {
   const p = useProgress();
-  const v11 = useStep(p, [T.version]) === 1;
+  const { updateAt } = useConstellation();
+  const v11 = useStep(p, [updateAt('window')]) === 1;
   return <Badge tone={v11 ? 'success' : 'neutral'}>{v11 ? 'v1.1' : 'v1.0'}</Badge>;
 }
 
@@ -160,7 +168,7 @@ function ShareButton() {
   );
 }
 
-/* ── 邀请面板：链接 + 二维码，写清加入者的权限 ── */
+/* ── 邀请面板：一个链接 + 复制，写清加入者的权限 ── */
 function InvitePopover() {
   const p = useProgress();
   const [a, b, c, d] = T.invitePopover;
@@ -174,30 +182,22 @@ function InvitePopover() {
     <motion.div
       role="dialog"
       aria-label="邀请同行人"
-      className="ui-float absolute right-4 top-2 z-40 w-[min(330px,calc(100%-2rem))] rounded-ui-panel p-4 !shadow-ui-pop"
+      className="ui-float absolute right-4 top-2 z-40 w-[min(300px,calc(100%-2rem))] rounded-ui-panel p-3.5 !shadow-ui-pop"
       style={{ opacity, y, visibility }}
     >
       <p className="text-[15px] font-semibold text-ui-ink">邀请同行人</p>
-      <div className="mt-3 flex gap-3">
-        <span className="shrink-0 rounded-ui-ctl border border-ui-line bg-white p-1.5">
-          <svg viewBox="-1 -1 27 27" className="block h-[84px] w-[84px]" shapeRendering="crispEdges" aria-hidden>
-            <path d={QR} fill="#241E20" />
-          </svg>
+      <div className="mt-2.5 flex items-center gap-2">
+        <span className="flex h-8 min-w-0 flex-1 items-center gap-1.5 rounded-ui-ctl bg-ui-sunken px-2 text-xs tabular-nums text-ui-ink">
+          <LinkIcon className="h-3.5 w-3.5 shrink-0 text-ui-ink-3" />
+          <span className="truncate">tc.trip/j/7QX</span>
         </span>
-        <div className="flex min-w-0 flex-1 flex-col gap-2">
-          <span className="flex h-8 items-center gap-1.5 rounded-ui-ctl bg-ui-sunken px-2 text-xs tabular-nums text-ui-ink">
-            <LinkIcon className="h-3.5 w-3.5 shrink-0 text-ui-ink-3" />
-            <span className="truncate">tc.trip/j/7QX</span>
-          </span>
-          <motion.span className={`${btn.primary} relative w-full`} style={{ scale: press }}>
-            {copied ? <CheckIcon className="h-3.5 w-3.5" /> : <CopyIcon className="h-3.5 w-3.5" />}
-            {copied ? '已复制链接' : '复制链接'}
-            <TapCursor approach={T.copyCursor} clickAt={T.copyClick} hideAt={T.copyClick + sec(0.5)} className="left-1/2 top-4" />
-          </motion.span>
-          <p className="text-xs text-ui-ink-3">微信扫码或打开链接即可加入</p>
-        </div>
+        <motion.span className={`${btn.primary} relative`} style={{ scale: press }}>
+          {copied ? <CheckIcon className="h-3.5 w-3.5" /> : <CopyIcon className="h-3.5 w-3.5" />}
+          {copied ? '已复制' : '复制链接'}
+          <TapCursor approach={T.copyCursor} clickAt={T.copyClick} hideAt={T.copyClick + sec(0.4)} className="left-1/2 top-4" />
+        </motion.span>
       </div>
-      <p className="mt-3 rounded-ui-ctl bg-ui-sunken px-2.5 py-2 text-xs leading-relaxed text-ui-ink-2">加入者可以查看行程、提名地点；改动由你确认后生效。</p>
+      <p className="mt-2.5 text-xs leading-relaxed text-ui-ink-2">加入者可以查看行程、提名地点；改动由你确认后生效。</p>
     </motion.div>
   );
 }
@@ -251,7 +251,10 @@ function TimeRow({ time, cat, text }: { time: string; cat: PlaceCategory; text: 
 
 function InsertedRow() {
   const p = useProgress();
-  const [a, b] = T.insertRow;
+  const { updateAt } = useConstellation();
+  // 波前到达这块屏的一刻插入（宽视窗是「我的电脑」，手机布局就是领队的手机）
+  const a = updateAt('window');
+  const b = a + sec(0.35);
   const height = useRange(p, [a, b], [0, 32]);
   const fade = useFadeStyle(p, a + (b - a) * 0.4, b);
   const highlight = useRange(p, [b, b + sec(1.2)], [1, 0.4]);
@@ -276,11 +279,14 @@ function NominationPanel() {
   const p = useProgress();
   const emptyOpacity = useRange(p, [T.nominationIn[0] - sec(0.2), T.nominationIn[0]], [1, 0]);
   const emptyVisibility = useFadeVisibility(emptyOpacity);
+  const { updateAt } = useConstellation();
+  const applied = updateAt('window');
   const [a, b] = T.nominationIn;
   const y = useRange(p, [a, b], [10, 0], { easing: ease.out, rest: 0 });
-  const pending = useStep(p, [a, T.applyClick]);
-  // 处理完收成一行：整张卡淡出并收起高度，「已加入 D0」一行长出来，下面的同步列表才放得下三台设备
-  const [f0, f1] = T.nominationFold;
+  const pending = useStep(p, [a, applied]);
+  // 处理完收成一行：整张卡淡出并收起高度，「已加入 D0」一行长出来，下面的同步列表才放得下全家的屏幕
+  const f0 = applied + sec(0.25);
+  const f1 = applied + sec(0.6);
   const fMid = f0 + (f1 - f0) * 0.5;
   const cardOpacity = useRange(p, [a, b, f0, fMid], [0, 1, 1, 0]);
   const cardVisibility = useFadeVisibility(cardOpacity);
@@ -303,7 +309,7 @@ function NominationPanel() {
         </motion.p>
         <motion.div className="overflow-hidden" style={{ maxHeight: cardMax }}>
           <motion.div style={{ opacity: cardOpacity, visibility: cardVisibility, y }}>
-            <NominationCard />
+            <NominationCard cursor={false} appliedAt={applied} />
           </motion.div>
         </motion.div>
         <motion.div className="overflow-hidden" style={{ maxHeight: doneMax }}>
@@ -323,12 +329,45 @@ function NominationPanel() {
 
 function SyncReveal() {
   const p = useProgress();
-  const fade = useFadeStyle(p, T.syncIn[0], T.syncIn[1]);
-  const y = useRange(p, T.syncIn, [8, 0], { rest: 0 });
+  const { updateAt } = useConstellation();
+  const at = updateAt('window') + sec(0.5);
+  const fade = useFadeStyle(p, at, at + sec(0.3));
+  const y = useRange(p, [at, at + sec(0.3)], [8, 0], { rest: 0 });
   return (
     <motion.div style={{ ...fade, y }}>
       <DeviceSync />
     </motion.div>
+  );
+}
+
+/* ── 手机布局：今天的路线 → 投递到车机导航（领队再点一下；由车机导航带路） ── */
+function TodayRoute() {
+  const p = useProgress();
+  const sent = useStep(p, [T.dispatchClick]) === 1;
+  const press = useRange(p, [T.dispatchClick - sec(0.12), T.dispatchClick, T.dispatchClick + sec(0.12)], [1, 0.96, 1]);
+  return (
+    <div>
+      <p className="text-xs font-medium text-ui-ink-3">今天的路线 · 9/24 · D0</p>
+      <ol className="mt-1.5 flex flex-col">
+        <li className="flex h-8 items-center gap-2 text-[13px] text-ui-ink">
+          <CatMark cat="transport" size={20} />
+          中川机场 · 取车
+        </li>
+        <li className="flex h-8 items-center gap-2 text-[13px] font-medium text-ui-ink">
+          <CatMark cat="stay" size={20} />
+          黄河边酒店 · 地面停车场入口
+        </li>
+      </ol>
+      <p className="mt-1 inline-flex items-center gap-1 rounded-full bg-ui-accent/10 px-2 text-xs leading-5 text-ui-accent-ink">
+        <HeightIcon className="h-3 w-3" />
+        车高 2.28 m（画像）· 不进 2.0 m 地库
+      </p>
+      <motion.span className={`${sent ? `${btn.secondary} !text-ui-success` : btn.primary} relative mt-3 h-10 w-full`} style={{ scale: press }}>
+        {sent ? <CheckIcon className="h-3.5 w-3.5" /> : <NavigationIcon className="h-3.5 w-3.5" />}
+        {sent ? '已投递 · 由车机导航带路' : '投递到车机导航'}
+        <TapCursor approach={T.dispatchCursor} clickAt={T.dispatchClick} hideAt={T.dispatchClick + sec(0.4)} className="left-1/2 top-5" />
+      </motion.span>
+    </div>
   );
 }
 

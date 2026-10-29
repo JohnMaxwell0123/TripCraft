@@ -13,6 +13,7 @@ import { DRIVE_FLIGHTS, Workspace } from './Workspace';
 import { MatchScene } from './MatchScene';
 import { DETAIL_FLIGHTS, RouteDetail } from './RouteDetail';
 import { TripSpaceScene } from './Collab';
+import { ConstellationStage } from './Constellation';
 import { ShareRoadbookScene } from './ShareRoadbook';
 import { BuildingIcon, MapIcon, MessageIcon } from '@/components/common/Icons';
 
@@ -26,6 +27,8 @@ import { BuildingIcon, MapIcon, MessageIcon } from '@/components/common/Icons';
  *
  * 导演版（2026-10-29）：视窗里有一台虚拟摄影机（timeline.ts 的 CAMERA），每一拍只推近此刻唯一要看的地方；
  * 视窗下方一行字幕（CUES）用大白话说这一拍；跨区域的因果用「飞行」交代（FLIGHTS，见各场景文件）。
+ * 04 幕镜头拉远（ConstellationStage）：这扇视窗只是全家的屏幕之一——领队在手机上点一下，每块屏同时变成 v1.1，
+ * 出发当天今天的路线投递到车机导航，由车机导航带路。
  */
 
 const FLIGHTS: readonly FlightSpec[] = [...DIALOGUE_FLIGHTS, ...DRIVE_FLIGHTS, ...DETAIL_FLIGHTS];
@@ -49,7 +52,7 @@ const COPY: Record<ActId, { title: string; short: string; desc: string }> = {
   share: {
     title: '行程空间 · 共享与同步',
     short: '共享同步',
-    desc: '等旅行社回复时，全家用链接加入、提名地点，领队确认后同步到每台设备；再一键做成可分享的路书，亲友也能做一份。',
+    desc: '全家用链接加入。领队在手机上确认，每块屏都变成同一个版本；出发当天，路线交给车机导航。',
   },
 };
 
@@ -83,7 +86,8 @@ const SECTIONS: WindowSection[] = [
   { at: T.crossClick, nav: 'routes', status: '按匹配度排序 · 付费推广不影响匹配度', statusRight: '旅行社评分单独显示，不计入匹配度' },
   { at: T.sendClick, nav: 'routes', status: '咨询已发出 · 只含你勾选的信息', statusRight: '回复会出现在行程空间' },
   { at: T.spaceClick, nav: 'trips', status: '行程空间 · 3 人可查看与提名', statusRight: '改动由领队确认后生效' },
-  { at: T.version, nav: 'trips', status: 'v1.1 · 已同步到 3 台设备', statusRight: '离线可读' },
+  { at: T.applyClick, nav: 'trips', status: 'v1.1 · 全家的屏幕都已同步', statusRight: '离线可读' },
+  { at: T.carRoute[0], nav: 'trips', status: '今天的路线已投递到车机导航', statusRight: '由车机导航带路' },
   { at: T.shareClick, nav: 'trips', status: '皮肤只作用于这趟行程的页面与分享', statusRight: '自动生成的一套对所有人免费' },
   { at: T.postClick, nav: 'trips', status: '只读链接 · 亲友不用注册就能看', statusRight: '分享页已隐去证件、房号与手机号' },
   { at: T.makeMineClick, nav: 'trips', status: '「我也做一份」从 AI 对话开始', statusRight: '只记录来源，不带分享者的个人信息' },
@@ -105,6 +109,7 @@ export function ScrollyStage() {
       debugHook="__setStageProgress"
       edge="sheet"
     >
+      <ConstellationStage>
       <AppWindow
         title="TripCraft"
         product="TripCraft"
@@ -123,6 +128,7 @@ export function ScrollyStage() {
         <TripSpaceScene />
         <ShareRoadbookScene />
       </AppWindow>
+      </ConstellationStage>
       <Captions cues={CUES} />
     </StageShell>
   );
