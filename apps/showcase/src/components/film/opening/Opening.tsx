@@ -153,7 +153,8 @@ export function buildOpening(layout: Layout, sync: SyncModel): OpeningModel {
     fan = box(fork.x + 290, Y + 510, fanW, fanH);
     p1 = [{ x: bubble.x1, y: Yb }, { x: Xt, y: Yb }, s228];
     p2 = [s228, { x: Xt, y: Y }, fork, { x: fork.x, y: fan.y0 + fanH / 2 }, { x: fan.x0, y: fan.y0 + fanH / 2 }];
-    p3 = [fork, { x: LX, y: Y }];
+    // 自驾这一支从弯道的起点接着主干往前走（旅行社那一支在这里弯出去），交汇处不留空
+    p3 = [{ x: fork.x - R, y: Y }, { x: LX, y: Y }];
   } else {
     // 竖屏：一根竖直的主干，正对封面，从手机顶边进去
     const X = cover.x;
@@ -170,7 +171,7 @@ export function buildOpening(layout: Layout, sync: SyncModel): OpeningModel {
     fan = box(X + 268, fork.y + 240, pw, 128 * 1.2);
     p1 = [{ x: bubble.x0, y: Yb }, { x: X, y: Yb }, s228];
     p2 = [s228, fork, { x: fan.x0 + pw / 2, y: fork.y }, { x: fan.x0 + pw / 2, y: fan.y0 }];
-    p3 = [fork, { x: X, y: TY }];
+    p3 = [{ x: X, y: fork.y - R }, { x: X, y: TY }];
   }
   const tracks: [Track, Track, Track] = [makeTrack(p1, R), makeTrack(p2, R), makeTrack(p3, R)];
   const along = (tr: Track, pt: Pt) => {
@@ -225,24 +226,19 @@ export function buildOpening(layout: Layout, sync: SyncModel): OpeningModel {
   shots.push({ t: O.toList[1] + 0.5, from: O.toList[1], f: listF, ease: ease.smooth });
   // 第七站：镜头停在整张画像上不动（问与答靠前六站退成浅灰来突出，不推镜头，不切字）
   // 分岔：第七站、分岔、旅行社线路卡
+  // 竖屏的画框下半部留给兰州、张掖：线头走到那里之前是它的去处，走过之后这一格正好填满
   const forkView: Box = land
     ? { x0: s228.x - 260, y0: s228.y - 118, x1: fan.x1 + 200, y1: fan.y1 + 150 }
-    : { x0: cover.x - 210, y0: s228.y - 150, x1: cover.x + 1120, y1: fan.y1 + 420 };
+    : { x0: cover.x - 210, y0: s228.y - 150, x1: cover.x + 1160, y1: fan.y1 + 420 };
   const forkF = topAnchored(forkView, land ? 16 / 9 : 9 / 16);
   shots.push({ t: O.toFork[1], from: O.toFork[0], f: forkF, ease: ease.smooth });
-  // 主线：分岔的画面停住，线头走过兰州、张掖；然后一次摇到「四座城 + 领队的手机」（旅行社线路退成浅灰，留在画面左下）
+  // 主线：分岔的画面停住，线头走过兰州、张掖；然后一次摇到后面两座城与领队的手机（旅行社线路退成浅灰）。
+  // 横屏摇到「四座城 + 手机」，旅行社线路留在画面左下；竖屏往下摇到「嘉峪关、敦煌 + 手机」
   const panAt = timeAt(HEAD3, stations[2][1]) - 0.05;
-  if (land) {
-    const routeF = topAnchored({ x0: cities[0].x - 300, y0: cities[0].y - 340, x1: heroBody.x0 + 560, y1: cities[0].y + 520 }, 16 / 9);
-    shots.push({ t: panAt, f: forkF, ease: ease.linear }, { t: panAt + 0.85, from: panAt, f: routeF, ease: ease.smooth });
-  } else {
-    // 竖屏：窄一些的画框跟着线头往下走，站名更大
-    const follow3 = (h: number): Frame => {
-      const p = pointAt(tracks[2], Math.min(h, tracks[2].len));
-      return { x: cover.x + 380, y: Math.max(forkF.y, p.y + 420), w: 1160, h: 2062 };
-    };
-    shots.push(...sampled(follow3, HEAD3, HEAD3.launch, O.toPhone[0]));
-  }
+  const routeF = land
+    ? topAnchored({ x0: cities[0].x - 380, y0: cities[0].y - 340, x1: heroBody.x0 + 560, y1: cities[0].y + 520 }, 16 / 9)
+    : topAnchored({ x0: forkView.x0, y0: cities[2].y - 150, x1: forkView.x1, y1: heroBody.y1 + 80 }, 9 / 16);
+  shots.push({ t: panAt, f: forkF, ease: ease.linear }, { t: panAt + 0.85, from: panAt, f: routeF, ease: ease.smooth });
   // 手机亮起：推到整部手机
   const phoneView: Box = land
     ? { x0: heroBody.x0 - 120, y0: heroBody.y0 - 100, x1: heroBody.x1 + 120, y1: heroBody.y1 + 100 }
@@ -475,6 +471,9 @@ function Fan({ o, at, fresh }: { o: OpeningModel; at: number; fresh: readonly (r
   const f = o.fan;
   const caption = useKeys(t, [at - 0.1, at + 0.3, HEAD3.launch, HEAD3.launch + 0.5], [0, 1, 1, 0.35], ease.out);
   const captionShown = useShown(caption);
+  // 主线接着走自驾时，三张卡作为一叠一起退成浅灰（另一条路还在，只是镜头的注意力移开了）；
+  // 逐张变淡会让下面两张卡的字从最上面一张透出来
+  const recede = useKeys(t, [HEAD3.launch, HEAD3.launch + 0.5], [1, 0.35], ease.out);
   const land = o.layout === 'land';
   return (
     <>
@@ -484,17 +483,19 @@ function Fan({ o, at, fresh }: { o: OpeningModel; at: number; fresh: readonly (r
         </p>
         <p className="mt-1 whitespace-nowrap text-[22px] leading-[1.4] text-[#241E20]/60">匹配度为信息参考，以旅行社报价与合同为准</p>
       </Layer>
-      {[2, 1, 0].map((i) => (
-        <FanCard key={i} i={i} x={f.x0 + i * 30} y={f.y0 + i * 26} at={at + i * 0.08} scale={land ? CARD_SCALE : 1.2} fresh={fresh} />
-      ))}
+      <motion.div style={{ opacity: recede, willChange: 'opacity' }}>
+        {[2, 1, 0].map((i) => (
+          <FanCard key={i} i={i} x={f.x0 + i * 30} y={f.y0 + i * 26} at={at + i * 0.08} scale={land ? CARD_SCALE : 1.2} fresh={fresh} />
+        ))}
+      </motion.div>
     </>
   );
 }
 
 function FanCard({ i, x, y, at, scale, fresh }: { i: number; x: number; y: number; at: number; scale: number; fresh: readonly (readonly [number, number])[] }) {
   const t = useFilmTime();
-  // 出现；主线接着走自驾时退成浅灰（另一条路还在，只是镜头的注意力移开了）
-  const k = useKeys(t, [at, at + 0.4, HEAD3.launch, HEAD3.launch + 0.5], [0, 1, 1, 0.35], ease.out);
+  // 出现（退成浅灰在外面的一叠上做）
+  const k = useKeys(t, [at, at + 0.4], [0, 1], ease.out);
   const shown = useShown(k);
   const dy = useTransform(k, (v) => (1 - v) * -24);
   const fill = useKeys(t, [at + 0.2, at + 1.0], [0, CARDS[i].score / 100], ease.out);
