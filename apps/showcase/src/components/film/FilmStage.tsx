@@ -56,7 +56,7 @@ export function FilmStage() {
         <p className="mt-4 max-w-[760px] text-[17px] leading-[1.65] text-[#241E20]/75 sm:text-lg">
           AI 追问一句就读懂这一家人要什么，自驾路线和持证旅行社线路都从这份画像出来。领队确认的每一处改动，全家每一块屏都是同一个版本；出发当天，路线交给车机导航。
         </p>
-        <FilmClock duration={FILM_DURATION} autoplay={false}>
+        <FilmClock duration={FILM_DURATION}>
           <Player />
         </FilmClock>
         <ol className="sr-only">

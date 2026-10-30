@@ -5,7 +5,7 @@ import { motion, useTransform } from 'framer-motion';
 import { ease } from '@/lib/motion';
 import { layoutRect } from '@/components/stage/camera';
 import { CheckIcon } from '@/components/common/Icons';
-import { camAt, fitScale, shotCam, useCamera, useFilmTime, useKeys, useRaster, useShown, type Cam, type CamRef, type Frame, type Shot, type View } from '../clock';
+import { camAt, fitScale, shotCam, useFilmTime, useKeys, useRaster, useShown, type Cam, type CamRef, type Frame, type Shot, type View } from '../clock';
 import { CAR, CarDisplay, Dim, LAPTOP, Laptop, PHONE, Phone, Placed, TABLET, Tablet } from '../devices';
 import { WorldLine, WorldStations, headAt, makeTrack, openGaps, pointAt, timeAt, type Box, type HeadMotion, type Pt, type Track } from '../line';
 import { CarNavScreen, JoinToast, NominationSheet, TodaySheet, TripLaptopScreen, TripPhoneScreen, TripTabletScreen, type Joins, type Sweep } from '../screens';
@@ -558,28 +558,7 @@ export function syncBeats(model: SyncModel) {
 export const BG_NIGHT = '#FFFFF9';
 export const BG_DAWN = '#EEF1F2';
 
-/** 实验页用：单独播高潮 */
-export function SyncScene({ layout, view }: { layout: Layout; view: View }) {
-  const t = useFilmTime();
-  const worldRef = useRef<HTMLDivElement>(null);
-  const m = useMeasured(worldRef, measureSync, GUESS, [layout]);
-  const model = useSyncModel(layout, view, m);
-  const { transform, cam } = useCamera(t, model.camFn, view);
-  // 出发当天：一层白天冷白的底色淡入（只改透明度；直接改底色会每一帧重画整个画面）
-  const dawnIn = useKeys(t, [T.dawn[0], T.dawn[1]], [0, 1]);
-  return (
-    <div data-film className="absolute inset-0 overflow-hidden" style={{ background: BG_NIGHT }}>
-      <motion.div aria-hidden className="absolute inset-0" style={{ background: BG_DAWN, opacity: dawnIn, willChange: 'opacity' }} />
-      <motion.div ref={worldRef} className="absolute left-0 top-0" style={{ transform, transformOrigin: '0 0' }}>
-        <SyncWorld model={model} />
-      </motion.div>
-      <SyncOverlays model={model} cam={cam} view={view} />
-    </div>
-  );
-}
-
-export { GUESS as SYNC_GUESS, HEAD as SYNC_HEAD, frameOf, pad, union, boxOf };
-export type { World as SyncWorldModel, Dev as SyncDev };
+export { GUESS as SYNC_GUESS };
 
 /* ═════════════════════ 车机 ═════════════════════ */
 

@@ -8,7 +8,7 @@ import { ease, interp, type Easing } from '@/lib/motion';
  * 片子的时钟与镜头
  *
  * 时钟：一条以「秒」计的 MotionValue，rAF 推进，播放过程 0 React 重渲染。
- * window.__film 提供 play / seek：录制与截关键帧时用它对齐（?rec 时不自动播放，等录制脚本调用 play）。
+ * window.__film 提供 play / seek：逐帧录制与视觉巡检时用它对齐。
  * 舞台用 useFilmControl 控制播放（进入视口才播、离开就停、章节跳转、播完停在片尾）。
  * 镜头：世界坐标里的一串机位，缩放按对数插值，像镜头推拉而不是放大图片。
  * 世界里的东西按「原大」排版（手机 390 宽、电脑 1192 宽），镜头只缩小或在特写时适度放大，字始终清晰。
@@ -41,14 +41,13 @@ export function useFilmControl(): FilmControl {
   return c;
 }
 
-/** autoplay：实验页字体就绪后自动播；舞台交给 useFilmControl 控制（进入视口才播） */
-export function FilmClock({ duration, autoplay = true, children }: { duration: number; autoplay?: boolean; children: ReactNode }) {
+/** 片子的时钟；什么时候播由舞台用 useFilmControl 决定（进入视口才播、离开就停） */
+export function FilmClock({ duration, children }: { duration: number; children: ReactNode }) {
   const t = useMotionValue(0);
   const [status, setStatus] = useState<FilmStatus>('idle');
   const playing = useRef(false);
   const api = useRef<Omit<FilmControl, 't' | 'status' | 'duration'> | null>(null);
   useEffect(() => {
-    const manual = new URLSearchParams(window.location.search).has('rec');
     let raf = 0;
     let last = performance.now();
     const tick = (now: number) => {
@@ -83,19 +82,11 @@ export function FilmClock({ duration, autoplay = true, children }: { duration: n
     };
     api.current = { play, pause, seek };
     (window as unknown as Record<string, unknown>).__film = { duration, play, seek };
-    let timer = 0;
-    if (autoplay && !manual) {
-      const start = () => {
-        timer = window.setTimeout(() => play(0), 700);
-      };
-      document.fonts?.ready.then(start, start);
-    }
     return () => {
       cancelAnimationFrame(raf);
-      window.clearTimeout(timer);
       delete (window as unknown as Record<string, unknown>).__film;
     };
-  }, [duration, t, autoplay]);
+  }, [duration, t]);
   const control: FilmControl = {
     duration,
     t,
@@ -145,65 +136,7 @@ export function useBoxSize(ref: RefObject<HTMLElement | null>) {
   return size;
 }
 
-/* ═════════════════════ 镜头 ═════════════════════ */
-
-export interface Pose {
-  /** 到位的时刻（秒）；从上一个机位移动过来 */
-  t: number;
-  /** 画面中心（世界坐标） */
-  x: number;
-  y: number;
-  /** 缩放：1 = 原大 */
-  s: number;
-  /** 从上一个机位到这里的缓动（默认 smooth） */
-  ease?: Easing;
-  /** 从上一个机位出发的时刻（默认紧接上一个机位到位） */
-  from?: number;
-}
-
-/**
- * 世界镜头：返回世界层的 transform（transform-origin 为左上角）。
- * 缩放按对数插值；中心按「屏幕上的移动」插值——推拉时焦点稳定地滑向新位置，不先甩出去再回来。
- */
-/** 某一时刻的机位 → [平移 x, 平移 y, 缩放]：世界坐标 (wx, wy) 在屏幕上是 (x + s·wx, y + s·wy) */
-export function solvePose(v: number, P: readonly Pose[], V: { w: number; h: number }): [number, number, number] {
-  let cur = P[0];
-  let x = cur.x;
-  let y = cur.y;
-  let s = cur.s;
-  for (let i = 1; i < P.length; i++) {
-    const next = P[i];
-    const start = next.from ?? cur.t;
-    if (v <= start) break;
-    if (v >= next.t) {
-      cur = next;
-      x = next.x;
-      y = next.y;
-      s = next.s;
-      continue;
-    }
-    const k = (next.ease ?? ease.smooth)((v - start) / (next.t - start));
-    s = Math.exp(Math.log(cur.s) + (Math.log(next.s) - Math.log(cur.s)) * k);
-    // 中心的插值权重随缩放走：放大时晚一点到、缩小时早一点到，焦点在屏幕上匀速滑动
-    const w = cur.s === next.s ? k : (1 / s - 1 / cur.s) / (1 / next.s - 1 / cur.s);
-    x = cur.x + (next.x - cur.x) * w;
-    y = cur.y + (next.y - cur.y) * w;
-    break;
-  }
-  return [V.w / 2 - s * x, V.h / 2 - s * y, s];
-}
-
-export function useWorldCamera(t: MotionValue<number>, poses: readonly Pose[], view: { w: number; h: number }) {
-  const cfg = useRef({ poses, view });
-  cfg.current = { poses, view };
-  const transform = useTransform(t, (v) => {
-    const [x, y, s] = solvePose(v, cfg.current.poses, cfg.current.view);
-    return `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) scale(${s.toFixed(5)})`;
-  });
-  return { transform, cfg };
-}
-
-/* ═════════════════════ 镜头（取景框版）：机位写成「要装下的世界矩形」，任何画幅都成立 ═════════════════════ */
+/* ═════════════════════ 镜头：机位写成「要装下的世界矩形」，任何画幅都成立 ═════════════════════ */
 
 export interface View {
   w: number;
