@@ -1,6 +1,6 @@
 # TripCraft · 项目进度与会话交接备忘 (PROJECT_PROGRESS.md)
 
-> 本文件用于在新建 AI 对话（本机或云端会话）或多人协作时快速恢复项目上下文与执行进度。最后更新：2026-10-29。
+> 本文件用于在新建 AI 对话（本机或云端会话）或多人协作时快速恢复项目上下文与执行进度。最后更新：2026-10-30。
 
 ---
 
@@ -30,7 +30,7 @@
 | [`docs/00-overview-and-glossary.md`](docs/00-overview-and-glossary.md) | 宪法层 | 十条铁律、三条责任边界、术语表、未决事项 OI-001 ~ OI-025 |
 | [`spec/`](spec/) | 数据契约 | trip / node / brand / patch / profile / listing 六份 Schema |
 | [`tools/`](tools/) | 门禁 | validate-schemas、check-links、check-br025、check-trace |
-| [`apps/showcase/`](apps/showcase/) | 演示站 | Next.js 16 + React 19 静态导出；C 端四幕（约 61 秒，2026-10-29 导演版：镜头、字幕、飞行与 04 幕「全家的每一块屏幕」）+ B 端四章（约 68 秒） |
+| [`apps/showcase/`](apps/showcase/) | 演示站 | Next.js 16 + React 19 静态导出；C 端演示片「一根线」（约 45 秒，2026-10-30 发布会级重拍，`src/components/film/`）+ B 端四章（约 68 秒） |
 | [`docs/WHITEPAPER.md`](docs/WHITEPAPER.md) | 历史文档 | 早期白皮书，不作为现行口径 |
 | [`TRIPCRAFT_ARCH_PLAN_v2.md`](TRIPCRAFT_ARCH_PLAN_v2.md)、[`tripcraft_showcase_agent_refactoring_spec.md`](tripcraft_showcase_agent_refactoring_spec.md) | 历史任务书 | 已执行完毕，已标注历史 |
 | `TripCraft 商业可行性尽调…诊断报告.md` | AI 模拟报告 | **不是真实第三方尽调**，不得对外引用 |
@@ -64,6 +64,10 @@ PRD-01 ~ 05、ARC-01 ~ 09、ADR-001 ~ 008、DLV-01 ~ 03；新增 `check-trace` �
 - [DLV-04](docs/delivery/DLV-04-metrics-and-data-collection.md)：A-19 / A-20 的指标、事件、隐私做法与建议阈值；新增 F-M13-05 第一方统计与指标看板（P0 / 阶段 2）。
 - 演示站 C 端第 4 幕补「做成可分享的路书」镜头（S-C10），两层令牌落到演示站。
 
+### Phase 8：演示站 C 端重拍（2026-10-29 ~ 10-30）
+- 导演版（PR #4，未合并）：01–03 幕加镜头、字幕与飞行，04 幕「全家的每一块屏幕」与车机投递。
+- 发布会级重拍（方向 A「一根线」，业主选定）：首页 `#demo` 换成约 45 秒的演示片，静音、不读字也能记住三件事——说一句话 AI 就读懂这一家人、全家每一块屏同一个版本、出发当天路线交给车机导航。16:9 宽银幕与播放条，手机上是另一套构图的 9:16 竖屏；五轮重拍的评分表在 PR 里。规格见 SHOWCASE §4.2。
+
 ---
 
 ## 4. 下一步
@@ -93,6 +97,7 @@ PRD-01 ~ 05、ARC-01 ~ 09、ADR-001 ~ 008、DLV-01 ~ 03；新增 `check-trace` �
 ### 4.4 工程与文档卫生
 1. 演示站的 Next.js 16.4.0 构建时报已知安全漏洞（第一次构建会被拦下，重跑可继续）：待业主决定是否升级。
 2. `docs/07` §7.4.4 隐私政策要点第 5–7 条仍写「行程与照片不上传、存在用户设备本地」，与 v3 的账号与多端同步不一致，需按 ARC-07 与 DLV-04 改写。
+3. 演示站重拍之后待业主决定（2026-10-30）：PR #4（导演版）先合并还是直接关掉；旧的 C 端舞台文件（`ScrollyStage.tsx` 等，已不挂载）删不删；分享路书（S-C10）与行程皮肤在首页没有画面了，要不要在能力画廊补一张卡；演示片的声音开关留不留。
 
 ---
 
