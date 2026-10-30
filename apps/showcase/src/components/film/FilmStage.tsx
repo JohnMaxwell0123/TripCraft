@@ -23,12 +23,14 @@ interface Chapter {
   at: number;
   /** 减弱动态效果时这一章的静帧 */
   still: number;
+  /** 竖屏的静帧（与横屏不同时才写） */
+  stillPort?: number;
 }
 
 const CHAPTERS: Chapter[] = [
   { id: 'say', label: '一句话', at: 0, still: 9.6 },
-  // 两条路都在画面里、镜头还没摇走（横屏与竖屏都停在分岔的画面上）
-  { id: 'paths', label: '两条路', at: 12.5, still: 15.45 },
+  // 两条路都在画面里、兰州已经亮出来、镜头还没摇走（竖屏的线更长，兰州晚一点出现、镜头也晚一点摇）
+  { id: 'paths', label: '两条路', at: 12.5, still: 15.45, stillPort: 15.78 },
   { id: 'sync', label: '同一版本', at: 16.8, still: CLIMAX_AT + 8.3 },
   { id: 'car', label: '交给车机', at: CLIMAX_AT + 10.65, still: CLIMAX_AT + 16.4 },
 ];
@@ -141,7 +143,7 @@ function Player() {
     }
   };
   const jump = (c: Chapter) => {
-    if (reduced) control.seek(c.still);
+    if (reduced) control.seek(portrait ? (c.stillPort ?? c.still) : c.still);
     else {
       userPaused.current = false;
       control.play(c.at);
