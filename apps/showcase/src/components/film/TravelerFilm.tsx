@@ -3,7 +3,7 @@
 import { useMemo, useRef } from 'react';
 import { motion, useTransform } from 'framer-motion';
 import { ease } from '@/lib/motion';
-import { TimeShift, useCamera, useFilmTime, useKeys, useShown, type Cam, type CamRef, type View } from './clock';
+import { TimeGate, TimeShift, useCamera, useFilmTime, useKeys, useShown, type Cam, type CamRef, type View } from './clock';
 import { CLIMAX_AT, O, OpeningWorld, buildOpening, openingBeats, openingCamAt, openingShots } from './opening/Opening';
 import { BG_DAWN, BG_NIGHT, SYNC_GUESS, SyncOverlays, SyncWorld, T, macroStart, measureSync, syncBeats, useMeasured, useSyncModel, type Layout, type Prelude } from './sync/SyncScene';
 import { NOTE, pitch, useCues, type Cue, type FilmSound } from './sound';
@@ -92,10 +92,15 @@ export function TravelerFilm({ layout, view, sound }: { layout: Layout; view: Vi
     <div data-film className="absolute inset-0 overflow-hidden" style={{ background: BG_NIGHT }}>
       <motion.div aria-hidden className="absolute inset-0" style={{ background: BG_DAWN, opacity: dawnIn, willChange: 'opacity' }} />
       <motion.div ref={worldRef} className="absolute left-0 top-0" style={{ transform, transformOrigin: '0 0', contentVisibility: worldOn, willChange: 'transform' }}>
-        <OpeningWorld o={o} lw={sync.lw} until={CLIMAX_AT + 1.2} />
-        <TimeShift by={CLIMAX_AT}>
-          <SyncWorld model={sync} prelude={prelude} />
-        </TimeShift>
+        {/* 开场在高潮推近之后就退场，高潮在领队的手机进画面之前什么都看不见：各自只在自己的时段里跟着时钟走 */}
+        <TimeGate from={0} to={CLIMAX_AT + 1.3}>
+          <OpeningWorld o={o} lw={sync.lw} until={CLIMAX_AT + 1.2} />
+        </TimeGate>
+        <TimeGate from={heroFrom - 0.1} to={END_AT + 0.1}>
+          <TimeShift by={CLIMAX_AT}>
+            <SyncWorld model={sync} prelude={prelude} />
+          </TimeShift>
+        </TimeGate>
       </motion.div>
       <TimeShift by={CLIMAX_AT}>
         <SyncOverlays model={sync} cam={localCam} view={view} />
@@ -168,7 +173,7 @@ function EndCard({ layout, view }: { layout: Layout; view: View }) {
         {land ? null : <br />}
         <span className="relative inline-block text-[#FE3C01]">
           定下来
-          <motion.span aria-hidden className="absolute left-0 right-0 top-full block origin-left bg-[#FE3C01]" style={{ height: Math.max(2, big * 0.05), marginTop: big * 0.08, scaleX: line }} />
+          <motion.span aria-hidden className="absolute left-0 right-0 top-full block origin-left bg-[#FE3C01]" style={{ height: Math.max(2, big * 0.05), marginTop: big * 0.08, scaleX: line, willChange: 'transform' }} />
         </span>
         。
       </motion.p>

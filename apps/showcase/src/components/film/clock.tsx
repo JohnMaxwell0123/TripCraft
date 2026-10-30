@@ -109,6 +109,16 @@ export function TimeShift({ by, children }: { by: number; children: ReactNode })
   return <FilmTimeContext.Provider value={local}>{children}</FilmTimeContext.Provider>;
 }
 
+/**
+ * 子树只在 [from, to] 这段时间里跟着时钟走，之外停在边界上：时钟的值不再变，子树里的几百个插值就不再每帧重算。
+ * 只用在「这段时间之外整块看不见」的部分——边界上的样子，就是它在这段时间之外的样子。
+ */
+export function TimeGate({ from, to, children }: { from: number; to: number; children: ReactNode }) {
+  const t = useFilmTime();
+  const gated = useTransform(t, (v) => Math.min(to, Math.max(from, v)));
+  return <FilmTimeContext.Provider value={gated}>{children}</FilmTimeContext.Provider>;
+}
+
 /** 分段插值的简写：times 单调递增（秒） */
 export function useKeys(t: MotionValue<number>, times: readonly number[], values: readonly number[], easing: Easing = ease.smooth) {
   const cfg = useRef({ times, values, easing });

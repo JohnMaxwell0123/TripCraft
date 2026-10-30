@@ -5,7 +5,7 @@ import { motion, useTransform } from 'framer-motion';
 import { ease } from '@/lib/motion';
 import { layoutRect } from '@/components/stage/camera';
 import { CheckIcon } from '@/components/common/Icons';
-import { camAt, fitScale, shotCam, useFilmTime, useKeys, useRaster, useShown, type Cam, type CamRef, type Frame, type Shot, type View } from '../clock';
+import { TimeGate, camAt, fitScale, shotCam, useFilmTime, useKeys, useRaster, useShown, type Cam, type CamRef, type Frame, type Shot, type View } from '../clock';
 import { CAR, CarDisplay, Dim, LAPTOP, Laptop, PHONE, Phone, Placed, TABLET, Tablet } from '../devices';
 import { WorldLine, WorldStations, headAt, makeTrack, openGaps, pointAt, timeAt, type Box, type HeadMotion, type Pt, type Track } from '../line';
 import { CarNavScreen, JoinToast, NominationSheet, TodaySheet, TripLaptopScreen, TripPhoneScreen, TripTabletScreen, type Joins, type Sweep } from '../screens';
@@ -478,11 +478,12 @@ export function SyncWorld({ model, prelude }: { model: SyncModel; prelude?: Prel
   // 整片里这几块屏不发生重排，镜头推拉时不必重画
   const rowAt = () => -1;
   // 栅格：领队的手机在镜头静止的时刻各按当时的缩放重画一次——推到按钮停住时、退到整部手机停住时、全景停稳时。
+  // 全景这一次放在片名与屏下标签都停稳之后（wide + 0.9）：四块屏一起重画要几十毫秒，不让它撞上片名淡入
   // 其余的屏在进画面之前不渲染，进画面的那一刻起固定栅格，之后镜头再拉远只由合成器缩小；
   // 电脑在退到整部手机之前就进了画面，停住时也跟着重画一次
   const settle = (a: number): readonly [number, number] => [a, a + 0.06];
-  const freshHero = [...(prelude ? [[-1e6, prelude.heroFrom] as const] : []), ...(prelude?.settle ?? []).map(settle), settle(T.still + 0.15), settle(T.k2), settle(wide)];
-  const freshOf = (d: Exclude<Dev, 'hero'>): (readonly [number, number])[] => [[-1e6, entry[d]], ...(entry[d] < T.k2 ? [settle(T.k2)] : []), settle(wide)];
+  const freshHero = [...(prelude ? [[-1e6, prelude.heroFrom] as const] : []), ...(prelude?.settle ?? []).map(settle), settle(T.still + 0.15), settle(T.k2), settle(wide + 0.9)];
+  const freshOf = (d: Exclude<Dev, 'hero'>): (readonly [number, number])[] => [[-1e6, entry[d]], ...(entry[d] < T.k2 ? [settle(T.k2)] : []), settle(wide + 0.9)];
   // 熄屏之后，别的屏随镜头离开画面，再悄悄退场（不在画面里留下半透明的残影）
   const othersOut = useKeys(t, [T.dawnCam[0] - 0.001, T.dawnCam[0]], [1, 0], ease.linear);
   const lineOut = useKeys(t, [T.dawnCam[0] - 0.001, T.dawnCam[0]], [1, 0], ease.linear);
@@ -541,11 +542,12 @@ export function SyncWorld({ model, prelude }: { model: SyncModel; prelude?: Prel
 
 /** 屏幕空间的叠层：屏下标签、片名 */
 export function SyncOverlays({ model, cam, view }: { model: SyncModel; cam: CamRef; view: View }) {
+  // 叠层最早在全景前一刻出现（屏下标签），片尾之后被片尾卡盖住：这段之外不跟着时钟重算
   return (
-    <>
+    <TimeGate from={model.wide - 0.2} to={T.end}>
       <Labels cam={cam} w={model.w} view={view} layout={model.layout} wide={model.wide} />
       <Titles layout={model.layout} view={view} wide={model.wide} />
-    </>
+    </TimeGate>
   );
 }
 
@@ -669,11 +671,11 @@ function Titles({ layout, view, wide }: { layout: Layout; view: View; wide: numb
   const top = land ? view.h * 0.085 : view.h * 0.055;
   return (
     <div className="pointer-events-none absolute inset-0">
-      <motion.h2 className="absolute font-serif font-semibold leading-[1.12] tracking-[-0.02em] text-[#241E20]" style={{ left, top, fontSize: big, opacity: a, visibility: aShown, y: ay }}>
+      <motion.h2 className="absolute font-serif font-semibold leading-[1.12] tracking-[-0.02em] text-[#241E20]" style={{ left, top, fontSize: big, opacity: a, visibility: aShown, y: ay, willChange: 'transform, opacity' }}>
         每一块屏，{land ? null : <br />}
         <span className="text-[#FE3C01]">同一个版本</span>。
       </motion.h2>
-      <motion.div className="absolute" style={{ left, top, opacity: b, visibility: bShown, y: by }}>
+      <motion.div className="absolute" style={{ left, top, opacity: b, visibility: bShown, y: by, willChange: 'transform, opacity' }}>
         <p className="font-serif font-semibold leading-[1.12] tracking-[-0.02em] text-[#241E20]" style={{ fontSize: big }}>
           9 月 24 日
         </p>

@@ -3,7 +3,7 @@
 import { useRef, type CSSProperties, type ReactNode } from 'react';
 import { motion, useMotionValue, useTransform, type MotionStyle, type MotionValue } from 'framer-motion';
 import { ease } from '@/lib/motion';
-import { useFilmTime, useKeys, useRaster, useShown } from './clock';
+import { TimeGate, useFilmTime, useKeys, useRaster, useShown } from './clock';
 
 /**
  * 片子里的设备外壳：按原大排版（手机屏 390×844、电脑屏 1192×745、平板屏 1080×760、车机屏 1148×448），
@@ -127,7 +127,10 @@ export function Placed({
   const rendered = useTransform(t, (v) => (v < from || v >= until ? 'hidden' : 'visible'));
   return (
     <motion.div ref={ref} data-dev={id} className="absolute" style={{ left: x, top: y, width: w, height: h, willChange: 'transform, opacity', opacity: o, contentVisibility: rendered }}>
-      {children}
+      {/* 屏里的东西只在这台屏渲染的时段里跟着时钟走 */}
+      <TimeGate from={from - 0.05} to={until + 0.05}>
+        {children}
+      </TimeGate>
     </motion.div>
   );
 }
