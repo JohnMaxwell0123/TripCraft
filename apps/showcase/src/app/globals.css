@@ -601,6 +601,13 @@ body {
   .glass-strong { background: rgb(var(--tc-glass-bg) / 0.97); }
   .glass-dark { background: rgb(var(--tc-lapis-deep) / 0.92); }
 }
+/* 片子（data-film）里的地图浮层：镜头一推拉，玻璃背后的模糊每一帧都要重算，片子里用产品自己的实色退路（同上） */
+[data-film] .ui-glass {
+  background: rgb(var(--ui-surface));
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-color: rgb(var(--ui-line));
+}
 html[data-lowfx='true'] .glass,
 html[data-lowfx='true'] .glass-strong,
 html[data-lowfx='true'] .glass-dark {

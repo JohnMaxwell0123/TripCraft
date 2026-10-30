@@ -69,38 +69,54 @@ export interface Sweep {
 }
 
 /**
- * 领队确认后插入 D0 晚上的一行：先长出高度，再被一道橙色高亮扫过（线穿过这一行），字随后出现。
- * sweep 省略时高亮直接淡入。data-row-anchor 标出这一行的位置，镜头与线用它对齐。
+ * 领队确认后插入 D0 晚上的一行：先长出高度，再被一道橙色高亮从线进来的那一侧擦出来（线穿过这一行），字随高亮一起出现。
+ * 擦出来用两层反向平移：外层带圆角裁切向一侧移，内层反向移，内容在原地不动——两层都只改 transform，由合成器完成，
+ * 镜头推拉、线扫过时都不重画屏里的界面。sweep 省略时整行直接淡入。data-row-anchor 标出这一行的位置，镜头与线用它对齐。
  */
-export function InsertRow({ open, sweep, rowH = 44, size = 'md', nominator = true }: { open: number; sweep?: Sweep; rowH?: number; size?: 'md' | 'lg'; nominator?: boolean }) {
+export function InsertRow({
+  open,
+  grow = 0.28,
+  sweep,
+  rowH = 44,
+  size = 'md',
+  nominator = true,
+}: {
+  open: number;
+  /** 长出高度用的秒数（还暗着的屏一帧就排好，免得在镜头运动中重排整屏） */
+  grow?: number;
+  sweep?: Sweep;
+  rowH?: number;
+  size?: 'md' | 'lg';
+  nominator?: boolean;
+}) {
   const t = useFilmTime();
-  const height = useKeys(t, [open, open + 0.28], [0, rowH], ease.out);
+  const height = useKeys(t, [open, open + Math.max(0.001, grow)], [0, rowH], ease.out);
   const [s0, s1] = sweep?.t ?? [open + 0.1, open + 0.3];
   const reveal = useKeys(t, [s0, s1], [0, 1], sweep ? ease.linear : ease.out);
-  const clip = useTransform(reveal, (k) => {
-    const hidden = (1 - k) * 100;
-    if (!sweep || sweep.from === 'left') return `inset(0 ${hidden}% 0 0 round 10px)`;
-    if (sweep.from === 'right') return `inset(0 0 0 ${hidden}% round 10px)`;
-    return `inset(0 ${hidden / 2}% 0 ${hidden / 2}% round 10px)`;
-  });
-  const textIn = useKeys(t, [s0 + (s1 - s0) * 0.35, s1 + 0.12], [0, 1]);
-  const textShown = useShown(textIn);
-  const glow = useKeys(t, [s1, s1 + 1.8], [1, 0.55]);
+  const dir = sweep?.from === 'right' ? 1 : -1;
+  const outer = useTransform(reveal, (k) => (sweep ? `${dir * (1 - k) * 100}%` : '0%'));
+  const inner = useTransform(reveal, (k) => (sweep ? `${-dir * (1 - k) * 100}%` : '0%'));
+  const fade = useTransform(reveal, (k) => (sweep ? 1 : k));
+  const shown = useShown(reveal);
   const lg = size === 'lg';
   return (
     <motion.li data-row-anchor className="relative list-none" style={{ height }}>
-      <motion.span aria-hidden className="absolute -inset-x-2 inset-y-0.5 rounded-[10px] bg-ui-accent/[0.13]" style={{ clipPath: clip, WebkitClipPath: clip, opacity: glow }} />
-      <motion.span aria-hidden className="absolute -left-2 inset-y-1.5 w-[3px] rounded-full bg-ui-accent" style={{ clipPath: clip, WebkitClipPath: clip }} />
-      <motion.span className={`relative flex h-full items-center ${lg ? 'gap-3.5' : 'gap-3'}`} style={{ opacity: textIn, visibility: textShown }}>
-        <span className={`shrink-0 font-semibold tabular-nums text-ui-accent-ink ${lg ? 'w-12 text-[15px]' : 'w-11 text-[13px]'}`}>20:00</span>
-        <CatMark cat="food" size={lg ? 26 : 22} className="relative ring-2 ring-ui-surface" />
-        <span className={`min-w-0 flex-1 truncate font-semibold text-ui-ink ${lg ? 'text-[16px]' : 'text-[15px]'}`}>正宁路夜市 · 赵记醪糟</span>
-        {nominator ? (
-          <span className="inline-flex shrink-0 items-center gap-1.5 text-[13px] text-ui-ink-3">
-            <Avatar name="阿杰" tone="teal" size={20} ring={false} />
-            提名
+      <motion.span className="absolute -inset-x-2 inset-y-0.5 overflow-hidden rounded-[10px]" style={{ x: outer, opacity: fade, visibility: shown, willChange: 'transform' }}>
+        <motion.span className="absolute inset-0" style={{ x: inner, willChange: 'transform' }}>
+          <span aria-hidden className="absolute inset-0 rounded-[10px] bg-ui-accent/[0.13]" />
+          <span aria-hidden className="absolute inset-y-1 left-0 w-[3px] rounded-full bg-ui-accent" />
+          <span className={`relative flex h-full items-center px-2 ${lg ? 'gap-3.5' : 'gap-3'}`}>
+            <span className={`shrink-0 font-semibold tabular-nums text-ui-accent-ink ${lg ? 'w-12 text-[15px]' : 'w-11 text-[13px]'}`}>20:00</span>
+            <CatMark cat="food" size={lg ? 26 : 22} className="relative ring-2 ring-ui-surface" />
+            <span className={`min-w-0 flex-1 truncate font-semibold text-ui-ink ${lg ? 'text-[16px]' : 'text-[15px]'}`}>正宁路夜市 · 赵记醪糟</span>
+            {nominator ? (
+              <span className="inline-flex shrink-0 items-center gap-1.5 text-[13px] text-ui-ink-3">
+                <Avatar name="阿杰" tone="teal" size={20} ring={false} />
+                提名
+              </span>
+            ) : null}
           </span>
-        ) : null}
+        </motion.span>
       </motion.span>
     </motion.li>
   );
@@ -117,7 +133,7 @@ function TimeRow({ time, cat, text, rowH = 44, lg = false }: { time: string; cat
 }
 
 /** D0 卡：两行原有安排 + 插入的一行 */
-function D0Card({ open, sweep, rowH = 44, lg = false, className = '' }: { open: number; sweep?: Sweep; rowH?: number; lg?: boolean; className?: string }) {
+function D0Card({ open, grow, sweep, rowH = 44, lg = false, className = '' }: { open: number; grow?: number; sweep?: Sweep; rowH?: number; lg?: boolean; className?: string }) {
   return (
     <div className={`ui-card ${lg ? 'px-5 py-4' : 'px-4 py-3.5'} ${className}`}>
       <p className={`flex items-center gap-2.5 font-semibold text-ui-ink ${lg ? 'text-[17px]' : 'text-[15px]'}`}>
@@ -128,7 +144,7 @@ function D0Card({ open, sweep, rowH = 44, lg = false, className = '' }: { open: 
         <span aria-hidden className={`absolute bottom-4 top-4 border-l-2 border-dotted border-ui-line-strong ${lg ? 'left-[73px]' : 'left-[66px]'}`} />
         <TimeRow time="14:30" cat="transport" text="中川机场取车 · 腾势 D9" rowH={rowH} lg={lg} />
         <TimeRow time="19:15" cat="stay" text="入住黄河边酒店 · 地面车位" rowH={rowH} lg={lg} />
-        <InsertRow open={open} sweep={sweep} rowH={rowH} size={lg ? 'lg' : 'md'} />
+        <InsertRow open={open} grow={grow} sweep={sweep} rowH={rowH} size={lg ? 'lg' : 'md'} />
       </ul>
     </div>
   );
@@ -182,10 +198,25 @@ function Members({ size = 28 }: { size?: number }) {
 
 /* ═════════════════════ 手机 · 行程空间 ═════════════════════ */
 
-function PhoneStatus({ time = '21:06' }: { time?: string }) {
+/** 状态栏：dawn 时刻起换成出发当天早上的时间（时间流逝靠真界面交代） */
+function PhoneStatus({ time = '21:06', dawn }: { time?: string; dawn?: { at: number; time: string } }) {
+  const t = useFilmTime();
+  const morning = useKeys(t, dawn ? [dawn.at, dawn.at + 0.3] : [0, 1], [0, dawn ? 1 : 0]);
+  const night = useTransform(morning, (v) => 1 - v);
+  const sm = useShown(morning);
+  const sn = useShown(night);
   return (
     <div className="flex h-[54px] items-end justify-between px-8 pb-1.5 text-[15px] font-semibold tabular-nums text-ui-ink">
-      <span>{time}</span>
+      <span className="relative inline-grid">
+        <motion.span className="col-start-1 row-start-1" style={{ opacity: night, visibility: sn }}>
+          {time}
+        </motion.span>
+        {dawn ? (
+          <motion.span className="col-start-1 row-start-1" style={{ opacity: morning, visibility: sm }}>
+            {dawn.time}
+          </motion.span>
+        ) : null}
+      </span>
       <span className="flex items-center gap-1.5" aria-hidden>
         <span className="flex items-end gap-[2px]">
           {[5, 7, 9, 11].map((h) => (
@@ -217,16 +248,32 @@ function PhoneTabs() {
 }
 
 /** 手机里的行程空间：updateAt 这一刻翻到 v1.1；sweep 是线穿过插入行的方式 */
-export function TripPhoneScreen({ updateAt, open, sweep, time, children }: { updateAt: number; open?: number; sweep?: Sweep; time?: string; children?: ReactNode }) {
+export function TripPhoneScreen({
+  updateAt,
+  open,
+  grow,
+  sweep,
+  time,
+  dawn,
+  children,
+}: {
+  updateAt: number;
+  open?: number;
+  grow?: number;
+  sweep?: Sweep;
+  time?: string;
+  dawn?: { at: number; time: string };
+  children?: ReactNode;
+}) {
   return (
     <div className="absolute inset-0 bg-ui-shell">
-      <PhoneStatus time={time} />
+      <PhoneStatus time={time} dawn={dawn} />
       <div className="flex items-center justify-between gap-2 px-5 pb-3 pt-3">
         <TripTitle at={updateAt} />
         <Members size={26} />
       </div>
       <div className="px-4">
-        <D0Card open={open ?? updateAt - 0.1} sweep={sweep} />
+        <D0Card open={open ?? updateAt - 0.1} grow={grow} sweep={sweep} />
         <DayList count={6} />
       </div>
       <PhoneTabs />
@@ -267,19 +314,22 @@ export function Pressable({ at, before, after, className = '' }: { at: number; b
   );
 }
 
-/** 手指：手机上不画箭头光标，画一个按下去的指尖（屏幕外的「片子语言」，不是界面） */
+/** 手指：手机上不画箭头光标，画一个按下去的指尖（屏幕外的「片子语言」，不是界面）；从右下方（拇指的方向）移进来 */
 export function Fingertip({ approach, at, size = 46, className = '' }: { approach: readonly [number, number]; at: number; size?: number; className?: string }) {
   const t = useFilmTime();
   const [a, b] = approach;
   const opacity = useKeys(t, [a, b, at + 0.2, at + 0.45], [0, 0.92, 0.92, 0]);
   const shown = useShown(opacity);
-  const scale = useKeys(t, [a, b, at - 0.07, at, at + 0.16], [1.35, 1, 1, 0.84, 1]);
+  const come = useKeys(t, [a, b], [1, 0], ease.out);
+  const x = useTransform(come, (k) => k * size * 1.3);
+  const y = useTransform(come, (k) => k * size * 2.1);
+  const scale = useKeys(t, [a, b, at - 0.07, at, at + 0.16], [1.12, 1, 1, 0.84, 1]);
   const ring = useKeys(t, [at, at + 0.5], [0.7, 2.1], ease.out);
   const ringOpacity = useKeys(t, [at - 0.01, at, at + 0.5], [0, 0.55, 0]);
   return (
-    <motion.span aria-hidden className={`pointer-events-none absolute z-40 -translate-x-1/2 -translate-y-1/2 ${className}`} style={{ width: size, height: size, opacity, visibility: shown }}>
+    <motion.span aria-hidden className={`pointer-events-none absolute z-40 ${className}`} style={{ width: size, height: size, marginLeft: -size / 2, marginTop: -size / 2, x, y, opacity, visibility: shown, willChange: 'transform, opacity' }}>
       <motion.span className="absolute inset-0 rounded-full border-2 border-ui-accent" style={{ scale: ring, opacity: ringOpacity }} />
-      <motion.span className="absolute inset-0 rounded-full bg-[#241E20]/30 ring-[3px] ring-white/85 backdrop-blur-[1px]" style={{ scale }} />
+      <motion.span className="absolute inset-0 rounded-full bg-[#241E20]/30 ring-[3px] ring-white/85" style={{ scale }} />
     </motion.span>
   );
 }
@@ -292,9 +342,9 @@ export function NominationSheet({ tapAt, approach, hideAt, dim }: { tapAt: numbe
   const still = useMotionValue(1);
   const fade = dim ?? still;
   return (
-    <motion.div className="ui-float absolute inset-x-0 bottom-0 z-30 rounded-t-[30px] !border-x-0 !border-b-0 px-5 pb-9 pt-3" style={{ y: yPct }}>
+    <motion.div className="ui-float absolute inset-x-0 bottom-0 z-30 rounded-t-[30px] !border-x-0 !border-b-0 px-5 pb-9 pt-3" style={{ y: yPct, willChange: 'transform' }}>
       <span aria-hidden className="mx-auto mb-4 block h-[5px] w-10 rounded-full bg-ui-line-strong" />
-      <motion.div style={{ opacity: fade }}>
+      <motion.div style={{ opacity: fade, willChange: 'transform, opacity' }}>
         <p className="flex items-center gap-2.5 text-[13px] text-ui-ink-3">
           <Avatar name="阿杰" tone="teal" size={26} ring={false} />
           <span className="text-[15px] font-medium text-ui-ink">阿杰</span>提名 · 刚刚
@@ -321,10 +371,10 @@ export function NominationSheet({ tapAt, approach, hideAt, dim }: { tapAt: numbe
         </ul>
       </motion.div>
       <div className="relative mt-6 flex gap-3">
-        <motion.span className="ui-btn ui-btn-secondary !h-12 flex-1 !text-[15px]" style={{ opacity: fade }}>
+        <motion.span className="ui-btn ui-btn-secondary !h-12 flex-1 !text-[15px]" style={{ opacity: fade, willChange: 'transform, opacity' }}>
           暂不
         </motion.span>
-        <span className="relative flex-[1.6]">
+        <span data-anchor="cta" className="relative flex-[1.6]">
           <Pressable
             at={tapAt}
             before={<span className="ui-btn ui-btn-primary !h-12 w-full !text-[15px]">加入 D0 晚上</span>}
@@ -335,7 +385,7 @@ export function NominationSheet({ tapAt, approach, hideAt, dim }: { tapAt: numbe
               </span>
             }
           />
-          <Fingertip approach={approach} at={tapAt} className="left-[58%] top-1/2" />
+          <Fingertip approach={approach} at={tapAt} className="left-[82%] top-[62%]" />
         </span>
       </div>
     </motion.div>
@@ -349,7 +399,7 @@ export function TodaySheet({ inAt, tapAt, approach }: { inAt: readonly [number, 
   const yPct = useTransform(y, (n) => `${n}%`);
   const shown = useShown(useKeys(t, [inAt[0] - 0.01, inAt[0]], [0, 1], ease.linear));
   return (
-    <motion.div className="ui-float absolute inset-x-0 bottom-0 z-30 rounded-t-[30px] !border-x-0 !border-b-0 px-5 pb-9 pt-3" style={{ y: yPct, visibility: shown }}>
+    <motion.div className="ui-float absolute inset-x-0 bottom-0 z-30 rounded-t-[30px] !border-x-0 !border-b-0 px-5 pb-9 pt-3" style={{ y: yPct, visibility: shown, willChange: 'transform' }}>
       <span aria-hidden className="mx-auto mb-4 block h-[5px] w-10 rounded-full bg-ui-line-strong" />
       <p className="text-[13px] font-medium text-ui-ink-3">今天的路线 · 9/24 · D0</p>
       <ol className="mt-2.5 flex flex-col gap-1">
@@ -366,7 +416,7 @@ export function TodaySheet({ inAt, tapAt, approach }: { inAt: readonly [number, 
         <HeightIcon className="h-4 w-4 shrink-0" />
         车高 2.28 m（画像）· 不进 2.0 m 地库
       </p>
-      <span className="relative mt-5 block">
+      <span data-anchor="dispatch" className="relative mt-5 block">
         <Pressable
           at={tapAt}
           before={
@@ -382,7 +432,7 @@ export function TodaySheet({ inAt, tapAt, approach }: { inAt: readonly [number, 
             </span>
           }
         />
-        <Fingertip approach={approach} at={tapAt} className="left-1/2 top-1/2" />
+        <Fingertip approach={approach} at={tapAt} className="left-[84%] top-[62%]" />
       </span>
     </motion.div>
   );
@@ -417,7 +467,7 @@ function SyncList({ at }: { at: number }) {
   );
 }
 
-export function TripLaptopScreen({ updateAt, open, sweep }: { updateAt: number; open?: number; sweep?: Sweep }) {
+export function TripLaptopScreen({ updateAt, open, grow, sweep }: { updateAt: number; open?: number; grow?: number; sweep?: Sweep }) {
   const nav = (Icon: typeof MessageIcon, label: string, active = false) => (
     <li className={`flex h-9 items-center gap-2.5 rounded-[8px] px-2.5 text-[14px] ${active ? 'ui-nav-active font-medium text-ui-ink' : 'text-ui-ink-2'}`}>
       <Icon className={`h-[18px] w-[18px] ${active ? 'text-ui-ink' : 'text-ui-ink-3'}`} />
@@ -483,7 +533,7 @@ export function TripLaptopScreen({ updateAt, open, sweep }: { updateAt: number; 
           </header>
           <div className="flex min-h-0 flex-1">
             <section className="min-w-0 flex-1 px-5 py-4">
-              <D0Card open={open ?? updateAt - 0.1} sweep={sweep} rowH={42} lg />
+              <D0Card open={open ?? updateAt - 0.1} grow={grow} sweep={sweep} rowH={42} lg />
               <DayList count={5} rowH={50} lg />
             </section>
             <aside className="w-[300px] shrink-0 border-l border-ui-line p-5">
@@ -508,7 +558,7 @@ export function TripLaptopScreen({ updateAt, open, sweep }: { updateAt: number; 
 
 /* ═════════════════════ 平板 · 行程空间（左日程、右地图） ═════════════════════ */
 
-export function TripTabletScreen({ updateAt, open, sweep }: { updateAt: number; open?: number; sweep?: Sweep }) {
+export function TripTabletScreen({ updateAt, open, grow, sweep }: { updateAt: number; open?: number; grow?: number; sweep?: Sweep }) {
   const full = useMotionValue(1);
   return (
     <div className="absolute inset-0 flex flex-col bg-ui-shell">
@@ -524,7 +574,7 @@ export function TripTabletScreen({ updateAt, open, sweep }: { updateAt: number; 
       </div>
       <div className="flex min-h-0 flex-1 gap-4 px-6 pb-6">
         <div className="w-[470px] shrink-0">
-          <D0Card open={open ?? updateAt - 0.1} sweep={sweep} />
+          <D0Card open={open ?? updateAt - 0.1} grow={grow} sweep={sweep} />
           <DayList count={5} rowH={50} />
         </div>
         <div className="relative min-w-0 flex-1 overflow-hidden rounded-[16px] border border-ui-line">
