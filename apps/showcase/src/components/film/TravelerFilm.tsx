@@ -163,7 +163,7 @@ function EndCard({ layout, view }: { layout: Layout; view: View }) {
   return (
     <motion.div className="absolute inset-0 flex flex-col items-center justify-center" style={{ background: BG_NIGHT, opacity: on, visibility: shown }}>
       <motion.p className="flex items-center gap-3 text-[#241E20]" style={{ opacity: brand, fontSize: Math.max(15, big * 0.34) }}>
-        <span className="flex items-center justify-center rounded-[22%] bg-[#241E20] font-bold text-[#FFFFF9]" style={{ width: big * 0.62, height: big * 0.62, fontSize: big * 0.36 }}>
+        <span className="flex items-center justify-center rounded-[22%] bg-[#241E20] font-bold text-[#FFFFF9]" style={{ width: Math.max(22, big * 0.62), height: Math.max(22, big * 0.62), fontSize: Math.max(13, big * 0.36) }}>
           旅
         </span>
         <span className="font-semibold">TripCraft · 旅艺</span>

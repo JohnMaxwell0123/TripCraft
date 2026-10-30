@@ -31,7 +31,8 @@ const CHAPTERS: Chapter[] = [
   { id: 'say', label: '一句话', at: 0, still: 9.6 },
   // 两条路都在画面里、兰州已经亮出来、镜头还没摇走（竖屏的线更长，兰州晚一点出现、镜头也晚一点摇）
   { id: 'paths', label: '两条路', at: 12.5, still: 15.45, stillPort: 15.78 },
-  { id: 'sync', label: '同一版本', at: 16.8, still: CLIMAX_AT + 8.3 },
+  // 全景停稳、片名与屏下标签都已出现（竖屏的镜头晚约 1.3 秒到全景）
+  { id: 'sync', label: '同一版本', at: 16.8, still: CLIMAX_AT + 8.3, stillPort: CLIMAX_AT + 9.9 },
   { id: 'car', label: '交给车机', at: CLIMAX_AT + 10.65, still: CLIMAX_AT + 16.4 },
 ];
 
@@ -197,7 +198,7 @@ function TransportBar({
     document.getElementById(`film-ch-${next}`)?.focus();
   };
   return (
-    <div className="mt-4 flex items-start gap-4 sm:gap-5">
+    <div className="mt-4 flex items-start gap-3 sm:gap-5">
       <button
         type="button"
         onClick={onToggle}
@@ -206,7 +207,7 @@ function TransportBar({
       >
         <Icon className="h-4 w-4" />
       </button>
-      <div className="grid min-w-0 flex-1 grid-cols-4 gap-1.5 sm:gap-2" role="group" aria-label="章节">
+      <div className="grid min-w-0 flex-1 grid-cols-4 gap-1 sm:gap-2" role="group" aria-label="章节">
         {CHAPTERS.map((c, i) => (
           <ChapterButton key={c.id} c={c} i={i} t={control.t} onJump={onJump} onKeyDown={onKeyDown} />
         ))}
@@ -247,7 +248,7 @@ function ChapterButton({ c, i, t, onJump, onKeyDown }: { c: Chapter; i: number; 
       <span aria-hidden className="relative block h-[2px] overflow-hidden rounded-full bg-[#241E20]/[0.12]">
         <motion.span className="absolute inset-0 origin-left bg-[#FE3C01]" style={{ scaleX: fill }} />
       </span>
-      <motion.span className="mt-2 block truncate text-[13px] font-medium tabular-nums sm:text-[15px]" style={{ color: ink }}>
+      <motion.span className="mt-2 block truncate text-[13px] font-medium tabular-nums tracking-[-0.02em] sm:text-[15px] sm:tracking-normal" style={{ color: ink }}>
         <span className="mr-1.5 hidden sm:inline">0{i + 1}</span>
         {c.label}
       </motion.span>
