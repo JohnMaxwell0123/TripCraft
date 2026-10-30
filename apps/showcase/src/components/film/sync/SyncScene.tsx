@@ -8,7 +8,7 @@ import { CheckIcon } from '@/components/common/Icons';
 import { camAt, fitScale, shotCam, useCamera, useFilmTime, useKeys, useRaster, useShown, type Cam, type CamRef, type Frame, type Shot, type View } from '../clock';
 import { CAR, CarDisplay, Dim, LAPTOP, Laptop, PHONE, Phone, Placed, TABLET, Tablet } from '../devices';
 import { WorldLine, WorldStations, headAt, makeTrack, openGaps, pointAt, timeAt, type Box, type HeadMotion, type Pt, type Track } from '../line';
-import { CarNavScreen, NominationSheet, TodaySheet, TripLaptopScreen, TripPhoneScreen, TripTabletScreen, type Sweep } from '../screens';
+import { CarNavScreen, JoinToast, NominationSheet, TodaySheet, TripLaptopScreen, TripPhoneScreen, TripTabletScreen, type Joins, type Sweep } from '../screens';
 
 /**
  * 高潮：「每一块屏，同一个版本」与「交给车机」（分镜 A7–A11，片子时钟从这一段的开头算起）
@@ -35,30 +35,30 @@ const OTHERS: readonly Exclude<Dev, 'hero'>[] = ['laptop', 'tablet', 'ajie'];
 export const T = {
   dim: [0.35, 1.2] as const,
   finger: [1.0, 1.55] as const,
-  /** 推到按钮并停住：之后镜头完全静止，直到点下 */
+  /** 推到按钮并停住：之后镜头完全静止，直到点下（静的这一刻约 0.9 秒） */
   still: 2.0,
-  tap: 2.55,
-  hide: [2.92, 3.2] as const,
+  tap: 2.9,
+  hide: [3.27, 3.55] as const,
   /** 镜头退到整部手机并停住；停住的这一刻领队手机按新的缩放重画一次，插入的一行再长出来 */
-  k2: 3.36,
-  open: 3.44,
-  launch: 3.8,
-  /** 夜里：全家的屏熄灭；镜头在黑着的屏之间推向领队的手机，纸面转成清晨的冷白 */
-  night: [10.3, 10.85] as const,
-  dawn: [10.6, 11.7] as const,
-  dawnCam: [10.55, 12.0] as const,
-  /** 镜头到位后，领队的手机才在晨光里亮起（熄屏期间时钟已经换成早上） */
-  clock: 11.0,
-  wake: [12.0, 12.4] as const,
-  todayIn: [12.6, 13.05] as const,
-  carIn: [13.25, 13.85] as const,
-  finger2: [13.45, 13.85] as const,
-  dispatch: 14.15,
-  drop: [14.25, 14.65] as const,
+  k2: 3.71,
+  open: 3.79,
+  launch: 4.15,
+  /** 夜里：全家的屏熄灭，停一下，然后硬切到出发当天的清晨（时间过去用剪辑交代，不让镜头扫过黑着的屏） */
+  night: [10.65, 11.2] as const,
+  dawnCam: [11.35, 11.351] as const,
+  dawn: [11.35, 11.6] as const,
+  /** 清晨：领队的手机在晨光里亮起（熄屏期间时钟已经换成早上） */
+  clock: 11.4,
+  wake: [11.75, 12.15] as const,
+  todayIn: [12.5, 12.95] as const,
+  carIn: [13.15, 13.75] as const,
+  finger2: [13.35, 13.75] as const,
+  dispatch: 14.05,
+  drop: [14.15, 14.55] as const,
   /** 镜头跟着落下的线往下摇，停在车机上 */
-  carCam: [14.1, 15.4] as const,
-  route: [14.65, 15.9] as const,
-  end: 18.4,
+  carCam: [14.0, 15.3] as const,
+  route: [14.55, 15.8] as const,
+  end: 18.6,
 };
 
 const HEAD: HeadMotion = { launch: T.launch, speed: 1700, ramp: 0.3 };
@@ -72,12 +72,13 @@ interface Rect {
   h: number;
 }
 
-interface Measure {
+export interface Measure {
   /** 每块屏里插入的那一行（设备内坐标） */
   row: Record<Dev, Rect>;
-  /** 领队手机上的「加入 D0 晚上」与「投递到车机导航」 */
+  /** 领队手机上的「加入 D0 晚上」「投递到车机导航」与行程封面 */
   cta: Rect;
   dispatch: Rect;
+  cover: Rect;
 }
 
 /** 首帧的估算值（挂载后按真实排版量取） */
@@ -90,6 +91,7 @@ const GUESS: Measure = {
   },
   cta: { x: 174, y: 772, w: 208, h: 48 },
   dispatch: { x: 32, y: 772, w: 350, h: 48 },
+  cover: { x: 32, y: 78, w: 44, h: 44 },
 };
 
 const ROW_H: Record<Dev, number> = { hero: 44, ajie: 44, laptop: 42, tablet: 44 };
@@ -289,12 +291,19 @@ function followBox(w: World, h: number): Box {
   return clampTo(b, union(w.final, w.base));
 }
 
+/** 高潮的第一个机位：提名卡的下半（AI 的三条代价 + 按钮） */
+export function macroStart(w: World, m: Measure, layout: Layout): Frame {
+  const heroCx = w.pos.hero.x + PHONE.w / 2;
+  const ctaY = w.pos.hero.y + m.cta.y + m.cta.h / 2;
+  return layout === 'land' ? { x: heroCx, y: ctaY - 150, w: 640, h: 360 } : { x: heroCx, y: ctaY - 230, w: 440, h: 782 };
+}
+
 function makeCamera(w: World, m: Measure, layout: Layout) {
   const heroCx = w.pos.hero.x + PHONE.w / 2;
   const cta = { x: w.pos.hero.x + m.cta.x + m.cta.w / 2, y: w.pos.hero.y + m.cta.y + m.cta.h / 2 };
   const land = layout === 'land';
   // 微距：提名卡的下半（AI 的三条代价 + 按钮）→ 推到按钮
-  const m0: Frame = land ? { x: heroCx, y: cta.y - 150, w: 640, h: 360 } : { x: heroCx, y: cta.y - 230, w: 440, h: 782 };
+  const m0 = macroStart(w, m, layout);
   const m1: Frame = land ? { x: cta.x - 40, y: cta.y - 40, w: 580, h: 326 } : { x: heroCx + 30, y: cta.y - 120, w: 390, h: 693 };
   const k2 = frameOf(followBox(w, 0));
   const macro: Shot[] = [
@@ -305,7 +314,7 @@ function makeCamera(w: World, m: Measure, layout: Layout) {
   const finalF = frameOf(w.final);
   const tail: Shot[] = [
     { t: T.dawnCam[0], f: finalF, top: w.titleTop },
-    { t: T.dawnCam[1], f: frameOf(w.dawnBox), top: land ? 0 : 0.2, ease: ease.smooth },
+    { t: T.dawnCam[1], from: T.dawnCam[0], f: frameOf(w.dawnBox), top: land ? 0 : 0.2, ease: ease.linear },
     { t: T.carCam[1], from: T.carCam[0], f: frameOf(w.carBox), ease: ease.smooth },
   ];
   const follow = (v: number, V: View): Cam => {
@@ -389,108 +398,187 @@ const IDLE = 0.62;
 /** 线到之前待机、线到时亮起、夜里熄屏 */
 const wakeThenNight = (at: number) => ({ keys: [at - 0.02, at + 0.32, T.night[0], T.night[1]], values: [IDLE, 0, 0, NIGHT] });
 
-const BG_NIGHT = '#FFFFF9';
-const BG_DAWN = '#EEF1F2';
+/** 量取每块屏里「插入行」、领队手机上的两个按钮与封面（设备内坐标），线和镜头都以它为准 */
+export function measureSync(root: HTMLElement): Measure {
+  const next: Measure = { row: { ...GUESS.row }, cta: GUESS.cta, dispatch: GUESS.dispatch, cover: GUESS.cover };
+  for (const d of DEVS) {
+    const dev = root.querySelector<HTMLElement>(`[data-dev="${d}"]`);
+    const row = dev?.querySelector<HTMLElement>('[data-row-anchor]');
+    const r = dev && row ? layoutRect(dev, row) : null;
+    if (r) next.row[d] = { ...r, h: ROW_H[d] };
+  }
+  const hero = root.querySelector<HTMLElement>('[data-dev="hero"]');
+  for (const k of ['cta', 'dispatch', 'cover'] as const) {
+    const el = hero?.querySelector<HTMLElement>(`[data-anchor="${k}"]`);
+    const r = hero && el ? layoutRect(hero, el) : null;
+    if (r) next[k] = r;
+  }
+  return next;
+}
 
-export function SyncScene({ layout, view }: { layout: Layout; view: View }) {
-  const t = useFilmTime();
-  const worldRef = useRef<HTMLDivElement>(null);
-  const [m, setM] = useState<Measure>(GUESS);
-
-  // 量取每块屏里「插入行」与两个按钮的位置（设备内坐标），线和镜头都以它为准
+/** 挂载后（以及网络字体到了之后）量一次；结果没变就不触发重渲染 */
+export function useMeasured<M>(root: { current: HTMLElement | null }, measure: (el: HTMLElement) => M, initial: M, deps: readonly unknown[]) {
+  const [m, setM] = useState<M>(initial);
   useLayoutEffect(() => {
-    const measure = () => {
-      const root = worldRef.current;
-      if (!root) return;
-      const next: Measure = { row: { ...GUESS.row }, cta: GUESS.cta, dispatch: GUESS.dispatch };
-      for (const d of DEVS) {
-        const dev = root.querySelector<HTMLElement>(`[data-dev="${d}"]`);
-        const row = dev?.querySelector<HTMLElement>('[data-row-anchor]');
-        const r = dev && row ? layoutRect(dev, row) : null;
-        if (r) next.row[d] = { ...r, h: ROW_H[d] };
-      }
-      const hero = root.querySelector<HTMLElement>('[data-dev="hero"]');
-      for (const k of ['cta', 'dispatch'] as const) {
-        const el = hero?.querySelector<HTMLElement>(`[data-anchor="${k}"]`);
-        const r = hero && el ? layoutRect(hero, el) : null;
-        if (r) next[k] = r;
-      }
+    const run = () => {
+      if (!root.current) return;
+      const next = measure(root.current);
       setM((prev) => (JSON.stringify(prev) === JSON.stringify(next) ? prev : next));
     };
-    measure();
-    document.fonts?.ready.then(measure, () => {});
-  }, [layout]);
+    run();
+    document.fonts?.ready.then(run, () => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, deps);
+  return m;
+}
 
+export interface SyncModel {
+  layout: Layout;
+  w: World;
+  m: Measure;
+  /** 这一段自己的镜头（时间从高潮的 0 秒算） */
+  camFn: (v: number, V: View) => Cam;
+  wide: number;
+  entry: Record<Exclude<Dev, 'hero'>, number>;
+  /** 线粗（世界坐标）：全景里不细于 2.2px */
+  lw: number;
+}
+
+export function useSyncModel(layout: Layout, view: View, m: Measure): SyncModel {
   const w = useMemo(() => buildWorld(layout, m), [layout, m]);
   const camFn = useMemo(() => makeCamera(w, m, layout), [w, m, layout]);
-  const { transform, cam } = useCamera(t, camFn, view);
-  const wide = wideAt(w);
-  // 晨光：一层清晨冷白的底色淡入（只改透明度；直接改底色会每一帧重画整个画面）
-  const dawnIn = useKeys(t, [T.dawn[0], T.dawn[1]], [0, 1]);
+  const entry = useMemo(() => entryTimes(w, camFn, view), [w, camFn, view]);
+  const lw = Math.max(7, 2.2 / fitScale(frameOf(w.final), view, w.titleTop));
+  return { layout, w, m, camFn, wide: wideAt(w), entry, lw };
+}
 
+/** 高潮之前在领队手机里发生的事（A5–A6，时刻相对高潮的 0 秒，都是负数） */
+export interface Prelude {
+  /** 线走进手机、屏亮起来 */
+  wake: number;
+  joins: Joins;
+  /** 阿杰的提名卡升起、AI 评估三条依次算出 */
+  sheetIn: number;
+  evalAt: readonly [number, number, number];
+  /** 镜头在这两个时刻停住：整部手机、推到提名卡（领队手机按当时的缩放各重画一次） */
+  settle: readonly number[];
+  /** 领队的手机第一次进画面的时刻：在这之前不渲染，也不按开场的微距倍数栅格化 */
+  heroFrom: number;
+}
+
+/** 世界里的内容：线、车机、四块屏、站点 */
+export function SyncWorld({ model, prelude }: { model: SyncModel; prelude?: Prelude }) {
+  const t = useFilmTime();
+  const { w, wide, entry, lw } = model;
   // 时刻表：线进每块屏（亮起、翻到 v1.1）、扫过那一行
   const enter = (d: Dev) => timeAt(HEAD, w.span[d][0]);
   const sweepT = (d: Dev): Sweep => ({ from: w.from[d], t: [timeAt(HEAD, w.sweep[d][0]), timeAt(HEAD, w.sweep[d][1])] });
   // 别的屏里这一行的位置一开始就留好（卡片底部多出一行的空白，看上去就是卡片的留白），线到时只擦出高亮与字：
   // 整片里这几块屏不发生重排，镜头推拉时不必重画
   const rowAt = () => -1;
-  // 栅格：领队的手机在两个镜头静止的时刻各按当时的缩放重画一次——推到按钮停住时、退到整部手机停住时。
-  // 其余的屏在进画面之前不固定栅格（否则会按微距的倍数栅格化），进画面的那一刻起固定，之后镜头再拉远只由合成器缩小；
+  // 栅格：领队的手机在镜头静止的时刻各按当时的缩放重画一次——推到按钮停住时、退到整部手机停住时、全景停稳时。
+  // 其余的屏在进画面之前不渲染，进画面的那一刻起固定栅格，之后镜头再拉远只由合成器缩小；
   // 电脑在退到整部手机之前就进了画面，停住时也跟着重画一次
   const settle = (a: number): readonly [number, number] => [a, a + 0.06];
-  // 全景停稳时（片名出来之前）全部按全景的缩放再重画一次：全景是整片的海报，字要清楚
-  const freshHero = [settle(T.still + 0.15), settle(T.k2), settle(wide)];
-  const entry = useMemo(() => entryTimes(w, camFn, view), [w, camFn, view]);
-  const freshOf = (d: Exclude<Dev, 'hero'>): (readonly [number, number])[] => [[0, entry[d]], ...(entry[d] < T.k2 ? [settle(T.k2)] : []), settle(wide)];
+  const freshHero = [...(prelude ? [[-1e6, prelude.heroFrom] as const] : []), ...(prelude?.settle ?? []).map(settle), settle(T.still + 0.15), settle(T.k2), settle(wide)];
+  const freshOf = (d: Exclude<Dev, 'hero'>): (readonly [number, number])[] => [[-1e6, entry[d]], ...(entry[d] < T.k2 ? [settle(T.k2)] : []), settle(wide)];
   // 熄屏之后，别的屏随镜头离开画面，再悄悄退场（不在画面里留下半透明的残影）
-  const othersOut = useKeys(t, [T.dawnCam[0] + 0.9, T.dawnCam[1]], [1, 0]);
-  const lineOut = useKeys(t, [T.dawnCam[0] + 0.9, T.dawnCam[1]], [1, 0]);
+  const othersOut = useKeys(t, [T.dawnCam[0] - 0.001, T.dawnCam[0]], [1, 0], ease.linear);
+  const lineOut = useKeys(t, [T.dawnCam[0] - 0.001, T.dawnCam[0]], [1, 0], ease.linear);
   const sheetDim = useKeys(t, [T.dim[0], T.dim[1]], [1, 0.14]);
-  // 线粗（世界坐标）：全景里不细于 2.2px
-  const lw = Math.max(7, 2.2 / fitScale(frameOf(w.final), view, w.titleTop));
+  // 领队的手机：线走进来之前是暗的；夜里熄屏，清晨镜头到位后亮起
+  const heroDim = prelude
+    ? { keys: [prelude.wake - 0.02, prelude.wake + 0.4, T.night[0], T.night[1], T.wake[0], T.wake[1]], values: [0.86, 0, 0, NIGHT, NIGHT, 0] }
+    : { keys: [T.night[0], T.night[1], T.wake[0], T.wake[1]], values: [0, NIGHT, NIGHT, 0] };
+  return (
+    <>
+      <WorldLine track={w.track} gaps={w.gaps} motion={HEAD} width={lw} fade={lineOut} />
+      <DropLine w={w} width={lw} />
+      <CarStation w={w} />
+      <Placed id="hero" x={w.pos.hero.x} y={w.pos.hero.y} w={PHONE.w} h={PHONE.h} fresh={freshHero} from={prelude?.heroFrom}>
+        <Phone>
+          <TripPhoneScreen updateAt={T.hide[0]} open={T.open} sweep={sweepT('hero')} dawn={{ at: T.clock, time: '07:42' }} joins={prelude?.joins}>
+            {prelude ? (
+              <>
+                <JoinToast
+                  at={prelude.joins.ajie}
+                  names={[
+                    { name: '阿杰', tone: 'teal' },
+                    { name: '小雨', tone: 'rose' },
+                  ]}
+                />
+              </>
+            ) : null}
+            <NominationSheet tapAt={T.tap} approach={T.finger} hideAt={T.hide} dim={sheetDim} inAt={prelude?.sheetIn} evalAt={prelude?.evalAt} />
+            <TodaySheet inAt={T.todayIn} tapAt={T.dispatch} approach={T.finger2} />
+          </TripPhoneScreen>
+          <Dim {...heroDim} />
+        </Phone>
+      </Placed>
+      <Placed id="laptop" x={w.pos.laptop.x} y={w.pos.laptop.y} w={LAPTOP.w} h={LAPTOP.h} fresh={freshOf('laptop')} from={entry['laptop']} opacity={othersOut}>
+        <Laptop>
+          <TripLaptopScreen updateAt={enter('laptop')} open={rowAt()} grow={0} sweep={sweepT('laptop')} />
+          <Dim {...wakeThenNight(enter('laptop'))} />
+        </Laptop>
+      </Placed>
+      <Placed id="tablet" x={w.pos.tablet.x} y={w.pos.tablet.y} w={TABLET.w} h={TABLET.h} fresh={freshOf('tablet')} from={entry['tablet']} opacity={othersOut}>
+        <Tablet>
+          <TripTabletScreen updateAt={enter('tablet')} open={rowAt()} grow={0} sweep={sweepT('tablet')} />
+          <Dim {...wakeThenNight(enter('tablet'))} />
+        </Tablet>
+      </Placed>
+      <Placed id="ajie" x={w.pos.ajie.x} y={w.pos.ajie.y} w={PHONE.w} h={PHONE.h} fresh={freshOf('ajie')} from={entry['ajie']} opacity={othersOut}>
+        <Phone>
+          <TripPhoneScreen updateAt={enter('ajie')} open={rowAt()} grow={0} sweep={sweepT('ajie')} time="21:07" />
+          <Dim {...wakeThenNight(enter('ajie'))} />
+        </Phone>
+      </Placed>
+      <WorldStations track={w.track} at={w.stations} motion={HEAD} width={lw} fade={lineOut} />
+    </>
+  );
+}
 
+/** 屏幕空间的叠层：屏下标签、片名 */
+export function SyncOverlays({ model, cam, view }: { model: SyncModel; cam: CamRef; view: View }) {
+  return (
+    <>
+      <Labels cam={cam} w={model.w} view={view} layout={model.layout} wide={model.wide} />
+      <Titles layout={model.layout} view={view} wide={model.wide} />
+    </>
+  );
+}
+
+/** 高潮里线进每块屏的时刻（这一段自己的时间；声音按它们触发） */
+export function syncBeats(model: SyncModel) {
+  const enter = (d: Dev) => timeAt(HEAD, model.w.span[d][0]);
+  return { laptop: enter('laptop'), tablet: enter('tablet'), ajie: enter('ajie'), wide: model.wide };
+}
+
+export const BG_NIGHT = '#FFFFF9';
+export const BG_DAWN = '#EEF1F2';
+
+/** 实验页用：单独播高潮 */
+export function SyncScene({ layout, view }: { layout: Layout; view: View }) {
+  const t = useFilmTime();
+  const worldRef = useRef<HTMLDivElement>(null);
+  const m = useMeasured(worldRef, measureSync, GUESS, [layout]);
+  const model = useSyncModel(layout, view, m);
+  const { transform, cam } = useCamera(t, model.camFn, view);
+  // 晨光：一层清晨冷白的底色淡入（只改透明度；直接改底色会每一帧重画整个画面）
+  const dawnIn = useKeys(t, [T.dawn[0], T.dawn[1]], [0, 1]);
   return (
     <div data-film className="absolute inset-0 overflow-hidden" style={{ background: BG_NIGHT }}>
       <motion.div aria-hidden className="absolute inset-0" style={{ background: BG_DAWN, opacity: dawnIn, willChange: 'opacity' }} />
       <motion.div ref={worldRef} className="absolute left-0 top-0" style={{ transform, transformOrigin: '0 0' }}>
-        <WorldLine track={w.track} gaps={w.gaps} motion={HEAD} width={lw} fade={lineOut} />
-        <DropLine w={w} width={lw} />
-        <CarStation w={w} />
-        <Placed id="hero" x={w.pos.hero.x} y={w.pos.hero.y} w={PHONE.w} h={PHONE.h} fresh={freshHero}>
-          <Phone>
-            <TripPhoneScreen updateAt={T.hide[0]} open={T.open} sweep={sweepT('hero')} dawn={{ at: T.clock, time: '07:42' }}>
-              <NominationSheet tapAt={T.tap} approach={T.finger} hideAt={T.hide} dim={sheetDim} />
-              <TodaySheet inAt={T.todayIn} tapAt={T.dispatch} approach={T.finger2} />
-            </TripPhoneScreen>
-            <Dim keys={[T.night[0], T.night[1], T.wake[0], T.wake[1]]} values={[0, NIGHT, NIGHT, 0]} />
-          </Phone>
-        </Placed>
-        <Placed id="laptop" x={w.pos.laptop.x} y={w.pos.laptop.y} w={LAPTOP.w} h={LAPTOP.h} fresh={freshOf('laptop')} from={entry['laptop']} opacity={othersOut}>
-          <Laptop>
-            <TripLaptopScreen updateAt={enter('laptop')} open={rowAt()} grow={0} sweep={sweepT('laptop')} />
-            <Dim {...wakeThenNight(enter('laptop'))} />
-          </Laptop>
-        </Placed>
-        <Placed id="tablet" x={w.pos.tablet.x} y={w.pos.tablet.y} w={TABLET.w} h={TABLET.h} fresh={freshOf('tablet')} from={entry['tablet']} opacity={othersOut}>
-          <Tablet>
-            <TripTabletScreen updateAt={enter('tablet')} open={rowAt()} grow={0} sweep={sweepT('tablet')} />
-            <Dim {...wakeThenNight(enter('tablet'))} />
-          </Tablet>
-        </Placed>
-        <Placed id="ajie" x={w.pos.ajie.x} y={w.pos.ajie.y} w={PHONE.w} h={PHONE.h} fresh={freshOf('ajie')} from={entry['ajie']} opacity={othersOut}>
-          <Phone>
-            <TripPhoneScreen updateAt={enter('ajie')} open={rowAt()} grow={0} sweep={sweepT('ajie')} time="21:07" />
-            <Dim {...wakeThenNight(enter('ajie'))} />
-          </Phone>
-        </Placed>
-        <WorldStations track={w.track} at={w.stations} motion={HEAD} width={lw} fade={lineOut} />
+        <SyncWorld model={model} />
       </motion.div>
-
-      <Labels cam={cam} w={w} view={view} layout={layout} wide={wide} />
-      <Titles layout={layout} view={view} wide={wide} />
+      <SyncOverlays model={model} cam={cam} view={view} />
     </div>
   );
 }
+
+export { GUESS as SYNC_GUESS, HEAD as SYNC_HEAD, frameOf, pad, union, boxOf };
+export type { World as SyncWorldModel, Dev as SyncDev };
 
 /* ═════════════════════ 车机 ═════════════════════ */
 
@@ -503,8 +591,9 @@ function CarStation({ w }: { w: World }) {
   const rise = useKeys(t, [T.carIn[0], T.carIn[1]], [70, 0], ease.out);
   const riseT = useTransform(rise, (v) => `translate3d(0, ${v.toFixed(2)}px, 0)`);
   const shown = useShown(lit);
+  const rendered = useTransform(lit, (v) => (v <= 0.001 ? 'hidden' : 'visible'));
   return (
-    <motion.div ref={ref} data-dev="car" className="absolute" style={{ left: w.car.x, top: w.car.y, width: CAR.w, height: CAR.h, opacity: lit, visibility: shown, transform: riseT }}>
+    <motion.div ref={ref} data-dev="car" className="absolute" style={{ left: w.car.x, top: w.car.y, width: CAR.w, height: CAR.h, opacity: lit, visibility: shown, contentVisibility: rendered, transform: riseT }}>
       <CarDisplay>
         <CarNavScreen litAt={T.carIn[0] + 0.2} routeAt={T.route} />
       </CarDisplay>
@@ -538,10 +627,11 @@ function Labels({ cam, w, view, layout, wide }: { cam: CamRef; w: World; view: V
   );
 }
 
-function useScreenPos(cam: CamRef, x: number, y: number) {
+/** 跟着镜头走的屏幕坐标；只在 [from, to] 这段（标签看得见的时候）逐帧更新，其余时间不动，不触发样式与图层更新 */
+function useScreenPos(cam: CamRef, x: number, y: number, from: number, to: number) {
   const t = useFilmTime();
   return useTransform(t, (v) => {
-    const c = cam.current.fn(v, cam.current.view);
+    const c = cam.current.fn(Math.max(from, Math.min(to, v)), cam.current.view);
     return `translate3d(${(c[0] + c[2] * x).toFixed(1)}px, ${(c[1] + c[2] * y).toFixed(1)}px, 0)`;
   });
 }
@@ -550,7 +640,7 @@ function Label({ cam, x, y, anchor, name, size, wide }: { cam: CamRef; x: number
   const t = useFilmTime();
   const fade = useKeys(t, [wide - 0.1, wide + 0.35, T.night[0] - 0.1, T.night[0] + 0.25], [0, 1, 1, 0]);
   const shown = useShown(fade);
-  const transform = useScreenPos(cam, x, y);
+  const transform = useScreenPos(cam, x, y, wide - 0.1, T.night[0] + 0.25);
   return (
     <motion.div className="absolute left-0 top-0" style={{ transform, opacity: fade, visibility: shown }}>
       <p className={`flex items-center whitespace-nowrap leading-[1.3] text-[#241E20]/70 ${anchor === 'center' ? '-translate-x-1/2' : ''}`} style={{ fontSize: size, gap: size * 0.45 }}>
@@ -568,7 +658,7 @@ function CarLabel({ cam, w, size }: { cam: CamRef; w: World; size: number }) {
   const t = useFilmTime();
   const fade = useKeys(t, [T.route[0] + 0.5, T.route[0] + 0.9], [0, 1]);
   const shown = useShown(fade);
-  const transform = useScreenPos(cam, w.car.x, w.car.y + CAR.h + 30);
+  const transform = useScreenPos(cam, w.car.x, w.car.y + CAR.h + 30, T.route[0] + 0.5, T.end);
   return (
     <motion.div className="absolute left-0 top-0" style={{ transform, opacity: fade, visibility: shown }}>
       <p className="flex items-center whitespace-nowrap leading-[1.3] text-[#241E20]/70" style={{ fontSize: size, gap: size * 0.45 }}>

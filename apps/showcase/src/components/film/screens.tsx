@@ -174,7 +174,9 @@ function DayList({ count = 6, rowH = 52, lg = false }: { count?: number; rowH?: 
 function TripTitle({ at, title = 'text-[17px]' }: { at: number; title?: string }) {
   return (
     <div className="flex min-w-0 items-center gap-3">
-      <RouteGlyph trip={XIXING} className="h-11 w-11 shrink-0 rounded-[12px]" />
+      <span data-anchor="cover" className="shrink-0">
+        <RouteGlyph trip={XIXING} className="h-11 w-11 rounded-[12px]" />
+      </span>
       <div className="min-w-0">
         <p className={`flex items-center gap-2 font-semibold leading-6 text-ui-ink ${title}`}>
           西行计划
@@ -186,13 +188,57 @@ function TripTitle({ at, title = 'text-[17px]' }: { at: number; title?: string }
   );
 }
 
-function Members({ size = 28 }: { size?: number }) {
+/** 加入行程的时刻（片子时钟）：省略时三个人一开始都在 */
+export interface Joins {
+  ajie: number;
+  xiaoyu: number;
+}
+
+function Members({ size = 28, joins }: { size?: number; joins?: Joins }) {
   return (
     <span className="flex shrink-0 items-center">
       <Avatar name="我" tone="violet" size={size} />
-      <Avatar name="阿杰" tone="teal" size={size} className="-ml-2" />
-      <Avatar name="小雨" tone="rose" size={size} className="-ml-2" />
+      <Joined at={joins?.ajie}>
+        <Avatar name="阿杰" tone="teal" size={size} className="-ml-2" />
+      </Joined>
+      <Joined at={joins?.xiaoyu}>
+        <Avatar name="小雨" tone="rose" size={size} className="-ml-2" />
+      </Joined>
     </span>
+  );
+}
+
+/** 一位家人点开链接加入：头像在成员里出现（位置一开始就留着，不重排） */
+function Joined({ at, children }: { at?: number; children: ReactNode }) {
+  const t = useFilmTime();
+  const k = useKeys(t, at === undefined ? [-1e6, -1e6 + 1] : [at, at + 0.3], [at === undefined ? 1 : 0, 1], ease.out);
+  const shown = useShown(k);
+  return (
+    <motion.span className="inline-flex" style={{ opacity: k, scale: k, visibility: shown }}>
+      {children}
+    </motion.span>
+  );
+}
+
+/** 系统提示：家人通过链接加入了行程（产品里的轻提示，从底部浮起、几秒后收起；不挡住标题栏里正在加入的头像） */
+export function JoinToast({ at, names }: { at: number; names: readonly { name: string; tone: 'teal' | 'rose' }[] }) {
+  const t = useFilmTime();
+  const k = useKeys(t, [at, at + 0.3, at + 1.7, at + 2.0], [0, 1, 1, 0]);
+  const y = useKeys(t, [at, at + 0.3], [12, 0], ease.out);
+  const shown = useShown(k);
+  return (
+    <div className="pointer-events-none absolute inset-x-0 bottom-[100px] z-40 flex justify-center">
+      <motion.div className="ui-float flex items-center gap-2 whitespace-nowrap rounded-full py-1.5 pl-1.5 pr-3.5 text-[13px] text-ui-ink" style={{ opacity: k, y, visibility: shown, willChange: 'transform, opacity' }}>
+        <span className="flex">
+          {names.map((n, i) => (
+            <Avatar key={n.name} name={n.name} tone={n.tone} size={24} ring={i > 0} className={i > 0 ? '-ml-1.5' : ''} />
+          ))}
+        </span>
+        <span>
+          <b className="font-medium">{names.map((n) => n.name).join('、')}</b> 通过链接加入了行程
+        </span>
+      </motion.div>
+    </div>
   );
 }
 
@@ -255,6 +301,7 @@ export function TripPhoneScreen({
   sweep,
   time,
   dawn,
+  joins,
   children,
 }: {
   updateAt: number;
@@ -263,6 +310,7 @@ export function TripPhoneScreen({
   sweep?: Sweep;
   time?: string;
   dawn?: { at: number; time: string };
+  joins?: Joins;
   children?: ReactNode;
 }) {
   return (
@@ -270,7 +318,7 @@ export function TripPhoneScreen({
       <PhoneStatus time={time} dawn={dawn} />
       <div className="flex items-center justify-between gap-2 px-5 pb-3 pt-3">
         <TripTitle at={updateAt} />
-        <Members size={26} />
+        <Members size={26} joins={joins} />
       </div>
       <div className="px-4">
         <D0Card open={open ?? updateAt - 0.1} grow={grow} sweep={sweep} />
@@ -284,13 +332,18 @@ export function TripPhoneScreen({
 
 /* ═════════════════════ 手机 · 提名与 AI 评估（领队） ═════════════════════ */
 
-function EvalRow({ icon, ok, children }: { icon: ReactNode; ok: boolean; children: ReactNode }) {
+/** AI 评估的一条：at 时刻算出来（淡入并轻轻落位），省略时一开始就在 */
+function EvalRow({ icon, ok, at, children }: { icon: ReactNode; ok: boolean; at?: number; children: ReactNode }) {
+  const t = useFilmTime();
+  const k = useKeys(t, at === undefined ? [-1e6, -1e6 + 1] : [at, at + 0.3], [at === undefined ? 1 : 0, 1], ease.out);
+  const y = useTransform(k, (v) => (1 - v) * 6);
+  const shown = useShown(k);
   return (
-    <li className="flex items-center gap-3">
+    <motion.li className="flex items-center gap-3" style={{ opacity: k, y, visibility: shown }}>
       <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${ok ? 'bg-ui-success/10 text-ui-success' : 'bg-[#B45309]/10 text-[#B45309]'}`}>{icon}</span>
       <span className="min-w-0 flex-1 text-[15px] leading-snug text-ui-ink">{children}</span>
       <span className={`shrink-0 text-[13px] font-medium ${ok ? 'text-ui-success' : 'text-[#B45309]'}`}>{ok ? '✓' : '注意'}</span>
-    </li>
+    </motion.li>
   );
 }
 
@@ -335,9 +388,25 @@ export function Fingertip({ approach, at, size = 46, className = '' }: { approac
 }
 
 /** 领队手机上的提名卡（底部抽屉）：AI 只算代价；领队点「加入 D0 晚上」 */
-export function NominationSheet({ tapAt, approach, hideAt, dim }: { tapAt: number; approach: readonly [number, number]; hideAt: readonly [number, number]; dim?: MotionValue<number> }) {
+export function NominationSheet({
+  tapAt,
+  approach,
+  hideAt,
+  dim,
+  inAt,
+  evalAt,
+}: {
+  tapAt: number;
+  approach: readonly [number, number];
+  hideAt: readonly [number, number];
+  dim?: MotionValue<number>;
+  /** 提名卡从底部升起的时刻（省略时一开始就在） */
+  inAt?: number;
+  /** AI 评估三条依次出现的时刻（省略时一开始就在） */
+  evalAt?: readonly [number, number, number];
+}) {
   const t = useFilmTime();
-  const y = useKeys(t, [hideAt[0], hideAt[1]], [0, 105], ease.in);
+  const y = useKeys(t, inAt === undefined ? [hideAt[0], hideAt[1]] : [inAt, inAt + 0.45, hideAt[0], hideAt[1]], inAt === undefined ? [0, 105] : [105, 0, 0, 105], inAt === undefined ? ease.in : ease.smooth);
   const yPct = useTransform(y, (n) => `${n}%`);
   const still = useMotionValue(1);
   const fade = dim ?? still;
@@ -359,13 +428,13 @@ export function NominationSheet({ tapAt, approach, hideAt, dim }: { tapAt: numbe
         <p className="mt-3 text-[15px] leading-relaxed text-ui-ink-2">“离第一晚的酒店走路就到，想带爷爷去喝碗醪糟。”</p>
         <p className="mt-4 border-t border-ui-line pt-3.5 text-[13px] font-medium text-ui-ink-3">AI 评估 · 只算代价，不替大家决定</p>
         <ul className="mt-3 flex flex-col gap-3">
-          <EvalRow ok icon={<WalkIcon className="h-4 w-4" />}>
+          <EvalRow at={evalAt?.[0]} ok icon={<WalkIcon className="h-4 w-4" />}>
             离 D0 酒店步行 950 m，约 12 分钟
           </EvalRow>
-          <EvalRow ok icon={<CarIcon className="h-4 w-4" />}>
+          <EvalRow at={evalAt?.[1]} ok icon={<CarIcon className="h-4 w-4" />}>
             不增加车程，不影响次日出发
           </EvalRow>
-          <EvalRow ok={false} icon={<HeightIcon className="h-4 w-4" />}>
+          <EvalRow at={evalAt?.[2]} ok={false} icon={<HeightIcon className="h-4 w-4" />}>
             夜市地库限高 2.0 m：车停酒店地面车位
           </EvalRow>
         </ul>
