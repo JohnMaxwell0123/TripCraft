@@ -17,7 +17,8 @@ import { CarNavScreen, JoinToast, NominationSheet, TodaySheet, TripLaptopScreen,
  * A8 点下：手机里插入的那一行亮起，一根橙线从这一行出发，沿线路图穿过全家每一块屏的同一行；线到哪块屏，哪块屏亮起、翻到 v1.1。
  *    镜头跟着线拉远（取景框始终装下领队的手机和线头前方的下一块屏）。
  * A9 全景停住：一根线串起全家的屏；大字「每一块屏，同一个版本。」
- * A10 夜里全家的屏熄灭，纸面转成清晨的冷白；只有领队的手机亮起来，时钟是 07:42，「今天的路线」升起；大字「9 月 24 日」。
+ * A10 夜里全家的屏熄灭，硬切到出发当天：纸面转成白天的冷白，只有领队的手机亮起来，时钟是 14:36（中川机场刚取完车），
+ *     「今天的路线」升起；大字「9 月 24 日」。
  * A11 领队点「投递到车机导航」：线从手机底边落下，镜头跟着往下摇，线进车机屏的一刻交给车机导航自己的蓝色路线
  *     （车机导航带路；TripCraft 不驾驶、不读车况）。
  *
@@ -43,11 +44,11 @@ export const T = {
   k2: 3.71,
   open: 3.79,
   launch: 4.15,
-  /** 夜里：全家的屏熄灭，停一下，然后硬切到出发当天的清晨（时间过去用剪辑交代，不让镜头扫过黑着的屏） */
+  /** 夜里：全家的屏熄灭，停一下，然后硬切到出发当天（时间过去用剪辑交代，不让镜头扫过黑着的屏）。dawn 指这一切之后的白天 */
   night: [10.65, 11.2] as const,
   dawnCam: [11.35, 11.351] as const,
   dawn: [11.35, 11.6] as const,
-  /** 清晨：领队的手机在晨光里亮起（熄屏期间时钟已经换成早上） */
+  /** 出发当天：领队的手机亮起（熄屏期间时钟已经换成取车之后的 14:36） */
   clock: 11.4,
   wake: [11.75, 12.15] as const,
   todayIn: [12.5, 12.95] as const,
@@ -416,7 +417,7 @@ export function measureSync(root: HTMLElement): Measure {
   return next;
 }
 
-/** 挂载后（以及网络字体到了之后）量一次；结果没变就不触发重渲染 */
+/** 挂载后（以及网络字体到了之后）量一次；字体加载失败也按回退字体再量一次；结果没变就不触发重渲染 */
 export function useMeasured<M>(root: { current: HTMLElement | null }, measure: (el: HTMLElement) => M, initial: M, deps: readonly unknown[]) {
   const [m, setM] = useState<M>(initial);
   useLayoutEffect(() => {
@@ -426,7 +427,7 @@ export function useMeasured<M>(root: { current: HTMLElement | null }, measure: (
       setM((prev) => (JSON.stringify(prev) === JSON.stringify(next) ? prev : next));
     };
     run();
-    document.fonts?.ready.then(run, () => {});
+    document.fonts?.ready.then(run, run);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
   return m;
@@ -486,7 +487,7 @@ export function SyncWorld({ model, prelude }: { model: SyncModel; prelude?: Prel
   const othersOut = useKeys(t, [T.dawnCam[0] - 0.001, T.dawnCam[0]], [1, 0], ease.linear);
   const lineOut = useKeys(t, [T.dawnCam[0] - 0.001, T.dawnCam[0]], [1, 0], ease.linear);
   const sheetDim = useKeys(t, [T.dim[0], T.dim[1]], [1, 0.14]);
-  // 领队的手机：线走进来之前是暗的；夜里熄屏，清晨镜头到位后亮起
+  // 领队的手机：线走进来之前是暗的；夜里熄屏，出发当天镜头到位后亮起
   const heroDim = prelude
     ? { keys: [prelude.wake - 0.02, prelude.wake + 0.4, T.night[0], T.night[1], T.wake[0], T.wake[1]], values: [0.86, 0, 0, NIGHT, NIGHT, 0] }
     : { keys: [T.night[0], T.night[1], T.wake[0], T.wake[1]], values: [0, NIGHT, NIGHT, 0] };
@@ -497,7 +498,7 @@ export function SyncWorld({ model, prelude }: { model: SyncModel; prelude?: Prel
       <CarStation w={w} />
       <Placed id="hero" x={w.pos.hero.x} y={w.pos.hero.y} w={PHONE.w} h={PHONE.h} fresh={freshHero} from={prelude?.heroFrom}>
         <Phone>
-          <TripPhoneScreen updateAt={T.hide[0]} open={T.open} sweep={sweepT('hero')} dawn={{ at: T.clock, time: '07:42' }} joins={prelude?.joins}>
+          <TripPhoneScreen updateAt={T.hide[0]} open={T.open} sweep={sweepT('hero')} dawn={{ at: T.clock, time: '14:36' }} joins={prelude?.joins}>
             {prelude ? (
               <>
                 <JoinToast
@@ -515,19 +516,19 @@ export function SyncWorld({ model, prelude }: { model: SyncModel; prelude?: Prel
           <Dim {...heroDim} />
         </Phone>
       </Placed>
-      <Placed id="laptop" x={w.pos.laptop.x} y={w.pos.laptop.y} w={LAPTOP.w} h={LAPTOP.h} fresh={freshOf('laptop')} from={entry['laptop']} opacity={othersOut}>
+      <Placed id="laptop" x={w.pos.laptop.x} y={w.pos.laptop.y} w={LAPTOP.w} h={LAPTOP.h} fresh={freshOf('laptop')} from={entry['laptop']} until={T.dawnCam[0]} opacity={othersOut}>
         <Laptop>
           <TripLaptopScreen updateAt={enter('laptop')} open={rowAt()} grow={0} sweep={sweepT('laptop')} />
           <Dim {...wakeThenNight(enter('laptop'))} />
         </Laptop>
       </Placed>
-      <Placed id="tablet" x={w.pos.tablet.x} y={w.pos.tablet.y} w={TABLET.w} h={TABLET.h} fresh={freshOf('tablet')} from={entry['tablet']} opacity={othersOut}>
+      <Placed id="tablet" x={w.pos.tablet.x} y={w.pos.tablet.y} w={TABLET.w} h={TABLET.h} fresh={freshOf('tablet')} from={entry['tablet']} until={T.dawnCam[0]} opacity={othersOut}>
         <Tablet>
           <TripTabletScreen updateAt={enter('tablet')} open={rowAt()} grow={0} sweep={sweepT('tablet')} />
           <Dim {...wakeThenNight(enter('tablet'))} />
         </Tablet>
       </Placed>
-      <Placed id="ajie" x={w.pos.ajie.x} y={w.pos.ajie.y} w={PHONE.w} h={PHONE.h} fresh={freshOf('ajie')} from={entry['ajie']} opacity={othersOut}>
+      <Placed id="ajie" x={w.pos.ajie.x} y={w.pos.ajie.y} w={PHONE.w} h={PHONE.h} fresh={freshOf('ajie')} from={entry['ajie']} until={T.dawnCam[0]} opacity={othersOut}>
         <Phone>
           <TripPhoneScreen updateAt={enter('ajie')} open={rowAt()} grow={0} sweep={sweepT('ajie')} time="21:07" />
           <Dim {...wakeThenNight(enter('ajie'))} />
@@ -564,7 +565,7 @@ export function SyncScene({ layout, view }: { layout: Layout; view: View }) {
   const m = useMeasured(worldRef, measureSync, GUESS, [layout]);
   const model = useSyncModel(layout, view, m);
   const { transform, cam } = useCamera(t, model.camFn, view);
-  // 晨光：一层清晨冷白的底色淡入（只改透明度；直接改底色会每一帧重画整个画面）
+  // 出发当天：一层白天冷白的底色淡入（只改透明度；直接改底色会每一帧重画整个画面）
   const dawnIn = useKeys(t, [T.dawn[0], T.dawn[1]], [0, 1]);
   return (
     <div data-film className="absolute inset-0 overflow-hidden" style={{ background: BG_NIGHT }}>

@@ -1,6 +1,6 @@
 'use client';
 
-import type { CSSProperties, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { motion, useMotionValue, useTransform, type MotionValue } from 'framer-motion';
 import { ease } from '@/lib/motion';
 import { DAYS, SELF_DRIVE_ROUTE, TRIPS } from '@/data/trip';
@@ -244,7 +244,7 @@ export function JoinToast({ at, names }: { at: number; names: readonly { name: s
 
 /* ═════════════════════ 手机 · 行程空间 ═════════════════════ */
 
-/** 状态栏：dawn 时刻起换成出发当天早上的时间（时间流逝靠真界面交代） */
+/** 状态栏：dawn 时刻起换成出发当天取车之后的时间（时间流逝靠真界面交代） */
 function PhoneStatus({ time = '21:06', dawn }: { time?: string; dawn?: { at: number; time: string } }) {
   const t = useFilmTime();
   const morning = useKeys(t, dawn ? [dawn.at, dawn.at + 0.3] : [0, 1], [0, dawn ? 1 : 0]);
@@ -666,6 +666,7 @@ export const CAR_ROUTE = 'M520 34 C 476 130, 432 186, 380 250 S 300 340, 250 372
 export function CarNavScreen({ litAt, routeAt, draw }: { litAt: number; routeAt: readonly [number, number]; draw?: MotionValue<number> }) {
   const t = useFilmTime();
   const lit = useKeys(t, [litAt, litAt + 0.5], [0, 1]);
+  const litShown = useShown(lit);
   const own = useKeys(t, [routeAt[0], routeAt[1]], [0, 1], ease.smooth);
   const pathLength = draw ?? own;
   const got = useKeys(t, [routeAt[0] + 0.1, routeAt[0] + 0.45], [0, 1]);
@@ -674,7 +675,7 @@ export function CarNavScreen({ litAt, routeAt, draw }: { litAt: number; routeAt:
   const idleShown = useShown(idle);
   const park = useKeys(t, [routeAt[1] - 0.1, routeAt[1] + 0.2], [0, 1]);
   return (
-    <motion.div className="absolute inset-0 flex font-sans text-[#1F2328]" style={{ opacity: lit }}>
+    <motion.div className="absolute inset-0 flex font-sans text-[#1F2328]" style={{ opacity: lit, visibility: litShown }}>
       <div className="relative min-w-0 flex-[1.55] overflow-hidden bg-[#E6EAEE]">
         <svg viewBox="0 0 700 448" preserveAspectRatio="xMidYMid slice" className="absolute inset-0 h-full w-full" aria-hidden>
           <rect width="700" height="448" fill="#E6EAEE" />
@@ -711,16 +712,5 @@ export function CarNavScreen({ litAt, routeAt, draw }: { litAt: number; routeAt:
         </motion.p>
       </div>
     </motion.div>
-  );
-}
-
-/** 车机的空位：出发当天才接上 */
-export function CarSlot({ className = '', style, children }: { className?: string; style?: CSSProperties; children?: ReactNode }) {
-  return (
-    <div className={`flex flex-col items-center justify-center gap-3 rounded-[34px] border-2 border-dashed border-[#CFCBC2] text-[#241E20]/55 ${className}`} style={style}>
-      <CarIcon className="h-9 w-9" />
-      <span className="text-[22px]">车机导航 · 出发当天接上</span>
-      {children}
-    </div>
   );
 }

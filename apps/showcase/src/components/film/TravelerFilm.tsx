@@ -83,7 +83,7 @@ export function TravelerFilm({ layout, view, sound }: { layout: Layout; view: Vi
   const cues = useMemo(() => filmCues(openingBeats(o), syncBeats(sync)), [o, sync]);
   useCues(t, cues, sound?.engine ?? null, sound?.on ?? false);
 
-  // 晨光：一层清晨冷白的底色淡入（只改透明度）
+  // 出发当天：一层白天冷白的底色淡入（只改透明度）
   const dawnIn = useKeys(t, [CLIMAX_AT + T.dawn[0], CLIMAX_AT + T.dawn[1]], [0, 1]);
   // 片尾卡盖住之后，世界整块不渲染
   const worldOn = useTransform(t, (v) => (v >= END_AT + 0.05 ? 'hidden' : 'visible'));

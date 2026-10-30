@@ -99,6 +99,7 @@ export function Placed({
   fresh,
   opacity,
   from = -1,
+  until = Infinity,
   children,
 }: {
   id: string;
@@ -110,16 +111,20 @@ export function Placed({
   opacity?: MotionValue<number>;
   /** 在这一刻之前整块不渲染（还没进画面：不让浏览器按微距的倍数去栅格化画面外的屏） */
   from?: number;
+  /** 从这一刻起整块不渲染（按时刻淡出的屏：opacity 在这一刻降到 0） */
+  until?: number;
   children: ReactNode;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   useRaster(ref, fresh);
   const one = useMotionValue(1);
   const o = opacity ?? one;
-  // 透明度为 0 时整块不渲染。用 content-visibility 而不是 visibility：visibility 会继承，切换时整台设备上千个节点都要重算样式，
-  // content-visibility: hidden 直接跳过子树的渲染，切换只花一帧里很少的工夫
+  // 进画面之前、淡出之后整块不渲染。用 content-visibility 而不是 visibility：visibility 会继承，切换时整台设备上千个节点都要重算样式，
+  // content-visibility: hidden 直接跳过子树的渲染，切换只花一帧里很少的工夫。
+  // 按时刻算，不从 opacity 再派生：同一帧里时钟与 opacity 一起变时，两个输入的 useTransform 会漏掉第二次更新，
+  // 暂停在这一帧（跳章、静帧）就会留下透明却仍在渲染的一整台屏
   const t = useFilmTime();
-  const rendered = useTransform([t, o], ([v, k]: number[]) => (v < from || k <= 0.001 ? 'hidden' : 'visible'));
+  const rendered = useTransform(t, (v) => (v < from || v >= until ? 'hidden' : 'visible'));
   return (
     <motion.div ref={ref} data-dev={id} className="absolute" style={{ left: x, top: y, width: w, height: h, willChange: 'transform, opacity', opacity: o, contentVisibility: rendered }}>
       {children}
@@ -129,7 +134,7 @@ export function Placed({
 
 /**
  * 屏的明暗（单独一层，只改透明度，不重画屏里的界面）：keys 是时刻，values 是暗度（0 = 亮）。
- * 用来表现待机（线到之前是暗的，线一到就亮起来）与夜里熄屏、早上点亮。
+ * 用来表现待机（线到之前是暗的，线一到就亮起来）与夜里熄屏、出发当天点亮。
  */
 export function Dim({ keys, values }: { keys: readonly number[]; values: readonly number[] }) {
   const t = useFilmTime();
