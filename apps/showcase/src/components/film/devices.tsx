@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, type CSSProperties, type ReactNode } from 'react';
-import { motion, useMotionValue, useTransform, type MotionValue } from 'framer-motion';
+import { motion, useMotionValue, useTransform, type MotionStyle, type MotionValue } from 'framer-motion';
 import { ease } from '@/lib/motion';
 import { useFilmTime, useKeys, useRaster, useShown } from './clock';
 
@@ -141,4 +141,32 @@ export function Dim({ keys, values }: { keys: readonly number[]; values: readonl
 /** 待机：线到之前这块屏是暗的，线一到就亮起来 */
 export function Sleep({ until, depth = 0.62 }: { until: number; depth?: number }) {
   return <Dim keys={[until - 0.02, until + 0.32]} values={[depth, 0]} />;
+}
+
+/**
+ * 世界里的一块片子元素（大字、浮在纸面上的界面）：常驻合成层，栅格策略同 Placed——
+ * 镜头推拉时只由合成器缩放，fresh 时段按当时的缩放重画一次。
+ */
+export function Layer({
+  x,
+  y,
+  fresh = [],
+  className = '',
+  style,
+  children,
+}: {
+  x: number;
+  y: number;
+  fresh?: readonly (readonly [number, number])[];
+  className?: string;
+  style?: MotionStyle;
+  children: ReactNode;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  useRaster(ref, fresh);
+  return (
+    <motion.div ref={ref} className={`absolute ${className}`} style={{ left: x, top: y, willChange: 'transform, opacity', ...style }}>
+      {children}
+    </motion.div>
+  );
 }

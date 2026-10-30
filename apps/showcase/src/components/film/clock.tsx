@@ -5,11 +5,12 @@ import { useMotionValue, useTransform, type MotionValue } from 'framer-motion';
 import { ease, interp, type Easing } from '@/lib/motion';
 
 /**
- * 片子的时钟与镜头（发布会级重拍的实验页 /lab 用；选定方向后并入 StageShell）
+ * 片子的时钟与镜头
  *
  * 时钟：一条以「秒」计的 MotionValue，rAF 推进，播放过程 0 React 重渲染。
  * window.__film 提供 play / seek：录制与截关键帧时用它对齐（?rec 时不自动播放，等录制脚本调用 play）。
- * 镜头：世界坐标里的一串机位（中心 + 缩放），缩放按对数插值，像镜头推拉而不是放大图片。
+ * 舞台用 useFilmControl 控制播放（进入视口才播、离开就停、章节跳转、播完停在片尾）。
+ * 镜头：世界坐标里的一串机位，缩放按对数插值，像镜头推拉而不是放大图片。
  * 世界里的东西按「原大」排版（手机 390 宽、电脑 1192 宽），镜头只缩小或在特写时适度放大，字始终清晰。
  */
 
@@ -21,41 +22,71 @@ export function useFilmTime(): MotionValue<number> {
   return t;
 }
 
-export function FilmClock({ duration, children }: { duration: number; children: ReactNode }) {
+export type FilmStatus = 'idle' | 'playing' | 'paused' | 'ended';
+
+export interface FilmControl {
+  duration: number;
+  t: MotionValue<number>;
+  status: FilmStatus;
+  play: (from?: number) => void;
+  pause: () => void;
+  seek: (s: number) => void;
+}
+
+const FilmControlContext = createContext<FilmControl | null>(null);
+
+export function useFilmControl(): FilmControl {
+  const c = useContext(FilmControlContext);
+  if (!c) throw new Error('useFilmControl 必须在 <FilmClock> 内使用');
+  return c;
+}
+
+/** autoplay：实验页字体就绪后自动播；舞台交给 useFilmControl 控制（进入视口才播） */
+export function FilmClock({ duration, autoplay = true, children }: { duration: number; autoplay?: boolean; children: ReactNode }) {
   const t = useMotionValue(0);
+  const [status, setStatus] = useState<FilmStatus>('idle');
+  const playing = useRef(false);
+  const api = useRef<Omit<FilmControl, 't' | 'status' | 'duration'> | null>(null);
   useEffect(() => {
     const manual = new URLSearchParams(window.location.search).has('rec');
     let raf = 0;
     let last = performance.now();
-    let playing = false;
     const tick = (now: number) => {
       const dt = Math.min(now - last, 64) / 1000;
       last = now;
-      if (playing) {
+      if (playing.current) {
         const v = Math.min(duration, t.get() + dt);
         t.set(v);
-        if (v >= duration) playing = false;
+        if (v >= duration) {
+          playing.current = false;
+          setStatus('ended');
+        }
       }
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
-    const api = {
-      duration,
-      play: (from?: number) => {
-        if (from !== undefined) t.set(from);
-        last = performance.now();
-        playing = true;
-      },
-      seek: (s: number) => {
-        playing = false;
-        t.set(s);
-      },
+    const play = (from?: number) => {
+      if (from !== undefined) t.set(from);
+      else if (t.get() >= duration) t.set(0);
+      last = performance.now();
+      playing.current = true;
+      setStatus('playing');
     };
-    (window as unknown as Record<string, unknown>).__film = api;
+    const pause = () => {
+      playing.current = false;
+      setStatus((s) => (s === 'ended' ? s : 'paused'));
+    };
+    const seek = (s: number) => {
+      playing.current = false;
+      t.set(Math.max(0, Math.min(duration, s)));
+      setStatus(s >= duration ? 'ended' : 'paused');
+    };
+    api.current = { play, pause, seek };
+    (window as unknown as Record<string, unknown>).__film = { duration, play, seek };
     let timer = 0;
-    if (!manual) {
+    if (autoplay && !manual) {
       const start = () => {
-        timer = window.setTimeout(() => api.play(0), 700);
+        timer = window.setTimeout(() => play(0), 700);
       };
       document.fonts?.ready.then(start, start);
     }
@@ -64,8 +95,27 @@ export function FilmClock({ duration, children }: { duration: number; children: 
       window.clearTimeout(timer);
       delete (window as unknown as Record<string, unknown>).__film;
     };
-  }, [duration, t]);
-  return <FilmTimeContext.Provider value={t}>{children}</FilmTimeContext.Provider>;
+  }, [duration, t, autoplay]);
+  const control: FilmControl = {
+    duration,
+    t,
+    status,
+    play: (from) => api.current?.play(from),
+    pause: () => api.current?.pause(),
+    seek: (s) => api.current?.seek(s),
+  };
+  return (
+    <FilmControlContext.Provider value={control}>
+      <FilmTimeContext.Provider value={t}>{children}</FilmTimeContext.Provider>
+    </FilmControlContext.Provider>
+  );
+}
+
+/** 子树里的时间整体后移 by 秒：一段场景按自己的 0 秒写时间轴，放进全片时只在外面套一层 */
+export function TimeShift({ by, children }: { by: number; children: ReactNode }) {
+  const t = useFilmTime();
+  const local = useTransform(t, (v) => v - by);
+  return <FilmTimeContext.Provider value={local}>{children}</FilmTimeContext.Provider>;
 }
 
 /** 分段插值的简写：times 单调递增（秒） */
