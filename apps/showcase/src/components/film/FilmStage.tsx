@@ -26,10 +26,10 @@ interface Chapter {
 }
 
 const CHAPTERS: Chapter[] = [
-  { id: 'say', label: '一句话', at: 0, still: 12.4 },
-  { id: 'paths', label: '两条路', at: 12.9, still: 16.6 },
-  { id: 'sync', label: '同一个版本', at: 18.35, still: CLIMAX_AT + 8.0 },
-  { id: 'car', label: '交给车机', at: CLIMAX_AT + 10.25, still: CLIMAX_AT + 16.2 },
+  { id: 'say', label: '一句话', at: 0, still: 9.6 },
+  { id: 'paths', label: '两条路', at: 12.5, still: 15.8 },
+  { id: 'sync', label: '同一版本', at: 16.8, still: CLIMAX_AT + 8.3 },
+  { id: 'car', label: '交给车机', at: CLIMAX_AT + 10.65, still: CLIMAX_AT + 16.4 },
 ];
 
 /** 给读屏软件的文字版：片子里发生了什么（画面本身只靠线与真界面讲） */

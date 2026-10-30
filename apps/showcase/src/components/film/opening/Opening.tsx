@@ -36,8 +36,7 @@ export const O = {
   marks: [4.45, 0.2] as const,
   /** 线从气泡出来往下走，镜头随画像一起长，直到装下整张画像 */
   toList: [5.6, 7.3] as const,
-  /** 镜头推近第七站，问与答 */
-  push228: [9.75, 10.55] as const,
+  /** 第七站：问与答。镜头不动，前六站退成浅灰，眼睛自然落到问与答上 */
   ask: [10.05, 10.4] as const,
   answer: 11.0,
   /** 第二段线头：分岔、下行到旅行社线路 */
@@ -200,13 +199,14 @@ export function buildOpening(layout: Layout, sync: SyncModel): OpeningModel {
   // 镜头
   const shots: Shot[] = [];
   const cw = composer;
-  const macro0: Frame = land ? { x: (cw.x0 + cw.x1) / 2, y: cw.y1 - 110, w: 720, h: 405 } : { x: (cw.x0 + cw.x1) / 2, y: cw.y1 - 96, w: 700, h: 1244 };
+  // 竖屏像一块空着的聊天屏：输入框在画面下部，上面留给对话
+  const macro0: Frame = land ? { x: (cw.x0 + cw.x1) / 2, y: cw.y1 - 110, w: 720, h: 405 } : { x: (cw.x0 + cw.x1) / 2, y: cw.y1 - 348, w: 700, h: 1244 };
   const macro1: Frame = land ? { ...macro0, w: 660, h: 371 } : { ...macro0, w: 660, h: 1173 };
   shots.push({ t: 0, f: macro0 }, { t: O.type[1], from: 0.3, f: macro1, ease: ease.linear });
   // 发送：退到能看清下划线的气泡
   const bubbleView: Frame = land
     ? { x: (bubble.x0 + bubble.x1) / 2, y: (bubble.y0 + composer.y1) / 2, w: 1180, h: 664 }
-    : { x: (bubble.x0 + bubble.x1) / 2, y: (bubble.y0 + composer.y1) / 2, w: 1000, h: 1778 };
+    : { x: (bubble.x0 + bubble.x1) / 2, y: composer.y1 - 560, w: 1000, h: 1778 };
   shots.push({ t: O.toBubble[1], from: O.toBubble[0], f: bubbleView, ease: ease.smooth });
   // 整张画像：气泡、往下走的线、六站与第七站同框；线往下走时镜头只极慢地推近
   const listBox: Box = land
@@ -221,28 +221,28 @@ export function buildOpening(layout: Layout, sync: SyncModel): OpeningModel {
     return { x: lerp(bubbleView.x, listF.x), y: lerp(bubbleView.y, listF.y), w: lerp(bubbleView.w, listF.w), h: lerp(bubbleView.h, listF.h) };
   };
   shots.push(...sampled(growing, HEAD1, O.toList[0], O.toList[1]));
-  shots.push({ t: O.push228[0], f: { ...listF, w: listF.w * 0.96, h: listF.h * 0.96, y: listF.y + listF.h * 0.02 }, ease: ease.linear });
-  // 第七站：推近，问与答
-  // 推近第七站：画面上沿落在两行字之间，不切字
-  const word228: Frame = land ? { x: s228.x + 520, y: s228.y + 60, w: 1640, h: 922 } : { x: s228.x + 430, y: s228.y + 450, w: 1180, h: 2098 };
-  shots.push({ t: O.push228[1], from: O.push228[0], f: word228, ease: ease.smooth });
+  // 取样做过滑动平均，最后一格没有完全到位：再用半秒稳稳落到整张画像上
+  shots.push({ t: O.toList[1] + 0.5, from: O.toList[1], f: listF, ease: ease.smooth });
+  // 第七站：镜头停在整张画像上不动（问与答靠前六站退成浅灰来突出，不推镜头，不切字）
   // 分岔：第七站、分岔、旅行社线路卡
   const forkView: Box = land
     ? { x0: s228.x - 260, y0: s228.y - 118, x1: fan.x1 + 200, y1: fan.y1 + 150 }
     : { x0: cover.x - 210, y0: s228.y - 150, x1: cover.x + 1120, y1: fan.y1 + 420 };
   const forkF = topAnchored(forkView, land ? 16 / 9 : 9 / 16);
   shots.push({ t: O.toFork[1], from: O.toFork[0], f: forkF, ease: ease.smooth });
-  // 主线：跟着线头停靠四座城，走到手机
-  const follow3 = (h: number): Frame => {
-    const p = pointAt(tracks[2], Math.min(h, tracks[2].len));
-    if (land) {
-      const x = Math.max(forkF.x, p.x + 1050 - forkF.w / 2);
-      return { ...forkF, x };
-    }
-    const y = Math.max(forkF.y, p.y + 1150 - forkF.h / 2);
-    return { ...forkF, y };
-  };
-  shots.push(...sampled(follow3, HEAD3, HEAD3.launch, O.toPhone[0]));
+  // 主线：分岔的画面停住，线头走过兰州、张掖；然后一次摇到「四座城 + 领队的手机」（旅行社线路退成浅灰，留在画面左下）
+  const panAt = timeAt(HEAD3, stations[2][1]) - 0.05;
+  if (land) {
+    const routeF = topAnchored({ x0: cities[0].x - 300, y0: cities[0].y - 340, x1: heroBody.x0 + 560, y1: cities[0].y + 520 }, 16 / 9);
+    shots.push({ t: panAt, f: forkF, ease: ease.linear }, { t: panAt + 0.85, from: panAt, f: routeF, ease: ease.smooth });
+  } else {
+    // 竖屏：窄一些的画框跟着线头往下走，站名更大
+    const follow3 = (h: number): Frame => {
+      const p = pointAt(tracks[2], Math.min(h, tracks[2].len));
+      return { x: cover.x + 380, y: Math.max(forkF.y, p.y + 420), w: 1160, h: 2062 };
+    };
+    shots.push(...sampled(follow3, HEAD3, HEAD3.launch, O.toPhone[0]));
+  }
   // 手机亮起：推到整部手机
   const phoneView: Box = land
     ? { x0: heroBody.x0 - 120, y0: heroBody.y0 - 100, x1: heroBody.x1 + 120, y1: heroBody.y1 + 100 }
@@ -309,7 +309,7 @@ export function OpeningWorld({ o, lw, until }: { o: OpeningModel; lw: number; un
   const rendered = useTransform(gone, (v) => (v <= 0.001 ? 'hidden' : 'visible'));
   const settle = (a: number): readonly [number, number] => [a, a + 0.06];
   // 镜头停住的时刻各重画一次：退到气泡、推到第七站、拉到分岔
-  const fresh = [settle(O.toBubble[1] + 0.05), settle(O.push228[1] + 0.05), settle(O.toFork[1] + 0.05)];
+  const fresh = [settle(O.toBubble[1] + 0.05), settle(O.toList[1] + 0.05), settle(O.toFork[1] + 0.05)];
   return (
     <motion.div className="absolute left-0 top-0" style={{ opacity: gone, visibility: goneShown, contentVisibility: rendered }}>
       <WorldLine track={o.tracks[0]} gaps={[[0, o.tracks[0].len]]} motion={HEAD1} width={lw} />
@@ -417,7 +417,8 @@ const SERIF = 'font-serif font-semibold tracking-[-0.01em] text-[#241E20]';
 
 function Word({ wd, at, fresh }: { wd: WordStation; at: number; fresh: readonly (readonly [number, number])[] }) {
   const t = useFilmTime();
-  const k = useKeys(t, [at - 0.02, at + 0.32], [0, 1], ease.out);
+  // 出现；AI 追问时退成浅灰（一刻一事：眼睛落到第七站）
+  const k = useKeys(t, [at - 0.02, at + 0.32, O.ask[0] - 0.1, O.ask[0] + 0.3], [0, 1, 1, 0.3], ease.out);
   const shown = useShown(k);
   const dx = useTransform(k, (v) => (1 - v) * -14);
   return (
@@ -472,7 +473,7 @@ function Station228({ o, at, fresh }: { o: OpeningModel; at: number; fresh: read
 function Fan({ o, at, fresh }: { o: OpeningModel; at: number; fresh: readonly (readonly [number, number])[] }) {
   const t = useFilmTime();
   const f = o.fan;
-  const caption = useKeys(t, [at - 0.1, at + 0.3], [0, 1], ease.out);
+  const caption = useKeys(t, [at - 0.1, at + 0.3, HEAD3.launch, HEAD3.launch + 0.5], [0, 1, 1, 0.35], ease.out);
   const captionShown = useShown(caption);
   const land = o.layout === 'land';
   return (
@@ -492,7 +493,8 @@ function Fan({ o, at, fresh }: { o: OpeningModel; at: number; fresh: readonly (r
 
 function FanCard({ i, x, y, at, scale, fresh }: { i: number; x: number; y: number; at: number; scale: number; fresh: readonly (readonly [number, number])[] }) {
   const t = useFilmTime();
-  const k = useKeys(t, [at, at + 0.4], [0, 1], ease.out);
+  // 出现；主线接着走自驾时退成浅灰（另一条路还在，只是镜头的注意力移开了）
+  const k = useKeys(t, [at, at + 0.4, HEAD3.launch, HEAD3.launch + 0.5], [0, 1, 1, 0.35], ease.out);
   const shown = useShown(k);
   const dy = useTransform(k, (v) => (1 - v) * -24);
   const fill = useKeys(t, [at + 0.2, at + 1.0], [0, CARDS[i].score / 100], ease.out);
