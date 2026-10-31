@@ -9,7 +9,7 @@
 
 ## 1. 工程定位与核心使命
 
-`apps/showcase` 是 **TripCraft（旅艺）** 的交互演示站：用一部演示片和一段场景动画讲清产品基线 v3（[PRD-01](../../docs/product/PRD-01-vision-positioning.md)）——旅客用一段对话说清需求，AI 规划自驾路线或匹配持证旅行社的线路，方案进入行程空间、全家多端同步；旅行社在线路工作室上架线路、生成路书、透明报价。访客无需注册登录，滚到哪段就播哪段。
+`apps/showcase` 是 **TripCraft（旅艺）** 的交互演示站：用一部演示片和一段场景动画讲清产品基线 v3（[PRD-01](../../docs/product/PRD-01-vision-positioning.md)）——旅客用一段对话说清需求，AI 规划自驾路线或匹配持证旅行社的线路，方案进入行程空间、全家多端同步，定下来的行程还能做成一份可分享的路书；旅行社在线路工作室上架线路、生成路书、透明报价。访客无需注册登录，滚到哪段就播哪段。
 
 TripCraft 仍在设计与原型阶段：演示用的是示例数据，「设计场景」一节是 PRD-03 的典型场景，不是用户评价。
 
@@ -51,13 +51,13 @@ B 端 · 定制师的一天（AgencyStage，#agency，约 68 秒，黄昏氛围�
   09:30 导入行程单 → 10:40 填写上架信息 → 14:00 生成路书与路线动画 → 16:20 咨询、报价与交付
 ```
 
-- **演示片要让人静音、不读字也记住三件事**：说一句话 AI 就读懂这一家人；全家每一块屏同一个版本；出发当天路线交给车机导航。筛选页、报价、分享路书等能力不在片子里，由能力画廊与 B 端舞台讲（删掉了什么见 SHOWCASE §4.2）。
+- **演示片要让人静音、不读字也记住三件事**：说一句话 AI 就读懂这一家人；全家每一块屏同一个版本；出发当天路线交给车机导航。筛选页、报价、分享路书等能力不在片子里，由能力画廊与 B 端舞台讲（删掉了什么见 SHOWCASE §4.2；分享路书与行程皮肤在能力画廊的「可分享的路书」卡里，SHOWCASE §5）。
 - **演示片的播放器**（`src/components/film/FilmStage.tsx`）：标题在上，下面是 16:9 宽银幕（画框宽度 < 640px 时换成 9:16 竖屏，手机上通栏，是另一套构图而不是缩小）与一条播放条（播放 / 暂停 / 重播、四个章节、声音开关）；画框露出一半才开始播，离开就停，播完停在片尾。读屏软件读播放器下面的文字版。
 - **演示片的部件**（`src/components/film/`，SHOWCASE §4.1「演示片」）：全片一个世界、一台镜头、一根线——`clock.tsx`（以秒计的时钟、镜头的画框与插值、`TimeShift`）、`line.tsx`（线与站点）、`devices.tsx`（手机、电脑、平板、车机）、`screens.tsx`（屏上的真实产品界面）、`opening/Opening.tsx`（01–02，按全片秒书写的 `O`）、`sync/SyncScene.tsx`（03–04，按高潮自己的秒书写的 `T`）、`TravelerFilm.tsx`（把两段接成一部片子，片尾）、`sound.ts`（默认关闭的 WebAudio 提示音）。屏上只放用产品界面令牌写的真界面，屏外是线、标签与片名。
 - **演示片的性能**：镜头移动时只做合成（世界层固定光栅，线是实心条），停稳后让需要看清的几块重新光栅；入场之前的设备用 `content-visibility: hidden` 不渲染；会动的片名各自一层；看不见的那几段不跟着时钟重算（`TimeGate`）；演示片里的玻璃退回实色。
 - **B 端的共用外壳**：`StageShell.tsx`（rAF 时钟、章节导航、播放控制；`tone="band"` 深色氛围带）与 `AppWindow.tsx`（标题栏与时钟、侧栏、状态栏、手机标签栏；导航项可带角标与演示光标）；章节按时长首尾相接（`acts.ts`），只播放一遍，离开视口时挂起，播放过程 0 React 重渲染；换章时版面不动。B 端 16:20 收到的是同一家人发来的咨询（SHOWCASE §4.0 的数据线）。时间轴在 `agencyTimeline.ts`，整体快慢只改 `StageShell.tsx` 的 `PLAYBACK_RATE`（0.9）。
 - **屏上与视窗里的产品界面**（SHOWCASE §4.1「视窗界面规范」，D10 已定的 App 外观）：暖白 · 品牌橙为主，叠在地图上的浮层用玻璃（`.ui-glass`，不支持时退回实色）；组件只用 `globals.css`「产品界面令牌」与 `tailwind.config.ts` 的 `ui-*`。视觉语言与示例线路无关：示意矢量底图（`MapCanvas` + `data/basemap.ts`）、用路线形状生成的封面（`RouteGlyph`）、地点类别配色与图形（`ui.tsx`）。
-- **行程皮肤**（docs/09 §9.0）：令牌在 `globals.css`「行程皮肤令牌」与 `tailwind.config.ts` 的 `trip-*`，只挂在 `.trip-surface[data-trip-theme]` 上。原来用在 C 端 04 幕收尾的分享卡片（`ShareRoadbook.tsx`，2026-10-31 随旧舞台删除）；令牌留着，首页目前没有用到。
+- **行程皮肤**（docs/09 §9.0）：令牌在 `globals.css`「行程皮肤令牌」与 `tailwind.config.ts` 的 `trip-*`，只挂在 `.trip-surface[data-trip-theme]` 上。用在能力画廊的「可分享的路书」卡（`src/components/home/ShareCard.tsx`，PRD-03 S-C10，2026-10-31）：换一条路线，分享页的皮肤跟着换成敦煌金、高原青或江南翠（色值照抄 docs/09 §9.2，小字只用对比度 ≥ 4.5:1 的颜色）；页脚的「用 TripCraft 制作」、AI 生成标识与「我也做一份」是平台层，用 `ui-*`，不随皮肤变。旧 04 幕的分享卡片（`ShareRoadbook.tsx`）已随旧舞台删除。
 - **透明度为 0 时同时隐藏**：只靠透明度隐藏的元素用 `useFadeVisibility` / `useFadeStyle`（演示片里是 `useShown`）绑上 `visibility`，iPad Safari 不留残影；显示时取 `inherit`（跟随祖先），不用 `visible`。演示片里整块设备改用 `content-visibility: hidden`：在大子树上切换会继承的 `visibility` 太慢。
 - **按视窗宽度排版**（B 端）：视窗是 `container-name: win` 的容器，内部用 `cq-sm / cq-md / cq-lg` 变体（见 `tailwind.config.ts`）。
 - **减弱动态效果**：`prefers-reduced-motion` 下两段都不自动播放；演示片的四个章节按钮切换四张静帧，B 端每章展示一张静帧。
