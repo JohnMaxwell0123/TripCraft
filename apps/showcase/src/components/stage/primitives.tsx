@@ -13,7 +13,7 @@ export const ProgressContext = createContext<MotionValue<number> | null>(null);
 
 export function useProgress(): MotionValue<number> {
   const p = useContext(ProgressContext);
-  if (!p) throw new Error('useProgress 必须在 <ScrollyStage> 内使用');
+  if (!p) throw new Error('useProgress 必须在 <StageShell> 内使用');
   return p;
 }
 
