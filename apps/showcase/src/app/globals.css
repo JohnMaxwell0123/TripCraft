@@ -478,11 +478,11 @@ body {
 /* ==========================================================================
  * 行程皮肤令牌（docs/09 §9.0、ARC-10 §5.1）：App 不换肤，行程换肤
  *
- * 只挂在行程内容的根节点 .trip-surface 上（演示站里只有 04 幕的分享卡片与分享页），App 外壳、对话、匹配与报价、
- * B 端工作室都不用。没有生成皮肤时回落到 App 外观；data-trip-theme 是按路线自动生成的那一套（所有人免费），
- * 演示的河西走廊线路归入敦煌金（docs/09 §9.2.2 的五个色值）。
+ * 只挂在行程内容的根节点 .trip-surface 上（演示站里只有能力画廊「可分享的路书」那张卡的分享页与色样），App 外壳、对话、
+ * 匹配与报价、B 端工作室都不用。没有生成皮肤时回落到 App 外观；data-trip-theme 是按路线自动生成的那一套（所有人免费）。
+ * 画廊里的三条示例路线分别归入敦煌金、高原青、江南翠，色值照抄 docs/09 §9.2.2、§9.2.4、§9.2.5。
  * 语义色锁定、不随皮肤变化：成功、警告、地点类别、价格、合规提示与「AI 生成」标识仍用产品界面令牌。
- * 沙底上的对比度：文字 10.9:1、青金石蓝 7.1:1、赭石红 6.3:1、文字 78% 5.8:1；氧化金只有 2.7:1，只用于图形与线条。
+ * 小字只用对比度 ≥ 4.5:1 的颜色，不够的只用于图形与线条（每个主题族各自的对比度写在下面）。
  * ======================================================================== */
 .trip-surface {
   --trip-canvas: var(--ui-surface);
@@ -491,12 +491,29 @@ body {
   --trip-secondary: var(--ui-ink-2);
   --trip-accent: var(--ui-accent-ink);
 }
+/* 敦煌金：沙底上文字 10.9:1、青金石蓝 7.1:1、赭石红 6.3:1、文字 78% 5.8:1；氧化金只有 2.7:1，只用于图形与线条 */
 .trip-surface[data-trip-theme='dunhuang-gold'] {
   --trip-canvas: 242 232 213; /* #F2E8D5 沙 */
   --trip-ink: 58 46 31; /* #3A2E1F 暖褐黑，不用纯黑 */
   --trip-primary: 184 134 59; /* #B8863B 氧化金箔，饱和度刻意压低 */
   --trip-secondary: 31 78 121; /* #1F4E79 青金石蓝 */
   --trip-accent: 140 58 43; /* #8C3A2B 赭石红 */
+}
+/* 高原青：底上文字 12.9:1、靛青 5.2:1、文字 78% 6.6:1；藏黄 2.2:1、僧袍红 3.7:1，只用于图形 */
+.trip-surface[data-trip-theme='plateau-cyan'] {
+  --trip-canvas: 239 246 248; /* #EFF6F8 稀薄空气的白，带极淡的青 */
+  --trip-ink: 26 46 56; /* #1A2E38 深青黑 */
+  --trip-primary: 30 111 140; /* #1E6F8C 高海拔靛青 */
+  --trip-secondary: 201 162 39; /* #C9A227 藏黄，用量极少 */
+  --trip-accent: 217 79 61; /* #D94F3D 僧袍红，只用于警告与关键标记 */
+}
+/* 江南翠：宣纸底上文字 11.6:1、青苔绿 5.4:1、朱砂 5.4:1、文字 78% 6.0:1；烟灰绿 3.2:1，只用于图形 */
+.trip-surface[data-trip-theme='jiangnan-emerald'] {
+  --trip-canvas: 245 242 234; /* #F5F2EA 宣纸 */
+  --trip-ink: 43 51 48; /* #2B3330 墨黑，带绿的墨 */
+  --trip-primary: 62 107 90; /* #3E6B5A 青苔绿，偏灰的青绿 */
+  --trip-secondary: 122 139 127; /* #7A8B7F 烟灰绿 */
+  --trip-accent: 156 74 60; /* #9C4A3C 朱砂，落款式标记 */
 }
 
 @layer components {
@@ -600,6 +617,13 @@ body {
   .glass { background: rgb(var(--tc-glass-bg) / 0.94); }
   .glass-strong { background: rgb(var(--tc-glass-bg) / 0.97); }
   .glass-dark { background: rgb(var(--tc-lapis-deep) / 0.92); }
+}
+/* 片子（data-film）里的地图浮层：镜头一推拉，玻璃背后的模糊每一帧都要重算，片子里用产品自己的实色退路（同上） */
+[data-film] .ui-glass {
+  background: rgb(var(--ui-surface));
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-color: rgb(var(--ui-line));
 }
 html[data-lowfx='true'] .glass,
 html[data-lowfx='true'] .glass-strong,
