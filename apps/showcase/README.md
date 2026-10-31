@@ -57,11 +57,11 @@ B 端 · 定制师的一天（AgencyStage，#agency，约 68 秒，黄昏氛围�
 - **演示片的性能**：镜头移动时只做合成（世界层固定光栅，线是实心条），停稳后让需要看清的几块重新光栅；入场之前的设备用 `content-visibility: hidden` 不渲染；会动的片名各自一层；看不见的那几段不跟着时钟重算（`TimeGate`）；演示片里的玻璃退回实色。
 - **B 端的共用外壳**：`StageShell.tsx`（rAF 时钟、章节导航、播放控制；`tone="band"` 深色氛围带）与 `AppWindow.tsx`（标题栏与时钟、侧栏、状态栏、手机标签栏；导航项可带角标与演示光标）；章节按时长首尾相接（`acts.ts`），只播放一遍，离开视口时挂起，播放过程 0 React 重渲染；换章时版面不动。B 端 16:20 收到的是同一家人发来的咨询（SHOWCASE §4.0 的数据线）。时间轴在 `agencyTimeline.ts`，整体快慢只改 `StageShell.tsx` 的 `PLAYBACK_RATE`（0.9）。
 - **屏上与视窗里的产品界面**（SHOWCASE §4.1「视窗界面规范」，D10 已定的 App 外观）：暖白 · 品牌橙为主，叠在地图上的浮层用玻璃（`.ui-glass`，不支持时退回实色）；组件只用 `globals.css`「产品界面令牌」与 `tailwind.config.ts` 的 `ui-*`。视觉语言与示例线路无关：示意矢量底图（`MapCanvas` + `data/basemap.ts`）、用路线形状生成的封面（`RouteGlyph`）、地点类别配色与图形（`ui.tsx`）。
-- **行程皮肤**（docs/09 §9.0）：令牌在 `globals.css`「行程皮肤令牌」与 `tailwind.config.ts` 的 `trip-*`，只挂在 `.trip-surface[data-trip-theme]` 上。原来用在 C 端 04 幕收尾的分享卡片（`ShareRoadbook.tsx`）；2026-10-30 重拍后首页暂时没有用到它的画面。
+- **行程皮肤**（docs/09 §9.0）：令牌在 `globals.css`「行程皮肤令牌」与 `tailwind.config.ts` 的 `trip-*`，只挂在 `.trip-surface[data-trip-theme]` 上。原来用在 C 端 04 幕收尾的分享卡片（`ShareRoadbook.tsx`，2026-10-31 随旧舞台删除）；令牌留着，首页目前没有用到。
 - **透明度为 0 时同时隐藏**：只靠透明度隐藏的元素用 `useFadeVisibility` / `useFadeStyle`（演示片里是 `useShown`）绑上 `visibility`，iPad Safari 不留残影；显示时取 `inherit`（跟随祖先），不用 `visible`。演示片里整块设备改用 `content-visibility: hidden`：在大子树上切换会继承的 `visibility` 太慢。
 - **按视窗宽度排版**（B 端）：视窗是 `container-name: win` 的容器，内部用 `cq-sm / cq-md / cq-lg` 变体（见 `tailwind.config.ts`）。
 - **减弱动态效果**：`prefers-reduced-motion` 下两段都不自动播放；演示片的四个章节按钮切换四张静帧，B 端每章展示一张静帧。
-- **旧的 C 端舞台**（`ScrollyStage.tsx`、`timeline.ts` 与只属于它的场景文件）2026-10-30 起不再挂载，文件暂未删除，是否删除待业主决定。
+- **旧的 C 端舞台**（`ScrollyStage.tsx`、`timeline.ts` 与只属于它的场景文件，连同更早就不挂载的 `ChatScene`、`CockpitScene`、`Deliver`）2026-10-30 起不再挂载，2026-10-31 业主同意后删除；要看旧舞台，到 git 历史里找（删除前的最后一版是 57aef87）。
 - **视觉巡检**：控制台执行 `window.__setStageProgress(v)`（演示片，v 为全片进度 0–1；或 `window.__film.seek(秒)`）或 `window.__setAgencyProgress(v)` 跳到任意帧并暂停。演示片的 MP4 用仓库外的巡检脚本按 `window.__film.seek()` 逐帧截图合成；要整屏画面时临时加一个只渲染 `<FilmClock><TravelerFilm /></FilmClock>` 的页面，录完删掉，不进仓库。
 
 ---

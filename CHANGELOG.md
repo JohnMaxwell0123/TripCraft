@@ -2,6 +2,14 @@
 
 所有关键架构修订、外部事实核查与规范变更记录在此。历史更正详情见 [docs/ERRATA.md](docs/ERRATA.md)。
 
+## [2026-10-31] - 演示站：删除不再挂载的旧 C 端舞台
+
+业主同意后删除（随 PR #5 合并）；`docs/SHOWCASE-web-design.md` §4.1、§4.4、§7 与 `apps/showcase/README.md` 已同步。
+
+- **删了什么**：`apps/showcase/src/components/stage/` 里 2026-10-30 起不再挂载的旧 C 端舞台——`ScrollyStage.tsx`、`timeline.ts`、`Captions.tsx` 与只属于它的场景（`DialogueScene`、`Workspace`、`RouteDetail`、`MatchScene`、`Collab`、`Recommend`、`Constellation`、`SyncFinale`、`ShareRoadbook`），连同 2026-10-18 起就不挂载的 `ChatScene`、`CockpitScene`、`Deliver`（前两个还引用着 `timeline.ts`）。共 15 个文件、5,779 行。删除前从 `app/layout.tsx`、`app/page.tsx` 出发走了一遍导入图：这 15 个文件只被彼此引用。要看旧舞台，到 git 历史里找（删除前的最后一版是 57aef87）。
+- **留着的**：`ui.tsx`、`primitives.tsx`、`RouteGlyph.tsx`、`MapCanvas.tsx`、`camera.ts`、`flight.tsx`、`acts.ts`、`StageShell.tsx`、`AppWindow.tsx`、`data/trip.ts` 仍被演示片或 B 端使用；`primitives.tsx` 的报错文字与 `agencyTimeline.ts` 的注释不再提已删的文件。行程皮肤令牌（`globals.css`、`tailwind.config.ts` 的 `trip-*`）留着，首页目前没有用到；分享路书要不要回到首页仍待业主决定。
+- **验证**：`npm run check`、`showcase:typecheck`、`showcase:build` 通过。删除前后各做一次静态导出、逐文件比对，只有页面脚本、CSS 与引用它们的 HTML 变了：页面脚本把报错文字换回去后与删除前逐字节相同；CSS 少的只是只被这些文件用过的 Tailwind 类（把 15 个文件临时放回、只让 Tailwind 扫描而不被引用时，CSS 与删除前逐字节相同）；其余脚本都没变。
+
 ## [2026-10-30] - 演示站 C 端发布会级重拍：演示片「一根线」
 
 规格见 `docs/SHOWCASE-web-design.md` §3、§4.0、§4.1「演示片」、§4.2、§4.4、§6.2、§6.3。
