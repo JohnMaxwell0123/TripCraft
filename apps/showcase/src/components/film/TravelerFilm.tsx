@@ -4,9 +4,8 @@ import { useMemo, useRef } from 'react';
 import { motion, useTransform } from 'framer-motion';
 import { ease } from '@/lib/motion';
 import { TimeGate, TimeShift, useCamera, useFilmTime, useKeys, useShown, type Cam, type CamRef, type View } from './clock';
-import { CLIMAX_AT, O, OpeningWorld, buildOpening, openingBeats, openingCamAt, openingShots } from './opening/Opening';
-import { BG_DAWN, BG_NIGHT, SYNC_GUESS, SyncOverlays, SyncWorld, T, macroStart, measureSync, syncBeats, useMeasured, useSyncModel, type Layout, type Prelude } from './sync/SyncScene';
-import { NOTE, pitch, useCues, type Cue, type FilmSound } from './sound';
+import { CLIMAX_AT, O, OpeningWorld, buildOpening, openingCamAt, openingShots } from './opening/Opening';
+import { BG_DAWN, BG_NIGHT, SYNC_GUESS, SyncOverlays, SyncWorld, T, macroStart, measureSync, useMeasured, useSyncModel, type Layout, type Prelude } from './sync/SyncScene';
 
 /**
  * 旅客端演示片「一根线」（方向 A，发布会级重拍）：全片一个世界、一台镜头、一根线。
@@ -26,7 +25,7 @@ const A6 = {
   evalAt: [19.75, 20.15, 20.55] as const,
 };
 
-export function TravelerFilm({ layout, view, sound }: { layout: Layout; view: View; sound?: { engine: FilmSound | null; on: boolean } }) {
+export function TravelerFilm({ layout, view }: { layout: Layout; view: View }) {
   const t = useFilmTime();
   const worldRef = useRef<HTMLDivElement>(null);
   const m = useMeasured(worldRef, measureSync, SYNC_GUESS, [layout]);
@@ -79,10 +78,6 @@ export function TravelerFilm({ layout, view, sound }: { layout: Layout; view: Vi
     [o.arrive, heroFrom],
   );
 
-  // 声音（可选，默认静音）：只给画面里已经发生的事加一个音
-  const cues = useMemo(() => filmCues(openingBeats(o), syncBeats(sync)), [o, sync]);
-  useCues(t, cues, sound?.engine ?? null, sound?.on ?? false);
-
   // 出发当天：一层白天冷白的底色淡入（只改透明度）
   const dawnIn = useKeys(t, [CLIMAX_AT + T.dawn[0], CLIMAX_AT + T.dawn[1]], [0, 1]);
   // 片尾卡盖住之后，世界整块不渲染
@@ -108,44 +103,6 @@ export function TravelerFilm({ layout, view, sound }: { layout: Layout; view: Vi
       <EndCard layout={layout} view={view} />
     </div>
   );
-}
-
-/* ═════════════════════ 声音 ═════════════════════ */
-
-/**
- * 提示音：打字是极轻的键入声；画像的六站一站一个音（五声音阶往上走），「2.28 米」是一声低音（伏笔）；
- * 线走进手机是一个三和弦；静的那一刻完全无声；线到全家每一块屏各一个音，凑成一个和弦，全景停住时余音铺开；
- * 夜里一声很低的长音；投递到车机是一声按下，线进车机屏的一刻低音落定；片尾一个和弦收住。
- */
-function filmCues(op: ReturnType<typeof openingBeats>, sy: ReturnType<typeof syncBeats>): Cue[] {
-  const at = (v: number) => CLIMAX_AT + v;
-  const cues: Cue[] = [];
-  for (let v = O.type[0]; v < O.type[1]; v += 0.11) cues.push({ at: v, kind: 'tick', f: 2200 + ((v * 37) % 1) * 500, gain: 0.35, dur: 0.04 });
-  cues.push({ at: O.send, kind: 'click', gain: 0.8 });
-  op.marks.forEach((v) => cues.push({ at: v, kind: 'tick', f: 3000, gain: 0.5 }));
-  const scale = [NOTE.C4, NOTE.D4, NOTE.E4, NOTE.G4, NOTE.A4, NOTE.C5];
-  op.words.forEach((v, i) => cues.push({ at: v, kind: 'tone', f: pitch(scale[i]), gain: 0.55, dur: 0.8 }));
-  cues.push({ at: O.ask[0], kind: 'tick', f: 1800, gain: 0.5 });
-  cues.push({ at: O.answer, kind: 'low', f: [pitch(NOTE.C3), pitch(NOTE.G3)], gain: 0.9, dur: 1.6 });
-  op.cards.forEach((v) => cues.push({ at: v, kind: 'tick', f: 2600, gain: 0.45 }));
-  op.cities.forEach((v, i) => cues.push({ at: v, kind: 'tone', f: pitch([NOTE.C4, NOTE.E4, NOTE.G4, NOTE.A4][i]), gain: 0.45, dur: 0.7 }));
-  cues.push({ at: op.arrive, kind: 'pad', f: [pitch(NOTE.C4), pitch(NOTE.E4), pitch(NOTE.G4)], gain: 0.8, dur: 1.8 });
-  cues.push({ at: A6.joins.ajie, kind: 'tick', f: 2400, gain: 0.45 }, { at: A6.joins.xiaoyu, kind: 'tick', f: 2400, gain: 0.45 });
-  cues.push({ at: A6.sheetIn + 0.2, kind: 'tone', f: pitch(NOTE.A4), gain: 0.35, dur: 0.6 });
-  A6.evalAt.forEach((v, i) => cues.push({ at: v, kind: 'tick', f: i === 2 ? 1500 : 2200, gain: 0.45 }));
-  // 高潮
-  cues.push({ at: at(T.tap), kind: 'click', gain: 1 });
-  cues.push({ at: at(T.open), kind: 'tone', f: pitch(NOTE.C5), gain: 0.6, dur: 1.4 });
-  cues.push({ at: at(sy.laptop), kind: 'tone', f: pitch(NOTE.E5), gain: 0.6, dur: 1.6 });
-  cues.push({ at: at(sy.tablet), kind: 'tone', f: pitch(NOTE.G5), gain: 0.6, dur: 1.8 });
-  cues.push({ at: at(sy.ajie), kind: 'tone', f: pitch(NOTE.C6), gain: 0.55, dur: 2.0 });
-  cues.push({ at: at(sy.wide), kind: 'pad', f: [pitch(NOTE.C4), pitch(NOTE.E4), pitch(NOTE.G4), pitch(NOTE.C5)], gain: 0.9, dur: 3.2 });
-  cues.push({ at: at(T.night[0]), kind: 'low', f: [pitch(NOTE.C3)], gain: 0.5, dur: 1.8 });
-  cues.push({ at: at(T.wake[0]), kind: 'tone', f: pitch(NOTE.G4), gain: 0.4, dur: 1.2 });
-  cues.push({ at: at(T.dispatch), kind: 'click', gain: 0.9 });
-  cues.push({ at: at(T.route[0]), kind: 'low', f: [pitch(NOTE.C3), pitch(NOTE.G3), pitch(NOTE.E4)], gain: 0.9, dur: 2.2 });
-  cues.push({ at: END_AT + 0.25, kind: 'pad', f: [pitch(NOTE.C4), pitch(NOTE.G4), pitch(NOTE.E5)], gain: 0.7, dur: 3.0 });
-  return cues.sort((a, b) => a.at - b.at);
 }
 
 /* ═════════════════════ 片尾 ═════════════════════ */

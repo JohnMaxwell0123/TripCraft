@@ -2,6 +2,14 @@
 
 所有关键架构修订、外部事实核查与规范变更记录在此。历史更正详情见 [docs/ERRATA.md](docs/ERRATA.md)。
 
+## [2026-11-02] - 演示站：演示片去掉声音
+
+业主决定「不要声音」（PR #5 最后一条待定事项，随 PR #5 合并）。`docs/SHOWCASE-web-design.md` §4.1「演示片」、§4.2、§4.4 与 `apps/showcase/README.md` 已同步。
+
+- **删了什么**：播放条上的声音开关；只为它存在的 WebAudio 提示音 `apps/showcase/src/components/film/sound.ts`；`TravelerFilm.tsx` 里的提示音时刻表，以及只给它算时刻的 `openingBeats`（`opening/Opening.tsx`）与 `syncBeats`（`sync/SyncScene.tsx`）。`tsc --noUnusedLocals` 全仓库没有未用的变量与 import，构建产物里也不再有 `AudioContext`。
+- **播放条**：只剩播放 / 暂停 / 重播与四个章节。四个章节按钮变宽（360px 时 51 → 64px，1440px 时 274 → 289px），高度不变；播放键仍是 40 × 40。章节名在 360 / 375 / 390 / 414 / 768 / 1024 / 1440px 都不截断。
+- **验收**：`npm run check`、`showcase:typecheck`、`showcase:build` 通过；首页演示片逐帧扫描（桌面 1440、iPad 横屏 1024 / 1180 / 1194 与竖屏 768、手机 375 / 390）没有透明却可见的字，跳帧时版面不动；减弱动态效果时不自动播放、四章各停在自己的静帧；实时播放时页面滚动位置与 `#demo` 高度不变；播完高潮也不创建任何 WebAudio。
+
 ## [2026-10-31] - 演示站：能力画廊补「可分享的路书」卡
 
 业主决定：演示片重拍时删掉的分享路书（PRD-03 S-C10）与行程皮肤，合并前在能力画廊补一张卡来讲（随 PR #5 合并）。规格见 `docs/SHOWCASE-web-design.md` §5；§3 页面结构、§4.0 数据线、§4.1 行程皮肤令牌、§4.2「删掉了什么」、§7 与 `apps/showcase/README.md` 已同步。

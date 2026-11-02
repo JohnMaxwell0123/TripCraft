@@ -282,18 +282,6 @@ export function openingShots(o: OpeningModel, m0: Frame): Shot[] {
 
 export const openingCamAt = (shots: readonly Shot[], v: number, V: View): Cam => shotCam(v, shots, V);
 
-/** 开场里各个节拍的时刻（全片时间；声音按它们触发） */
-export function openingBeats(o: OpeningModel) {
-  return {
-    marks: PHRASES.map((_, i) => O.marks[0] + O.marks[1] * i),
-    words: o.stations[0].slice(0, PHRASES.length).map((d) => timeAt(HEAD1, d)),
-    station228: timeAt(HEAD1, o.tracks[0].len),
-    cards: [0, 1, 2].map((i) => timeAt(HEAD2, o.tracks[1].len) + i * 0.08),
-    cities: o.stations[2].slice(0, CITIES.length).map((d) => timeAt(HEAD3, d)),
-    arrive: o.arrive,
-  };
-}
-
 /* ═════════════════════ 世界里的内容 ═════════════════════ */
 
 export function OpeningWorld({ o, lw, until }: { o: OpeningModel; lw: number; until: number }) {

@@ -551,12 +551,6 @@ export function SyncOverlays({ model, cam, view }: { model: SyncModel; cam: CamR
   );
 }
 
-/** 高潮里线进每块屏的时刻（这一段自己的时间；声音按它们触发） */
-export function syncBeats(model: SyncModel) {
-  const enter = (d: Dev) => timeAt(HEAD, model.w.span[d][0]);
-  return { laptop: enter('laptop'), tablet: enter('tablet'), ajie: enter('ajie'), wide: model.wide };
-}
-
 export const BG_NIGHT = '#FFFFF9';
 export const BG_DAWN = '#EEF1F2';
 

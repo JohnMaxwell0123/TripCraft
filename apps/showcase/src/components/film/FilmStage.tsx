@@ -7,13 +7,12 @@ import { PauseIcon, PlayIcon, RotateCcwIcon } from '@/components/common/Icons';
 import { FilmClock, useBoxSize, useFilmControl } from './clock';
 import { CLIMAX_AT } from './opening/Opening';
 import { FILM_DURATION, TravelerFilm } from './TravelerFilm';
-import { FilmSound } from './sound';
 
 /**
  * C 端演示舞台（发布会级重拍，方向 A「一根线」）：标题在上，一块宽银幕，下面一条细的播放条。
  * 桌面与平板是 16:9 的横屏片；手机上是另一张竖向的线路图（9:16，通栏），不是把横屏缩小（SHOWCASE §4）。
  * 进入视口才开始播，离开就停；播完停在片尾；减弱动态效果时不自动播放，章节按钮切换静帧。
- * 声音默认关闭，观众在播放条上打开（WebAudio 现场合成，见 sound.ts）。
+ * 片子没有声音（2026-11-02 业主决定去掉声音开关）。
  */
 
 interface Chapter {
@@ -79,15 +78,6 @@ function Player() {
   const [portrait, setPortrait] = useState(false);
   const userPaused = useRef(false);
   const inView = useRef(false);
-  const engine = useRef<FilmSound | null>(null);
-  const [soundOn, setSoundOn] = useState(false);
-  const toggleSound = () => {
-    if (!engine.current) engine.current = new FilmSound();
-    if (soundOn) {
-      engine.current.disable();
-      setSoundOn(false);
-    } else if (engine.current.enable()) setSoundOn(true);
-  };
 
   // 画幅：窄屏（手机）用竖屏的线路图
   useEffect(() => {
@@ -162,31 +152,19 @@ function Player() {
           aria-label="演示片画面：一根橙色的线从那句话出发，串起 AI 读懂的需求、两条路线、全家的每一块屏，最后交给车机导航"
           className={`relative w-full overflow-hidden bg-[#FFFFF9] ${aspect} sm:rounded-[10px] sm:shadow-[inset_0_0_0_1px_rgba(163,163,163,0.28)]`}
         >
-          {view.w > 0 ? <TravelerFilm layout={portrait ? 'port' : 'land'} view={view} sound={{ engine: engine.current, on: soundOn }} /> : null}
+          {view.w > 0 ? <TravelerFilm layout={portrait ? 'port' : 'land'} view={view} /> : null}
           {/* 外框的发丝线压在画面上面（画面自己的底色会盖住 inset 阴影）；手机上通栏，只画上下两条 */}
           <span aria-hidden className="pointer-events-none absolute inset-0 shadow-[inset_0_1px_0_rgba(163,163,163,0.28),inset_0_-1px_0_rgba(163,163,163,0.28)] sm:rounded-[10px] sm:shadow-[inset_0_0_0_1px_rgba(163,163,163,0.28)]" />
         </div>
       </div>
-      <TransportBar status={control.status} onToggle={toggle} onJump={jump} soundOn={soundOn} onSound={toggleSound} />
+      <TransportBar status={control.status} onToggle={toggle} onJump={jump} />
     </div>
   );
 }
 
 /* ═════════════════════ 播放条 ═════════════════════ */
 
-function TransportBar({
-  status,
-  onToggle,
-  onJump,
-  soundOn,
-  onSound,
-}: {
-  status: ReturnType<typeof useFilmControl>['status'];
-  onToggle: () => void;
-  onJump: (c: Chapter) => void;
-  soundOn: boolean;
-  onSound: () => void;
-}) {
+function TransportBar({ status, onToggle, onJump }: { status: ReturnType<typeof useFilmControl>['status']; onToggle: () => void; onJump: (c: Chapter) => void }) {
   const control = useFilmControl();
   const label = status === 'playing' ? '暂停' : status === 'ended' ? '重播' : '播放';
   const Icon = status === 'playing' ? PauseIcon : status === 'ended' ? RotateCcwIcon : PlayIcon;
@@ -212,28 +190,6 @@ function TransportBar({
           <ChapterButton key={c.id} c={c} i={i} t={control.t} onJump={onJump} onKeyDown={onKeyDown} />
         ))}
       </div>
-      <button
-        type="button"
-        onClick={onSound}
-        aria-pressed={soundOn}
-        aria-label={soundOn ? '关闭声音' : '打开声音'}
-        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[#241E20] shadow-[inset_0_0_0_1px_rgba(139,139,139,0.32)] transition-colors duration-300 hover:bg-[#241E20]/[0.05] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#241E20]"
-      >
-        <svg aria-hidden width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M11 5 6 9H3v6h3l5 4z" />
-          {soundOn ? (
-            <>
-              <path d="M15.5 8.5a5 5 0 0 1 0 7" />
-              <path d="M18.5 5.5a9 9 0 0 1 0 13" />
-            </>
-          ) : (
-            <>
-              <path d="m16 9 5 6" />
-              <path d="m21 9-5 6" />
-            </>
-          )}
-        </svg>
-      </button>
     </div>
   );
 }
