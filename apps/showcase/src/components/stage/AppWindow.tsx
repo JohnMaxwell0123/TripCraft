@@ -1,9 +1,11 @@
 'use client';
 
-import type { ComponentType, ReactNode } from 'react';
+import { useRef, type ComponentType, type ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { useFade, useFadeVisibility, useStep } from '@/lib/motion';
 import { TapCursor, useProgress } from './primitives';
+import { useLensCamera, type CameraShot } from './camera';
+import { CamRootContext, FlightLayer, type FlightSpec } from './flight';
 import type { IconProps } from '@/components/common/Icons';
 
 /**
@@ -16,6 +18,9 @@ import type { IconProps } from '@/components/common/Icons';
  * 视窗里是产品界面（D10 已定的 App 外观）：只用语义令牌，根节点的 data-ui 是令牌的作用域（globals.css「产品界面令牌」）。
  * 当前高亮哪个导航项、状态栏写什么、标题栏的时钟显示几点，由 sections 按全局进度分段决定；
  * 导航项可以带演示光标（tap）：章节之间的衔接通过点击真实的导航完成，下一屏就是这次点击的结果。
+ *
+ * 镜头（camera.ts）：视窗的边框、圆角与投影不动，里面的整屏内容（标题栏、侧栏、内容面板、状态栏）随摄影机推近拉远，
+ * 像镜头贴近一块屏幕；飞行层（flight.tsx）在内容层里，和内容一起被推近。不传 camera 时内容层不动（B 端）。
  */
 
 export interface WindowNavItem {
@@ -26,6 +31,8 @@ export interface WindowNavItem {
   badge?: { text: string; range: readonly [number, number] };
   /** 演示光标点击这一项（侧栏与手机标签栏各画一个，同一时刻只有一个可见） */
   tap?: { approach: readonly [number, number]; clickAt: number; hideAt: number };
+  /** 镜头与飞行的落点（data-cam；侧栏与手机标签栏各一个，取正在显示的那个） */
+  cam?: string;
 }
 
 export interface WindowSection {
@@ -49,16 +56,22 @@ interface AppWindowProps {
   /** 侧栏附加区（≥ 800px 显示），例如 C 端的行程列表 */
   sidebarExtra?: ReactNode;
   ariaLabel: string;
+  /** 镜头脚本（按时间先后）；不传则内容层不动 */
+  camera?: readonly CameraShot[];
+  /** 跨区域的飞行（共享元素转场） */
+  flights?: readonly FlightSpec[];
   children: ReactNode;
 }
 
-export function AppWindow({ title, product, nav, sections, account, sidebarExtra, ariaLabel, children }: AppWindowProps) {
+export function AppWindow({ title, product, nav, sections, account, sidebarExtra, ariaLabel, camera, flights, children }: AppWindowProps) {
   const p = useProgress();
   const step = useStep(
     p,
     sections.slice(1).map((s) => s.at),
   );
   const current = sections[step];
+  const contentRef = useRef<HTMLDivElement>(null);
+  const lens = useLensCamera(p, camera, contentRef);
 
   return (
     <div
@@ -67,59 +80,67 @@ export function AppWindow({ title, product, nav, sections, account, sidebarExtra
       data-ui="app"
       className="ui-shell relative h-[620px] w-full overflow-hidden rounded-[18px] border border-[#D7D7CF] text-left text-ui-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.86),0_0_0_1px_rgba(0,0,0,0.03),0_32px_64px_-24px_rgba(36,30,32,0.28)] [container-name:win] [container-type:inline-size] sm:h-[640px] lg:h-[660px]"
     >
-      <div className="pointer-events-none flex h-full select-none flex-col">
-        {/* 标题栏 */}
-        <div className="hidden h-10 shrink-0 items-center gap-2 px-4 cq-sm:flex">
-          <span aria-hidden className="flex w-14 gap-1.5">
-            <span className="h-3 w-3 rounded-full bg-[#FF5F57]" />
-            <span className="h-3 w-3 rounded-full bg-[#FEBC2E]" />
-            <span className="h-3 w-3 rounded-full bg-[#28C840]" />
-          </span>
-          <span className="flex-1 truncate text-center text-xs font-medium text-ui-ink-3">{title}</span>
-          <span className="w-14 shrink-0 text-right text-xs tabular-nums text-ui-ink-2">{current.time ?? ''}</span>
-        </div>
+      <CamRootContext.Provider value={contentRef}>
+        <motion.div
+          ref={contentRef}
+          className="pointer-events-none relative flex h-full select-none flex-col"
+          style={{ x: lens.x, y: lens.y, scale: lens.scale, transformOrigin: '0 0' }}
+        >
+          {/* 标题栏 */}
+          <div className="hidden h-10 shrink-0 items-center gap-2 px-4 cq-sm:flex">
+            <span aria-hidden className="flex w-14 gap-1.5">
+              <span className="h-3 w-3 rounded-full bg-[#FF5F57]" />
+              <span className="h-3 w-3 rounded-full bg-[#FEBC2E]" />
+              <span className="h-3 w-3 rounded-full bg-[#28C840]" />
+            </span>
+            <span className="flex-1 truncate text-center text-xs font-medium text-ui-ink-3">{title}</span>
+            <span className="w-14 shrink-0 text-right text-xs tabular-nums text-ui-ink-2">{current.time ?? ''}</span>
+          </div>
 
-        <div className="flex min-h-0 flex-1">
-          {/* 侧栏：≥560 图标，≥800 图标 + 文字 + 附加区 */}
-          <nav aria-label={`${product}导航`} className="hidden w-14 shrink-0 flex-col px-2 pb-3 cq-sm:flex cq-lg:w-[168px]">
-            <div className="flex h-9 items-center gap-2 px-1.5">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-[7px] bg-[#241E20] text-xs font-bold text-[#FFFFF9]">旅</span>
-              <span className="hidden truncate text-[13px] font-semibold text-ui-ink cq-lg:inline">{product}</span>
-            </div>
-            <ul className="mt-3 flex flex-col gap-0.5">
-              {nav.map((item) => (
-                <NavRow key={item.id} item={item} active={item.id === current.nav} />
-              ))}
-            </ul>
-            {sidebarExtra ? <div className="mt-5 hidden min-h-0 cq-lg:block">{sidebarExtra}</div> : null}
-            <div className="mt-auto flex items-center gap-2 px-1.5">
-              {account.avatar}
-              <span className="hidden min-w-0 cq-lg:block">
-                <span className="block truncate text-xs font-medium text-ui-ink">{account.name}</span>
-                {account.note ? <span className="block truncate text-xs text-ui-ink-3">{account.note}</span> : null}
-              </span>
-            </div>
-          </nav>
+          <div className="flex min-h-0 flex-1">
+            {/* 侧栏：≥560 图标，≥800 图标 + 文字 + 附加区 */}
+            <nav aria-label={`${product}导航`} className="hidden w-14 shrink-0 flex-col px-2 pb-3 cq-sm:flex cq-lg:w-[168px]">
+              <div className="flex h-9 items-center gap-2 px-1.5">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-[7px] bg-[#241E20] text-xs font-bold text-[#FFFFF9]">旅</span>
+                <span className="hidden truncate text-[13px] font-semibold text-ui-ink cq-lg:inline">{product}</span>
+              </div>
+              <ul className="mt-3 flex flex-col gap-0.5">
+                {nav.map((item) => (
+                  <NavRow key={item.id} item={item} active={item.id === current.nav} />
+                ))}
+              </ul>
+              {sidebarExtra ? <div className="mt-5 hidden min-h-0 cq-lg:block">{sidebarExtra}</div> : null}
+              <div className="mt-auto flex items-center gap-2 px-1.5">
+                {account.avatar}
+                <span className="hidden min-w-0 cq-lg:block">
+                  <span className="block truncate text-xs font-medium text-ui-ink">{account.name}</span>
+                  {account.note ? <span className="block truncate text-xs text-ui-ink-3">{account.note}</span> : null}
+                </span>
+              </div>
+            </nav>
 
-          {/* 内容面板 */}
-          <main className="relative min-h-0 min-w-0 flex-1 overflow-hidden bg-ui-panel cq-sm:mb-0 cq-sm:mr-2 cq-sm:rounded-ui-card cq-sm:border cq-sm:border-ui-line">
-            {children}
-          </main>
-        </div>
+            {/* 内容面板 */}
+            <main className="relative min-h-0 min-w-0 flex-1 overflow-hidden bg-ui-panel cq-sm:mb-0 cq-sm:mr-2 cq-sm:rounded-ui-card cq-sm:border cq-sm:border-ui-line">
+              {children}
+            </main>
+          </div>
 
-        {/* 状态栏 */}
-        <div className="hidden h-8 shrink-0 items-center gap-3 px-4 text-xs text-ui-ink-3 cq-sm:flex">
-          <span className="min-w-0 flex-1 truncate">{current.status}</span>
-          {current.statusRight ? <span className="hidden shrink-0 truncate cq-md:inline">{current.statusRight}</span> : null}
-        </div>
+          {/* 状态栏 */}
+          <div className="hidden h-8 shrink-0 items-center gap-3 px-4 text-xs text-ui-ink-3 cq-sm:flex">
+            <span className="min-w-0 flex-1 truncate">{current.status}</span>
+            {current.statusRight ? <span className="hidden shrink-0 truncate cq-md:inline">{current.statusRight}</span> : null}
+          </div>
 
-        {/* 手机标签栏 */}
-        <div className="flex h-[54px] shrink-0 items-stretch border-t border-ui-line bg-ui-surface cq-sm:hidden">
-          {nav.map((item) => (
-            <TabRow key={item.id} item={item} active={item.id === current.nav} />
-          ))}
-        </div>
-      </div>
+          {/* 手机标签栏 */}
+          <div className="flex h-[54px] shrink-0 items-stretch border-t border-ui-line bg-ui-surface cq-sm:hidden">
+            {nav.map((item) => (
+              <TabRow key={item.id} item={item} active={item.id === current.nav} />
+            ))}
+          </div>
+
+          {flights?.length ? <FlightLayer flights={flights} epoch={lens.epoch} /> : null}
+        </motion.div>
+      </CamRootContext.Provider>
     </div>
   );
 }
@@ -148,6 +169,7 @@ function NavDot({ badge }: { badge: NonNullable<WindowNavItem['badge']> }) {
 function NavRow({ item, active }: { item: WindowNavItem; active: boolean }) {
   return (
     <li
+      data-cam={item.cam}
       className={`relative flex h-8 items-center gap-2 rounded-ui-ctl px-2 text-[13px] transition-colors duration-200 ${
         active ? 'ui-nav-active font-medium text-ui-ink' : 'text-ui-ink-2'
       }`}
@@ -168,7 +190,7 @@ function NavRow({ item, active }: { item: WindowNavItem; active: boolean }) {
 
 function TabRow({ item, active }: { item: WindowNavItem; active: boolean }) {
   return (
-    <span className={`relative flex flex-1 flex-col items-center justify-center gap-0.5 text-xs ${active ? 'font-medium text-ui-accent-ink' : 'text-ui-ink-3'}`}>
+    <span data-cam={item.cam} className={`relative flex flex-1 flex-col items-center justify-center gap-0.5 text-xs ${active ? 'font-medium text-ui-accent-ink' : 'text-ui-ink-3'}`}>
       <item.Icon className="h-5 w-5" />
       {item.label}
       {item.badge ? <TabDot badge={item.badge} /> : null}

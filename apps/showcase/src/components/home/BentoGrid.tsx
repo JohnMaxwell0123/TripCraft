@@ -2,6 +2,7 @@
 
 import { useState, type ReactNode } from 'react';
 import { scrollToSection } from '@/components/common/Navbar';
+import { ShareCard } from '@/components/home/ShareCard';
 import {
   BookOpenIcon,
   CarIcon,
@@ -19,7 +20,8 @@ import {
  * 产品能力画廊（PRD-01 §3：三大支柱、一条 B 端线、四项支撑能力）
  *
  * 版式按 .agents/rules/unify-gtm-design-system.md：左对齐的分区标题；8px 圆角的发丝边卡片，
- * 眉题炭黑、标题衬线；卡片里的小演示放在浅石灰平铺块上；B 端宽幅卡用 1px 烈焰橙竖线列出定制师的一天；
+ * 眉题炭黑、标题衬线；卡片里的小演示放在浅石灰平铺块上；六张卡之后是讲可分享路书与行程皮肤的宽幅卡（S-C10，ShareCard.tsx）；
+ * B 端宽幅卡用 1px 烈焰橙竖线列出定制师的一天；
  * 支撑能力只用一行文字栏，不再做成卡片，也不作为主卖点。
  * 这一段以圆角纸面压在上方 B 端深色氛围带上（-mt-7 + rounded-t）。
  */
@@ -99,7 +101,7 @@ export function BentoGrid() {
             从一句话需求，到全家都认可的行程
           </h2>
           <p className="mt-5 text-[17px] leading-relaxed text-[#241E20]/75 sm:text-lg">
-            AI 对话入口把需求问清楚，两条规划路径给出方案，行程空间让一家人一起商量、多台设备同步；旅行社在线路工作室上架线路、生成路书、透明报价。
+            AI 对话入口把需求问清楚，两条规划路径给出方案，行程空间让一家人一起商量、多台设备同步，定下来的行程还能做成一份可分享的路书；旅行社在线路工作室上架线路、生成路书、透明报价。
           </p>
         </div>
 
@@ -265,6 +267,9 @@ export function BentoGrid() {
             </p>
           </FeatureCard>
         </div>
+
+        {/* 可分享的路书与行程皮肤（S-C10） */}
+        <ShareCard />
 
         {/* B 端线：旅行社线路工作室 */}
         <div className="u-card mt-5 grid gap-10 p-7 sm:p-10 lg:grid-cols-12 lg:items-center">

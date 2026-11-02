@@ -1,11 +1,13 @@
 'use client';
 
-import { motion, useTransform, type MotionValue } from 'framer-motion';
+import type { ComponentType, CSSProperties } from 'react';
+import { motion, useMotionValue, useTransform, type MotionStyle, type MotionValue } from 'framer-motion';
 import { MAP_VIEW, pointOnRoute, type RouteGeometry } from '@/data/trip';
 import { BASE_LABELS, GREENS, HIGHWAYS, KM_100, LAKES, RIVERS, ROADS, URBAN } from '@/data/basemap';
-import { ease, useFadeVisibility, useReduced } from '@/lib/motion';
+import { ease, useFade, useFadeVisibility, useReduced } from '@/lib/motion';
 import { CatMark } from './ui';
-import { LayersIcon, LocateIcon, MinusIcon, PlusIcon } from '@/components/common/Icons';
+import { useProgress } from './primitives';
+import { LayersIcon, LocateIcon, MinusIcon, PlusIcon, type IconProps } from '@/components/common/Icons';
 
 /**
  * 地图（路径 A 草案、线路详情、行程空间、B 端路线动画共用）
@@ -16,7 +18,24 @@ import { LayersIcon, LocateIcon, MinusIcon, PlusIcon } from '@/components/common
  *
  * 相机：frame 指定路线必须完整落进的区域（Tailwind 定位类，可按视窗断点变化，例如留出底部抽屉的高度）；
  * 底图要素比路线视框大一圈，视框外的部分铺满容器的其余地方，不留空白。
+ *
+ * 跟拍（follow）：0 = 全景，1 = 推近 zoom 倍并把线头放在画面中央——像地图 App 导航时跟着车走。
+ * 推近时只放大地理：地名、图钉、线头与路线粗细都按 1/z 反向缩放（CSS 变量 --mz），字号不变；比例尺在跟拍时隐去。
+ * 标注（callouts）是贴在途经点旁边的玻璃小签，说这一站怎样照顾到需求画像（车上过垭口、服务区午休）。
  */
+
+export interface MapCallout {
+  /** 贴在哪个途经点旁边 */
+  stop: string;
+  text: string;
+  Icon: ComponentType<IconProps>;
+  /** [淡入起, 淡入止, 淡出起, 淡出止]（全局进度） */
+  range: readonly [number, number, number, number];
+  side?: 'left' | 'right' | 'top' | 'bottom';
+}
+
+/** 反向缩放：放在 transform 已被 Tailwind 的 translate 类占用的元素上 */
+const COUNTER: CSSProperties = { ['--tw-scale-x' as string]: 'calc(1 / var(--mz, 1))', ['--tw-scale-y' as string]: 'calc(1 / var(--mz, 1))' };
 
 const ASPECT = MAP_VIEW.w / MAP_VIEW.h;
 const pctX = (x: number) => ((x - MAP_VIEW.x) / MAP_VIEW.w) * 100;
@@ -56,6 +75,12 @@ export interface MapCanvasProps {
   minimal?: boolean;
   /** 「示意底图」标注的位置（默认右下角） */
   legendClass?: string;
+  /** 跟拍程度：0 = 全景，1 = 推近并跟着线头 */
+  follow?: MotionValue<number>;
+  /** 跟拍时推近的倍数（默认 1.75） */
+  zoom?: number;
+  /** 途经点旁的标注 */
+  callouts?: readonly MapCallout[];
   className?: string;
 }
 
@@ -71,20 +96,49 @@ export function MapCanvas({
   scale = true,
   minimal = false,
   legendClass = 'bottom-2 right-2',
+  follow,
+  zoom = 1.75,
+  callouts = [],
   className = '',
 }: MapCanvasProps) {
+  const reduced = useReduced();
+  const still = useMotionValue(0);
+  const f = follow ?? still;
+  const point = useTransform(draw, (t) => pointOnRoute(route.lut, t));
+  // 跟拍：缩放 z，并把线头往画面中央拉（f 越大拉得越多）；translate 的百分比以地图框自身的宽高计。
+  // 直接从 draw 与 follow 算，不经过派生值，暂停时（静帧、调试跳帧）也不会用到上一帧的线头位置
+  const z = useTransform(f, (v) => (reduced ? 1 : 1 + (zoom - 1) * v));
+  const transform = useTransform([draw, f], ([t, v]: number[]) => {
+    if (reduced) return 'translate(-50%, -50%)';
+    const pt = pointOnRoute(route.lut, t);
+    const zz = 1 + (zoom - 1) * v;
+    const k = v * zz;
+    return `translate(-50%, -50%) translate(${(-k * (pctX(pt.x) - 50)).toFixed(3)}%, ${(-k * (pctY(pt.y) - 50)).toFixed(3)}%) scale(${zz.toFixed(4)})`;
+  });
+  const casing = useTransform(z, (v) => 9 / v);
+  const line = useTransform(z, (v) => 5 / v);
+  const scaleBar = useTransform(f, (v) => (reduced ? 1 : 1 - Math.min(1, v * 3)));
+  const scaleBarVisibility = useFadeVisibility(scaleBar);
+
   return (
     <div className={`relative h-full w-full overflow-hidden bg-ui-map-land ${className}`}>
       <div className={`absolute [container-type:size] ${frame}`}>
-        <div
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-          style={{ width: `min(100cqw, calc(100cqh * ${ASPECT.toFixed(4)}))`, aspectRatio: `${MAP_VIEW.w} / ${MAP_VIEW.h}` }}
+        <motion.div
+          className="absolute left-1/2 top-1/2"
+          style={
+            {
+              width: `min(100cqw, calc(100cqh * ${ASPECT.toFixed(4)}))`,
+              aspectRatio: `${MAP_VIEW.w} / ${MAP_VIEW.h}`,
+              transform,
+              '--mz': z,
+            } as unknown as MotionStyle
+          }
         >
           <svg viewBox={`${MAP_VIEW.x} ${MAP_VIEW.y} ${MAP_VIEW.w} ${MAP_VIEW.h}`} className="absolute inset-0 h-full w-full overflow-visible" aria-hidden>
             <Basemap />
             <path d={route.d} fill="none" className="stroke-ui-route/30" strokeWidth={3} strokeDasharray="2 8" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
-            <motion.path d={route.d} fill="none" stroke="#fff" strokeWidth={9} strokeLinecap="round" strokeLinejoin="round" style={{ pathLength: draw }} />
-            <motion.path d={route.d} fill="none" className="stroke-ui-route" strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" style={{ pathLength: draw }} />
+            <motion.path d={route.d} fill="none" stroke="#fff" strokeLinecap="round" strokeLinejoin="round" style={{ pathLength: draw, strokeWidth: casing }} />
+            <motion.path d={route.d} fill="none" className="stroke-ui-route" strokeLinecap="round" strokeLinejoin="round" style={{ pathLength: draw, strokeWidth: line }} />
           </svg>
 
           {BASE_LABELS.filter((l) => !minimal || l.kind === 'water').map((l) => (
@@ -93,7 +147,7 @@ export function MapCanvas({
               className={`pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-xs ${HALO} ${
                 l.kind === 'water' ? 'text-ui-map-water-ink' : l.kind === 'green' ? 'text-ui-map-green-ink' : 'text-ui-ink-3'
               } ${l.wideOnly ? 'hidden cq-md:block' : ''}`}
-              style={{ left: `${pctX(l.x)}%`, top: `${pctY(l.y)}%` }}
+              style={{ left: `${pctX(l.x)}%`, top: `${pctY(l.y)}%`, ...COUNTER }}
             >
               {l.text}
             </span>
@@ -106,15 +160,23 @@ export function MapCanvas({
             ),
           )}
 
-          {head ? <Head route={route} draw={draw} /> : null}
+          {callouts.map((c) => (
+            <Callout key={c.stop + c.text} callout={c} route={route} />
+          ))}
+
+          {head ? <Head point={point} draw={draw} /> : null}
 
           {scale ? (
-            <span aria-hidden className="pointer-events-none absolute bottom-[3%] left-[2%]" style={{ width: `${(KM_100 / MAP_VIEW.w) * 100}%` }}>
+            <motion.span
+              aria-hidden
+              className="pointer-events-none absolute bottom-[3%] left-[2%]"
+              style={{ width: `${(KM_100 / MAP_VIEW.w) * 100}%`, opacity: scaleBar, visibility: scaleBarVisibility }}
+            >
               <span className={`block whitespace-nowrap text-xs leading-4 text-ui-ink-2 ${HALO}`}>100 km</span>
               <span className="block h-1.5 w-full border-x-2 border-b-2 border-ui-ink-2/70" />
-            </span>
+            </motion.span>
           ) : null}
-        </div>
+        </motion.div>
       </div>
 
       {legend ? (
@@ -166,7 +228,8 @@ function Stop({ stop, draw, pin, label }: { stop: RouteGeometry['stops'][number]
   const side = (stop.labelSide ?? 'right') as Side;
 
   return (
-    <span className="absolute h-0 w-0" style={{ left: `${pctX(stop.x)}%`, top: `${pctY(stop.y)}%` }}>
+    // 锚点是 0×0 的点：反向缩放以它为原点，图钉与地名留在原地、大小不随跟拍变
+    <span className="absolute h-0 w-0" style={{ left: `${pctX(stop.x)}%`, top: `${pctY(stop.y)}%`, transform: 'scale(calc(1 / var(--mz, 1)))' }}>
       <motion.span className="absolute left-0 top-0" style={{ opacity: shown, visibility, scale, x: '-50%', y: '-50%' }}>
         {pin && stop.cat ? (
           <CatMark cat={stop.cat} size={22} className="ring-2 ring-white shadow-[0_2px_6px_rgba(0,0,0,0.25)]" />
@@ -195,9 +258,8 @@ const PIN_LABEL_OFFSET: Record<Side, { left?: number; right?: number; top?: numb
 };
 
 /* ── 线头：白底圆点 + 强调色内点 ── */
-function Head({ route, draw }: { route: RouteGeometry; draw: MotionValue<number> }) {
+function Head({ point, draw }: { point: MotionValue<{ x: number; y: number }>; draw: MotionValue<number> }) {
   const reduced = useReduced();
-  const point = useTransform(draw, (t) => pointOnRoute(route.lut, t));
   const left = useTransform(point, (pt) => `${pctX(pt.x)}%`);
   const top = useTransform(point, (pt) => `${pctY(pt.y)}%`);
   const opacity = useTransform(draw, (t): number => (!reduced && t > 0.002 && t < 0.998 ? 1 : 0));
@@ -206,10 +268,41 @@ function Head({ route, draw }: { route: RouteGeometry; draw: MotionValue<number>
     <motion.span
       aria-hidden
       className="absolute flex h-4 w-4 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-[0_0_0_5px_rgb(var(--ui-route)/0.18),0_1px_4px_rgba(0,0,0,0.3)]"
-      style={{ left, top, opacity, visibility }}
+      style={{ left, top, opacity, visibility, ...COUNTER }}
     >
       <span className="h-2 w-2 rounded-full bg-ui-route" />
     </motion.span>
+  );
+}
+
+/* ── 途经点旁的玻璃小签：这一站怎样照顾到需求画像 ── */
+const CALLOUT_POS: Record<Side, string> = {
+  right: 'left-5 top-1/2 -translate-y-1/2',
+  left: 'right-5 top-1/2 -translate-y-1/2',
+  top: 'bottom-5 left-1/2 -translate-x-1/2',
+  bottom: 'top-5 left-1/2 -translate-x-1/2',
+};
+
+function Callout({ callout, route }: { callout: MapCallout; route: RouteGeometry }) {
+  const p = useProgress();
+  const stop = route.stops.find((s) => s.id === callout.stop);
+  const [a, b, c, d] = callout.range;
+  const opacity = useFade(p, a, b, c, d);
+  const visibility = useFadeVisibility(opacity);
+  if (!stop) return null;
+  const side = callout.side ?? 'right';
+  return (
+    <span className="absolute h-0 w-0" style={{ left: `${pctX(stop.x)}%`, top: `${pctY(stop.y)}%`, transform: 'scale(calc(1 / var(--mz, 1)))' }}>
+      <motion.span
+        className={`ui-glass absolute inline-flex h-7 items-center gap-1.5 whitespace-nowrap rounded-full pl-1.5 pr-2.5 text-xs font-medium text-ui-ink ${CALLOUT_POS[side]}`}
+        style={{ opacity, visibility }}
+      >
+        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ui-ink text-white">
+          <callout.Icon className="h-3 w-3" />
+        </span>
+        {callout.text}
+      </motion.span>
+    </span>
   );
 }
 

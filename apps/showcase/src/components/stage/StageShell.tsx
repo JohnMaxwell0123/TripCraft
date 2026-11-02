@@ -65,8 +65,8 @@ const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 
 /**
  * 播放速率：时间轴按 1 倍书写（章节时长、关键帧都以「时间轴秒」计），时钟按这个速率推进。
- * 0.9 = 整体放慢到 0.9 倍：C 端 68 → 约 76 秒（2026-10-23 第 4 幕加了分享路书的镜头，原为 66 → 约 73 秒），
- * B 端 61 → 约 68 秒。调整整体节奏只改这里，不动关键帧。
+ * 0.9 = 整体放慢到 0.9 倍：C 端 55.1 → 约 61 秒（2026-10-29 导演版：01–03 幕 48 → 33.6 秒、04 幕 20 → 21.5 秒；
+ * 原为 68 → 约 76 秒），B 端 61 → 约 68 秒。调整整体节奏只改这里，不动关键帧。
  */
 export const PLAYBACK_RATE = 0.9;
 
@@ -87,6 +87,20 @@ function useStageClock(chapters: readonly StageChapter[], debugHook: string, red
     setStatus(s);
   }, []);
 
+  /**
+   * 暂停时跳到某一帧之后，再轻推两帧进度（差一亿分之一）：几个派生值合成的样式（镜头、地图跟拍）
+   * 在同一帧里可能先于某个输入算完，播放时下一帧就会更正，暂停时却会一直停在旧值上。
+   */
+  const settle = useCallback(() => {
+    let n = 0;
+    const nudge = () => {
+      if (statusRef.current === 'playing') return;
+      progress.set(progress.get() + 1e-9);
+      if (++n < 2) requestAnimationFrame(nudge);
+    };
+    requestAnimationFrame(nudge);
+  }, [progress]);
+
   /** 定位到第 index 章的局部进度 local */
   const place = useCallback(
     (index: number, local: number) => {
@@ -99,8 +113,9 @@ function useStageClock(chapters: readonly StageChapter[], debugHook: string, red
       elapsedRef.current = l * ch.duration;
       chapterProgress.set(l);
       progress.set(ch.range[0] + (ch.range[1] - ch.range[0]) * l);
+      settle();
     },
-    [chapters, chapterProgress, progress],
+    [chapters, chapterProgress, progress, settle],
   );
 
   // 时钟
@@ -169,11 +184,12 @@ function useStageClock(chapters: readonly StageChapter[], debugHook: string, red
       changeStatus('paused');
       place(idx, e > s ? (v - s) / (e - s) : 1);
       progress.set(v);
+      settle();
     };
     return () => {
       delete win[debugHook];
     };
-  }, [chapters, debugHook, place, progress, changeStatus]);
+  }, [chapters, debugHook, place, progress, changeStatus, settle]);
 
   const select = useCallback(
     (index: number) => {
